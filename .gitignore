@@ -1,0 +1,48 @@
+# Configuration files with sensitive data
+config.php
+
+# Uploaded files and user content
+uploads/
+uploads/*
+
+# Database backups
+*.sql
+*.sqlite
+*.db
+
+# Environment and IDE files
+.env
+.env.local
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+error_log
+debug.log
+
+# Temporary files
+tmp/
+temp/
+cache/
+*.tmp
+*.bak
+*.swp
+*~
+
+# Composer (if you add it later)
+/vendor/
+composer.phar
+composer.lock
+
+# Node modules (if you add frontend build tools)
+node_modules/
+package-lock.json
+yarn.lock
