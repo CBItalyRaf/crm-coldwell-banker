@@ -4,6 +4,11 @@
  * Mostra statistiche e overview del sistema
  */
 
+// ============================================================================
+// AUTENTICAZIONE SSO
+// ============================================================================
+require_once 'check_auth.php';
+
 // Connessione Database
 $dbConfig = [
     'host' => 'localhost',
@@ -287,9 +292,19 @@ $recentAgencies = $pdo->query("
 <body>
     <!-- Header -->
     <div class="header">
-        <div class="container">
-            <h1>🏠 Dashboard CRM</h1>
-            <p>Coldwell Banker Italy - Network Overview</p>
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1>🏠 Dashboard CRM</h1>
+                <p>Coldwell Banker Italy - Network Overview</p>
+            </div>
+            <div style="text-align: right;">
+                <p style="margin-bottom: 0.5rem; font-weight: 600;">
+                    👤 <?= htmlspecialchars($_SESSION['crm_user']['name']) ?>
+                </p>
+                <a href="logout.php" style="color: white; text-decoration: underline; font-size: 0.875rem; opacity: 0.9;">
+                    Logout
+                </a>
+            </div>
         </div>
     </div>
 
@@ -339,13 +354,13 @@ $recentAgencies = $pdo->query("
             <!-- Chart Agenzie -->
             <div class="chart-card">
                 <h3>Distribuzione Agenzie</h3>
-                <canvas id="agenciesChart" height="250"></canvas>
+                <canvas id="agenciesChart" height="200"></canvas>
             </div>
 
             <!-- Chart Agenti -->
             <div class="chart-card">
                 <h3>Distribuzione Agenti</h3>
-                <canvas id="agentsChart" height="250"></canvas>
+                <canvas id="agentsChart" height="200"></canvas>
             </div>
         </div>
 
