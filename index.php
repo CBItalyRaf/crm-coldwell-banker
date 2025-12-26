@@ -4,25 +4,10 @@
  * Home page con statistiche e overview
  */
 
-// Autenticazione
 require_once 'check_auth.php';
+require_once 'config/database.php';
 
-// Connessione Database
-require_once 'config/db_config.php';
-
-try {
-    $pdo = new PDO(
-        "mysql:host={$dbConfig['host']};dbname={$dbConfig['dbname']};charset={$dbConfig['charset']}",
-        $dbConfig['username'],
-        $dbConfig['password'],
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        ]
-    );
-} catch (PDOException $e) {
-    die("Errore connessione database: " . $e->getMessage());
-}
+$pdo = getDB();
 
 // Statistiche
 $agenciesStats = $pdo->query("
@@ -39,10 +24,9 @@ $agentsStats = $pdo->query("
     FROM agents
 ")->fetch();
 
-// Per ora ticket = 0 (modulo non ancora implementato)
 $ticketsOpen = 0;
 
-// Ultime attività
+// Ultime agenzie
 $recentAgencies = $pdo->query("
     SELECT name, city, created_at 
     FROM agencies 
@@ -69,21 +53,17 @@ $user = $_SESSION['crm_user'];
             --cb-blue: #012169;
             --cb-bright-blue: #1F69FF;
             --cb-midnight: #0A1730;
-            --cb-gray-text: #6D7180;
-            --bg-light: #F5F7FA;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
+            --cb-gray: #6D7180;
+            --bg: #F5F7FA;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            background: var(--bg-light);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
             color: var(--cb-midnight);
             line-height: 1.6;
         }
 
-        /* HEADER */
         .header {
             background: var(--cb-blue);
             color: white;
@@ -133,14 +113,11 @@ $user = $_SESSION['crm_user'];
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            text-decoration: none;
         }
 
         .nav-button:hover {
             background: rgba(255,255,255,0.1);
-        }
-
-        .nav-button.active {
-            background: var(--cb-bright-blue);
         }
 
         .dropdown-menu {
@@ -183,7 +160,7 @@ $user = $_SESSION['crm_user'];
         }
 
         .dropdown-item:hover {
-            background: var(--bg-light);
+            background: var(--bg);
         }
 
         .user-menu {
@@ -220,14 +197,12 @@ $user = $_SESSION['crm_user'];
             font-size: 0.9rem;
         }
 
-        /* CONTAINER */
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 2rem 1.5rem;
         }
 
-        /* WELCOME */
         .welcome {
             margin-bottom: 2rem;
         }
@@ -235,16 +210,14 @@ $user = $_SESSION['crm_user'];
         .welcome h1 {
             font-size: 1.75rem;
             font-weight: 600;
-            color: var(--cb-midnight);
             margin-bottom: 0.5rem;
         }
 
         .welcome p {
-            color: var(--cb-gray-text);
+            color: var(--cb-gray);
             font-size: 0.95rem;
         }
 
-        /* SEARCH BAR */
         .search-bar {
             background: white;
             border-radius: 12px;
@@ -261,11 +234,6 @@ $user = $_SESSION['crm_user'];
             background: transparent;
         }
 
-        .search-bar input::placeholder {
-            color: var(--cb-gray-text);
-        }
-
-        /* STATS CARDS */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -285,7 +253,7 @@ $user = $_SESSION['crm_user'];
             font-size: 0.875rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: var(--cb-gray-text);
+            color: var(--cb-gray);
             margin-bottom: 0.75rem;
             font-weight: 600;
         }
@@ -299,10 +267,9 @@ $user = $_SESSION['crm_user'];
 
         .stat-subtitle {
             font-size: 0.875rem;
-            color: var(--cb-gray-text);
+            color: var(--cb-gray);
         }
 
-        /* WIDGETS */
         .widgets-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -333,18 +300,12 @@ $user = $_SESSION['crm_user'];
         .widget-title {
             font-size: 1.125rem;
             font-weight: 600;
-            color: var(--cb-midnight);
-        }
-
-        .widget-content {
-            color: var(--cb-gray-text);
-            font-size: 0.9rem;
         }
 
         .widget-placeholder {
             text-align: center;
             padding: 2rem 1rem;
-            color: var(--cb-gray-text);
+            color: var(--cb-gray);
         }
 
         .widget-placeholder-icon {
@@ -353,7 +314,6 @@ $user = $_SESSION['crm_user'];
             opacity: 0.3;
         }
 
-        /* RECENT ACTIVITY */
         .recent-activity {
             background: white;
             border-radius: 12px;
@@ -364,7 +324,6 @@ $user = $_SESSION['crm_user'];
         .recent-activity h2 {
             font-size: 1.125rem;
             font-weight: 600;
-            color: var(--cb-midnight);
             margin-bottom: 1rem;
             padding-bottom: 1rem;
             border-bottom: 1px solid #E5E7EB;
@@ -381,16 +340,14 @@ $user = $_SESSION['crm_user'];
 
         .activity-title {
             font-weight: 500;
-            color: var(--cb-midnight);
             margin-bottom: 0.25rem;
         }
 
         .activity-meta {
             font-size: 0.875rem;
-            color: var(--cb-gray-text);
+            color: var(--cb-gray);
         }
 
-        /* FOOTER */
         .footer {
             background: white;
             border-top: 1px solid #E5E7EB;
@@ -403,11 +360,10 @@ $user = $_SESSION['crm_user'];
             margin: 0 auto;
             padding: 0 1.5rem;
             text-align: center;
-            color: var(--cb-gray-text);
+            color: var(--cb-gray);
             font-size: 0.875rem;
         }
 
-        /* MOBILE */
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
@@ -443,18 +399,14 @@ $user = $_SESSION['crm_user'];
     </style>
 </head>
 <body>
-    <!-- HEADER -->
     <div class="header">
         <div class="header-content">
             <div class="header-left">
                 <img src="https://coldwellbankeritaly.tech/repository/dashboard/logo-white.png" alt="Coldwell Banker" class="logo">
                 
                 <nav class="main-nav">
-                    <!-- Gestione -->
                     <div class="nav-item">
-                        <button class="nav-button">
-                            Gestione ▼
-                        </button>
+                        <button class="nav-button">Gestione ▼</button>
                         <div class="dropdown-menu">
                             <a href="agenzie.php" class="dropdown-item">🏢 Agenzie</a>
                             <a href="agenti.php" class="dropdown-item">👥 Agenti</a>
@@ -462,11 +414,8 @@ $user = $_SESSION['crm_user'];
                         </div>
                     </div>
 
-                    <!-- Operations -->
                     <div class="nav-item">
-                        <button class="nav-button">
-                            Operations ▼
-                        </button>
+                        <button class="nav-button">Operations ▼</button>
                         <div class="dropdown-menu">
                             <a href="onboarding.php" class="dropdown-item">📥 Onboarding</a>
                             <a href="offboarding.php" class="dropdown-item">📤 Offboarding</a>
@@ -474,27 +423,18 @@ $user = $_SESSION['crm_user'];
                         </div>
                     </div>
 
-                    <!-- Amministrazione -->
                     <div class="nav-item">
-                        <button class="nav-button">
-                            Amministrazione ▼
-                        </button>
+                        <button class="nav-button">Amministrazione ▼</button>
                         <div class="dropdown-menu">
                             <a href="fatture.php" class="dropdown-item">💰 Fatture</a>
                             <a href="fornitori.php" class="dropdown-item">🏪 Fornitori</a>
                         </div>
                     </div>
 
-                    <!-- Sviluppo -->
-                    <a href="sviluppo.php" class="nav-button">
-                        🚀 Sviluppo
-                    </a>
+                    <a href="sviluppo.php" class="nav-button">🚀 Sviluppo</a>
 
-                    <!-- Team -->
                     <div class="nav-item">
-                        <button class="nav-button">
-                            Team ▼
-                        </button>
+                        <button class="nav-button">Team ▼</button>
                         <div class="dropdown-menu">
                             <a href="ferie.php" class="dropdown-item">🌴 Ferie</a>
                             <a href="calendario.php" class="dropdown-item">📅 Calendario</a>
@@ -503,7 +443,6 @@ $user = $_SESSION['crm_user'];
                 </nav>
             </div>
 
-            <!-- User Menu -->
             <div class="nav-item user-menu">
                 <button class="user-button">
                     <div class="user-avatar"><?= strtoupper(substr($user['name'], 0, 1)) ?></div>
@@ -518,20 +457,16 @@ $user = $_SESSION['crm_user'];
         </div>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div class="container">
-        <!-- Welcome -->
         <div class="welcome">
             <h1>👋 Benvenuto, <?= htmlspecialchars($user['name']) ?></h1>
             <p>Overview del network Coldwell Banker Italy</p>
         </div>
 
-        <!-- Search Bar -->
         <div class="search-bar">
             <input type="text" placeholder="🔍 Cerca agenzie, agenti, ticket...">
         </div>
 
-        <!-- Stats Cards -->
         <div class="stats-grid">
             <div class="stat-card">
                 <h3>Agenzie</h3>
@@ -552,52 +487,41 @@ $user = $_SESSION['crm_user'];
             </div>
         </div>
 
-        <!-- Widgets -->
         <div class="widgets-grid">
-            <!-- Prossimi 7 Giorni -->
             <div class="widget">
                 <div class="widget-header">
                     <span class="widget-icon">📅</span>
                     <h3 class="widget-title">Prossimi 7 Giorni</h3>
                 </div>
-                <div class="widget-content">
-                    <div class="widget-placeholder">
-                        <div class="widget-placeholder-icon">🚧</div>
-                        <p>Calendario eventi in arrivo<br><small>Disponibile in Fase 2</small></p>
-                    </div>
+                <div class="widget-placeholder">
+                    <div class="widget-placeholder-icon">🚧</div>
+                    <p>Calendario eventi<br><small>Disponibile in Fase 2</small></p>
                 </div>
             </div>
 
-            <!-- Ticket Urgenti -->
             <div class="widget">
                 <div class="widget-header">
                     <span class="widget-icon">🎫</span>
                     <h3 class="widget-title">Ticket Urgenti</h3>
                 </div>
-                <div class="widget-content">
-                    <div class="widget-placeholder">
-                        <div class="widget-placeholder-icon">🚧</div>
-                        <p>Sistema ticketing<br><small>Disponibile in Fase 2</small></p>
-                    </div>
+                <div class="widget-placeholder">
+                    <div class="widget-placeholder-icon">🚧</div>
+                    <p>Sistema ticketing<br><small>Disponibile in Fase 2</small></p>
                 </div>
             </div>
 
-            <!-- News Recenti -->
             <div class="widget">
                 <div class="widget-header">
                     <span class="widget-icon">📰</span>
                     <h3 class="widget-title">News Recenti</h3>
                 </div>
-                <div class="widget-content">
-                    <div class="widget-placeholder">
-                        <div class="widget-placeholder-icon">🚧</div>
-                        <p>Integrazione News API<br><small>Disponibile in Fase 2</small></p>
-                    </div>
+                <div class="widget-placeholder">
+                    <div class="widget-placeholder-icon">🚧</div>
+                    <p>Integrazione News API<br><small>Disponibile in Fase 2</small></p>
                 </div>
             </div>
         </div>
 
-        <!-- Recent Activity -->
         <div class="recent-activity">
             <h2>📈 Ultime Agenzie Aggiunte</h2>
             <?php foreach ($recentAgencies as $agency): ?>
@@ -612,7 +536,6 @@ $user = $_SESSION['crm_user'];
         </div>
     </div>
 
-    <!-- FOOTER -->
     <div class="footer">
         <div class="footer-content">
             © <?= date('Y') ?> Coldwell Banker Italy - CRM Network · v1.0

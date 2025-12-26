@@ -51,4 +51,3 @@ if (isset($_GET['sso_token'])) {
 // Non autenticato → redirect a Dashboard
 header('Location: https://coldwellbankeritaly.tech/repository/dashboard/');
 exit;
-?>
