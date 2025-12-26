@@ -28,7 +28,7 @@ if (isset($_GET['sso_token'])) {
         if ($result && isset($result['valid']) && $result['valid'] === true) {
             
             // Verifica che l'utente abbia accesso al CRM
-            if (isset($result['user']['services']) && in_array('crm', $result['user']['services'])) {
+            if (isset($result['user']['services']['crm'])) {
                 
                 // Salva dati user in sessione CRM
                 $_SESSION['crm_user'] = [
