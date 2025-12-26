@@ -88,3 +88,4 @@ Credenziali default:
 ## 📞 Supporto
 
 Raf - raffaella.pace@cbitaly.it
+Test webhook - funziona!
