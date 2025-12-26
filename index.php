@@ -206,17 +206,12 @@ $recentAgencies = $pdo->query("
             border-radius: 8px;
             padding: 1.5rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            max-height: 400px;
         }
 
         .chart-card h3 {
             font-size: 1.125rem;
             color: var(--cb-midnight);
             margin-bottom: 1rem;
-        }
-        
-        .chart-card canvas {
-            max-height: 280px !important;
         }
 
         /* Recent Activity */
@@ -361,13 +356,17 @@ $recentAgencies = $pdo->query("
             <!-- Chart Agenzie -->
             <div class="chart-card">
                 <h3>Distribuzione Agenzie</h3>
-                <canvas id="agenciesChart" height="150"></canvas>
+                <div style="position: relative; height: 250px; width: 100%;">
+                    <canvas id="agenciesChart"></canvas>
+                </div>
             </div>
 
             <!-- Chart Agenti -->
             <div class="chart-card">
                 <h3>Distribuzione Agenti</h3>
-                <canvas id="agentsChart" height="150"></canvas>
+                <div style="position: relative; height: 250px; width: 100%;">
+                    <canvas id="agentsChart"></canvas>
+                </div>
             </div>
         </div>
 
@@ -425,8 +424,7 @@ $recentAgencies = $pdo->query("
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
-                aspectRatio: 2,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         position: 'bottom'
@@ -456,8 +454,7 @@ $recentAgencies = $pdo->query("
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
-                aspectRatio: 2,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         display: false
