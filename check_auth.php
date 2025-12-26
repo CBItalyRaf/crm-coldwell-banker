@@ -1,36 +1,31 @@
 <?php
-/**
- * CRM - Sistema Autenticazione SSO
- * Verifica token SSO dalla Dashboard e gestisce sessione locale
- */
-
 session_start();
 
-// Se già loggato localmente nel CRM, ok
-if (isset($_SESSION['crm_user'])) {
-    return;
-}
+echo "<!DOCTYPE html><html><head><meta charset='UTF-8'><title>DEBUG SSO</title></head><body>";
+echo "<h1>🔍 DEBUG SSO</h1>";
+echo "<p><strong>Session crm_user set:</strong> " . (isset($_SESSION['crm_user']) ? "✅ SÌ" : "❌ NO") . "</p>";
 
-// Se arriva token SSO dalla Dashboard
 if (isset($_GET['sso_token'])) {
     $token = $_GET['sso_token'];
+    echo "<p><strong>Token ricevuto:</strong> " . htmlspecialchars(substr($token, 0, 20)) . "...</p>";
     
-    // URL Dashboard API per verifica token
     $dashboard_api = 'https://coldwellbankeritaly.tech/repository/dashboard/api/verify-sso-token.php';
+    $url = $dashboard_api . '?token=' . urlencode($token);
     
-    // Chiama Dashboard per verificare token
-    $response = @file_get_contents($dashboard_api . '?token=' . urlencode($token));
+    echo "<p><strong>Chiamata API a:</strong> " . htmlspecialchars($url) . "</p>";
+    
+    $response = @file_get_contents($url);
+    echo "<p><strong>Risposta API:</strong> " . htmlspecialchars($response) . "</p>";
     
     if ($response !== false) {
         $result = json_decode($response, true);
+        echo "<hr><h2>Dati Decodificati:</h2>";
+        echo "<pre>" . print_r($result, true) . "</pre>";
         
-        // Token valido e user ha permesso CRM
         if ($result && isset($result['valid']) && $result['valid'] === true) {
+            echo "<p style='color:green;font-size:20px;'>✅ TOKEN VALIDO</p>";
             
-            // Verifica che l'utente abbia accesso al CRM
             if (isset($result['user']['services']['crm'])) {
-                
-                // Salva dati user in sessione CRM
                 $_SESSION['crm_user'] = [
                     'email' => $result['user']['email'],
                     'name' => $result['user']['name'],
@@ -39,68 +34,21 @@ if (isset($_GET['sso_token'])) {
                     'crm_role' => $result['user']['services']['crm'] ?? 'viewer',
                     'logged_at' => date('Y-m-d H:i:s')
                 ];
-                
-                // Redirect per rimuovere token dall'URL
-                header('Location: index.php');
-                exit;
+                echo "<p style='color:green;font-size:20px;font-weight:bold;'>✅ SESSIONE CRM CREATA CON SUCCESSO!</p>";
+                echo "<p><a href='index.php' style='font-size:18px;'>➡️ CLICCA QUI PER ANDARE A INDEX.PHP</a></p>";
             } else {
-                // User valido ma senza permesso CRM
-                die('
-                    <html>
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Accesso Negato</title>
-                        <style>
-                            body { font-family: Arial; background: #f5f5f5; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-                            .error { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center; max-width: 400px; }
-                            h1 { color: #d32f2f; margin-bottom: 20px; }
-                            p { color: #666; margin-bottom: 30px; }
-                            a { background: #012169; color: white; padding: 10px 30px; text-decoration: none; border-radius: 5px; display: inline-block; }
-                            a:hover { background: #0A3A7F; }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="error">
-                            <h1>🚫 Accesso Negato</h1>
-                            <p>Non hai i permessi per accedere al CRM.<br>Contatta l\'amministratore.</p>
-                            <a href="https://coldwellbankeritaly.tech/repository/dashboard/">← Torna alla Dashboard</a>
-                        </div>
-                    </body>
-                    </html>
-                ');
+                echo "<p style='color:red;font-size:20px;'>❌ ERRORE: Permesso CRM mancante nei servizi utente</p>";
             }
+        } else {
+            echo "<p style='color:red;font-size:20px;'>❌ ERRORE: Token non valido o scaduto</p>";
         }
+    } else {
+        echo "<p style='color:red;font-size:20px;'>❌ ERRORE: Impossibile chiamare l'API Dashboard</p>";
     }
-    
-    // Token non valido o errore API
-    die('
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Errore Autenticazione</title>
-            <style>
-                body { font-family: Arial; background: #f5f5f5; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-                .error { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center; max-width: 400px; }
-                h1 { color: #d32f2f; margin-bottom: 20px; }
-                p { color: #666; margin-bottom: 30px; }
-                a { background: #012169; color: white; padding: 10px 30px; text-decoration: none; border-radius: 5px; display: inline-block; }
-                a:hover { background: #0A3A7F; }
-            </style>
-        </head>
-        <body>
-            <div class="error">
-                <h1>⚠️ Token Non Valido</h1>
-                <p>Il token di autenticazione è scaduto o non valido.<br>Accedi nuovamente dalla Dashboard.</p>
-                <a href="https://coldwellbankeritaly.tech/repository/dashboard/">← Vai alla Dashboard</a>
-            </div>
-        </body>
-        </html>
-    ');
+} else {
+    echo "<p style='color:orange;'>⚠️ Nessun token SSO ricevuto</p>";
+    echo "<p>Dovresti arrivare qui con ?sso_token=... dalla Dashboard</p>";
 }
 
-// Nessun token e non loggato → redirect a Dashboard
-header('Location: https://coldwellbankeritaly.tech/repository/dashboard/');
-exit;
+echo "</body></html>";
 ?>

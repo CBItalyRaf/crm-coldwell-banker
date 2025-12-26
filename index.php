@@ -5,9 +5,9 @@
  */
 
 // ============================================================================
-// AUTENTICAZIONE SSO
+// AUTENTICAZIONE SSO - VERSIONE DEBUG
 // ============================================================================
-require_once 'check_auth.php';
+require_once 'check_auth_debug.php';
 
 // Connessione Database
 $dbConfig = [
