@@ -1,0 +1,32 @@
+
+=== REPORT AGENZIE ===
+Totale agenzie: 162
+Colonne finali: 33 (32 + data_incomplete)
+
+Stato agenzie:
+  - Active: 107
+  - Closed: 47
+  - Prospect: 5
+  - Opening: 3
+
+=== REPORT AGENTI ===
+Totale agenti: 1364
+Colonne finali: 14 (13 + data_incomplete)
+
+Stato agenti:
+  - Active: 795
+  - Inactive: 569
+
+Ruoli:
+  - agenticentro: 281
+  - agentisud: 234
+  - agentinord: 206
+  - agentiroma: 203
+  - Broker: 139
+  - agenzia: 102
+  - Agent: 91
+  - servizio: 53
+  - Legal Representative: 33
+  - master: 12
+
+Dati incompleti: 627

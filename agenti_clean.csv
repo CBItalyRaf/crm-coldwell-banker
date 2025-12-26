@@ -1,0 +1,1365 @@
+agency_code,first_name,last_name,mobile,email_corporate,email_personal,m365_plan,email_activation_date,email_expiry_date,role,status,inserted_at,notes,data_incomplete
+CBI179,Giusy,Napoli,3450232662,giusy.napoli@cbitaly.it,,Starter ,2024-01-08,2025-01-08,agentisud,Active,2024-08-01,,False
+CBI179,Rosario,Leotta,3927748478,rosario.leotta@cbitaly.it,,Starter ,2024-01-08,2025-01-08,agentisud,Active,2024-08-01,,False
+CBI179,Natale ,Ferlito,3470834816,natale.ferlito@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Giovanni,Alba,3332171094,giovanni.alba@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Valeria,Ferrara,3421991837,valeria.ferrara@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Fabrizio,Fichera,3493037208,fabrizio.fichera@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Niky,Viola,3930282462,niky.viola@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Inactive,2024-07-31,,False
+CBI179,Vincenzo,Pusillico,3385873212,vincenzo.pusillico@cbitaly.it,,Business Basic,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Antonio,Costantino,3388168626,tony.costantino@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Simone,Bisicchia,3337690102,simone.bisicchia@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Inactive,2024-07-31,,False
+CBI179,Giusy ,Grassi,3288215344,giusy.grassi@cbitaly.it,,Business Basic,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Gabriella,Puleo,3483833676,gabriella.puleo@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Inactive,2024-07-31,,False
+CBI179,Laura,Fatuzzo,3519723008,laura.fatuzzo@cbitaly.it,,Business Basic,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,"opz archiv business p2 €11,20/mese",False
+CBI179,Francesco ,Mannino,3408315193,franz.mannino@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Riccardo,Filogamo,3460237735,riccardo.filogamo@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Inactive,2024-07-31,DISATTIVATA IN DATA 05/05/2025,False
+CBI179,Nunzia,Caristia,3318024948,nunzia.caristia@cbitaly.it,,Business Basic,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Carla,Guido,3383195254,carla.guido@cbitaly.it,,Business Basic,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Emanuele,Russo,3284821275,emanuele.russo@cbitaly.it,,Business Basic,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Rossana,Cavallaro,3382424988,rossana.cavallaro@cbitaly.it,,Starter ,2024-07-31,2025-07-31,Broker,Active,2024-07-31,,False
+CBI179,Salvatore,Guglielmo,3201461770,salvatore.gugliemo@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Maria Teresa,Sciuto,3451387044,mariateresa.sciuto@cbitaly.it,,Business Basic,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Simone,Vasta,3405262658,simone.vasta@cbitaly.it,,Business Basic,2024-07-31,2025-07-31,Broker,Active,2024-07-31,Broker,False
+CBI179,Salvatore,Cucuccio,3484150863,salavatore.cucuccio@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Grazia,Bonvenga,,grazia.bonvenga@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,True
+CBI179,Team,Castro,350038779,team.castro@cbitaly.it,,Business Basic,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Rosa,Pennisi,3428037088,rosa.pennisi@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Liliana,Cavallaro,3333140888,liliana.cavallaro@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Sebastiano,Filetti,3668609782,sebastiano.filetti@cbitaly.it,,Business Basic,2024-07-31,2025-07-31,agentisud,Inactive,2024-07-31,DISATTIVATA IN DATA 26/11/2024,False
+CBI179,Christian,Za,3936899325,christian.za@cbitaly.it,,Business Basic,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Gaetano,Lombardo,3465189885,gaetano.lombardo@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Angela,Spina,3477614120,angela.spina@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Carmen,Arcidiacono,3299385003,carmen.arcidiacono@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Arteka,Office,3480396534,arteka.office@cbitaly.it,,Business Premium,2024-07-30,2025-07-30,agenzia,Active,2024-07-31,,False
+CBI179,Anna,Raciti,3274564768,anna.raciti@cbitaly.it,,Business Basic,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Giole,Coco,3913131155,giole.coco@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI179,Dario,Florio,3714366704,dario.florio@cbitaly.it,,Business Basic,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,False
+CBI127,Sabrina ,Rimondi,3516877708,sabrina.rimondi@cbitaly.it,,Business Basic,2024-07-29,2025-07-29,agentinord,Inactive,2024-07-29,,False
+CBI179,Alessandro,Raciti,,alessandro.raciti@cbitaly.it,,Business Basic,2024-07-31,2025-07-31,agentisud,Active,2024-07-31,,True
+CBI110,Antonio,Di Bartolomeo,3318596110,antonio.dibartolomeo@cbitaly.it,,Business Basic,2024-07-17,2025-07-17,agenticentro,Inactive,2024-07-17,DISATTIVATA IN DATA 28/03/25,False
+CBI179,Dario ,Catania,3339912107,dario.catania@cbitaly.it,,Business Basic,2024-08-07,2025-08-07,agentisud,Inactive,2024-07-08,,False
+CBI040,Olena,Matviichuk ,3762119072,olena.matvi@cbitaly.it,,Starter ,2024-07-25,2025-07-25,agentisud,Inactive,2024-07-25,DISATTIVATA IN DATA 25/02/25,False
+CBI162,Alessandro,Nenci,3755634341,alessandro.nenci@cbitaly.it,,Starter ,2024-07-22,2025-07-22,agenticentro,Active,2024-07-22,,False
+CBI148,Tommaso,Lella,3339602822,tommaso.lella@cbitaly.it,,Starter ,2024-08-07,2025-08-07,agentisud,Inactive,2024-07-08,DISATTIVATA IN DATA 12/09/2024,False
+CBI103,,,,bestre@cbitaly.it,,Business Premium,2020-04-11,2026-03-25,agenticentro,Active,2024-07-17,SCADENZA ALLINEATA CON CBSUITE ,True
+CBI000,,,,feedback@cbitaly.it,,Starter ,2024-07-18,2025-07-18,servizio,Active,2024-07-18,,True
+CBI179,Alfio,Privitera,3479170670,alfio.privitera@cbitaly.it,,Starter ,2024-07-31,2025-07-31,agentisud,Inactive,2024-07-31,,False
+CBI120,,,,vetralla@cbitaly.it,,Business Standard,2021-03-27,2026-03-27,agenticentro,Active,2024-07-18,,True
+CBI118,Roberto ,Riccio,,roberto.riccio@cbitaly.it,,Starter ,2024-06-27,2025-06-27,agenticentro,Inactive,2024-06-27,,True
+CBI100,Roberto,Passarella,3791533244,roberto.passarella@cbitaly.it,,Starter ,2024-06-27,2025-06-27,agenticentro,Inactive,2024-06-27,,False
+CBI156,Andrea,Filzi,3332882514,andrea.filzi@cbitaly.it,,Starter ,2024-06-19,2025-06-19,agenticentro,Active,2024-06-19,,False
+CBI096,Maria Giovanna,Ledda,3936861140,m.giovanna.ledda@cbitaly.it,,Business Basic,2024-01-07,2025-01-07,agentisud,Inactive,2024-07-01,DISATTIVATA IN DATA 29/11/2024,False
+CBI106,Francesco,Pastore,3479374990,francesco.pastore@cbitaly.it,,Starter ,2024-06-27,2026-06-27,agenticentro,Inactive,2024-06-27,disattivata in data 26/11/2025,False
+CBI156,Francesco,Carrara,3249088646,francesco.carrara@cbitaly.it,,Starter ,2024-06-28,2025-06-28,agenticentro,Active,2024-06-28,,False
+CBI154,Sonia,Nuvolari Scarpa,3482290308,sonia.nuvolariscarpa@cbitaly.it,,Business Basic,2024-06-19,2025-06-19,agentinord,Inactive,2024-06-19,DISATTIVATA IN DATA 07/10/2024,False
+CBI109,,,,ripetta@cbitaly.it,,Business Standard,2021-09-01,2026-09-01,agentiroma,Active,2024-07-01,,True
+CBI094,Marica,Iannone,3453814464,marica.iannone@cbitaly.it,,Starter ,2024-06-28,2026-06-28,agentisud,Active,2024-06-28,,False
+CBI154,Leonardo,Soffientini,3276988893,leonardo.soffientini@cbitaly.it,,Business Basic,2024-06-19,2025-06-19,agentinord,Inactive,2024-06-19,,False
+CBI171,Sebastiano ,Foschi,,sebastiano.foschi@cbitaly.it,,Starter ,2024-11-06,2025-06-11,agentinord,Inactive,2024-06-11,,True
+CBI092,Corradino,Ciola,+393356205454,corradino.ciola@cbitaly.it,,Starter ,2024-05-20,2025-05-20,agentisud,Active,2024-05-20,,False
+CBI148,Renato,Melisi,3334061652,renato.melisi@cbitaly.it,,Starter ,2024-05-28,2025-05-28,agentisud,Inactive,2024-05-28,DISATTIVATA IN DATA 24/04/2025,False
+CBI172,Antonio,Di Bartolomeo,3318596110,antonio.dibartolomeo@cbitaly.it,,Starter ,2024-05-23,2025-05-23,agenticentro,Inactive,2024-05-24,DISATTIVATA IN DATA 20/06/24,False
+CBI112,Nancy,Pujol,3343411619,nancy.pujol@cbitaly.it,,Starter ,2024-03-06,2025-11-03,agentinord,Inactive,2024-06-03,ATTIVATA CON CREDITO RESIDUO DERIVANTE DA ELIMINAZIONE ALESSANDRO FIORE/ DISATTIVATA IN DATA 25/03/2025 COME DA RICHIESTA ,False
+CBI145,Anna,Berardi,3397962692,anna.berardi@cbitaly.it,,Starter ,2024-05-21,2025-05-21,agentinord,Inactive,2024-05-21,,False
+CBI129,Silvia ,Bergamaschi,377595970,silvia.bergamaschi@cbitaly.it,,Business Basic,2024-05-16,2025-05-16,agenticentro,Inactive,2024-05-16,,False
+CBI000,,,,marketing@cbitaly.it,,Starter ,2024-07-06,,servizio,Active,2024-06-07,,True
+CBI162,Magdalena,Svolopoulos,,magdalena.svolopoulos@cbitaly.it,,Starter ,2024-03-05,2025-03-05,agentinord,Inactive,2024-05-03,DISATTIVATA IN DATA 20/09/2024,True
+CBI164,Massimo,Gambarana,3488264494,massimo.gambarana@cbitaly.it,,Business Basic,2024-07-05,2025-07-05,agentinord,Active,2024-05-07,FATT. 575/24,False
+CBI092,Rossella ,Scivales,+393937276842,rossella.scivales@cbitaly.it,,Starter ,2024-05-07,2025-05-07,Broker,Active,2024-05-07,,False
+CBI145,Eleonora,Manzini,3355710651,eleonora.manzini@cbitaly.it,,Starter ,2024-08-05,2025-08-05,agentinord,Inactive,2024-05-08,DISATTIVATA IN DATA 02/12/24,False
+CBI021,Sara ,Soresi,3892307646,sara.soresi@cbitaly.it,,Business Standard,2024-05-07,2025-05-07,agenticentro,Active,2024-05-07,,False
+CBI162,Jacopo,Capigatti,3891321830,jacopo.capigatti@cbitaly.it,,Starter ,2024-07-05,2025-07-05,agenticentro,Inactive,2024-05-08,DISATTIVATA IN DATA 09/10/2024,False
+CBI154,Bruno,Rodrigues,3444399614,bruno.rodrigues@cbitaly.it,,Business Basic,2024-09-05,2025-09-05,agentinord,Inactive,2024-05-09,CREDITO RESIDUO,False
+CBI117,Matteo,Cleopazzo,3463598175,matteo.cleopazzo@cbitaly.it,,Starter ,2024-08-05,2026-08-05,agentisud,Active,2024-05-08,,False
+CBI171,Giulia,Matteucci,3920504463,giulia.matteucci@cbitaly.it,,Starter ,2024-02-05,2025-05-02,agentinord,Inactive,2024-05-02,,False
+CBI171,Alice,Farneti,3298934021,alice.farneti@cbitaly.it,,Starter ,2024-02-05,2025-05-02,agentinord,Inactive,2024-05-02,,False
+CBI171,Marzia,Bucci,3482901412,marzia.bucci@cbitaly.it,,Starter ,2024-02-05,2025-05-02,agentinord,Inactive,2024-05-02,,False
+CBI175,Marcello,Selvaggi,,marcello.selvaggi@cbitaly.it,,Business Basic,2024-04-23,2025-04-23,agentisud,Active,2024-04-23,,True
+CBI175,Fabio,Pancaldi,3893457446,fabio.pancaldi@cbitaly.it,pancaldi990@gmail.com,Business Basic,2024-04-23,2025-04-23,Broker,Active,2024-04-23,,False
+CBI175,Rosanna,Vitale,3664513096,rosanna.vitale@cbitaly.it,,Business Basic,2024-04-23,2025-04-23,agentisud,Active,2024-04-23,,False
+CBI171,Fatima,Saadane,3889524273,fatima.saadane@cbitaly.it,,Starter ,2024-02-05,2025-05-02,agentinord,Inactive,2024-05-02,,False
+CBI171,Maurizio,Marioni,3668451468,maurizio.marioni@cbitaly.it,,Starter ,2024-02-05,2025-05-02,agentinord,Inactive,2024-05-02,,False
+CBI118,Luisa ,Gechele,3356746526,luisa.gechele@cbitaly.it,,Starter ,2024-04-24,2025-04-24,agenticentro,Active,2024-04-24,,False
+CBI171,Gianluca,Casadei,3428936218,gianluca.casadei@cbitaly.it,,Starter ,2024-02-05,2025-05-02,agentinord,Inactive,2024-05-02,,False
+CBI175,Alba,Pulvirenti,3755123477,alba.pulvirenti@cbitaly.it,,Business Basic,2024-04-23,2025-04-23,agentisud,Inactive,2024-04-23,disattivata in data 29/04/2025,False
+CBI175,Vincenzo,Raciti,3401809479,vincenzo.raciti@cbitaly.it,vincenzoraciti1960@gmail.com,Business Basic,2024-04-23,2025-04-23,Broker,Active,2024-04-23,,False
+CBI175,Tiziana,Rinaldi,3493293230,tiziana.rinaldi@cbitaly.it,,Business Basic,2024-04-23,2025-04-23,agentisud,Inactive,2024-04-23,disattivata in data 29/04/2025,False
+CBI175,Chiara ,Ferrara,3404028742,chiara.ferrara@cbitaly.it,,Business Basic,2024-04-23,2025-04-23,agentisud,Active,2024-04-23,,False
+CBI175,Fabrizio,La Monica,3339975486,fabrizio.lamonica@cbitaly.it,,Business Basic,2024-04-23,2025-04-23,agentisud,Active,2024-04-23,,False
+CBI175,Giuseppe ,Orecchio,3519060900,giuseppe.orecchio@cbitaly.it,,Business Basic,2024-04-23,2025-04-23,agentisud,Active,2024-04-23,,False
+CBI175,Graziana,Bonaccorsi,3893457501,graziana.bonaccorsi@cbitaly.it,,Business Basic,2024-04-23,2025-04-23,agentisud,Active,2024-04-23,ACCERTARSI DEL NUM DI TEL,False
+CBI175,Stefano ,Giglio,3917701176,stefano.giglio@cbitaly.it,,Business Basic,2024-04-23,2025-04-23,agentisud,Active,2024-04-23,,False
+CBI175,Marta ,Bucceri,3683182291,marta.bucceri@cbitaly.it,,Business Basic,2024-04-23,2025-04-23,agentisud,Active,2024-04-23,ACCERTARSI DEL NUM DI TEL,False
+CBI175,Debora ,Pace,3293388479,debora.pace@cbitaly.it,,Business Basic,2024-04-23,2025-04-23,agentisud,Active,2024-04-23,,False
+CBI175,Davide,Canino,3405838804,davide.canino@cbitaly.it,,Business Basic,2024-04-23,2025-04-23,agentisud,Active,2024-04-23,,False
+CBI175,Naim,Ayari,3492903256,naim.ayari@cbitaly.it,,Business Basic,2024-04-23,2025-04-23,agentisud,Active,2024-04-23,,False
+CBI148,Angela,Lagrotta,3454463655,angela.lagrotta@cbitaly.it,,Starter ,2024-09-04,2025-09-04,agentisud,Inactive,2024-04-09,DISATTIVATA IN DATA 13/06/2025,False
+CBI161,Andrea ,Corcelli,3664507176,andrea.corcelli@cbitaly.it,,,2024-10-04,2025-10-04,agenticentro,Active,2024-04-10,,False
+CBI161,Roberta ,Angelini,335270326,roberta.angelini@cbitaly.it,,Starter ,2024-04-04,2025-04-04,agenticentro,Inactive,2024-04-04,DISATTIVATA IN DATA 08/05/2025,False
+CBI096,Niky,Crasta,3409564027,niky.crasta@cbitaly.it,,Starter ,2024-11-04,2024-11-18,agentisud,Active,2024-04-11,CREDITI RESIDUI ROMINA CAPRIATI,False
+CBI098,Marcello,Serra,,marcello.serra@cbitaly.it,,Business Basic,2024-03-29,2025-03-15,agentinord,Inactive,2024-03-29,ATTIVAZIONE USANDO CREDITI HAYARI<br /><br />DISATTIVATO IN DATA 17.05.24,True
+CBI118,Enrico,Martucci,3204570809,enrico.martucci@cbitaly.it,,Starter ,2024-04-22,2024-04-22,agenticentro,Active,2024-04-22,,False
+CBI161,Alessandro,Quattrocchi,3451159246,alessandro.quattrocchi@cbitaly.it,,Starter ,2024-04-22,2025-04-22,agenticentro,Active,2024-04-22,,False
+CBI175,Nelly,Acquafermata,3472557013,nelly.acquafermata@cbitaly.it,,Business Basic,2024-04-23,2025-04-23,agentisud,Active,2024-04-23,,False
+CBI148,Oreste ,Pugliese ,3451517133,oreste.pugliese@cbitaly.it,,Starter ,2024-02-04,2025-02-04,agentisud,Active,2024-04-02,,False
+CBI150,Andrea,Romandini,3498784615,andrea.romandini@cbitaly.it,,Starter ,2024-03-27,2026-03-27,Broker,Active,2024-03-27,,False
+CBI112,Aljoscia,Profiti,3480729426,aljoscia.profiti@cbitaly.it,,Starter ,2024-03-26,2025-03-26,agentinord,Active,2024-03-26,,False
+CBI098,Arsen,Smbatyan,,arsen.smbatyan@cbitaly.it,,Business Basic,2024-03-18,2025-03-18,agentinord,Inactive,2024-03-18,CREDITO RESIDUO<br /><br />DISATTIVATA IN DATA 11/06/2024,True
+CBI098,Sara,Hayari,3465205370,sara.hayari@cbitaly.it,,Business Basic,2024-03-15,2025-03-15,agentinord,Inactive,2024-03-15,DISATTIVATA IN DATA 29/03/2024 I CREDITI UTILIZZATI PER LA MAIL MARCELLO.SERRA@CBITALY.IT,False
+CBI118,Francesca,Cesari,3910908881,francesca.cesari@cbitaly.it,,Starter ,2024-03-19,2025-03-19,agenticentro,Active,2024-03-20,+ OPZIONE ARCHIVING,False
+CBI094,Donna,Mignon,3284336168,donna.mignon@cbitaly.it,,Starter ,2024-03-22,2025-03-22,agentisud,Active,2024-03-22,FATT. 370/2024,False
+CBI150,,,,taranto@cbitaly.it,,Business Premium,2023-02-23,2024-02-23,agentisud,Active,2024-03-27,,True
+CBI109,Eliana,Topputi,,eliana.topputi@cbitaly.it,,Business Basic,2022-12-22,2023-12-22,agenticentro,Inactive,2024-03-11,inserita correttamente in data 11/03/2024,True
+CBI098,Giorgio ,Scappini,,giorgio.scappini@cbitaly.it,,Business Basic,2023-06-07,2024-06-07,agentinord,Inactive,2024-03-08,inserito correttamente in data 08/03/2024- eleiminato in data 28/04/2025 come da richiesta della broker,True
+CBI170,Walter,Santomasi,3920894523,walter.santomasi@cbitaly.it,,Starter ,2024-03-07,2025-07-03,agentinord,Inactive,2024-03-07,FATT. 339/2024,False
+CBI100,Andrea,Gentili,3389093882,andrea.gentili@cbitaly.it,,Starter ,2024-03-07,2026-03-07,agenticentro,Active,2024-03-07,,False
+CBI175,,,0952885281,aurum@cbitaly.it,,Business Premium,2024-11-03,2025-11-03,agentisud,Active,2024-03-11,,True
+CBI170,Samuel,Spiezia,3347343959,samuel.spiezia@cbitaly.it,,Starter ,2024-03-14,2025-03-14,agentinord,Inactive,2024-03-14,DISATTIVATA IN DATA 29/01/25,False
+CBI161,,,,amministrazione24re@cbitaly.it,,Business Standard,2024-03-11,2026-03-11,agenticentro,Active,2024-03-14,,True
+CBI177,Cristina ,Curreli,3476591811,cristina.curreli@cbitaly.it,,Starter ,2024-03-11,2026-03-11,Broker,Active,2024-03-11,,False
+CBI112,Alessandro,Fiore,3273578592,alessandro.fiore@cbitaly.it,,Starter ,2024-11-03,2025-11-03,agentinord,Inactive,2024-03-11,FATT. 337/2024,False
+CBI173,Federico,Belloni,3387519932,federico.belloni@cbitaly.it,,Starter ,2024-07-03,2025-07-03,agentinord,Inactive,2024-03-07,DISATTIVATA IN DATA 03/05/2024,False
+CBI148,Antonio,Di Bisceglie,3338630107,antonio.dibisceglie@cbitaly.it,,Starter ,2024-11-05,2025-11-05,agentisud,Inactive,2024-03-05,disattivata in data 30 agosto 2024 e attivata nuovamente in data 5/10/24 e disattivata in data 06/10/2025,False
+CBI112,Elena,Kompatscher,,elena.kompatscher@cbitaly.it,,Starter ,2023-01-30,2025-01-30,Agent,Inactive,2024-03-06,DISATTIVAZIONE IN DATA 30/01/25,True
+CBI172,Alessandro ,Saba ,3284382409,alessandro.saba@cbitaly.it,,Starter ,2024-02-27,2025-02-27,Broker,Inactive,2024-02-27,DISATTIVATA IN DATA 20/06/2024,False
+CBI170,Michael ,Mastrapasqua,3347611084,michael.mastrapasqua@cbitaly.it,,Starter ,2024-02-28,2026-02-28,Broker,Active,2024-02-28,BROKER SU AGENZIA VIA VAL DI NON - ROMA ,False
+CBI172,24Re,Roma Tiberio,,24reromatiberio@cbitaly.it,,Business Premium,2024-01-03,2025-01-03,agenticentro,Inactive,2024-03-01,DISATTIVATA IN DATA 23/07/2024,True
+CBI148,Alessio ,Avvisati,3663307679,alessio.avvisati@cbitaly.it,,Starter ,2024-03-05,2026-03-05,agentisud,Active,2024-03-06,,False
+CBI170,Martina,Di Benedetto,3895762423,martina.dibenedetto@cbitaly.it,,Starter ,2024-03-04,2025-04-03,agentinord,Inactive,2024-03-04,,False
+CBI161,Alessandro ,Saba,3284382409,alessandro.saba@cbitaly.it,,Starter ,2024-02-27,2025-02-27,Broker,Inactive,2024-02-27,doppione,False
+CBI129,Giuliana,Rodriguez,3804642811,giuliana.rodriguez@cbitaly.it,,Business Basic,2024-02-27,2026-02-27,agenticentro,Active,2024-02-27,,False
+CBI160,Laura,Pascolini,3315444018,laura.pascolini@cbitaly.it,,Starter ,2024-02-27,2026-02-27,agenticentro,Active,2024-02-27,,False
+CBI177,Carlo ,Di Basilico,3208219096,carlo.dibasilico@cbitaly.it,,Starter ,2024-02-27,2026-02-27,agenticentro,Inactive,2024-02-27,,False
+CBI148,Roberta,Marotta,,roberta.marotta@cbitaly.it,,Starter ,2024-02-26,2026-02-26,agentisud,Active,2024-02-26,,True
+CBI148,Stefano ,Strazzullo,3335251953,stefano.strazzullo@cbitaly.it,,Starter ,2024-02-16,2026-02-16,Broker,Active,2024-02-16,FATT. 232/2024,False
+CBI160,Khiran,Santocchi,3801480758,khiran.santocchi@cbitaly.it,,Starter ,2024-02-27,2026-02-27,agenticentro,Active,2024-02-27,,False
+CBI162,Micaela,Milani,3466671699,micaela.milani@cbitaly.it,,Starter ,2024-08-02,2025-08-02,agenticentro,Inactive,2024-02-08,DISATTIVATA IN DATA 07/02/25,False
+CBI096,Aurelie ,Aguilera,3517196845,aurelie.aguilera@cbitaly.it,,Starter ,2024-08-02,2025-08-02,agentisud,Inactive,2024-02-08,FATT. 234/2024<br /><br />DISATTIVATA IN DATA 27/05/2024,False
+CBI156,Stanislao,Caliandro,3384375983,stanislao.caliandro@cbitaly.it,,Starter ,2024-02-02,2024-11-05,agenticentro,Inactive,2024-02-02,USUFRUISCE DEL CREDITO DI 99 GIORNI DI VIVIANA BERNABEI<br /><br />DISATTIVATO IN DATA  03/06/2024,False
+CBI170,,,+390284049719,24remilano@cbitaly.it,,Business Premium,2024-01-31,2025-01-31,agentinord,Active,2024-01-31,FATT 128/2024,True
+CBI135,Angela ,Schulz Anzola,3318840483,angela.schulzanzola@cbitaly.it,,Business Basic,2024-07-02,2025-07-02,agentinord,Inactive,2024-02-07,DISATTIVATA IN DATA 10/02/25,False
+CBI018,Lorenzo,Leardini,3314411199,lorenzo.leardini@cbitaly.it,,Business Basic,2024-02-06,2026-02-06,agenticentro,Active,2024-02-06,,False
+CBI148,Gianluca,DI Feo,3334593771,gianluca.difeo@cbitaly.it,,Starter ,2024-01-30,2025-01-30,agentisud,Inactive,2024-01-30,DISATTIVATA IN DATA 03/05/2024,False
+CBI141,Valentina ,D'Alessandro,3208411659,valentina.dalessandro@cbitaly.it,,Starter ,2024-01-29,2025-01-29,Broker,Active,2024-01-29,FATT.090/2024,False
+CBI134,Chiara ,Bellocchio,,chiara.bellocchio@cbitaly.it,,Starter ,2024-01-24,2026-01-24,agenticentro,Active,2024-01-24,FATT. 85/2024,True
+CBI038,Leonardo,Piantella,3917473397,leonardo.piantella@cbitaly.it,,Starter ,2024-01-29,2025-01-29,agenticentro,Active,2024-01-29,FATT. 88/2024 <br />EX PF 24/2024 (ANCHE SE SU FIC LA 88 DERIVA DALLA 35 PER ERRORE DUPLICAZIONE FATTURA),False
+CBI074,Angelo,Morelli,3939456025,angelo.morelli@cbitaly.it,,Starter ,2024-01-29,2025-01-29,agentisud,Inactive,2024-01-29,DISATTIVATA IN DATA 13/02/2024,False
+CBI148,Matteo,Vitagliano,3515632009,matteo.vitagliano@cbitaly.it,,Starter ,2024-01-30,2025-01-30,agentisud,Inactive,2024-01-30,FATT. 093/2024,False
+CBI148,Loredana ,Sito,3496435601,loredana.sito@cbitaly.it,,Starter ,2024-01-23,2026-05-09,agentisud,Active,2024-01-23,DISATTIVATA IN DATA 03/02/25,False
+CBI161,Giuseppe ,Iavarone,3319621558,giuseppe.iavarone@cbitaly.it,,Starter ,2024-01-17,2025-01-17,agenticentro,Inactive,2024-01-17,PF 030/2024<br />FATT. 078/2024,False
+CBI163,Andrea ,Russo,+393809020087,andrea.russo@cbitaly.it,,Business Basic,2024-12-01,2026-12-01,Broker,Active,2024-01-12,CARICO DAISY 1° ANNO/ Anche 2° ANNO,False
+CBI160,Fabrizio,Pierotti,3384885768,fabrizio.pierotti@cbitaly.it,,Starter ,2024-01-11,2026-01-11,agenticentro,Active,2024-01-11,,False
+CBI163,Georgina ,Ramos,,georgina.ramos@cbitaly.it,,Starter ,2024-12-01,2026-12-01,agentisud,Active,2024-01-12,CARICO DAISY 1° ANNO/ anche 2° ANNO,True
+CBI021,Miriam,Benevenga,3401370827,livingdmore.privacy@cbitaly.it,,Starter ,2024-01-19,2025-01-19,agenticentro,Inactive,2024-01-19,DISATTIVATA IN DATA 16/01/2025,False
+CBI094,Brigida,Ciulli,3479155054,sissy.ciulli@cbitaly.it,,Starter ,2025-01-12,2025-12-01,agentisud,Active,2024-01-12,PF. 12/2024<br />FATT. 069/2024,False
+CBI160,Claudia,Lucan,3337352339,claudia.lucan@cbitaly.it,,Starter ,2024-01-11,2026-01-11,agenticentro,Active,2024-01-11,,False
+CBI143,,,,kreacase@cbitaly.it,,Business Premium,2022-06-09,2026-09-06,agenticentro,Active,2022-06-09,961/2024,True
+CBI170,Giuseppe,Capasso,335292652,giuseppe.capasso@cbitaly.it,,Starter ,2024-01-09,2025-09-01,Agent,Inactive,2024-01-09,DISATTIVATA IN DATA 06/09/24,False
+CBI157,,,,canazei@cbitaly.it,,Business Premium,2024-01-08,2025-01-08,agentinord,Active,2024-01-09,FATT. 070/2024,True
+CBI161,Fernanda ,Carioti,3347466447,fernanda.carioti@cbitaly.it,,Starter ,2024-02-01,2025-02-01,agenticentro,Active,2024-01-02,FATT. 1/2024,False
+CBI161,Sabina ,Porru,3478131359,sabina.porru@cbitaly.it,,Starter ,2024-02-01,2025-02-01,agenticentro,Active,2024-01-02,FATT. 2/2024,False
+CBI096,,,,costasmeralda@cbitaly.it,,Business Standard,2024-08-03,,agenzia,Inactive,2020-04-11,OPZIONE ARCHIVING<br /><br />INSERITA ERRONEAMENTE (02/01/23),True
+CBI038,Pasquale,Pantano,3920659640,pasquale.pantano@cbitaly.it,,Starter ,2023-12-13,2024-12-13,agenticentro,Inactive,2023-12-13,DISATTIVATA IN DATA 02/12/24,False
+CBI116,Elzbieta,Kmiecik,3313451473,elzbieta.kmiecik@cbitaly.it,,Business Basic,2024-01-09,2026-01-09,agentinord,Active,2024-01-09,,False
+CBI154,Alessandro,Ascione,3483111369,alessandro.ascione@cbitaly.it,,Business Basic,2023-11-29,2024-11-29,agentinord,Inactive,2023-11-29,FATT. 1027/2023<br /><br />DISATTIVATA IN DATA 25/03/2024,False
+CBI133,Stefania,Ramella Pollone,3452166384,s.ramellapollone@cbitaly.it,,Business Basic,2023-12-20,2024-12-20,agentinord,Inactive,2023-12-20,DISATTIVATA IN DATA 04/06/25,False
+CBI100,Giorgia ,Iavarone,3480045038,giorgia.iavarone@cbitaly.it,,Business Basic,2024-09-01,2024-09-01,agenticentro,Active,2024-01-09,,False
+CBI156,,,0653093961,imperialere@cbitaly.it,,Business Standard,2020-04-11,2023-04-12,agenticentro,Active,2023-12-06,,True
+CBI143,Emanuele ,Macchiusi,,emanuele.macchiusi@cbitaly.it,,Starter ,2023-12-13,2024-12-13,agenticentro,Active,2023-12-13,FATT. 1012/2023,True
+CBI162,Matteo,Girelli,3933319704,matteo.girelli@cbitaly.it,,Starter ,2023-04-12,2024-04-12,agenticentro,Inactive,2023-12-04,DISATTIVATA IN DATA 16/02/2024,False
+CBI148,Gaetano,De Stefano,3762251826,gaetano.destefano@cbitaly.it,,Starter ,2023-01-12,2024-01-12,agentisud,Inactive,2023-12-01,DISATTIVATA IN DATA 16/02/2024,False
+CBI094,Mario,Falcetta,3391363011,mario.falcetta@cbitaly.it,,Starter ,2023-12-05,2024-12-05,agentisud,Inactive,2023-12-06,FATT. 1044/2023,False
+CBI164,Bodini,Torino,,bodinitorino@cbitaly.it,,Business Standard,2023-11-30,2026-11-30,agentinord,Active,2023-11-30,FATT. 1034/2023,True
+CBI159,Giuseppe ,Buono,3495398609,giuseppe.buono@cbitaly.it,,Starter ,2023-12-05,2025-12-05,Broker,Active,2023-12-06,FATT. 1044/2023,False
+CBI160,,,0759276639,gubbio@cbitaly.it,,Business Premium,2023-12-12,2026-12-12,agentinord,Active,2023-12-12,FATT. 84/2024,True
+CBI106,Riccardo,Deidda,3479608389,riccardo.deidda@cbitaly.it,,Starter ,2023-07-12,2024-07-12,agenticentro,Inactive,2023-12-07,FATT. 1047/2023<br />DISATTIVATO IN DATA 17/06/2024,False
+CBI148,Angelo,Petriello,3387153696,angelo.petriello@cbitaly.it,,Starter ,2023-11-22,2024-11-22,agentisud,Inactive,2023-11-22,DISATTIVATA IN DATA 03/05/24,False
+CBI154,,,0392651287,monza@cbitaly.it,,Business Premium,2023-04-27,2025-04-27,agentinord,Active,2023-04-27,,True
+CBI082,,AZIMUT,0656538109,prime.properties@cbitaly.it,,Starter ,2023-06-11,2024-06-11,agentiroma,Active,2023-11-06,DISATTIVATA PER CESSAZIONE PROGETTO AZIMUT,False
+CBI116,Federico,Iemma,3396561530,federico.iemma@cbitaly.it,,Business Basic,2023-11-22,2024-11-22,agentinord,Inactive,2023-11-22,PF. 247/2023<br /><br />FATT.513/2024,False
+CBI162,Elisabetta ,Algieri,3332904832,elisabetta.algieri@cbitaly.it,,Starter ,2023-11-22,2026-11-22,Manager,Active,2023-11-22,,False
+CBI162,Francesca,Bellecci,3490799091,francesca.bellecci@cbitaly.it,,Starter ,2023-11-23,2024-11-23,agenticentro,Inactive,2023-11-23,PF: 249/2023,False
+CBI154,Sonia,Imboccioli,3474722127,sonia.imboccioli@cbitaly.it,,Business Basic,2023-11-29,2024-11-29,agentinord,Inactive,2023-11-29,DISATTIVATA IN DATA 25/03/2024,False
+CBI078,Giulia,Cambò,3204942852,giulia.cambo@cbitaly.it,,Business Basic,2023-11-17,2026-05-12,agenticentro,Inactive,2023-11-17,"prima facente parte di cattolica, disattivata e poi riattivata a santamarinella. Richiesta ulteriore disattivazione",False
+CBI162,,,055289996,24refirenze@cbitaly.it,,Business Premium,2023-11-20,2025-11-20,agenticentro,Active,2023-11-20,FATT.1021/2023,True
+CBI163,,,0932906372,maxire@cbitaly.it,,Business Premium,2023-11-15,2024-11-15,agentisud,Active,2023-11-15,,True
+CBI154,Maurizio,De Donatis,3711952929,maurizio.dedonatis@cbitaly.it,,Business Basic,2023-11-20,2025-11-20,agentinord,Inactive,2023-11-20,PF 244/2023<br />FATT. 1002/2023,False
+CBI110,Elisabetta,Cerrone,3452563958,elisabetta.cerrone@cbitaly.it,,Starter ,2023-11-15,2024-11-15,agenticentro,Inactive,2023-11-15,,False
+CBI091,,,0815743495,intermedia@cbitaly.it,,Business Standard,2020-12-01,2026-12-01,agentisud,Active,2020-12-01,,True
+CBI038,,,,marketingbodini@cbitaly.it,,Starter ,2023-11-14,2026-11-14,agenticentro,Active,2023-11-14,FATT. 991/2023,True
+CBI161,Roberto,Riccio,3479903895,roberto.riccio@cbitaly.it,,Starter ,2023-11-13,2024-11-13,Broker,Inactive,2023-11-13,FATT. 987/2023<br /><br />DISATTIVATA IN DATA 03/05/2024,False
+CBI130,Pavel,Sadouski,,pavel.sadouski@cbitaly.it,,Starter ,2023-11-15,2024-11-15,Agent,Inactive,2023-11-15,DISATTIVATA IN DATA 22/02/2024,True
+CBI145,Sofia,Basili,3317313302,sofia.basili@cbitaly.it,,Starter ,2023-10-30,2024-10-30,agentinord,Inactive,2023-10-30,PF. 236/2023<br />FATT. 928 /2023<br /><br />DISATTIVATA IN DATA 22/11/2023,False
+CBI090,,,0974900003,casalvelino@cbitaly.it,,Business Premium,2020-11-04,2025-11-04,agentisud,Active,2020-11-04,,True
+CBI003,Alessio,Serjani,3897631170,alessio.serjani@cbitaly.it,,Business Standard,2023-10-25,2026-10-25,agentinord,Active,2023-10-25,FATT. 911/2023,False
+CBI149,Roberto,Torchitto,3396501912,roberto.torchitto@cbitaly.it,,Business Basic,2023-01-24,2024-01-24,Broker,Inactive,2023-01-24,FATT. 152/2023,False
+CBI133,Davide,Colombo,3282925269,davide.colombo@cbitaly.it,,Business Basic,2023-10-16,2025-09-09,agentinord,Inactive,2023-10-16,"USUFRUISCE DEL CREDITO GENERATO DALL'ELIMINAZIONE DI SILVIA GREGORIO, PIU' UPGRADE DA STARTER A BASIC FATT.900/2023",False
+CBI100,Barbara ,Montepilli,3771631300,barbara.montepilli@cbitaly.it,,Starter ,2023-10-09,2026-10-09,agenticentro,Active,2023-10-09,FATT. 910/2023,False
+CBI100,Sabina,Staffieri,3331269458,sabina.staffieri@cbitaly.it,,Starter ,2023-10-23,2026-10-23,agenticentro,Active,2023-10-23,PF.234/2023<br />FATT.992/2023<br /><br />ATTIVAZIONE INTESTATA A BARBERA GROUP - RINNOVI DA INTESTARE AD AGENTE,False
+CBI099,,,05411412040,riccione@cbitaly.it,,Business Premium,2020-04-11,2025-02-19,agentinord,Active,2023-10-25,,True
+CBI149,,,0687694560,beta@cbitaly.it,,Business Premium,2023-01-24,2024-01-24,agenticentro,Inactive,2023-01-24,FATT. 152/2023,True
+CBI153,,,,cattolica@cbitaly.it,,Business Premium,2023-06-06,2024-06-06,agentinord,Active,2023-10-06,NO FATTURATA,True
+CBI155,,,0686886567,info.great@cbitaly.it,,Business Premium,2023-02-05,2024-02-05,Broker,Active,2023-10-06,FATT. 383/2023,True
+CBI156,Viviana,Bernabei,3891835165,viviana.bernabei@cbitaly.it,,Starter ,2023-03-10,2024-11-05,agenticentro,Inactive,2023-10-03,USUFRUISCE DI CREDITO RESIDUO GENERATO DALLA DISATTIVAZIO DI LUIGI PRATESI<br /><br />DISATTIVATA IN DATA 02/02/2024 (CRED. 99GG),False
+CBI161,Alessandro ,Calicchio,3358413397,alessandro.calicchio@cbitaly.it,,Starter ,2023-10-06,2026-10-06,agenticentro,Active,2023-10-06,,False
+CBI038,,,,hospitalitygruppobodini@cbitaly.it,,Starter ,2023-09-29,2026-09-29,agenzia,Active,2023-09-29,DOWNGRADE DA STANDARD A STARTER,True
+CBI112,Jacqueline,Megna,3287473102,jacqueline.megna@cbitaly.it,,Starter ,2023-09-22,2024-09-22,agentinord,Active,2023-09-22,FATT.802/2023,False
+CBI161,,,,24reroma@cbitaly.it,,Business Premium,2023-10-05,2025-10-05,agenticentro,Active,2023-10-06,,True
+CBI096,Amelia,Martines,3407461882,amelia.martines@cbitaly.it,,Business Basic,2023-10-03,2024-06-27,agentisud,Inactive,2023-10-03,DISATTIVATA IN DATA 31/01/25,False
+CBI038,Rodolfo,Reggiannini,3280978657,rodolfo.reggiannini@cbitaly.it,,Starter ,2023-09-29,2024-09-29,agenticentro,Inactive,2023-09-29,DISATTIVAZIONE IN DATA 23/01/2025,False
+CBI098,Masimo,Rexhaj,3204805549,masimo.rexhaj@cbitaly.it,,Business Basic,2023-03-10,2024-03-02,agentinord,Inactive,2023-10-03,USUFRUISCE DEL CREDITO RESIDUO DERIVANTE DALLA DISATTIVAZIONE DI FILIPPO GIOVE<br /><br />DISATTIVATA IN DATA 12.01.2024,False
+CBI098,Anzhela,Datsenko,,anzhela.datsenko@cbitaly.it,,Business Basic,2023-01-17,2024-06-15,agentinord,Inactive,2023-01-17,FATT.843/2023<br /><br /><br />DISATTIVATA IN DATA 12.01.2024,True
+CBI070,Pasquale,Genovese,3737900984,pasquale.genovese@cbitaly.it,,Business Basic,2023-09-20,2024-09-20,agenticentro,Inactive,2023-09-20,FATT.799/2023,False
+CBI003,Stefano ,Ferrini,3497312176,stefano.ferrini@cbitaly.it,,Business Basic,2023-09-22,2026-09-22,agentinord,Active,2023-09-22,DOWNGRADE DA STANDARD A BASIC ,False
+CBI134,Valentino ,Ronsisvalle,3890699794,valentino.ronsisvalle@cbitaly.it,,Starter ,2023-08-11,2026-08-11,agenticentro,Active,2023-08-11,proforma n.194/2023,False
+CBI129,Giulia,Vagli,3357848685,giulia.vagli@cbitaly.it,,Business Basic,2023-08-21,2025-08-21,agenticentro,Inactive,2023-08-21,FATT.734/2023,False
+CBI106,Daniele,D'Anna,3293568037,daniele.danna@cbitaly.it,,Starter ,2023-04-09,2024-04-09,agenticentro,Inactive,2023-09-04,FATT.736/2023<br /><br />DISATTIVATA IN DATA 05/01/2024,False
+CBI100,Cecilia,Pizarro,,cecilia.pizarro@cbitaly.it,,Business Standard,2022-09-27,2023-09-27,agenticentro,Inactive,2022-09-27,FATT. 710/2022<br /><br />DISATTIVATA IN DATA 18/09/2023 ,True
+CBI161,Pamela ,Saino,3913843125,pamela.saino@cbitaly.it,,Starter ,2023-12-09,2024-12-09,agenticentro,Active,2023-09-12,"FATT.793/2023  *INTESTATA FATTURA E SALDATA DALLA 24 RE NAPOLI, SUCCESSIVAMENTE AGENTE TRASFERITO ALLA 24 RE ROMA ",False
+CBI148,Francesco ,Mattiello,3929219475,francesco.mattiello@cbitaly.it,,Starter ,2023-11-09,2024-11-09,agentisud,Inactive,2023-09-11,DISATTIVATA IN DATA 26/02/2024,False
+CBI148,Michael,Dos Santos Lopes,3382529944,micheal.santos@cbitaly.it,,Starter ,2023-12-09,2024-12-09,agentisud,Inactive,2023-09-12,DISATTIVATA IN DATA 03/05/24,False
+CBI094,Domenico,Catino,3663187242,domenico.catino@cbitaly.it,,Starter ,2023-09-19,2024-09-19,agentisud,Inactive,2023-09-19,FATT.808/2023,False
+CBI161,Silvia ,Laurenzi,3205677327,silvia.laurenzi@cbitaly.it,,Starter ,2023-12-09,2024-12-09,agenticentro,Inactive,2023-09-12,"FATT.792/2023 *INTESTATA FATTURA E SALDATA DALLA 24 RE NAPOLI, SUCCESSIVAMENTE AGENTE TRASFERITO ALLA 24 RE ROMA <br /><br />DISATTIVATA IN DATA 16/02/2024",False
+CBI148,Dario,Lama,3336661850,dario.lama@cbitaly.it,,Starter ,2023-11-09,2024-11-09,agenticentro,Inactive,2023-09-11,FATT.785/2023,False
+CBI148,Alessandro ,Coari,3355470777,alessandro.coari@cbitaly.it,,Starter ,2023-04-08,2024-04-08,agenticentro,Inactive,2023-08-04,DISATTIVATA IN DATA 05/10/2023,False
+CBI116,Daniele,Cavallero,3917299201,daniele.cavallero@cbitaly.it,,Starter ,2023-07-31,2024-07-31,agentinord,Inactive,2023-07-31,DISATTIVATA IN DATA 25/07/2024,False
+CBI148,Luca,Tamburini,3394636289,luca.tamburini@cbitaly.it,,Starter ,2023-09-08,2024-09-08,agenticentro,Inactive,2023-08-09,DISATTIVATA IN DATA 05/10/2023,False
+CBI075,,,,mignanelli@cbitaly.it,,Business Standard,2020-10-09,2026-10-09,agenzia,Active,2020-10-09,,True
+CBI162,Luca,Cerutti,3513906861,luca.cerutti@cbitaly.it,,Starter ,2023-07-27,2025-07-27,agenticentro,Inactive,2023-07-27,SPOSTATO DA NAPOLI A FIRENZE,False
+CBI112,Marta,Sticchi,,marta.sticchi@cbitaly.it,,Starter ,2023-03-17,2025-03-17,agentinord,Active,2023-03-17,FATT.762/2023 <br /><br />FATT. 342/2024,True
+CBI160,Sabrina ,Damiani ,3351027520,sabrina.damiani@cbitaly.it,,Starter ,2023-07-31,2024-07-31,agenticentro,Active,2023-07-31,,False
+CBI148,Aicha,Zeroual,3519807390,aicha.zeroual@cbitaly.it,,Starter ,2023-07-27,2025-07-27,agentisud,Inactive,2023-07-27,,False
+CBI156,Lorenzo,Sopranzi,3313901483,lorenzo.sopranzi@cbitaly.it,,Starter ,2023-07-25,2024-07-25,agenticentro,Inactive,2023-07-25,DISATTIVATA IN DATA 22/07/24,False
+CBI129,Antonella,Galletti,3669747002,antonella.galletti@cbitaly.it,,Business Basic,2023-06-26,2024-06-26,agenticentro,Inactive,2023-06-26,,False
+CBI157,Riccardo,Nemela,3493765740,riccardo.nemela@cbitaly.it,,Starter ,2023-07-18,2024-07-18,Broker,Active,2023-07-18,downgrade da Standard a Starter non ancora fatturata,False
+CBI000,,,,richieste@coldwellbanker.it,,Starter ,,,servizio,Active,2023-07-17,"per gestire le richieste che partono dal sito, mail tecnica solo per l'invio non la controlla nessuno - data in gestione a Gestim ",True
+CBI159,Barletta,,,barletta@cbitaly.it,,Business Premium,2023-07-12,2026-07-12,agentisud,Active,2023-07-12,,True
+CBI148,,,,info24re@cbitaly.it,,Starter ,2023-06-19,2026-06-19,servizio,Active,2023-06-19,,True
+CBI154,Andrea,Miceli,,andrea.miceli@cbitaly.it,,Starter ,2023-08-06,2026-06-08,agentinord,Active,2023-06-08,,True
+CBI143,Gabriele,Fatali,3515703223,gabriele.fatali@cbitaly.it,,Starter ,2022-07-11,2023-07-11,agenticentro,Inactive,2022-11-07,,False
+CBI133,Adriano,Orru,,adriano.orru@cbitaly.it,,Starter ,2023-06-19,2023-09-09,agentinord,Inactive,2023-06-19,"usufruisce del credito derivante dall'eliminazione dell'account costanza.peretti@cbitaly.it, con scadenza in data 09/09/2023 - DISATTIVATO IN DATA 24/07/2023",True
+CBI049,Tiziano,Pasquali,3662525183,tiziano.pasquali@cbitaly.it,,Business Standard,2023-06-12,2024-06-12,agenticentro,Active,2023-06-12,,False
+CBI018,Francesco,Alemanno,3270004886,francesco.alemanno@cbitaly.it,,Starter ,2023-08-06,2024-08-06,agenticentro,Inactive,2023-06-08,"1 anno gratuito (2023/2024) offerto da Roberto, scadenza 08/06/24 C.D.<br /><br />DISATTIVATA IN DATA 10/06/2024",False
+CBI148,Francesco,Marta,,,,,,,agentisud,Active,,,True
+CBI148,Francesco,Marta,3939544590,francesco.marta@cbitaly.it,,Starter ,2023-02-21,2024-01-21,agenticentro,Inactive,2023-02-21,DISATTIVATA IN DATA 05/10/2023,False
+CBI154,Roberto,Matina,3358481851,roberto.matina@cbitaly.it,,Business Basic,2023-05-19,2024-05-19,Broker,Active,2023-05-19,,False
+CBI148,Branislav,Dimitrov,3393374228,branislav.dimitrov@cbitaly.it,,Starter ,2023-02-20,2024-02-20,agenticentro,Inactive,2023-02-20,DISATTIVATA IN DATA 05/10/2023,False
+CBI143,,,067917285,kreacase.adv@cbitaly.it,,Starter ,2022-11-23,2024-11-23,agenticentro,Active,2023-08-01,FATT. 1012/2023,True
+CBI148,Luca,Genovese,,luca.genovese@cbitaly.it,,Starter ,2023-02-17,2026-02-17,agentisud,Active,2023-02-16,FATT. 204/2024,True
+CBI143,Federico,Manzo,3483072651,federico.manzo@cbitaly.it,,Starter ,2023-10-01,2024-10-01,agenticentro,Inactive,2023-01-10,<p>pagato dal azienda</p>,False
+CBI143,Andrea,Francioni,3338214563,andrea.francioni@cbitaly.it,,Starter ,2022-07-11,2024-07-11,agenticentro,Active,2022-11-07,FATT. 1012/2023,False
+CBI148,Mattia,De Vita,3485127543,mattia.devita@cbitaly.it,,Starter ,2023-02-17,2024-02-17,agenticentro,Inactive,2023-02-17,DISATTIVATA IN DATA 05/10/2023,False
+CBI161,Federico,Quattrocchi,3450613105,federico.quattrocchi@cbitaly.it,,Starter ,2023-05-25,2026-05-25,agenticentro,Active,2023-05-25,FATT. 573/24,False
+CBI148,,,,24re@cbitaly.it,,Business Premium,2023-01-24,2024-01-24,agentisud,Active,2023-07-26,,True
+CBI148,Rino,Moscariello,335456096,rino.moscariello@cbitaly.it,,Starter ,2023-03-08,2026-03-08,Broker,Active,2023-03-08,,False
+CBI148,Alessandro,Moscariello,3463683322,alessandro.moscariello@cbitaly.it,,Starter ,2023-02-15,2026-02-15,Broker,Active,2023-02-15,FATT. 204/2024,False
+CBI143,Luciano,Annunziata,3356493431,luciano.annunziata@cbitaly.it,,Starter ,2022-07-11,2024-07-11,agenticentro,Active,2022-11-07,FATT. 1012/2023,False
+CBI143,Paola,Silvestri,3385218954,paola.silvestri@cbitaly.it,,Starter ,2022-07-11,2024-07-11,agenticentro,Active,2022-11-07,FATT. 1012/2023,False
+CBI143,Federica,Coccia,3478380680,federica.coccia@cbitaly.it,,Starter ,2022-07-11,2023-07-11,agenticentro,Inactive,2022-11-07,DISATTIVATA IN DATA 21/11/2023,False
+CBI143,Emanuele,Macchiusi,3476786744,emanuele.macchiusi@cbitaly.it,,Starter ,2022-07-11,2023-07-11,agenticentro,Inactive,2022-11-07,disattivata utenza in data 13/06/23 (C.D.),False
+CBI141,Mariangela,Rosati,3272992737,mariangela.rosati@cbitaly.it,,Business Basic,2022-12-07,2024-12-07,agentisud,Inactive,2022-07-12,DISATTIVATA IN DATA 28/07/25,False
+CBI142,,,,esclusiva@cbitaly.it,,Business Standard,2022-02-09,2023-02-09,agenzia,Inactive,2022-09-02,DISATTIVATA IN DATA  22/09/2023,True
+CBI049,Alessio,Ratti,3471065664,alessio.ratti@cbitaly.it,,Business Basic,2021-10-11,2023-10-20,agenticentro,Inactive,2021-10-20,DISATTIVATA IN DATA 09/10/2023,False
+CBI141,,,,cisternino@cbitaly.it,,Business Premium,2022-03-06,2024-03-06,agenzia,Active,2022-05-24, memo per Catia: chiedere sempre al gruppo bodini la ragione sociale a cui fatturare) - inviata mail per il rinnovo in data 29/05/2023,True
+CBI143,Luca,Annunziata,3498420786,luca.annunziata@cbitaly.it,,Starter ,2022-07-11,2024-07-11,Broker,Active,2022-11-07,FATT. 1012/2023,False
+CBI135,Francesco,Morabito,3492795950,francesco.morabito@cbitaly.it,f.morabito@immobiliaremorabito.it,Business Standard,2022-02-14,2025-02-14,Broker,Active,2022-02-14,,False
+CBI137,,,,colleferro@cbitaly.it,,Business Premium,2022-03-30,2024-03-30,agenzia,Inactive,2022-03-30,DISATTIVATA IN DATA 28/11/2023,True
+CBI135,Emanuela,Cavo,3284889436,emanuela.cavo@cbitaly.it,,Business Standard,2022-06-07,2023-06-07,agentinord,Inactive,2022-07-06,inviata mail rinnovo 03/07/2023 (C.D),False
+CBI138,Andrea,Marin,3492140987,andrea.marin@cbitaly.it,,Starter ,2023-08-05,2026-04-27,Broker,Active,2022-04-28,,False
+CBI138,Tiziana,Perinato,3381274053,tiziana.perinato@cbitaly.it,,Starter ,2022-06-23,2026-06-23,Broker,Active,2022-06-23,saldata fattura in data 07/06/23 (C.D.),False
+CBI135,Barbara,Savioli,3318707066,barbara.savioli@cbitaly.it,,Business Standard,2022-06-16,2023-06-16,agentinord,Inactive,2022-06-21,,False
+CBI138,Immobiliare Tre Archi ,,,venezia@cbitaly.it,,Business Standard,2022-04-11,2026-04-11,agenzia,Active,2022-04-28,<p>inviato proforma in data 8 maggio 2023 - saldata proforma in data 10 maggio</p>,True
+CBI137,Giovanni ,Boscia,3737183041,giovanni.boscia@cbitaly.it,,Business Basic,2022-04-03,2024-03-30,Agent,Inactive,2022-03-30,DISATTIVATA IN DATA 28/11/2023,False
+CBI135,,,,,giovanni.zoida@webkey80.it,,,,servizio,Inactive,2022-03-02,,True
+CBI135,,,3492795950,morabito@cbitaly.it,,Business Premium,2022-02-14,2025-02-14,agenzia,Active,2022-02-14,,True
+CBI135,Anastasia,Bellegoni,3284567837,anastasia.bellegoni@cbitaly.it,,Business Standard,2022-02-14,2025-02-14,agentinord,Active,2022-02-14,,False
+CBI134,Nunzio,Iannuzzi,,nunzio.iannuzzi@cbitaly.it,,Starter ,2023-04-20,2026-04-20,agenticentro,Active,2023-04-20,,True
+CBI134,Carmine,Parrella,,carmine.parrella@cbitaly.it,,Starter ,2023-01-31,2024-01-31,agenticentro,Inactive,2023-01-31,DISATTIVATA IN DATA 24.01.2024,True
+CBI134,Chiara ,Bellocchio,,perugia@cbitaly.it,,Business Premium,2022-03-21,2024-03-21,agenzia,Active,2023-08-02,,True
+CBI134,Daniela,Smith,,daniela.smith@cbitaly.it,,Starter ,2023-04-13,2024-04-13,agenticentro,Inactive,2023-04-13,,True
+CBI134,Francesco,Spaziani,3356166550,francesco.spaziani@cbitaly.it,,Starter ,2023-01-06,2024-01-06,Broker,Active,2023-06-01,da CBI134 passa a Broker CBI160,False
+CBI134,Michele,Spaziani,3349635109,michele.spaziani@cbitaly.it,,Starter ,2022-01-26,2026-01-21,Broker,Active,2022-01-26,,False
+CBI133,,,0223185858,living@cbitaly.it,,Business Premium,2022-02-02,2026-02-08,agenzia,Active,2022-02-11,,True
+CBI134,Valeria,Javgureanu,3313408228,valeria.jav@cbitaly.it,,Starter ,2023-05-30,2024-05-30,agenticentro,Active,2023-05-30,,False
+CBI133,Roberta,Coccoli,3332497394,roberta.coccoli@cbitaly.it,,Starter ,2022-02-02,2026-02-02,agentinord,Active,2022-02-02,,False
+CBI133,Costanza,Peretti,3471390911,costanza.peretti@cbitaly.it,,Starter ,2022-09-09,2023-09-09,agentinord,Inactive,2022-09-09,DISATTIVATA IN DATA 16/06/2023 CREDITI USATI PER APRIRE UTENZA ADRIANO ORRU (QUEST'ULTIMA DISATTIVATA A LUGLIO) C.D. 30/08/2023,False
+CBI133,Silvia,Gregorio,3488104913,silvia.gregorio@cbitaly.it,,Starter ,2022-09-09,2024-09-09,agentinord,Inactive,2022-09-09,FATT.741/2023 <br />DISATTIVATA IN DATA 16/10/2023 <br />CREDITO UTILIZZATO PER UTENZA davide.colombo@cbitaly.it,False
+CBI132,,,,modena@cbitaly.it,,Business Premium,2021-10-27,2024-10-27,agentisud,Active,2021-10-27,FATT. 905/2023,True
+CBI133,Andrea,Fiorillo,3282852400,andrea.fiorillo@cbitaly.it,andrea.fiorillo@gmail.com,Business Basic,2022-01-24,2026-01-30,Broker,Active,2022-01-24,FATT. 126/2024,False
+CBI133,Paolo,Fiorillo,3282124589,paolo.fiorillo@cbitaly.it,,Business Basic,2022-01-24,2026-01-24,Broker,Active,2022-01-24,FATT.126/2024,False
+CBI132,Sivia,Aguzzoli,,silvia.aguzzoli@cbitaly.it,,Starter ,2023-01-30,2024-01-30,agentinord,Inactive,2023-01-30,DISATTIVATA IN DATA 12/01/2024,True
+CBI132,Ermanno,Trenti,3355850402,ermanno.trenti@cbitaly.it,,Business Basic,2025-02-04,2026-02-04,agentinord,Active,2025-02-04,DISATTIVATA IN DATA 10/07/2023 - RIATTIVATA IN DATA 04/02/25 ,False
+CBI132,Chiara,Calanca,3396450066,chaira.calanca@cbitaly.it,,Business Basic,2022-01-21,,Agent,Inactive,2022-01-21,,False
+CBI131,Claudia,Chiara,3929314930,claudia.chiara@cbitaly.it,,Business Basic,2021-11-04,2026-11-04,agentinord,Active,2021-11-04,FATT. 926/2023,False
+CBI132,Daniele,Damin,3494322167,daniele.damin@cbitaly.it,,Business Basic,2024-10-30,2025-10-30,agentinord,Active,2022-04-05,RIATTIVATA IN DATA 30/10/24,False
+CBI132,Tommaso,Maselli,,tommaso.maselli@cbitaly.it,,Business Basic,2023-10-30,2025-10-30,agentinord,Active,2023-01-30,DISATTIVATA IN DATA 12/01/24 - RIATTIVATA IN DATA 30/10/24,True
+CBI132,Riccardo,Bondi,3494099007,riccardo.bondi@cbitaly.it,,Starter ,2021-08-01,2025-08-01,Broker,Active,2021-01-08,FATT.131/2024,False
+CBI132,Alessandro,Onesti,,alessandro.onesti@cbitaly.it,,Starter ,2023-01-30,2024-01-30,agentinord,Inactive,2023-01-30,<p>Subentra al suo posto Ivan selvi </p>,True
+CBI132,Ivan,Selvi,,ivan.selvi@cbitaly.it,,Starter ,2023-03-22,2025-01-30,agentinord,Inactive,2023-03-22,DISATTIVATA IN DATA 04/03/25,True
+CBI131,Maria Cinzia,Bianchin,3466314386,mcinzia.bianchin@cbitaly.it,,Business Basic,2019-08-07,2023-08-07,agentinord,Inactive,2019-12-04, DISATTIVATA IN DATA 03/07/2023 - CREDITO DI 5 GIORNI (C.D.),False
+CBI131,Luciana,Ivascu,3281019093,luciana.ivascu@cbitaly.it,,Business Basic,2023-05-11,2026-05-11,agentinord,Active,2023-05-11,,False
+CBI131,,,,partners@cbitaly.it,,Business Premium,2021-06-30,2025-06-30,agenzia,Active,2021-06-30,,True
+CBI131,Monica ,Bertola,,monica.bertola@cbitaly.it,,Business Basic,2021-01-07,2026-01-07,agentinord,Active,2021-06-30,,True
+CBI131,Elisabetta,Fabris,,elisabetta.fabris@cbitaly.it,,Business Basic,2021-01-07,2026-01-07,agentinord,Active,2021-06-30,,True
+CBI131,Enrica,Spagliardi,,enrica.spagliardi@cbitaly.it,,Business Basic,2021-01-07,2025-01-07,agentinord,Inactive,2021-06-30,DISATTIVATA IN DATA 30/06/25,True
+CBI131,Irene,Gambirasi,3404990558,irene.gambirasi@cbitaly.it,,Business Basic,2021-07-19,2026-07-19,agentinord,Active,2021-02-19,,False
+CBI131,Pietro ,Gamarra,3355350418,pietro.gamarra@cbitaly.it,,Business Basic,2021-04-08,2024-08-08,agentinord,Inactive,2021-08-04,,False
+CBI131,Davide,Patrucco,,davide.patrucco@cbitaly.it,,Business Basic,2021-01-07,2026-01-07,agentinord,Active,2021-06-30,,True
+CBI131,Paola,Porcellana,3355820952,paola.porcellana@cbitaly.it,,Business Basic,2021-06-25,2025-06-25,Broker,Active,2021-06-30,,False
+CBI131,Andrea ,Patrucco,3355820951,andrea.patrucco@cbitaly.it,,Business Basic,2021-01-07,2026-01-07,Broker,Active,2021-06-30,,False
+CBI130,Deborah,Della Penna,3339932139,deborah.dellapenna@cbitaly.it,,Starter ,2021-07-06,2025-07-06,agentinord,Active,2021-07-06,DOWNGRADE DA BASIC A STARTER IN DATA 02/07/25,False
+CBI130,Alessandro,Martelli,,alessandro.martelli@cbitaly.it,,Business Basic,2021-09-29,2023-09-29,agentinord,Inactive,2021-09-29,<p>MANDATA MAIL PER RINNOVO 06/09/2022 ( CLAUDIA ) - utilizzano i crediti che avevano per due disattivazioni ( Marmura ed angiolini ). Rimarrebbero 23 gg da saldare per un totale di 4.60 € ma sara ha dato ok per non fatturare ( Claudia )</p>,True
+CBI130,Paolo,Ornaghi,3206557844,paolo.ornaghi@cbitaly.it,,Starter ,2021-07-13,2025-07-13,agentinord,Active,2021-07-13,,False
+CBI130,Alexandra,Zerykier,3408462791,alexandra.zerykier@cbitaly.it,,Business Basic,2023-03-28,2025-03-28,agentinord,Active,2023-03-28,RINNOVO CON CREDITO RESIDUO,False
+CBI130,nello,sgambato,,nello.sgambato@cbitaly.it,,Starter ,2022-11-28,2023-11-28,agentinord,Inactive,2023-07-14,usa il credito di Alessandro martinelli <br /><br />DISATTIVATO IN DATA 14/07/2023 - GENERA UN CREDITO DI 137 GIORNI,True
+CBI130,Francesca,Guicciardi,,francesca.guicciardi@cbitaly.it,,Starter ,2021-12-13,2024-12-13,agentinord,Active,2021-12-13,FATT. 1040/2023,True
+CBI130,Federica,Pianta,3282467556,federica.pianta@cbitaly.it,,Starter ,2022-09-27,2025-09-27,agentinord,Active,2023-08-02,FATT.801/2023 ,False
+CBI130,Luca,Vismara,3923545224,luca.vismara@cbitaly.it,,Starter ,2021-05-28,,Agent,Inactive,2021-05-28,"(sm) disattivato 21/04/22, genera credito di 88 gg € 14,47 che si scala da  luca.albani@cbitaly.it (Basic con Nuovo Listino) ",False
+CBI130,Nuno,Franco,3483605390,nuno.franco@cbitaly.it,,Starter ,2021-04-11,2024-04-11,agentinord,Inactive,2021-11-04,FATT. 918/2023<br /><br /><br />DISATTIVATA IN DATA 05/04/2024,False
+CBI130,Rossella,Travagin,3281256857,rossella.travagin@cbitaly.it,,Starter ,2021-05-28,2025-05-28,agentinord,Active,2021-05-28,,False
+CBI130,Sabina,Gerardi,,sabina.gerardi@cbitaly.it,,Business Basic,2021-06-07,2023-06-07,agentinord,Inactive,2021-07-06,DISATTIVA,True
+CBI130,Dario,Pietta,3358450426,dario.pietta@cbitaly.it,,Business Basic,2021-05-28,2025-05-28,Broker,Active,2021-05-28,fatt. n.555 del 13/06/23 saldata,False
+CBI130,Giulia,Monteverdi,3297757016,giulia.monteverdi@cbitaly.it,,Starter ,2021-05-28,2025-05-28,agentinord,Active,2021-05-28,,False
+CBI130,Federico,Pizzi,3395076198,federico.pizzi@cbitaly.it,,Starter ,2021-05-28,2025-05-28,agentinord,Active,2021-05-28,,False
+CBI130,Mario,Poletto,3486995309,mario.poletto@cbitaly.it,,Starter ,2021-05-28,2025-05-28,agentinord,Active,2021-05-28,,False
+CBI130,Katharine,Podio,3393249228,katharine.podio@cbitaly.it,,Starter ,2021-05-28,,Agent,Inactive,2021-05-28,disattivata come da richiesta via mail ,False
+CBI130,Gabriella,Sola,3355439269,gabriella.sola@cbitaly.it,,Starter ,2021-05-28,2025-05-28,agentinord,Active,2021-05-28,,False
+CBI130,Cristina ,Morbidelli,3297756691,cristina.morbidelli@cbitaly.it,,Starter ,2021-05-28,2025-05-28,agentinord,Active,2021-05-28,,False
+CBI130,Ludovica,Orombelli,3487056790,ludovica.orombelli@cbitaly.it,,Starter ,2021-05-28,2025-05-28,agentinord,Active,2021-05-28,,False
+CBI130,Virginia,Ruffin,3394565351,virginia.ruffin@cbitaly.it,,Business Standard,2021-05-28,,Agent,Inactive,2021-05-28,,False
+CBI130,Cristina,Pietta,3396327433,cristina.pietta@cbitaly.it,,Starter ,2021-05-28,2025-05-28,agentinord,Active,2021-05-28,,False
+CBI130,Patrizia,Marchetti,3488717965,patrizia.marchetti@cbitaly.it,,Starter ,2021-05-28,2024-05-28,agentinord,Inactive,2021-05-28,DISATTIVATA IN DATA 21/03/2024,False
+CBI130,Cristian,Gentile,3922367328,cristian.gentile@cbitaly.it,,Starter ,2021-05-28,2025-05-28,agentinord,Active,2021-05-28,,False
+CBI130,Roberto,Marchetti,3393439655,roberto.marchetti@cbitaly.it,,Starter ,2021-05-28,2025-05-28,agentinord,Active,2021-05-28,,False
+CBI130,Roberta,Barbera,3396202256,roberta.barbera@cbitaly.it,,Starter ,2021-05-28,2025-05-28,agentinord,Active,2021-05-28,,False
+CBI130,Mariolina,Cassol,3356909570,mariolina.cassol@cbitaly.it,,Starter ,2021-05-28,2025-05-28,agentinord,Active,2021-05-28,,False
+CBI130,Angela,Delli Ponti,3475933553,angela.delliponti@cbitaly.it,,Starter ,2021-05-28,2025-05-28,agentinord,Active,2021-05-28,,False
+CBI130,Luca ,Cittadini,3283840976,luca.cittadini@cbitaly.it,,Starter ,2021-05-28,,Agent,Inactive,2021-05-28,,False
+CBI130,Marina,Beghe',3356827167,marina.beghe@cbitaly.it,,Starter ,2021-05-28,2025-05-28,agentinord,Active,2021-05-28,,False
+CBI130,Ottavio,Grandi,3486908033,ottavio.grandi@cbitaly.it,,Starter ,2021-05-28,2025-05-28,agentinord,Active,2021-05-28,,False
+CBI130,Maurizio,Di Maggio,3468802780,maurizio.dimaggio@cbitaly.it,,Starter ,2021-05-28,,Agent,Inactive,2021-05-28,,False
+CBI130,Yelyzaveta,Marmura,3479024422,yelyzaveta.marmura@cbitaly.it,,Business Basic,2022-01-27,,Agent,Inactive,2022-01-27,disattivata il giorno 19/7/2022 come da mail inviata a me e raffaella. Rimangono a credito di 191 gg di licenza basic ,False
+CBI130,,,,reliance@cbitaly.it,,Business Premium,2021-04-16,2025-04-16,agenzia,Active,2021-04-16,,True
+CBI129,Fabrizio,Tosi ,3757408468,fabrizio.tosi@coldwellbankerluxury.it,,Business Basic,2021-08-23,,servizio,Inactive,2021-08-23,<p>mandata mail per rinnovo il 19/7/2022 - disattivata mail il data 25/07/2022 dopo richiesta di Tognetti ( vedi mail del 23/07/2022) RIMANE UN CREDITO DI 28 GG LICENZA BASIC </p>,False
+CBI129,Erik,Nourmedov,3421385831,erik.nourmedov@cbitaly.it,,Business Basic,2021-09-09,2024-09-09,agenticentro,Inactive,2021-09-22,"FATT. 735/2023<br /><br />DISATTIVA IN DATA 22/01/2024 GENERANDO UN CREDITO DI 231 PARI A 50,63€",False
+CBI129,Anna,Cozzi,3357368135,anna.cozzi@cbitaly.it,,Business Basic,2021-04-29,,agenticentro,Inactive,2021-04-29,,False
+CBI129,Elena,Kuznezova,,elena.kuznezova@cbitaly.it,,Business Basic,2021-01-10,2025-10-04,agenticentro,Active,2021-10-01,,True
+CBI129,,,,fortedeimarmi@cbitaly.it,,Business Premium,2021-08-04,2025-08-04,agenzia,Active,2021-04-28,,True
+CBI129,Graziella,Patriarchi,3409219168,graziella.patriarchi@cbitaly.it,,Business Basic,2021-04-29,2025-04-29,agenticentro,Inactive,2021-04-29,disattivata i data 09/10/2024,False
+CBI130,Federico,Baia,3921560365,federico.baia@cbitaly.it,,Starter ,2021-05-28,2025-05-28,agentinord,Active,2021-05-28,,False
+CBI130,Luca,Albani,3282467556,luca.albani@cbitaly.it,,Starter ,2022-04-20,2025-05-28,agentinord,Inactive,2022-04-20,,False
+CBI128,,,0864840015,inprogress@cbitaly.it,,Business Standard,2021-02-15,2024-02-15,servizio,Active,2021-02-15,FATT.794/2023 I,True
+CBI128,Donato ,Di Franco,3382217580,donato.difranco@cbitaly.it,,Starter ,2021-02-19,2024-02-19,Broker,Active,2021-02-19,,False
+CBI129,Gino,Diamanti,3356213637,gino.diamanti@cbitaly.it,,Business Basic,2022-02-09,2024-03-19,agenticentro,Active,2022-09-02,<p>Subentra a Elena Sarantseva che aveva un credito di 198 giorni - mandata mail il 27-3-2023 per rinnovo </p>,False
+CBI129,Alessandro,Tognetti,3358167196,alessandro.tognetti@cbitaly.it,,Business Standard,2019-01-18,2024-01-18,Broker,Active,2019-12-04,,False
+CBI129,Elena,Sarantseva,3348735242,elena.sarantseva@cbitaly.it,,Business Basic,2022-02-28,,agenticentro,Inactive,2022-02-28,<p>mail disattivata secondo indicazione di Daniel Meloni tramite whatsapp a Raffa ( ho anche io screen ) 25/07/2022 ( C.S)</p>,False
+CBI129,Monica,Bardini,,monica.bardini@cbitaly.it,,Business Basic,2022-12-31,2023-12-31,agenticentro,Inactive,2022-12-31,,True
+CBI127,Maria Chiara,Cucca,3397567103,mariachiara.cucca@cbitaly.it,,Business Basic,2022-08-05,2026-08-05,agentinord,Active,2022-08-05,insoluta la pf 383/24 - saldata la 345/25,False
+CBI129,Cristina,Mariani,3387542903,cristina.mariani@cbitaly.it,,Business Basic,2023-01-13,2024-01-13,agenticentro,Inactive,2023-01-13,DISATTIVATA IN DATA 09/04/2024,False
+CBI128,Michela,Gasbarro,3899503405,michela.gasbarro@cbitaly.it,,Starter ,2021-02-19,2024-02-19,agenticentro,Active,2021-02-19,,False
+CBI129,Stefano,Micheletti,3351666567,stefano.micheletti@cbitaly.it,,Business Basic,2022-03-15,2024-03-15,agenticentro,Inactive,2022-03-15,"DISATTIVATO IN DATA 04/03/2024; GENERA UN CREDITO PARI A 2,41 USATO PER RINNOVARE GINO DIAMANTI",False
+CBI126,Gael,Marin,3519571719,siracusa@cbitaly.it,,Business Premium,2021-01-18,2024-01-18,Broker,Inactive,2021-01-18,,False
+CBI125,Pier Marco,Porcu,335244701,piermarcoporcu@cbitaly.it,,Business Premium,2020-11-24,,Agent,Inactive,2020-11-24,,False
+CBI127,Rita,Magrini,3755022955,rita.magrini@cbitaly.it,,Business Basic,2021-07-04,2024-07-04,agentinord,Inactive,2021-04-07,FATT.445/2023<br />DISATTIVATAI N DATA 28/05/24,False
+CBI125,Marco,Virdis,336340244,marco.virdis@cbitaly.it,,Starter ,2021-07-13,,agentisud,Inactive,2021-07-13,,False
+CBI127,Nevila,Cucuri,,nevila.cucuri@cbitaly.it,,Business Basic,2023-01-27,2024-01-27,agentinord,Inactive,2023-01-27,prima attivazione pagata da prime Properties srl (vedi mail del 27 gennaio 2023)<br /><br />DISATTIVATA IN DATA 15/01/2024,True
+CBI127,Mara,Guidi,3358194087,mara.guidi@cbitaly.it,,Business Basic,2021-07-06,2024-07-06,agentinord,Active,2021-06-07,inviata mail rinnovo in data 20/06/2023,False
+CBI127,,,,rimini@cbitaly.it,,Business Premium,2021-10-02,2024-10-02,agenzia,Active,2021-02-10,mandata pro forma a Federica gigio che si occupa della società AR - saldata (fatt. n.469 del 25/05/2023 - Catia),True
+CBI127,Raffaella,Poggiali,3397241251,raffaella.poggiali@cbitaly.it,,Business Basic,2021-07-06,2024-07-06,agentinord,Active,2021-06-07,saldata fattura 497 in data 07/06/2023,False
+CBI162,Mario,Vicini,3357331393,mario.vicini@cbitaly.it,,Business Basic,2021-10-29,2026-10-29,agenticentro,Active,2021-10-29,,False
+CBI127,Elena,Tarfanelli,3389660428,elena.tarfanelli@cbitaly.it,,Business Basic,2021-07-06,2024-07-06,agentinord,Active,2021-06-07,saldata fattura 497 in data 07/06/2023,False
+CBI123,,,,elba@cbitaly.it,,Business Premium,2020-05-10,2025-05-10,agenzia,Active,2021-10-18,,True
+CBI122,Leonardo,Ruta,3338722248,leonardo.ruta@cbitaly.it,,Business Basic,2021-02-02,,agentiroma,Inactive,2021-02-02,,False
+CBI123,Eleonora,Ciucci,3933621174,eleonora.ciucci@cbitaly.it,,,,,Broker,Active,2021-03-22,,False
+CBI125,,,,pmpimmobiliare@cbitaly.it,,Starter ,2021-06-24,,agenzia,Inactive,2021-06-25,,True
+CBI123,Alessia,Marasca,3397905625,alessia.marasca@cbitaly.it,,Business Basic,2020-05-10,2025-10-05,agenticentro,Active,2020-10-05,FATT. 882/2023,False
+CBI124,Rosa,Riontino,3206915531,elitegroup@cbitaly.it,rosa.riontino@gmail.com,Business Basic,2020-11-27,2023-11-27,servizio,Inactive,2020-11-26,,False
+CBI122,Giovanni ,Gargano,3920202048,giovanni.gargano@cbitaly.it,,Starter ,2019-09-01,2024-09-01,Agent,Inactive,2019-12-04,<p>mandata mail 11 gennaio-  mandata altra mail il 13</p>,False
+CBI122,Maria,Mariani,,maria.mariani@cbitaly.it,,Business Basic,2020-11-30,,agentiroma,Inactive,2020-11-30,,True
+CBI122,Andrea,Podestà,3398674383,andrea.podesta@cbitaly.it,,Business Basic,2021-01-02,,agentiroma,Inactive,2021-02-02,,False
+CBI122,Sarah,Beltrani,3297464902,sarah.beltrani@cbitaly.it,,Starter ,2019-09-01,2024-09-01,agentiroma,Inactive,2019-12-04,<p>mandata mail 11 gennaio -  mandata altra mail il 13</p>,False
+CBI125,Tommaso,D'Andrea,3498425976,,,Starter ,2021-06-24,,agentisud,Inactive,2021-06-24,,True
+CBI119,Marco,Dallamano,3486558552,marco.dallamano@cbitaly.it,,Business Standard,2019-10-08,2026-10-08,Broker,Active,2019-12-04,FATT. 812/2023,False
+CBI120,Roberto ,Piombi,3408023853,roberto.piombi@cbitaly.it,,Business Standard,2020-03-27,2026-03-27,Broker,Active,2020-03-27,,False
+CBI120,,,,,,Starter ,2020-03-27,,agenticentro,Active,2022-03-28,,True
+CBI119,Carla,Grisetti,3498850333,carla.grisetti@cbitaly.it,cgrisetti@realroi.it,Business Basic,2020-05-26,2026-05-26,Broker,Active,2020-04-17,,False
+CBI122,Federica,Bartolelli,3358224266,federica.bartolelli@cbitaly.it,,Starter ,2019-09-01,2024-09-01,Agent,Inactive,2019-12-04,<p>mandata mail 11 gennaio -  mandata altra mail il 13</p>,False
+CBI121,,,,ronciglione@cbitaly.it,,Business Standard,2020-03-27,2024-03-27,agenzia,Active,2020-03-27,,True
+CBI120,,,,,,,,,agenzia,Active,2020-03-27,,True
+CBI122,Tea,Tomic,3396123907,,,,2020-02-07,,agentiroma,Active,2019-12-04,,True
+CBI119,,,,desenzano@cbitaly.it,,Business Standard,2020-05-26,2026-05-26,agenzia,Active,2021-04-12,FATT.730/2023,True
+CBI069,Sofia,Stridi,3208288718,sofia.stridi@cbitaly.it,,Business Standard,2020-11-04,2026-11-04,agentisud,Active,2019-12-04,,False
+CBI119,Nicolas,Tomaselli,,,ntomaselli@realroi.it,,,,Agent,Inactive,2020-04-17,,True
+CBI116,,,,alba@cbitaly.it,,Business Standard,2019-11-23,2024-11-23,agenzia,Active,2019-12-05,Daisy<br />FATT. 993/2023,True
+CBI119,Cristian,Sartori,3443669284,cristian.sartori@cbitaly.it,,Business Basic,2021-04-27,,Agent,Inactive,2021-04-27,,False
+CBI118,,,,segreteriagruppobodini@cbitaly.it,,Business Basic,2021-12-23,2025-12-23,agenzia,Inactive,2021-12-23,,True
+CBI118,Cinzia,De Santis,3398887148,cinzia.desantis@cbitaly.it,,Business Basic,2022-03-23,2026-03-23,agenticentro,Active,2022-03-23,FATT. 360/2024,False
+CBI117,,,0833607357,gallipoli@cbitaly.it,,Business Standard,2020-01-07,2025-01-07,servizio,Active,2020-07-01,,True
+CBI118,Monica,Merenda,+393477918464,monica.merenda@cbitaly.it,,Business Basic,2022-03-23,2024-03-23,Agent,Active,2022-03-23,,False
+CBI117,Daniela,Ferrari,3924697314,daniela.ferrari@cbitaly.it,,Business Basic,2021-07-12,2025-12-01,Broker,Active,2021-12-07,DANIELA FERRARI PREPOSTO PER UFFICIO DI GALLIPOLI. INVIARE A LEI MAIL RINNOVO UTENZE<br /><br />FATT. 1101/2023,False
+CBI116,Alice,Cavallero,3334549766,alice.cavallero@cbitaly.it,,Business Basic,2021-06-30,,Agent,Inactive,2021-06-30,,False
+CBI115,Anna,Kiryakova,3476089963,anna.kiryakova@coldwellbankerluxury.it,,Business Basic,2022-11-17,2024-11-17,agenticentro,Inactive,2022-11-17,"FATT.929/2023<br /><br />DISATTIVATA IN DATA 21/05/24 <br />GENERA CREDITO DI 69,26€",False
+CBI115,Giulia ,Mancini,,giulia.mancini@coldwellbankerluxury.it,,Business Standard,2020-11-24,2023-11-24,agenticentro,Inactive,2022-04-11,"<p>subentra al posto di <a target=""_blank"" href=""mailto:chianti-sales@coldwellbankerluxury.it"">chianti-sales@coldwellbankerluxury.it</a> con upgrade da basic a standard - mandata mail il 23/11 - disattivata in data 24 -11 come da richiesta da parte di moira</p>",True
+CBI115,Valeria,Bonini,3405493527,valeria.bonini@coldwellbankerluxury.it,,Business Standard,2019-11-13,,agenticentro,Inactive,2020-01-17,1 dei 5 indirizzi gratis per 2 anni - mail temporaneamente sospesa ,False
+CBI115,Chiara,Battilocchi,,chiara.battilocchi@coldwellbankerluxury.it,,Business Standard,2020-11-24,2023-11-24,agenticentro,Inactive,2020-11-24,<p>mandata mail il 23/11 - disattivata in data 24 -11 come da richiesta da parte di moira</p>,True
+CBI052,Benedetta,Vittoria,,benedetta.vittoria@coldwellbankerluxury.it,,Business Standard,2022-07-12,2024-07-12,agenticentro,Inactive,2022-12-07,FATT. 1095/2023<br /><br />DISATTIVATA IN DATA 24/06/2024,True
+CBI116,Jacopo ,Farchetti,3406142840,jacopo.farchetti@cbitaly.it,,Business Basic,2021-05-10,2023-05-10,agentinord,Inactive,2021-10-05,<p>mandata mail per rinnovo il 14/09/2022 Claudia -  chiusura a seguito mail di daniel 14/9/2022</p>,False
+CBI115,Filippo,Verre,,filippo.verre@coldwellbankerluxury.it,,Business Basic,2020-11-24,,agenticentro,Inactive,2020-11-24,,True
+CBI116,Paolo,Scagliola,3486628411,paolo.scagliola@cbitaly.it,,Business Basic,2021-10-05,2026-10-05,agentinord,Active,2021-05-10,FATT. 584/2024,False
+CBI116,Roberto, Cavallero,3403487515,roberto.cavallero@cbitaly.it,,Business Basic,2021-06-30,2023-06-30,agentinord,Inactive,2022-03-29,DISATTIVATA IN DATA 10/07/2023,False
+CBI115,Rossella,Fontanelli,3409953588,rossella.fontanelli@coldwellbankerluxury.it,,Business Standard,2020-03-03,,agenticentro,Inactive,2020-03-03,disattivata 8 maggio,False
+CBI115,,,,chianti.sales@cbitaly.it,,Business Basic,2021-09-27,2023-09-27,agenzia,Inactive,2022-06-21,"<p>subentra al posto di <a target=""_blank"" href=""mailto:antony.joseph@coldwellbankerluxury.it"">antony.joseph@coldwellbankerluxury.it</a> che aveva scadenza 27/09/2022 - Mandata per mail per rinnovo in data 26 Luglio 22 ( claudia ) - mandata altra mail per conferma in data 8/8/2022 ( claudia ) - mandata altra mail in data 06/09/22 per rinnovo- account eliminato come da richiesta di Moira </p>",True
+CBI115,Moira,Mancini,3473689227,moira.mancini@coldwellbankerluxury.it,,Business Standard,2019-04-11,2024-04-11,Broker,Inactive,2019-12-04,FATT. 929/2023,False
+CBI115,Lorenzo,Signorini,3351728362,lorenzo.signorini@coldwellbankerluxury.it,,Business Basic,2021-12-04,,agenticentro,Inactive,2021-04-12,,False
+CBI115,Antony Joseph,Charity,,antony.joseph@coldwellbankerluxury.it,,Business Basic,2021-09-27,,agenticentro,Inactive,2021-09-27,,True
+CBI115,Chianti Heritage,,,siena@cbitaly.it,,Business Premium,2021-12-04,2024-12-04,agenticentro,Active,2022-01-14,,True
+CBI115,,,,chianti-heritage@coldwellbankerluxury.it,,Business Premium,2019-04-11,2024-04-11,agenzia,Inactive,2019-12-04,FATT.929/2023,True
+CBI115,Domenico,Bizzocco,3473185972,domenico.bizzoco@coldwellbankerluxury.it,,Business Basic,2019-04-11,2024-04-11,agenticentro,Inactive,2019-12-04,,False
+CBI115,,,,chianti-communication@coldwellbankerluxury.it,,Business Standard,2019-07-24,2024-07-24,servizio,Inactive,2022-04-08,DISATTIVATA IN DATA 24/07/2024,True
+CBI115,,,,,,Business Basic,2020-11-24,,agenticentro,Inactive,2021-07-13,subentra alla mail di Filippo Verre - viene disattivato per far subentrare giulia mancini con upgrade da basic a standard ( fatto da claudia ),True
+CBI115,,,,,,Business Basic,2022-06-21,,servizio,Active,2022-06-21,subentra al posto di antony.joseph@coldwellbankerluxury.it,True
+CBI112,Dario,Fondelli,+393403066103,dario.fondelli@cbitaly.it,,Starter ,2022-11-18,2024-11-18,Manager,Active,2022-11-18,FATT. 985/2023,False
+CBI112,Vincenzo,D'Amato,,vincenzo.damato@cbitaly.it,,Starter ,2023-05-17,2024-05-17,agentinord,Inactive,2023-05-17,,True
+CBI112,Roberta,Zito,3299762959,roberta.zito@cbitaly.it,,Business Basic,2020-11-09,2023-11-09,agentinord,Inactive,2020-09-11,<p>Mandata mail per rinnovo in data 8/8/2022 ( claudia )- <strong>chiusa mail come da richiesta ( vedi mail del  8/8/2022 claudia )</strong></p>,False
+CBI112,Manuel,Detogni,3287336446,manuel.detogni@cbitaly.it,,Business Standard,2021-04-30,,servizio,Inactive,2021-03-31,,False
+CBI112,Fabrizio,Avondoglio,3485100909,fabrizio.avondoglio@cbitaly.it,,Business Basic,2019-09-30,2024-09-30,agentinord,Active,2020-09-17,subentra alla mail Courmayeur<br /><br />FATT.830/2023,False
+CBI112,Francesco,Suelzu ,3666927308,francesco.suelzu@cbitaly.it,,Business Basic,2020-07-10,2024-10-07,agentinord,Inactive,2020-07-10,NON è PIù BROKER DI MILANO - è VALENTINA BODINI,False
+CBI114,,,,,,,,,servizio,Active,2021-02-10,,True
+CBI112,,,,bodinimilano@cbitaly.it,,Starter ,2020-02-09,2024-02-09,agenzia,Active,2020-09-02,FATT.777/2023,True
+CBI114,Antonino Lucio,Iero,3497113063,antoninolucio.iero@cbitaly.it,,Business Basic,2019-10-29,2023-10-29,Broker,Inactive,2019-12-04,DISATTIVATA IN DATA 29/10/2024,False
+CBI114,Francesca ,Di Gennaro,,fidam.rc@cbitaly.it,fdegennaro@gruppofidam.com,Starter ,2020-07-21,2026-07-21,agenzia,Active,2020-06-25,DOWNGRADE DA BASIC A STARTER ,True
+CBI109,,,,eur@cbitaly.it,,Business Standard,2019-08-27,2023-08-27,agenzia,Inactive,2019-12-04,"Disattivata nel 2022 da M365, disattivata sul gestionale in data  26/07/2023",True
+CBI109,Alessio,Errico,3333648162,alessio.errico@cbitaly.it,,Business Standard,2019-02-09,2023-02-09,agenticentro,Inactive,2019-12-04,DISATTIVATA IN DATA 02/11/2023,False
+CBI111,,,,anelligroup@cbitaly.it,,Business Standard,2019-04-09,,agenzia,Inactive,2019-12-04,gratis 1° anno,True
+CBI110,,,,pomezia@cbitaly.it,,Business Standard,2019-03-09,2025-03-09,agenzia,Active,2019-12-04,FATT.740/2023,True
+CBI110,Alessandra,Norscia,3396658528,alessandra.norscia@cbitaly.it,,Business Standard,2019-09-23,2026-09-23,Broker,Active,2019-12-04,FATT.740/2023,False
+CBI111,Riccardo,Anelli,3355734056,,riccardo@anelligroup.com,,2019-09-08,,Agent,Inactive,2019-12-04,,False
+CBI111,Eleonora,Mazzoni,3426470476,,eleonora.mazzoni2@gmail.com,,,,servizio,Inactive,2019-12-14,,False
+CBI112,Carlotta,Bottazzi,3391347960,,,Business Standard,2020-11-09,,Agent,Inactive,2020-09-11,,True
+CBI109,Giuliano,Norscia,3355372379,giuliano.norscia@cbitaly.it,,Business Standard,2019-02-09,2026-09-02,Broker,Active,2019-12-04,FATT.740/2023,False
+CBI109,Valerio,Pesciarelli,3274380108,valerio.pesciarelli@cbitaly.it,,Starter ,2022-04-02,,agentiroma,Inactive,2022-02-04,disattivato in data 24-05-22 come da richiesta effettuata da giorgia tramite whatsapp a raffa,False
+CBI109,Simone,Novelli,3493409829,simone.novelli@cbitaly.it,,Starter ,2022-07-03,,agentiroma,Inactive,2022-03-07,,False
+CBI109,Edoardo,Burzacca,3394683376,edoardo.burzacca@cbitaly.it,,Starter ,2022-03-17,2024-03-17,agenticentro,Inactive,2022-03-17,DISATTIVATA IN DATA 1503/2024,False
+CBI108,Micol,Maurelli,,micol.maurelli@cbitaly.it,,Starter ,2021-04-11,2023-04-11,servizio,Inactive,2022-07-04,<p>subentra al posto di ludovico beltrani - mandata mail per rinnovo ( 02/11/2022 )- mandato pro forma 4/11/2022 -  saldata in data 16 novembre </p><p></p>,True
+CBI108,,,,globalbissolati@cbitaly.it,,Business Standard,2018-11-26,2023-11-26,agenzia,Inactive,2020-02-27,<p>mandata mail il 1/12/2022 - mandata pro forma il 2 dicembre </p>,True
+CBI108,Jasmin,Mounajed,,jasmin.mounajed@cbitaly.it,,Business Standard,2019-11-25,,agentiroma,Inactive,2019-12-05,,True
+CBI108,Beatrice ,Fiorelli,3382483417,beatrice.fiorelli@cbitaly.it,,Starter ,2019-11-25,2023-11-25,agentiroma,Inactive,2021-10-05,"<p>Subentra a Jasmine Mounajed, a scadenza il piano diventa starter - mandata mail il 1/12/2022 - mandata pro forma il 2 dicembre </p>",False
+CBI109,Raffaella,D'urzo,3792949413,raffaella.durzo@cbitaly.it,,Starter ,2022-04-02,2026-07-22,agenticentro,Active,2022-02-04,,False
+CBI109,Maria Cristina,Di Lorenzo,3389019571,mcristina.dilorenzo@cbitaly.it,,,2021-03-31,,servizio,Inactive,2021-03-31,,False
+CBI108,Ludovico,Bertani,3397427164,ludovico.bertani@cbitaly.it,,Starter ,2021-04-11,,agentiroma,Inactive,2021-11-04,al suo posto micol maurelli ( vedi mail 4/7/2022),False
+CBI107,Barbara,Leo,3356695654,barbara.leo@cbitaly.it,,Business Standard,2018-11-26,,Agent,Inactive,2019-12-04,,False
+CBI108,Valentina,Acreman,3932706970,valentina.acreman@cbitaly.it,,Business Standard,2019-07-24,,Agent,Inactive,2019-12-04,,False
+CBI147,Odissea Real Estate,,,odissea@cbitaly.it,,Business Premium,2022-11-30,2025-11-30,agenzia,Active,2022-11-30,,True
+CBI106,Andrea,Cioffi,3922235511,andrea.cioffi@cbitaly.it,,Business Basic,2020-12-11,2025-12-11,agenticentro,Inactive,2020-12-11,FATT. 1042/2023,False
+CBI107,Livia,Corso,,livia.corso@cbitaly.it,,Starter ,2022-11-10,,agentinord,Inactive,2022-10-11,<p>attivata in data 11 ottobre </p>,True
+CBI147,Sandro,Bonamici,3934616927,sandro.bonamici@cbitaly.it,,Business Basic,2023-10-05,2024-10-05,Broker,Active,2023-05-10,"<p>era prima in PRIME PROPERTIES, ci è sfuggito il rinnovo 2021-2022 ed in accordo con sara è stato omaggiato. in data 10 maggio 2023 è stato mandato il rinnovo per l'annualità 2022-2023 - saldata fattura in data 29/05/2023</p>",False
+CBI107,Ludovica,Dell'Arte,3400008004,ludovica.dellarte@cbitaly.it,,Starter ,2022-09-28,,agentinord,Inactive,,,False
+CBI107,,,,globalturati@cbitaly.it,,Business Standard,2019-05-30,,agenzia,Inactive,2019-12-04,,True
+CBI108,Emanuela,Porizia,,emanuela.porzia@cbitaly.it,,Business Standard,2020-07-27,2023-07-27,servizio,Inactive,2021-03-22,eredita account di Acreman,True
+CBI147,Alessandro,Lacommara,,alessandro.lacommara@cbitaly.it,,Business Basic,2022-01-12,2025-01-12,Agent,Active,2023-05-10,,True
+CBI106,Cristiana,Greco,,cristiana.greco@cbitaly.it,,Starter ,2023-12-04,2024-12-04,agenticentro,Inactive,2023-04-12,DISATTIVATA IN DATA 05/01/2024,True
+CBI106,Alessandro,Valeri,3406956874,alessandro.valeri@cbitaly.it,,Starter ,2022-06-16,2023-06-16,agenticentro,Inactive,2022-06-16,<p>mandata mail per rinnovo in data 30/05/2023 - in data 30/05/2023 comunicano la disattivazione dell'utenza - inserito nel report i giorni di credito (18 gg)</p>,False
+CBI106,Andrea,Sciarrotta,3281238472,andrea.sciarrotta@cbitaly.it,,Business Basic,2020-03-02,2024-03-02,Broker,Active,2019-12-04,,False
+CBI106,Azzurra,Taborre,3347311395,azzurra.taborre@cbitaly.it,,Business Standard,2020-10-26,2026-10-26,agenticentro,Active,2019-12-04,UPGRADE DA BASIC A STANDARD IN DATA 28/04/25 ,False
+CBI106,,,,pescara@cbitaly.it,,Business Standard,2019-03-15,2026-03-15,agenzia,Active,2019-12-04,,True
+CBI106,Mario ,Imbriani,3489005798,mario.imbriani@cbitaly.it,,Business Basic,2020-10-26,2023-10-26,agenticentro,Inactive,2020-10-26,mandata mail per rinnovo il giorno 14/09/2022 Claudia - fatto pro forma 16/9/2022 (claudia) - disattivato in data 15 marzo 2023 come da richiesta del broker ,False
+CBI106,Luigi,Busiello,3484942501,,,,,,agenticentro,Inactive,2019-12-04,,True
+CBI106,Michela,Di Domenico,3493449957,michela.didomenico@cbitaly.it,,Business Basic,2021-04-11,2024-04-11,agenticentro,Inactive,2021-11-04,il 1 Marzo 2023 disattivato Imbriani che ha generato un credito di 224 giorni usato per il rinnovo di Michela di Domenico<br /><br />FATT. 920/2023,False
+CBI106,Luigi,Di Benedetto,,,,,2019-09-27,,agenticentro,Inactive,2019-12-04,,True
+CBI106,Marika ,Ottaviano,3497355292,marika.ottaviano@cbitaly.it,,Business Basic,2021-04-23,,agenticentro,Inactive,2021-04-23,,False
+CBI105,Michele ,D’Arcangeli,3348885285,michele.darcangeli@cbitaly.it,,Business Standard,2020-10-26,2026-10-26,agenticentro,Active,2019-12-04,RINNOVI DA INTESTARE ALL'AGENTE,False
+CBI104,Andrea,Laudisa,3201142500,,andrea.laudisa@gruppobodini.it,,,,Agent,Inactive,2019-12-04,<p>Disattivato in data 15 Maggio 2023</p>,False
+CBI104,,,,galatina@cbitaly.it,,Business Premium,2019-01-30,2026-01-30,agenzia,Active,2019-12-04,FATT. 198/2024,True
+CBI103,Cristiana,Marviglia,,cristiana.maraviglia@cbitaly.it,,Business Basic,2019-10-21,2025-10-21,agentiroma,Inactive,2019-12-04,,True
+CBI105,Mail ,Agenzia,07663952292,montalto@cbitaly.it,,Business Standard,2019-03-26,2026-03-26,agenzia,Active,2019-12-04,,False
+CBI103,Tiziana,Di Nobile,,tiziana.dinobile@cbitaly.it,,Business Basic,2023-04-21,2024-04-21,agenticentro,Inactive,2023-04-21,,True
+CBI103,Stefano,Lisci,3939709812,stefano.lisci@cbitaly.it,,Business Basic,2020-11-04,2026-11-04,agentiroma,Active,2019-12-04,INSERITO CORRETTAMENTE IN DATA 02/11/2023<br /><br />FATT. 932/2023 ANNUALITÀ 2022/2023 - 2023/2024,False
+CBI103,Mario,Bellintani,3933358694,mario.bellintani@cbitaly.it,,Business Standard,2019-01-15,2026-03-25,Broker,Active,2019-12-04,,False
+CBI104,Manuela,Maiorano,3887927177,,manuela.maiorano@gruppobodini.it,,,,Broker,Active,2019-12-04,,False
+CBI103,Leonardo,Rocca,3443805582,leonardo.rocca@cbitaly.it,,Starter ,2020-11-04,2026-11-04,agentiroma,Active,2019-12-04,INSERIA CORRETTAMENTE IN DATA  02/11/2023<br />EMESSA FATTURA N.931/2023 PER RINNOVI ANNUALITÀ 22/23,False
+CBI102,Niccolò,Di Battista,3319451805,niccolo.dibattista@cbitaly.it,,Business Standard,2020-05-08,,agentiroma,Inactive,2020-11-13,subentra a Niccolò di Castro,False
+CBI102,Monica,Pandolfino,3277772070,monica.pandolfino@cbitaly.it,,Starter ,2020-12-17,2023-12-17,agentiroma,Inactive,2020-12-17,<p>mandata mail 11 gennaio - disattivata in data 11 gennaio come da comunicazione </p>,False
+CBI102,Fabrizia,Fracassi,3356724653,fabrizia.fracassi@cbitaly.it,,Business Basic,2020-08-08,2023-08-08,agentiroma,Inactive,2021-05-14,subentra a Niccolò Di Battista - mandata mail per rinnovo il giorno 19/7/2022- eliminata casella mail a seguito di mail 27/7/22 ( Claudia )<br /><br />ELIMINATA DA M365 IN DATA 03/11/2023,False
+CBI156,Romana,Parisi,0653093961,imperialere@cbitaly.it,,Business Standard,2019-06-28,2024-06-28,agenticentro,Active,2019-12-04,FATT. 649 /2023 SALDO PARZIALE,False
+CBI156,Paolo,Nardi,3358029651,paolo.nardi@cbitaly.it,,Starter ,2020-03-27,2024-03-27,Broker,Active,2020-07-14,FATT. 372/2023,False
+CBI102,Niccolò ,Di Castro,,niccolo.dicastro@cbitaly.it,,Business Standard,2019-05-08,,agentiroma,Inactive,2020-01-22,subentra a mail di Vincenzo Galizia,True
+CBI103,Alessandro ,Gibilisco,,,alessandrogibilisco@icloud.com,,,,servizio,Inactive,2020-01-23,,True
+CBI102,,,,,,Starter ,2022-03-30,,servizio,Inactive,2022-03-30,,True
+CBI102,Vincenzo,Galizia,3277359465,vincenzo.galizia@cbitaly.it,,Business Standard,2019-05-08,,agentiroma,Inactive,2019-12-04,,False
+CBI102,Emanuele,Damiano,3451724138,emanuele.damiano@cbitaly.it,,Business Standard,2019-03-27,,agentiroma,Inactive,2020-02-11,sostituisce account di Massimiliano Cacciotti ,False
+CBI102,Francesca,La Rosa,3334414258,francesca.larosa@cbitaly.it,,Starter ,2021-09-02,,agentiroma,Inactive,2021-02-09,Sospesa il 22 Novembre 2021 prende il suo posto Amministrazione.imperialere,False
+CBI102,Lorenzo ,Cuomo,3351277175,lorenzo.cuomo@cbitaly.it,,Starter ,2021-01-28,,agentiroma,Inactive,2019-12-04,,False
+CBI102,Maurizio,Tempestilli,,,,Starter ,2022-11-30,2023-11-30,agenticentro,Inactive,2022-11-30,<p><strong>DISATTIVATA COME DA RICHIESTA IL 9 GENNAIO 2023 ( CLAUDIA )</strong></p>,True
+CBI156,Luigi,Pratesi,,luigi.pratesi@cbitaly.it,,Starter ,2023-04-05,2024-04-05,agentiroma,Inactive,2023-05-04,DISATTIVATA IN DATA 26/09/2023,True
+CBI156,Simona,Fantetti,,simona.fantetti@cbitaly.it,,Starter ,2023-04-05,2024-04-05,agenticentro,Inactive,2023-05-04,FATT.426/2023<br /><br />DISATTIVATA IN DATA 06/05/2024,True
+CBI156,Roberta,Calcaterra,,roberta.calcaterra@cbitaly.it,,Starter ,2023-03-16,2024-03-16,agenticentro,Inactive,2023-03-16,FATT. 277/2023<br />DISATTIVATA IN DATA 15/03/2024,True
+CBI156,Ambra,Calvani,3341619851,ambra.calvani@cbitaly.it,,Starter ,2020-04-03,2024-04-04,agenticentro,Inactive,2020-03-04,FATT.372,False
+CBI102,Massimiliano,Cacciotti,3476042235,massimiliano.cacciotti@cbitaly.it,,Business Standard,2019-03-27,,agentiroma,Inactive,2019-12-04,al posto di chiara.ippoliti@cbitaly.it,False
+CBI156,,,,amministrazione.imperialere@cbitaly.it,,Starter ,2021-09-02,2025-09-02,servizio,Active,2021-11-22,FATT. 229/2024<br />,True
+CBI156,Alessandro,Sofia,3346121849,alessandro.sofia@cbitaly.it,,Business Standard,2019-01-14,2025-01-14,Broker,Active,2019-12-04,FATT. 228/2024,False
+CBI100,Gabriele ,Edoardo Mastroianni,3313069957,gabriele.mastroianni@cbitaly.it,,Business Basic,2020-11-30,2023-11-30,agentiroma,Active,2019-12-04,,False
+CBI102,Gabriele,Grossi,3394885466,gabriele.grossi@cbitaly.it,,Business Standard,2019-01-14,,Broker,Inactive,2019-12-04,,False
+CBI100,Tiziana ,Grilli,3485821572,tiziana.grilli@cbitaly.it,,Business Basic,2018-11-23,2024-11-23,Broker,Active,2019-12-04,FATT. 1031/2023,False
+CBI102,Elena ,Ribetto,3333341146,,helenita77@hotmail.it,,,,servizio,Inactive,2019-12-04,,False
+CBI100,Carlo ,Donzelli,3393324375,carlo.donzelli@cbitaly.it,,Business Basic,2020-11-23,2023-11-23,agenticentro,Active,2019-12-04,,False
+CBI100,Philippe ,Benhamou,3465082579,philippe.benhamou@cbitaly.it,,Starter ,2020-11-30,2026-11-30,agentiroma,Active,2019-12-04,,False
+CBI100,Rossella,Mastrangelo,3273462912,infobarberagroup@cbitaly.it,rossellamastrangelo6@gmail.com,Business Basic,2018-11-23,2024-11-23,agentiroma,Active,2019-12-04,FATT. 1007/2023,False
+CBI100,Federica,Urbinati,3463156208,federica.urbinati@cbitaly.it,,Business Basic,2020-11-30,2023-11-30,agenticentro,Inactive,2019-12-04,DISATTIVATA IN DATA 13/12/2023,False
+CBI100,Federico ,Ciavarella,3932944124,federico.ciavarella@cbitaly.it,,Business Basic,2020-11-30,,agentiroma,Inactive,2019-12-04,,False
+CBI102,Maria Grazia,Amadio,3496608036,,mg.amadio@gmail.com,,2019-03-20,,servizio,Inactive,2019-12-04,,False
+CBI100,Davide ,Navarra,3316798986,davide.navarra@cbitaly.it,,Business Basic,2018-11-23,2024-11-23,Broker,Active,2019-12-04,FATT. 1008/2023,False
+CBI100,Stefano,Paolucci,3396903125,stefano.paolucci@cbitaly.it,,Business Standard,2020-05-18,,agentiroma,Inactive,2020-05-18,,False
+CBI100,Filippo ,Terzaghi,3355862822,filippo.terzaghi@cbitaly.it,,Starter ,2020-09-06,2025-09-06,agentiroma,Active,2020-06-09,,False
+CBI100,Andrea,Talio,3803645903,andrea.talio@cbitaly.it,,Business Standard,2020-07-09,,agentiroma,Inactive,2020-09-07,,False
+CBI100,Christina,Piperno,,christina.piperno@cbitaly.it,,Business Basic,2023-01-10,2026-01-10,agenticentro,Active,2023-01-10,pagata dall azienda ,True
+CBI100,Ilaria,Sebastiani,3382115337,ilaria.sebastiani@cbitaly.it,,Business Standard,2020-10-02,2026-10-02,agentiroma,Active,2020-10-02,,False
+CBI100,Andrea ,Barbera,3356124596,andrea.barbera@cbitaly.it,,Business Basic,2018-11-23,2024-11-23,Broker,Active,2019-12-04,Opzioni ATP e Archiving <br />FATT. 1007/2023,False
+CBI100,Polina ,Shavrina,,polina.shavrina@cbitaly.it,,Business Standard,2020-07-30,2023-07-30,agentiroma,Inactive,2020-12-01,,True
+CBI100,Clemente ,Supino,,clemente.supino@cbitaly.it,,Business Standard,2021-11-23,2023-11-23,agentiroma,Inactive,2021-11-23,<p>al suo posto subentra BARBARA NARDI</p>,True
+CBI100,Marianna,Rinaldis,3392832855,marianna.rinaldis@cbitaly.it,,Business Basic,2023-10-02,2025-10-02,agentiroma,Active,2023-02-10,FATT. 181/2024,False
+CBI100,,,,barberateam@cbitaly.it,,Business Standard,2020-09-29,2026-09-29,agentiroma,Active,2021-02-04,FATT.800/2023,True
+CBI100,Barbara,Nardi,3924114521,barbara.nardi@cbitaly.it,,Business Standard,2022-11-23,2023-11-23,agentiroma,Inactive,2022-10-25,<p>subentra al posto di clemente supino il giorno 25/10/2022 che era stato fatturato il 23 novembre 2021 . Barbara Nardi usufruisce del suo credito e si fatturerà a pieno il 23/11/2022</p>,False
+CBI100,Leonardo,Valori,3274755655,leonardo.valori@cbitaly.it,,Starter ,2021-08-03,2025-08-03,agentiroma,Inactive,2020-06-04,FATT. 351/2024<br /><br />DISATTIVATO IN DATA 06/06/2024,False
+CBI100,Claudio,Vannucci,3316893190,claudio.vannucci@cbitaly.it,,Starter ,2021-12-02,2025-07-13,agentiroma,Active,2021-07-13,,False
+CBI100,Dario,Fabbroni,3895407302,dario.fabbroni@cbitaly.it,,Starter ,2021-12-02,2025-12-02,agentiroma,Active,2021-02-12,FATT. 201/2024,False
+CBI100,Adriano,Pasquini Peruzzi,3476341063,adriano.pasquiniperuzzi@cbitaly.it,,Business Standard,2020-03-02,,agentiroma,Inactive,2019-12-04,,False
+CBI100,Valentino,Marrazzi,3478729005,valentino.marrazzi@cbitaly.it,,Starter ,2021-05-03,2024-05-03,agentiroma,Active,2019-12-04,,False
+CBI100,Laura,Bramante,3466096955,laura.bramante@cbitaly.it,,Business Basic,2021-02-04,2026-02-04,agentiroma,Active,2021-02-04,,False
+CBI100,Marzia,Di Cristofano,3204766624,marzia.dicristofano@cbitaly.it,,Starter ,2021-12-02,,agentiroma,Inactive,2021-02-04,,False
+CBI100,Gabriella,Gioffredi,3387050913,gabriella.gioffredi@cbitaly.it,,Starter ,2023-05-15,2026-05-15,agentiroma,Active,2023-05-15,,False
+CBI100,Antonietta ,Chialastri,3492389332,antonietta.chialastri@cbitaly.it,,Business Standard,2020-01-27,2024-01-27,agenticentro,Active,2019-12-04,,False
+CBI100,Leonardo,Miconi,3345462165,leonardo.miconi@cbitaly.it,,Business Basic,2021-02-02,2025-02-02,agentiroma,Inactive,2021-02-02,FATT. 250/2024,False
+CBI100,Livio,Torrisi,3207467829,,,,,,agentiroma,Active,2019-12-04,,True
+CBI100,Francesca Romana ,Salvi,3487953790,francesca.salvi@cbitaly.it,,Business Basic,2020-11-30,2025-11-30,agentiroma,Active,2019-12-04,,False
+CBI100,Fabio,Verni,3457084592,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI100,Giulia,Zamorani,3396713360,,,,,,agentiroma,Active,2020-02-24,,True
+CBI100,Paolo,De Iulio,3335696212,paolo.deiulio@cbitaly.it,,,,,agentiroma,Inactive,2020-03-05,,False
+CBI100,Maura ,Fois,3333289233,maura.fois@cbitaly.it,,Business Basic,2020-01-28,2026-01-28,agenticentro,Active,2019-12-04,FATT. 347/2024,False
+CBI100,Cristina,Piperno,3356804242,,,,2019-01-04,,agenticentro,Active,2019-12-04,,True
+CBI100,Dario,Di Persio,3498666600,,,,2019-04-01,,agenzia,Active,2019-12-04,,True
+CBI100,Paola Maria,Ferri,3409070404,,,,2019-03-28,,agentiroma,Active,2019-12-04,,True
+CBI100,Ginevra,Ansuini,3477556482,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI100,Clementina ,De Grazia,3347064518,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI100,Christina,Piperno,,,,,2019-09-26,,agenticentro,Active,2019-12-04,,True
+CBI100,Andrea,Ferri,3318391520,,,,2019-02-19,,agentiroma,Inactive,2019-12-04,,True
+CBI100,Valeria Sandra,Fiore,3927927253,,,,2019-03-19,,agentiroma,Inactive,2019-12-04,,True
+CBI100,,,,,,,2019-08-27,,agenzia,Active,2019-12-04,,True
+CBI099,Enrico,Pantesio,3711326376,enrico.pantesio@cbitaly.it,,Starter ,2022-08-31,2023-08-31,agentinord,Inactive,2022-08-31,DISATTIVATA IN DATA 01/08/2023 - 30 GG DI CREDITO,False
+CBI099,Davide,Tonti,3476445408,davide.tonti@cbitaly.it,,Business Basic,2022-09-16,2023-09-16,agentinord,Inactive,2022-09-16,DISATTIVATO IN DATA 27/07/2023 - GENERA UN CREDITO DI 51 GG,False
+CBI099,Beatrice,Troni,3482340428,beatrice.troni@cbitaly.it,,Business Standard,2022-07-19,2023-07-19,agentinord,Inactive,2022-07-19,<p>in data 7/10 upgrade da starter a standard ( vedi mail ) </p>,False
+CBI127,Elena ,Casadei,3273083003,elena.casadei@cbitaly.it,,Business Basic,2019-02-19,2024-02-19,agentinord,Active,2019-12-04,,False
+CBI127,Simone ,Cerquatelli,3381735996,simone.cerquatelli@cbitaly.it,,Business Standard,2020-06-03,2024-06-03,Broker,Active,2019-12-04,upgrade in data 07/05/2024,False
+CBI153,Marco,Russo,3891936302,marco.russo@cbitaly.it,,Starter ,2020-01-04,2025-01-04,Broker,Active,2020-06-05,Passaggio da Riccione a Cattolica<br /><br />CARICO DAISY,False
+CBI099,Carlo Giuseppe,Bronzino,3922066342,,,,,,Agent,Inactive,2019-12-04,,True
+CBI099,Vincenzo,Taibi,3926829069,,,,,,Agent,Inactive,2019-12-04,,True
+CBI099,Cristian,Brighi,3341004041,cristian.brighi@cbitaly.it,,Business Standard,2020-03-01,2023-03-01,agentinord,Inactive,2020-01-03,,False
+CBI099,Davide Gerlando,Taibi,3351436076,,,,,,Agent,Inactive,2019-12-04,,True
+CBI099,Michele,Brizi,3471193614,michele.brizi@cbitaly.it,,Business Basic,,,Agent,Inactive,2021-08-27,DISATTIVATA IN DATA 24/11/2023,False
+CBI099,Gianluca,Belardinelli,3292015397,gianluca.belardinelli@cbitaly.it,,Business Standard,2021-02-19,2025-02-19,Broker,Active,2021-02-19,,False
+CBI099,Lucio,Breviglieri,3441313642,,,,,,Agent,Inactive,2019-12-04,,True
+CBI098,Carlo,Scordato,3408231432,carlo.scordato@cbitaly.it,cscordato.cb@gmail.com,Business Standard,2018-10-12,,Agent,Inactive,2019-12-04,attendiamo risposta,False
+CBI098,Nadia,La Rosa,3917670906,nadia.larosa@cbitaly.it,,Business Basic,2020-06-15,2023-06-15,agentinord,Inactive,2020-06-15,<p>passa da standard a basic in fase di rinnovo usufruendo dei crediti dei Sigg.ri Preti e Lizzi ( vedi mail del 20 Giugno di Sabina ( Claudia ) - eliminata casella come da richiesta dell 11 gennaio </p>,False
+CBI098,Sabina,Salvatore,+393929657039,sabina.salvatore@cbitaly.it,,Business Basic,2018-12-10,2025-12-10,Broker,Active,2019-12-04,FATT. 373/2024,False
+CBI098,Filippo,Giove,,filippo.giove@cbitaly.it,,Business Basic,2023-03-02,2024-03-02,agentinord,Inactive,2023-02-03,DISATTIVATA IN DATA 03/10/2023,True
+CBI098,Gianluca,Ginevra,3801841249,gianluca.ginevra@cbitaly.it,,Business Basic,2021-04-10,,Agent,Inactive,2021-10-04,Subentra alla mail di Alessandra Ronco,False
+CBI098,Katia,Merlino,3299247458,katia.merlino@cbitaly.it,merlino.cb@gmail.com,Business Standard,2018-10-12,,Agent,Inactive,2019-12-04,attendiamo risposta,False
+CBI098,Sara,Sampirisi,3802151954,sara.sampirisi@cbitaly.it,,Business Basic,2023-05-18,2024-07-03,agentinord,Inactive,2023-05-18,"Utilizzano il credito residuo di 292 gg di Gianni Caraffa, che è stato disattivato in data 7 Aprile 2023 per attivare nuova utenza ",False
+CBI098,Carlo,Bosco,3922869929,carlo.bosco@cbitaly.it,,Business Standard,2020-09-23,2023-09-23,agentinord,Inactive,2020-09-23,<p>mandata mail per rinnovo 06/09/2022 ( claudia )- mandata seconda mail per rinnovo 30.09.22- mandata altra mail il 4 novembre- mandato pro forma in data 16 novembre ( anche via mail ) mandata ulteriore mail il 9 dicembre dando 2 gg di tempo per saldare altrimenti congeliamo mail.</p><p><strong>ACCOUNT ELIMINATO DA NOI DOPO MANCATO PAGAMENTO ( 16 DICEMBRE 2022- CLAUDIA ) . AVVISATI I BROKER.</strong></p>,False
+CBI098,,,01119475282,more@cbitaly.it,,Business Standard,2018-11-29,2024-11-29,agenzia,Active,2019-12-04,FATT. N.1100/2023,True
+CBI098,Massimo,Sampirisi,3381651188,massimo.sampirisi@cbitaly.it,,Business Basic,2018-12-10,2025-12-10,Broker,Active,2019-12-04,FATT. 373/2024,False
+CBI098,Giovanni,Gasco,3389443837,giovanni.gasco@cbitaly.it,,Business Basic,2025-04-28,2026-04-28,agentinord,Inactive,2022-03-31,DISATTIVATA IN DATA 25/03/25 - RICHIESTA RIATTIVAZIONE IN DATA 28/04/25- DISATTIVATA IN DATA 04/08/2025,False
+CBI098,Wael,Nakhleh,,wael.nakhleh@cbitaly.it,,Business Basic,2022-02-11,2023-02-11,agentinord,Inactive,2022-11-02,DISATTIVATA IN DATA 19.12.23,True
+CBI098,Piercarlo ,Agosto,3927021871,piercarlo.agosto@cbitaly.it,,Business Basic,2021-03-24,,Agent,Inactive,2021-03-24,,False
+CBI098,Giardino,Manuela,3481515571,manuela.giardino@cbitaly.it,,Business Basic,2021-10-02,,Agent,Inactive,2021-02-09,,False
+CBI098,Marco,Morena,3453500181,marco.morena@cbitaly.it,,Business Basic,2022-01-08,2023-01-08,agentinord,Inactive,2022-08-02,DISATTIVATA IN DATA 02/08/2023 - CONFERMA AVVENUTA TELEFONICAMENTE CON SABINA SALVATORE ,False
+CBI098,Marco ,Franco,3245847461,marco.franco@cbitaly.it,,Business Basic,2021-09-03,,Agent,Inactive,2021-03-09,,False
+CBI098,Ronco,Alessandra,3713737918,ronco.alessandra@cbitaly.it,,Business Basic,2021-09-03,,Agent,Inactive,2021-03-09,,False
+CBI098,Gianni,Caraffa,3494545191,gianni.caraffa@cbitaly.it,,Business Basic,2021-01-26,2024-01-26,agentinord,Inactive,2021-01-26,<p>mandata mail per rinnovo in data 26.1.23 - mandata pro forma in data 30 gennaio </p>,False
+CBI097,Pasqualina,Marotta,3453919181,,,,2019-06-02,,agentisud,Active,2019-12-04,,True
+CBI097,Maria Antonietta ,Pellegrino ,3491345364,,,,,,agentisud,Active,2019-12-04,,True
+CBI097,,,,policastro@cbitaly.it,,Starter ,2020-12-01,2025-12-01,agenzia,Active,2019-12-04,,True
+CBI098,Gabriele,Lizzi,3501142199,,,Business Basic,2021-02-12,,Agent,Inactive,2021-12-02,,True
+CBI097,Gennaro,Marsicano,3335070929,,,,,,agentisud,Active,2019-12-04,,True
+CBI097,Francesco ,Surrentini,3283186624,,,,,,agentisud,Active,2019-12-04,,True
+CBI098,Cristian,Preti,3452420114,,,Business Basic,2021-02-12,,Agent,Inactive,2021-12-02,,True
+CBI097,Marina,Marino,3342331112,,,,,,agentisud,Active,2019-12-04,,True
+CBI096,Cinzia,Ferradini,3287128154,cinzia.ferradini@cbitaly.it,,Business Basic,2022-07-22,2024-06-09,agentisud,Inactive,2022-06-16,,False
+CBI096,Mirko,Delfini,393388480845,mirko.delfini@cbitaly.it,,Business Basic,2023-01-10,2025-01-10,Broker,Active,2023-01-10,FATT 2/2024,False
+CBI096,Luisa,Cardinale,3316838946,luisa.cardinale@cbitaly.it,,Business Basic,2019-12-21,2023-12-21,agentisud,Inactive,2019-12-04,<p>sostituisce Enrico Pomatto. - mandata mail il 12 gennaio - downgrade in fase di rinnovo mandata pro forma </p>,False
+CBI097,Antonio,Fiscina,3454494794,,,,2019-06-02,,agentisud,Active,2019-12-04,,True
+CBI096,Claudia,Vanini,,claudia.vanini@cbitaly.it,,Business Basic,2023-03-24,2024-12-21,agentisud,Inactive,2023-03-24,usufruisce del credito di Luisa cardinale <br /><br />DISATTIVATA IN DATA 21/12/2023,True
+CBI096,Arianna,Mattu,3467938556,arianna.mattu@cbitaly.it,,Business Standard,2020-01-07,,agentisud,Inactive,2019-12-04,ha garantito Cassiano,False
+CBI096,Romina,Capriati,3917691120,romina.capriati@cbitaly.it,,Business Basic,2021-11-18,2024-11-18,agentisud,Inactive,2021-11-18,FATT. 983/2023<br /><br />DISATTIVATA IN DATA 10/04/2024,False
+CBI096,Marilina,Tedde,3408655159,,,,2019-03-22,,agentisud,Inactive,2019-12-04,,True
+CBI096,Claudio,Palmas,3497937014,,,,2019-03-14,,agentisud,Inactive,2019-12-04,,True
+CBI096,Irina,Pushkova,,,,,2019-04-17,,agentisud,Inactive,2019-12-04,,True
+CBI096,Alessandra,Lambroni,3498307519,,,,,,agentisud,Inactive,2019-12-04,,True
+CBI096,Massimiliano,Lausdei,3331021622,,,,,,agentisud,Inactive,2019-12-04,,True
+CBI096,,,,costasmeralda@cbitaly.it,,Business Standard,2019-03-08,2025-03-08,agenzia,Active,2019-12-04,OPZIONE ARCHIVING,True
+CBI096,Patrizia,Piga,,,,,,,agentisud,Inactive,2019-12-04,,True
+CBI096,Enrico,Pomatto,3393360388,,,,2020-01-21,,agentisud,Inactive,2020-01-21,Mail sospesa il 14 luglio us Richiesta di Costi,True
+CBI096,Silvana,Azara,3498121329,silvana.azara@cbitaly.it,,Business Basic,2020-03-02,2024-03-02,agentisud,Inactive,2019-12-04,DISATTIVATA IN DATA 03/10/2023 MA LA RICHIESTA DI DISATTIVAZIONE RISALE ALL'11/05/2023,False
+CBI094,,,,bari@cbitaly.it,,Business Premium,2018-11-23,2026-11-23,agenzia,Active,2019-12-04,FATT. 1005/2023,True
+CBI096,Elizaveta,Florinskaja,,,,,2019-10-31,,agentisud,Inactive,2019-12-04,,True
+CBI176,Stefania,Colabufo,3495214935,stefania.colabufo@cbitaly.it,,Business Basic,2021-12-14,2024-12-14,Broker,Active,2021-12-14,,False
+CBI094,Pietro,Panessa,3406713668,pietro.panessa@cbitaly.it,,Starter ,2022-04-12,2025-04-12,agentisud,Active,2022-03-31,FATT.380/2023,False
+CBI094,Esther,Attanasio,3931177411,esther.attanasio@cbitaly.it,,Starter ,2023-01-23,2026-01-23,agentisud,Active,2023-07-20,FATT. 177/2024 SALDATA CON BONIFICO INIZIALMENTE FATTO PER L'ATTIVAZIONE DI ANGELO MORELLI MA DISATTIVATA DOPO 15 GIORNI,False
+CBI094,Davide,Tangorra,3931134031,,,,,,agentisud,Active,2019-12-04,,True
+CBI094,Michele,D'Iasio,3338365622,michele.diasio@cbitaly.it,,Business Standard,2019-03-30,,Agent,Inactive,2019-12-04,sostituzione?,False
+CBI094,Marika,Arborea,3489817987,marika.arborea@cbitaly.it,,Starter ,2022-03-31,2026-03-31,Broker,Active,2022-03-31,,False
+CBI094,Franco ,Barile,3336763932,,,,,,agentisud,Active,2019-12-04,,True
+CBI094,Piero ,Panessa,3406713668,,,,,2024-03-31,agentisud,Active,2019-12-04,,True
+CBI094,Alessandro ,Pizzitelli,,,,,2019-11-07,,agentisud,Active,2019-12-04,,True
+CBI094,Alessandro ,L’Erario,3401657482,,,,,,agentisud,Active,2019-12-04,,True
+CBI094,Andrea,Romandini,3498784615,,,,,,agentisud,Active,2019-12-04,,True
+CBI094,Licia,Marinucci,3272239276,,,,,,agentisud,Active,2019-12-04,,True
+CBI094,Luigi ,Saponaro,3939083991,,,,,,agentisud,Active,2019-12-04,,True
+CBI092,Silvia ,Carretto,+393339394333,,,,,,agentisud,Active,2019-12-04,,True
+CBI092,Paola,Fontana,+393248366157,,,,2019-01-30,,agentisud,Active,2019-12-04,,True
+CBI092,Matteo ,Strabace,+393426427949,,,,,,agentisud,Active,2019-12-04,,True
+CBI092,Giuseppe ,Dargenio,+393927915645,,,,,,agentisud,Active,2019-12-04,,True
+CBI092,,,,brindisi@cbitaly.it,,Business Standard,2019-03-27,2025-03-27,agenzia,Active,2019-12-04,FATT. 487/2024,True
+CBI092,Claudio,Putignano,+393339394333,,,,,,agentisud,Active,2019-12-04,,True
+CBI092,Alessandra ,Santoro,+393471667705,,,,,,agentisud,Active,2019-12-04,,True
+CBI091,Tina ,Di Giovanni,3475944009,tina.digiovanni@cbitaly.it,,Business Basic,2020-02-03,2026-02-03,Broker,Active,2019-12-04,FATT.179/2024,False
+CBI091,Marco,Avallone,3343688235,marco.avallone@cbitaly.it,,Starter ,2020-11-30,2023-11-30,agentisud,Inactive,2019-12-04,DISATTIVATO IN DATA 05/12/2023,False
+CBI089,,,,,,,,,agenzia,Inactive,2019-12-04,,True
+CBI090,,,,,,,,,agenzia,Active,2019-12-04,,True
+CBI092,Roberta ,Bianco,+393462447739,,,,,,agentisud,Active,2019-12-04,,True
+CBI090,,,,,,,,,servizio,Active,2019-12-04,,True
+CBI090,Pierluca,Cillo,3357026437,pierluca.cillo@cbitaly.it,,Starter ,2020-02-07,2025-02-07,Broker,Active,2019-12-04,FATT.729/2023,False
+CBI091,Marcello,Striano,3661998743,,,,,,agentisud,Active,2019-12-04,,True
+CBI091,Debora,Visaggio,,,,,,,agenzia,Active,2019-12-04,,True
+CBI092,Rita ,Baldassarre,3927917875,,,,,,agentisud,Active,2019-12-04,,True
+CBI087,Daniela,Mirarchi,,daniela.mirarchi@cbitaly.it,,Starter ,2023-03-13,2025-03-13,agentisud,Inactive,2023-03-13,DISATTIVATAI IN DATA 19/03/25,True
+CBI087,Annamaria,Pizza,,cilentocoast@cbitaly.it,,Business Standard,2020-12-01,2026-12-01,agenzia,Active,2019-12-04,,True
+CBI087,Giovanni,Carleo,,giovanni.carleo@cbitaly.it,,Starter ,2023-07-04,2024-07-04,agentisud,Inactive,2023-04-07,,True
+CBI088,,,,,,,,,agenzia,Active,2019-12-04,,True
+CBI087,Daniela,Foroni,,daniela.foroni@cbitaly.it,,Starter ,2023-03-13,2025-03-13,agentisud,Inactive,2023-03-13,DISATTIVATA IN DATA 10/03/25,True
+CBI087,Antonio,Fontana,,antonio.fontana@cbitaly.it,,Starter ,2023-03-13,2024-03-13,agentisud,Inactive,2023-03-13,,True
+CBI087,Angela ,Vicario,3476037622,,,,,,agentisud,Active,2019-12-04,,True
+CBI087,Costabile,Mondelli,3474225864,costa.mondelli@cbitaly.it,,Business Basic,2020-11-30,2026-11-30,Broker,Active,2019-12-04,,False
+CBI087,,,,,,,,,servizio,Active,2019-12-04,,True
+CBI086,Marilena,Malangone,3911123737,,,,,,agentisud,Active,2019-12-04,,True
+CBI086,,,,,,,,,servizio,Active,2021-06-08,,True
+CBI086,Simone,De Luca,3386595970,,,,,,agentisud,Active,2019-12-04,,True
+CBI086,,,,costadamalfi@cbitaly.it,,Business Standard,2020-01-12,2022-01-12,agenzia,Inactive,2019-12-04,disattiviamo il 18/07/2023 abbuonando periodo precedente (sm),True
+CBI086,Simona,Simmi,3285404705,,,,2019-02-25,,agentisud,Active,2019-12-04,,True
+CBI085,Carlotta ,Giovanelli,3331025780,,,,,,Agent,Inactive,2019-12-04,,True
+CBI085,Paola ,Delpoio,3339349297,,,,,,Agent,Inactive,2019-12-04,,True
+CBI085,Enzo ,Orlando,3930640221,,enzo.orlando@libero.it,,,,servizio,Inactive,2020-03-25,,False
+CBI085,,,,,,,,,agenzia,Inactive,2019-12-04,,True
+CBI085,Giovanna ,Barile,3478038682,,,,,,Agent,Inactive,2019-12-04,,True
+CBI085,Federico ,Ferrari,3921386098,,,,,,Agent,Inactive,2019-12-04,,True
+CBI085,Sara ,Leto,,,,,,,Agent,Inactive,2019-12-04,,True
+CBI085,Sergio ,Mistrali,3357709812,,,,,,Agent,Inactive,2019-12-04,,True
+CBI085,Ilaria ,Merafina,3282199123,,,,,,Agent,Inactive,2019-12-04,,True
+CBI084,,,,immobiliare5@cbitaly.it,immobiliare5@cbitaly.it,Business Standard,2020-01-17,2025-01-17,agenzia,Active,2019-12-04,FATT. 264/2024,True
+CBI084,Massimo ,Zanchettin,3474295410,,mzanchettin@cb5.it,,,,Broker,Active,2019-12-04,,False
+CBI084,Federica,Viglongo,3403483734,,fviglongo@cb5.it,,,,agentinord,Active,2019-12-04,,False
+CBI084,Francesco,Tiano,3402213967,,,,,,Agent,Inactive,2019-12-04,,True
+CBI084,Francesco,Trentini,3669584097,,,,,,Agent,Inactive,2019-12-04,,True
+CBI084,Raffaele,Volpe,3938584559,,rvolpe@cb5.it,,,,agentinord,Active,2020-10-08,,False
+CBI084,Massimo,Schiavone,3485801700,,mschiavone@cb5.it,,,,agentinord,Active,2019-12-04,,False
+CBI084,Matteo,Grieco,3397138663,,mgrieco@cb5.it,,,,agentinord,Active,2020-01-17,da annullare,False
+CBI084,Silvana,Frenda,3663667427,,sfrenda@cb5.it,,,,agentinord,Active,2019-12-04,,False
+CBI084,Amedeo,Bazzani,3392575438,,,,,,Agent,Inactive,2019-12-04,,True
+CBI084,Giulia ,Cossa,3925251860,,,,,,Agent,Inactive,2019-12-04,,True
+CBI084,Antonio ,Perrone ,3471186120,,aperrone@cb5.it,,,,agentinord,Active,2019-12-04,,False
+CBI084,Luciano ,Carminati,3407116792,,lcarminati@cb5.it,,,,Broker,Active,2019-12-04,,False
+CBI082,,,0689671161,prime@cbitaly.it,,Business Standard,2019-10-18,2024-10-18,agenzia,Active,2019-12-04,FATT. 1102/2023,True
+CBI116,Daniel,Meloni,3387596505,daniel.meloni@cbitaly.it,,Business Standard,2019-11-28,2024-11-28,Broker,Active,2019-12-04,Daisy<br /><br />FATT. 994/2023,False
+CBI082,Maurizio,Rocca,3200653302,maurizio.rocca@cbitaly.it,,Business Basic,2020-11-30,2024-11-30,agentiroma,Inactive,2019-12-04,<p>mandata mail per rinnovo in data 23/11/2022 - mandata seconda mail il 30 direttamente a lui come da indicazioni di daniel meloni -non rinnova come da sua indicazione </p>,False
+CBI082,Francesco ,Solano,3711504636,francesco.solano@cbitaly.it,,Business Basic,2020-11-27,2023-11-27,agentiroma,Inactive,2019-12-04,DISATTIVATO IN DATA 26/09/2023,False
+CBI082,Alessandra,Casalini,366891443,alessandra.casalini@cbitaly.it,,Business Standard,2020-10-20,,agenticentro,Inactive,2020-10-20,x Cassiano a carico di Prime - Chiusa il 21/6/2021 su richiesta di Cassiano,False
+CBI082,Marco Valerio,Scoponi,3356547474,marcovalerio.scoponi@cbitaly.it,,Business Standard,2020-03-06,2023-03-06,agenticentro,Inactive,2020-06-03,è uomo di Roberto ... paghiamo noi ...,False
+CBI129,Vito,Lattanzi,3488598914,vito.lattanzi@cbitaly.it,,Starter ,2020-12-21,2023-12-21,servizio,Inactive,2020-12-21,,False
+CBI082,Filippo,Saladini,3662626366,filippo.saladini@cbitaly.it,,Business Basic,2020-12-07,2023-12-07,agentiroma,Inactive,2019-12-04,"NON RISULTAVA CORRETTAMENTE INSERITO IN KNAC (NO PIANO MAIL NO MAIL, NO DATA ATTIVAZIONE) <br />DISATTIVATA IN DATA 02/11/2023",False
+CBI082,Sandro,Bonamici,,,sbonamici@cbmignanelli.it,Business Basic,2021-09-03,,agentiroma,Inactive,2019-12-04,"<p>disattivato in dato 9 maggio, non c'è traccia di questa mail</p>",True
+CBI081,Andrea,Fabretti,3341502901,andrea.fabretti@cbitaly.it,,Starter ,2022-02-04,2026-02-04,Broker,Active,2019-12-04,FATT. 233/2024,False
+CBI082,Roberta ,Baghini,,,,,,,agentiroma,Active,2019-12-04,,True
+CBI081,Alessandro,Stregapede,3270659351,alessandro.stregapede@cbitaly.it,,Starter ,2022-01-04,,agenticentro,Inactive,2022-04-01,,False
+CBI081,Elena,Tassis,3938548342,,,,,,agentinord,Active,2019-12-04,,True
+CBI081,Emanuele ,Locatelli,3476575590,emanuele.locatelli@cbitaly.it,amministrazione@bgstar.org,Starter ,2022-02-04,2026-02-04,Broker,Active,2019-12-04,FATT. 233/2024,False
+CBI081,,,,bgstar@cbitaly.it,,Business Standard,2020-11-30,2026-11-30,agenzia,Active,2019-12-04,,True
+CBI081,Giulia,Tombini,3914031755,,,,,,agentinord,Active,2019-12-04,,True
+CBI081,Federico,Remondini,3485806195,,,,,,agentinord,Active,2019-12-04,,True
+CBI079,,,,,,,,,agenzia,Inactive,2019-12-04,,True
+CBI078,Giorgia,Cadar,3896217688,giorgia.cadar@cbitaly.it,,Business Standard,2023-02-27,2024-02-27,agenticentro,Inactive,2023-02-27,,False
+CBI078,Gabriella,Giannini,,gabriella.giannini@cbitaly.it,,Business Standard,2022-04-27,2025-04-27,agenticentro,Inactive,2022-09-21,subentra al posto di talita.galdinodasilva@cbitaly.it -<br />MANCATO RINNOVO AD APRILE-<br />FATTURA N.739/2023,True
+CBI079,Orazio,D’Antoni,3933309351,orazio.dantoni@cbitaly.it,,Business Standard,2020-05-14,,Agent,Inactive,2019-12-04,,False
+CBI081,Silvia,Ronzoni,3394633202,,,,,,agentinord,Active,2019-12-04,,True
+CBI081,Gaia,Siebaneck,3664122932,,,,,,agentinord,Active,2019-12-04,,True
+CBI078,Monia,Mantovani,3895593432,,,,,,servizio,Active,2019-12-04,,True
+CBI078,Rosamaria,Tagliaferro,3346672694,,,,,,agenticentro,Inactive,2020-06-19,,True
+CBI078,Luca,Cicatiello,3201193088,luca.cicatiello@cbitaly.it,,Business Standard,2020-06-19,2024-06-19,agenticentro,Inactive,2019-12-04,,False
+CBI078,,,0766512446,santamarinella@cbitaly.it,,Business Standard,2019-06-04,2024-06-04,agenzia,Active,2019-12-04,,True
+CBI078,Daniela ,Salzano,3204246767,daniela.salzano@cbitaly.it,,Starter ,2019-10-14,2024-10-14,agenticentro,Inactive,2019-12-04,DISATTIVATA IN DATA 07/08/25,False
+CBI078,Roberto ,Leardini,3428662922,roberto.leardini@cbitaly.it,,Business Basic,2020-05-28,2026-05-28,Broker,Active,2020-05-29,,False
+CBI078,Rosanna,Sassara,,,,,,,agenticentro,Inactive,2019-12-04,,True
+CBI078,Eleonora ,Ciccotti,3807423915,,,,,,agenticentro,Inactive,2019-12-04,,True
+CBI078,Antonio,D'Amico,3247813349,antonio.damico@cbitaly.it,,,2021-04-27,,servizio,Inactive,2021-04-27,,False
+CBI075,Donato,Zaccagnino,,,,,,,agentiroma,Active,2019-12-04,,True
+CBI075,,,,,,,,,agenzia,Active,2019-12-04,,True
+CBI074,Patrizia,Pagliara,3939201239,,,,,,agentisud,Active,2019-12-04,,True
+CBI075,Laura,Pignanelli,,,lpignanelli@cbmignanelli.it,,,,Broker,Active,2019-12-04,,True
+CBI074,,,,ostuni@cbitaly.it,,Business Premium,2018-11-26,2025-11-26,agenzia,Active,2019-12-04,passano da standard a premium con defender - ,True
+CBI074,Diego,Flore,3931594962,diego.flore@cbitaly.it,,Business Basic,2020-11-30,2023-11-30,Agent,Inactive,2019-12-04,,False
+CBI075,Fernando,Cappelletti,3333802816,,fcappelletti@cbmignanelli.it,,,,Broker,Active,2019-12-04,,False
+CBI074,Alex,Norton,3312374005,,,,,,agentisud,Inactive,2020-02-17,,True
+CBI078,,,,,,,,,servizio,Inactive,2020-05-21,,True
+CBI074,Angela ,Minielli,3402658631,,,,,,agentisud,Active,2019-12-04,,True
+CBI074,Michele,Zullo,3939148227,,,,,,agentisud,Active,2019-12-04,,True
+CBI073,Gianmarco ,Pasolini,3382074902,,,,,,agentiroma,Active,2019-12-04,,True
+CBI074,Cosimo ,Fina,3387046064,,,,,,agentisud,Active,2019-12-04,,True
+CBI073,Lorenzo ,Tellini,3338101992,,l.tellini@prestigerecb.it,,,,Broker,Active,2019-12-04,,False
+CBI074,Corradino,Ciola,3356205454,,,,,,agentisud,Active,2019-12-04,,True
+CBI073,,,,prestigere@cbitaly.it,,Business Standard,2020-09-11,2024-09-11,agenzia,Active,2019-12-04,,True
+CBI074,Antonio,De Salvatore,3922106473,,,,,,agentisud,Active,2019-12-04,,True
+CBI073,Claudia  ,Troili,3939779666,,,,,,agentiroma,Active,2019-12-04,,True
+CBI074,Leonardo ,D'Ambrosio,3489119869,,,,,,agentisud,Active,2019-12-04,,True
+CBI073,Matteo,Napoli,3200187501,,,,,,agentiroma,Active,2019-12-04,,True
+CBI073,Maurizio Alejadro,Uran,33392655832,,,,2019-03-18,,agentiroma,Active,2019-12-04,,True
+CBI073,Roberta ,Tellini,3311933770,,,,,,agentiroma,Active,2019-12-04,,True
+CBI073,Sabrina,Federici,3385785009,,,,,,agentiroma,Active,2019-12-04,,True
+CBI073,Michela,Bianchi,3383094730,,,,,,agentiroma,Active,2019-12-04,,True
+CBI073,Stefano,Brunelli,3357584725,,,,2019-03-10,,agentiroma,Active,2019-12-04,,True
+CBI073,Benedetta ,Fabiani,,,,,,,agentiroma,Active,2019-12-04,,True
+CBI073,Maria Laura  ,Manco,3382033633,,,,,,agentiroma,Active,2019-12-04,,True
+CBI073,Christiane ,Mercieca,3356058045,,,,,,agentiroma,Active,2019-12-04,,True
+CBI073,Carlo,Annese,336737467,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI073,Gabriella,Bascelli,3934712610,,,,,,agentiroma,Active,2019-12-04,,True
+CBI073,Daniela,Masturzi,3899121247,,,,,,agentiroma,Active,2019-12-04,,True
+CBI073,Giorgio,Albanese,3386960622,,,,,,agentiroma,Active,2019-12-04,,True
+CBI073,Carlo ,Martella,3356577680,,,,,,Broker,Active,2019-12-04,,True
+CBI073,Riccardo,Deidda,,,,,,,agentiroma,Inactive,2019-12-04,"CHIAMATA AGENZIA IN DATA 4.12.23 PER  SAPERE SE LAVORA ANCORA CON LORO, MA NON LAVORA PIù DA UN ANNO. <br />CHIAMATI PER UN CASO DI OMONIMIA CON UN AGENTE DA ATTIVARE PER STELLA MARIS",True
+CBI072,Andrea,Vivanti,3293732380,,,Business Standard,2019-03-12,,agentiroma,Inactive,2019-12-05,,True
+CBI072,Domenico,Tamilia,3442909332,,,,2020-11-05,,agentiroma,Inactive,2020-05-11,,True
+CBI072,Federica,Sau,3466935190,,,Business Standard,2020-01-15,,agentiroma,Inactive,2020-01-15,,True
+CBI072,Marco,Zenobi,3386749650,,,Starter ,2020-03-12,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Francesco,Sorbara,3338636781,,,Business Standard,2020-01-31,,agentiroma,Inactive,2020-01-31,,True
+CBI072,Stefania,Travaglini,3332063826,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Marina,Vitiello,3391958012,,,Business Standard,2020-03-01,,agentiroma,Inactive,2020-10-28,Subentra a Petronici,True
+CBI072,Alessandro,Vassalli,3280137188,,,Business Standard,2020-09-15,,agentiroma,Inactive,2020-09-15,,True
+CBI072,Giovanna,Sartirano,3981652301,,,Business Standard,2020-01-28,,agentiroma,Inactive,2020-01-28,,True
+CBI072,Ughetta,Rotundo,3349202110,,,Business Standard,2019-12-17,,agentiroma,Inactive,2019-12-17,,True
+CBI072,Pierfrancesco,Sanò,3333466853,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Marco,Rollero,3923876921,,,Business Standard,2020-07-15,,agentiroma,Inactive,2020-09-15,subentra a Giuseppe di Ruzza - ha un residuo di 10 mesi ,True
+CBI072,Giulio ,Ronci,3398577254,,,Business Standard,2019-09-01,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Marco,Sabbatucci,3357767634,,,Business Standard,2019-09-01,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Manuela ,Romano,3355389581,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Massimo,Quitadamo,3933098167,,,Business Standard,2019-09-01,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Andrea,Pironti,3933641812,,,Business Standard,2020-06-24,,agentiroma,Inactive,2020-06-24,,True
+CBI072,Marco,Persichetti,3398133666,,,Business Standard,2020-07-01,,agentiroma,Inactive,2020-01-07,,True
+CBI072,Stefania,Petronici,3388520624,,,Business Standard,2020-03-01,,agentiroma,Inactive,2020-03-10,messa data due mesi indietro x recuperare 10 mesi non goduti account Abruzzini ,True
+CBI072,Alessia,Proietti,3394022462,,,Starter ,2021-01-27,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Mirko,Ponticello,3282794885,,,Business Standard,2019-09-01,,Agent,Inactive,2019-12-04,,True
+CBI072,Flavia,Petrini,3384623775,,,Business Standard,2020-01-21,,agentiroma,Inactive,2020-06-19,Subentra a Tabolacci ,True
+CBI072,Umberto ,Pavoncello,3392345970,,,Business Standard,2020-01-15,,agentiroma,Inactive,2020-10-05,Subentra a Sau,True
+CBI072,Fabio,Pastorelli,3358066856,,,Business Standard,2020-01-15,,agentiroma,Inactive,2020-01-15,,True
+CBI072,Stefano,Pancione,3333391498,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Diletta,Pagni,3396405616,,,Business Standard,2020-01-15,,agentiroma,Inactive,2019-12-04,subentra a Marco Chiodi,True
+CBI072,Alessandro ,Mazzini,3661023340,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Stefano,Martella,3356449254,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Nadia,Mayer,3337034416,,,Business Standard,2019-09-01,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Settimio,Pavoncello,3391616831,,,Business Standard,2019-09-01,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Eugenia,Mancioli,3282136153,,,,2019-09-17,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Lynn Ann,Maraschiello,3884445250,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Marco,Guerrazzi,,,,Business Standard,2019-11-29,,agentiroma,Inactive,2019-12-05,da NON fatturare 2019/2020,True
+CBI072,Mahsha,Lashkari,,,,Business Standard,2020-11-05,,agentiroma,Inactive,2020-12-01,,True
+CBI072,Valentina,Marcelli,3278365857,,,Business Standard,2019-10-22,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Marco,Guerrini Maraldi,3273439066,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Gaetano,Loffredo,3920007044,,,Starter ,2020-12-17,,agentiroma,Inactive,2020-12-17,,True
+CBI072,Federico,Fontana,3664169080,,,Business Standard,2020-01-21,,agentiroma,Inactive,2020-01-21,"11 maggio 2020 esce da exclusive re, mail in attesa di essere pagata",True
+CBI072,Riccardo,Grosso,3496612446,,,,2020-02-09,,servizio,Inactive,2020-09-02,loro credito per doppio pagamento (nota sara),True
+CBI072,Stefano,Faggiani,,,,Business Standard,2019-10-18,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Roberto,Giannoni,3934771247,,,Business Standard,2019-09-01,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Gabriele ,Fusco,3298785826,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Sandra,Forero,,,,Business Standard,2019-10-22,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Federica ,Goffi,3927530050,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Andrea,Bardella,3884455577,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Claudio Antonio,Ceoldo,3928969196,,,Business Standard,2019-09-01,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Gianluca,Campus,3488113202,,,Business Standard,2020-01-28,,agentiroma,Inactive,2020-10-28,Subentra a Sartirano,True
+CBI072,Francesca,Bulzoni,3356267179,,,Business Standard,2019-09-01,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Antonella,Cirelli,3381161623,,,Business Standard,2019-11-12,,agentiroma,Inactive,2019-12-11,,True
+CBI072,Irene,Dorizzi,3393520156,,,,,,Agent,Inactive,2019-12-04,,True
+CBI072,Giuseppe,Di Ruzza,3314634543,,,Business Standard,2020-07-14,,agentiroma,Inactive,2020-07-14,residuo di 10 mesi di credito,True
+CBI072,Claudio ,Di Nonno,3935687482,,,Business Standard,2020-01-15,,agentiroma,Inactive,2020-01-15,,True
+CBI072,Sara ,Araia,3387614325,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Carlo ,Della Porta,3383243493,,,Starter ,2019-03-12,,agentiroma,Inactive,2019-12-04,,True
+CBI072,Marco,Chiodi,3515002938,,,Business Standard,2020-01-15,,agentiroma,Inactive,2020-01-15,,True
+CBI072,,,,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI072,,,,,,,,,servizio,Inactive,2019-12-04,,True
+CBI072,Federica,Alesi,3387727525,,,Business Standard,2019-11-12,,agentiroma,Inactive,2019-12-10,,True
+CBI072,Antonio,Abruzzini,3776902461,,,Business Standard,2019-09-01,,agentiroma,Inactive,2019-12-04,restano 10 mesi di casella pagata,True
+CBI072,Massimiliano,Antonini,3802811969,,,Business Standard,2020-07-14,,agentiroma,Inactive,2020-07-14,,True
+CBI072,,,,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI072,,,,,,Business Standard,2019-09-01,,agenzia,Inactive,2019-12-04,,True
+CBI070,Cristian,Tarquini,3914763947,cristian.tarquini@cbitaly.it,,Starter ,2022-05-18,2024-05-18,agentiroma,Inactive,2022-05-18,DISATTIVATO IN DATA 16/05/2024,False
+CBI070,Isabella,Aquino,,isabella.aquino@cbitaly.it,,Business Basic,2022-11-23,2023-11-23,agentiroma,Inactive,2022-11-23,DISATTIVATA IN DATA 20/12/2023,True
+CBI070,Giuseppe,Mangano,,giuseppe.mangano@cbitaly.it,,Business Basic,2022-11-23,2023-11-23,agentiroma,Inactive,2022-11-23,DISATTIVATA IN DATA 14/11/2023,True
+CBI070,Raffaella ,Aquino,3495320377,raffaella.aquino@cbitaly.it,,Business Basic,2020-01-12,2024-01-12,Broker,Inactive,2019-12-04,FATT. 1024/2023,False
+CBI069,Francesca,Rossi,3351003090,,,,,,agentisud,Active,2019-12-04,,True
+CBI069,,,,lecce@cbitaly.it,,Business Premium,2018-11-26,2026-11-26,agenzia,Active,2019-12-04,FATT. 998/2023,True
+CBI056,Vanessa,Petracca,,vanessa.petracca@cbitaly.it,,Starter ,2023-01-11,2026-01-11,Broker,Active,2023-01-11,,True
+CBI069,Loredana,Latino,3383780373,loredana.latino@cbitaly.it,,Business Basic,2018-11-26,2026-11-26,Broker,Active,2019-12-04,FATT. 998/2023,False
+CBI070,,,,,,,,,agenzia,Inactive,2019-12-04,,True
+CBI070,,,,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI070,Marianna ,Paoletti,3384361323,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI069,Olga ,Sanina,3927801177,,,,,,agentisud,Active,2019-12-04,,True
+CBI069,Cristiano,De Riccardis,3888925216,cristiano.dericcardis@cbitaly.it,,Starter ,2022-05-05,2026-05-05,agentisud,Active,2022-05-05,,False
+CBI069,Francesco,Forni,335231626,,,,,,agentisud,Active,2019-12-04,,True
+CBI065,Bernardo,Rossi,3475328048,bernardo.rossi@cbitaly.it,,Business Basic,2020-03-02,,Agent,Inactive,2019-12-04,,False
+CBI069,Sonia ,Mancarella,3404063431,,,,,,agentisud,Active,2019-12-04,,True
+CBI069,Elisa,Latino,3299411362,,,,,,agentisud,Active,2019-12-04,,True
+CBI069,Carla ,Lionello,3393214700,,,,2019-10-14,,agentisud,Active,2019-12-04,,True
+CBI069,Alessandra,De Luca,3454675131,,,,,,agentisud,Active,2019-12-04,,True
+CBI069,Mirko,Greco,3290560336,,,,,,agentisud,Active,2019-12-04,,True
+CBI069,Antonio,De Mitri,3934652464,,,,,,agentisud,Active,2019-12-04,,True
+CBI069,Florinda ,Fabbiano,3510260142,,,,,,agentisud,Active,2019-12-04,,True
+CBI069,Marzia Isabella,Durante,,,,,,,agentisud,Active,2019-12-04,,True
+CBI069,Matteo Antonio ,Chiriacò,3206372012,,,,,,agentisud,Active,2019-12-04,,True
+CBI069,Milena,Mattia,3291970520,,,,,,agentisud,Active,2019-12-04,,True
+CBI069,Salvatore,Accogli,3457260413,,,,,,agentisud,Active,2019-12-04,,True
+CBI063,Maria,Ceriello,3286216563,,,,,,Agent,Inactive,2019-12-04,,True
+CBI065,Valeria,Giordano,,,,,2019-08-03,,agentiroma,Inactive,2019-12-04,,True
+CBI065,Fabio ,Ferrari,3296268509,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI062,Mary,Marigliani,3930202765,,,,2019-09-17,,servizio,Inactive,2019-12-04,,True
+CBI065,,,,smartproperties@cbitaly.it,,Business Standard,2020-03-02,,agenzia,Inactive,2019-12-04,,True
+CBI062,Antonio,Spicciariello,,antonio.spicciariello@cbitaly.it,,Business Basic,2020-01-12,2023-01-12,Broker,Inactive,2019-12-04,,True
+CBI065,Giuseppe,Liquorini,3929858966,giuseppe.liquorini@cbitaly.it,,Business Basic,2020-03-02,,Broker,Inactive,2019-12-04,,False
+CBI062,,,,terracina@cbitaly.it,,Business Standard,2020-01-12,2023-01-12,agenzia,Inactive,2019-12-04,,True
+CBI063,Ludovica,Galeno,,,,,,,agenticentro,Inactive,2019-12-04,,True
+CBI062,Anna ,Iodice,3294471111,,,,,,servizio,Inactive,2019-12-04,,True
+CBI063,,,,gaeta@cbitaly.it,,Business Standard,2020-01-12,2023-01-12,agenzia,Inactive,2019-12-04,DISATTIVATA IN DATA 17.01.24,True
+CBI057,Annalisa,Baglioni,3341816421,,annalisa.baglioni@gmail.com,,2019-03-29,,agenticentro,Active,2019-12-04,,False
+CBI057,Gianni,Rancani,3292280950,gianni.rancani@cbitaly.it,,Business Basic,2020-11-27,2025-11-27,Broker,Active,2019-12-04,FATT. 1018/2023,False
+CBI056,,,,maglie@cbitaly.it,,Business Premium,2018-11-23,2026-11-23,agenzia,Active,2019-12-04,FATT. 998/2023,True
+CBI060,Daniela,Rossi,3355432668,daniela.rossi@cbitaly.it,,Starter ,2020-11-25,2024-11-25,Agent,Inactive,2019-12-04,"ERA IN DISATTIVE, REINTEGRATA IN DATA 03/11/2023<br />VERIFICARE PAGAMENTI RINNOVI PRECEDENTI<br /><br />FATT. 984/2023",False
+CBI056,Fulvio,Verardo,3459344215,fulvio.verardo@cbitaly.it,,Business Basic,2019-11-28,2023-11-28,Agent,Inactive,2019-12-04,<p>mandata mail per rinnovo - mandata pro forma in data 28/11</p>,False
+CBI057,Martina,Lattanzi,3383719551,,martinalattanzi@libero.it,,2019-03-29,,servizio,Active,2019-12-04,,False
+CBI060,,,,assisi@cbitaly.it,,Starter ,2020-11-25,2024-11-25,agenzia,Inactive,2019-12-04,fatt. 984/2023,True
+CBI060,Marco,Serena,3358367591,marco.serena@cbitaly.it,,Starter ,2020-11-25,2023-11-25,Agent,Inactive,2019-12-04,"ERA IN DISATTIVE, REINTEGRATA IN DATA 03/11/2023<br />VERIFICARE PAGAMENTI RINNOVI PRECEDENTI<br /><br />FATT. 984/2023",False
+CBI057,,,,spoleto@cbitaly.it,,Starter ,2020-11-27,2025-11-27,agenzia,Active,2019-12-04,FATT. 1018/2023,True
+CBI057,Vincenzo,Suriano,3336914312,vincenzo.suriano@cbitaly.it,,Business Basic,2020-11-27,2025-11-27,Broker,Active,2019-12-04,,False
+CBI056,Angelo,Terrizzi,3808903286,,,,,,agentisud,Active,2019-12-04,,True
+CBI053,Andrea,Piperno,3664295204,andrea.piperno@cbitaly.it,,Starter ,2020-11-25,2023-11-25,Agent,Inactive,2019-12-04,<p>mandata mail per rinnovo in data 24-11- chiusa come da richiesta </p><p></p>,False
+CBI053,Stefania,D’Ercole,3246048920,,,,,,agentiroma,Active,2019-12-04,,True
+CBI053,Michele ,Cafasso,3334287261,,,,,,agentiroma,Active,2019-12-04,,True
+CBI053,Matteo,Angeletti,3288345016,matteo.angeletti@cbitaly.it,,Starter ,2020-11-25,,agentiroma,Inactive,2019-12-04,,False
+CBI049,Alice,Di Stefano,3455910732,alice.distefano@cbitaly.it,,Starter ,2021-09-29,2025-09-29,agenticentro,Active,2021-10-18,INSERITA CORRETTAMENTE IN DATA 03/11/2023 - Pf. 390/2024 comprende annualità 22/23 - 23/24 a 75€  (Basic costo vecchio) e 24/25 downgrade starter,False
+CBI053,,,,sorrentino@cbitaly.it,,Business Standard,2020-11-25,2024-11-25,agenzia,Active,2019-12-04,FATT. 996/2023,True
+CBI053,Santo,Sorrentino,3351628540,santo.sorrentino@cbitaly.it,,Starter ,2020-11-25,2024-11-25,Broker,Active,2019-12-04,FATT. 996/2023,False
+CBI053,Marzio,Barbangelo,3884096980,,,,,,agentiroma,Active,2019-12-04,,True
+CBI049,Lorenzo,Liberati,3937271117,lorenzo.liberati@cbitaly.it,,Business Basic,2021-02-11,2023-02-11,agenticentro,Inactive,2021-10-20,DISATTIVATA IN DATA 27/10/2023,False
+CBI049,Antimo ,Di Giacinto,3443456851,antimo.digiacinto@cbitaly.it,,Business Standard,2020-07-28,2026-07-28,Broker,Active,2019-12-04,,False
+CBI048,Anna,Maurizi,3388752598,anna.maurizi@cbitaly.it,,Business Basic,2020-12-01,2026-12-01,Broker,Active,2019-12-04,,False
+CBI049,Pietro,Cimei,3280974666,pietro.cimei@cbitaly.it,,Business Standard,2019-05-24,2025-05-24,Broker,Active,2019-12-04,"Opzioni ATP e Archiving - Inviato mail di rinnovo in data 8 maggio 2023 - non mandata proforma, hanno effettuato bonifico, emesso noi fattura in data 9 maggio 2023",False
+CBI048,Andrea,Aretini,3356492701,andrea.aretini@cbitaly.it,,Business Basic,2022-08-31,2023-08-31,agentiroma,Inactive,2022-08-31,DISATTIVATA IN DATA 01/08/2023 GENERA UN CREDITO DI 30 GG,False
+CBI049,Diego,Vergori,3271821767,diego.vergori@cbitaly.it,,Starter ,2022-11-07,2024-11-07,agenticentro,Inactive,2022-11-07,,False
+CBI049,Alexander,Drozd,3480381471,alexander.drozd@cbitaly.it,,Business Standard,2022-11-07,2024-11-07,agenticentro,Inactive,2022-11-07,FATT. 1033/2023<br />UP GRADE DA STARTER A STANDARD,False
+CBI049,Giulio,Robino,3884683706,giulio.robino@cbitaly.it,,Starter ,2020-07-28,2026-07-28,agenticentro,Active,2023-07-17,,False
+CBI049,,,3290729147,eretumregroup@cbitaly.it,,Business Premium,2019-05-24,2025-05-24,agenzia,Active,2019-12-04,UPGRADE DA STANDARD A PREMIUM IN DATA 16.04.25,True
+CBI049,David,Drozd,3295818805,dawid.drozd@cbitaly.it,,Business Standard,2019-05-24,2024-05-24,Broker,Active,2019-12-04,inviata mail rinnovo in data 10/07/2023 (Ci siamo dimenticati di inviarla ai tempi C.D) - inviata prroforma in data 18/07/2023 (C.D.),False
+CBI049,Alessio,Di Properzio,3246835200,alessio.diproperzio@cbitaly.it,,Business Standard,2020-02-25,2026-02-25,agenticentro,Active,2019-12-04,,False
+CBI048,,,,gallimaurizieassociati@cbitaly.it,,Business Premium,2020-02-14,2026-02-14,agenzia,Active,2019-12-04,FATT. 217/2024,True
+CBI048,Lorenzo,La Fauci,3929319613,lorenzo.lafauci@cbitaly.it,,Business Basic,2022-01-22,2023-01-22,agentiroma,Inactive,2019-12-04,"""INSERITA CORRETTAMENTE SUL GESTIONALE IN DATA 02/11/2023<br />VERIFICARE I PAGAMENTI DEI RINNOVI (iNSERITA SU M365 IN DATA 22/01/2021) E SE è ATTIVO NELL'AGENZIA DI COMPETENZA""<br /><br /><br />DISATTIVATO IN DATA 29/01/2024",False
+CBI048,Rosanna,Nasisi,3453111717,,,,,,agentiroma,Active,2019-12-04,,True
+CBI048,Luca,Fiorillo,,,,,,,servizio,Active,2020-09-24,,True
+CBI047,Futura ,Group,0645556465,futuragroup@cbitaly.it,,Business Premium,2020-10-09,2025-10-09,agenzia,Active,2019-12-04,Upgrade da Standard a premium in data 17.04.25 (allineamento CbSuite),False
+CBI048,,,,,,,,,agenzia,Active,2019-12-04,,True
+CBI048,Roberta,Manzionna,3398807440,,,,,,agentiroma,Active,2019-12-04,,True
+CBI048,Adriano,Germani,3288575480,,,,,,agentiroma,Active,2019-12-04,,True
+CBI048,Maurizio ,Galli,3388882124,,,,2020-01-12,,agentiroma,Active,2019-12-04,,True
+CBI048,Marco ,Galli,3356050666,marco.galli@cbitaly.it,,Business Basic,2021-01-01,2025-01-01,Broker,Active,2019-12-04,,False
+CBI048,Andrea,Galli,3289790048,,,,2019-11-09,,agentiroma,Active,2019-12-04,,True
+CBI048,Valentina ,Ciriaci,3388412977,,,,,,agentiroma,Active,2019-12-04,,True
+CBI047,Romeo ,Valeriani,3386450540,,,,,,agentiroma,Active,2019-12-04,,True
+CBI047,Daniel ,Kas,3319457865,,,,,,agentiroma,Active,2019-12-04,,True
+CBI047,Andrea,Ricci,3334546520,,,,,,agentiroma,Active,2019-12-04,,True
+CBI047,Carlo,Stievano,3929898335,,,,,,agentiroma,Active,2019-12-04,,True
+CBI046,Chiara,Lisanti,3281058355,viacortina@cbitaly.it,,Business Standard,2020-11-27,2024-11-27,agenzia,Active,2019-12-04,FATT. 1035/2023,False
+CBI047,Fabio ,Lucenti,3890097871,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI046,Gian Paolo ,Latini,3392772929,gianpaolo.latini@cbitaly.it,,Business Standard,2020-01-31,2025-01-31,Broker,Active,2019-12-04,FATT. 168/2024,False
+CBI047,Piera,Lelli,3939740354,,,,,,agentiroma,Active,2019-12-04,,True
+CBI047,Giovanni,Floris,3911681293,,giovannifloris.re@gmail.com,,,,agentiroma,Active,2019-12-04,,False
+CBI047,Ileana Marzia,Floris,3929257820,,,,,,agentiroma,Active,2019-12-04,,True
+CBI047,Alfredo,Ricci,3484345083,,alfredoricci.re@gmail.com,,,,Broker,Active,2019-12-04,,False
+CBI047,Emanuele,Ricci,3314725252,,,,,,agentiroma,Active,2019-12-04,,True
+CBI151,,,,bodinimonteverde@cbitaly.it,,Business Basic,2023-04-18,2025-03-06,agenzia,Inactive,2019-12-04,,True
+CBI044,Patrizia ,Porcù,3420076299,patrizia.porcu@cbitaly.it,,Business Basic,2020-11-30,2023-11-30,agentiroma,Inactive,2019-12-04,,False
+CBI100,Marco ,Rossi,3478390648,marco.rossi@cbitaly.it,,Business Basic,2019-10-14,2026-10-14,agenticentro,Active,2019-12-04,16/12/24 ha saldato su BPER invece che su BCC,False
+CBI044,Anna,Dragonetti,3383484541,,,,,,agentiroma,Active,2019-12-04,,True
+CBI040,Paolo,Silva,3931667555,paolo.silva@cbitaly.it,,Business Basic,2019-12-16,2024-12-16,agentisud,Inactive,2019-12-17,DISATTIVATA IN DATA 25/02/25,False
+CBI040,Efisio,Costi,3939028335,efisio.costi@cbitaly.it,,Starter ,2020-11-27,2026-11-27,agentisud,Active,2019-12-04,,False
+CBI040,Ilaria,Faedda,3299278971,ilaria.faedda@cbitaly.it,,Starter ,2021-06-24,2026-06-24,agentisud,Active,2021-06-24,,False
+CBI040,Rosanna,Pitturru,3296637663,rosanna.pitturru@cbitaly.it,,Business Standard,2019-10-31,2026-10-31,agentisud,Active,2019-12-04,,False
+CBI040,Giovanna,Mundula,3929053979,giovanna.mundula@cbitaly.it,,Starter ,2020-11-27,2026-11-27,agentisud,Active,2019-12-04,,False
+CBI040,Ayetta,Bianco,,ayetta.bianco@cbitaly.it,,Business Basic,2021-10-06,2025-10-06,agentisud,Active,2021-10-06,,True
+CBI040,Paola,Tirelli,3923327976,paola.tirelli@cbitaly.it,,Starter ,2021-06-10,2022-06-10,agentisud,Inactive,2021-10-06,"unica fattura saldata risale al 2021 il 4 Ottobre; ""inviata mail in data 09/08/2023; Paolo Costi ci informa che Tirelli non lavora con lui da un anno. Abbuonata una annualità.<br />DISATTIVATA IN DATA 10/08/2023""",False
+CBI040,Cristina,Magistrali,3294361286,cristina.magistrali@cbitaly.it,,Starter ,2020-11-27,2026-11-27,agentisud,Active,2019-12-04,,False
+CBI040,Valerio,Sparano,,valerio.sparano@cbitaly.it,,Starter ,2023-05-04,2024-05-04,agentisud,Inactive,2023-04-05,FATT.302/2023<br /><br />DISATTIVATO IN  DATA 21/05/2024,True
+CBI040,,,,olbia@cbitaly.it,,Business Standard,2020-08-24,2025-08-24,agenzia,Active,2019-12-04,FATT.784/2023,True
+CBI040,Alice,Pileri,3339774903,alice.pileri@cbitaly.it,,Business Standard,2020-10-21,,agentisud,Inactive,2020-10-21,,False
+CBI040,Paolo,Costi,3929138659,paolo.costi@cbitaly.it,,Business Basic,2019-03-08,2025-03-08,Broker,Active,2019-12-04,,False
+CBI040,Antje,Rauser,3456150263,,,,,,agentisud,Inactive,2019-12-04,,True
+CBI040,Marcello,Massimetti,3939582767,,,,,,agentisud,Inactive,2019-12-04,,True
+CBI040,Simone,Saiu,3495051314,,,,2019-10-22,,agentisud,Inactive,2019-12-04,,True
+CBI040,Natalia,Pelikh,3483509926,,,,,,agentisud,Inactive,2019-12-04,,True
+CBI040,Giuseppe,Loi,3297918264,,,,2019-10-18,,agentisud,Inactive,2019-12-04,,True
+CBI040,Luca,Perini,3351043007,luca.perini@cbitaly.it,,,,,agentisud,Inactive,2020-04-28,,False
+CBI040,Giordo,Giuseppe,,,,,,,agentisud,Inactive,2019-12-04,,True
+CBI040,Manuel,Demuro,3441703055,,,,,,agentisud,Inactive,2019-12-04,,True
+CBI040,Antonello,Cherchi,3405576262,antonello.cherchi@cbitaly.it,,Business Standard,2020-01-13,,agentisud,Inactive,2020-01-13,,False
+CBI040,Dario,Schirru,3899460321,,,,,,agentisud,Inactive,2019-12-04,,True
+CBI039,Laura,Montani,3384579559,,,,,,agentiroma,Active,2019-12-04,,True
+CBI038,Antonio ,Veneziano,3922330973,antonio.veneziano@cbitaly.it,,Business Basic,2020-11-30,2024-11-30,agentiroma,Active,2019-12-04,FATT. 1016/2023,False
+CBI039,,,,bgimmobiliare@cbitaly.it,,Business Standard,2020-11-30,2024-11-30,agenzia,Inactive,2019-12-04,DISATTIVATA IN DATA 02/01/2025,True
+CBI040,Francesco,Brocca,3483475853,,,,,,agentisud,Inactive,2019-12-04,,True
+CBI038,Flavia ,Begozzi,3428560828,flavia.begozzi@cbitaly.it,,Business Basic,2018-12-06,2025-12-06,agentiroma,Active,2019-12-04,,False
+CBI044,,,,infobodini@cbitaly.it,,Business Basic,2018-12-17,2025-12-17,agentiroma,Active,2019-12-04,FATT. 1041/2023,True
+CBI040,Vanessa,Bardi,3336249777,,,,2019-10-22,,agentisud,Inactive,2020-03-05,sostituisce vecchia mail Saiu,True
+CBI039,Pierluca,Goghero,3935945215,pierluca.goghero@cbitaly.it,,Business Basic,2020-11-30,2025-11-30,Broker,Inactive,2019-12-04,DISATTIVATA IN DATA 02/01/2025,False
+CBI177,Alessandro ,Beddini,+393270125667,alessandro.beddini@cbitaly.it,,Business Basic,2020-11-30,2026-11-30,agentiroma,Active,2019-12-04,,False
+CBI038,Martino,Tirelli,,martino.tirelli@cbitaly.it,,Starter ,2022-11-29,2024-11-29,agentiroma,Inactive,2022-11-29,FATT. 988/2023<br /><br /><br />DISATTIVATA IN DATA 12/07/2024,True
+CBI038,Roberto,Cavallaro,,roberto.cavallaro@cbitaly.it,,Starter ,2023-04-26,2024-04-26,agentiroma,Inactive,2023-04-26,"disattivato in data 21/07/2023<br /><br />PAOLA FRANCESCA CARELLO ha usufruito del credito residuo di roberto.cavallaro@cbitaly.it (280gg) pagando differenza perché lei ha Basic, Cavallaro aveva Starter. N.B. QUESTA COSA NON SI PUò FARE PERCHé SOLO LA SOCIETà PUò FRUIRE DEI CREDITI",True
+CBI038,Antonio ,Spadano,3468114888,antonio.spadano@cbitaly.it,,Business Basic,2020-11-27,2026-11-27,agentiroma,Active,2019-12-04,FATT. 1013/2023,False
+CBI038,Maria Pia ,Rovelli,3341230714,mariapia.rovelli@cbitaly.it,,Business Basic,2020-11-27,2024-11-27,agentiroma,Active,2019-12-04,FATT. 1014/2023,False
+CBI038,Ida ,Ciacci,3281390867,ida.ciacci@cbitaly.it,,Business Basic,2020-11-27,2023-11-27,agentiroma,Inactive,2019-12-04,<p>mandata mail il 2</p>,False
+CBI151, Anna Maria,Di Marco,3383067063,anna.dimarco@cbitaly.it,,Business Basic,2020-11-24,2024-12-24,Broker,Active,2019-12-04,FATT. 074/2024,False
+CBI038,Lorenzo,Bozzi,3391221001,lorenzo.bozzi@cbitaly.it,,Business Basic,2020-11-27,2024-11-27,agentiroma,Inactive,2019-12-04,FATT. 1015/2023,False
+CBI038,Mauro,Salfo,3397854440,mauro.salfo@cbitaly.it,,Business Basic,2020-11-27,,agentiroma,Inactive,2020-11-27,,False
+CBI038,Salvatore,Allotta,3283955484,salvatore.allotta@cbitaly.it,,Business Basic,2020-11-30,,agentiroma,Inactive,2020-11-30,,False
+CBI038,Valentina ,Bodini,3939261930,valentina.bodini@cbitaly.it,,Business Basic,2018-11-23,2026-11-23,GL Specialist,Active,2019-12-04,FATT. 989/2023,False
+CBI118,GRUPPO,BODINI,,gruppobodini@cbitaly.it,,Business Standard,2019-09-30,2026-09-30,agenzia,Active,2019-12-04,FATT.798/2023,True
+CBI038,Alessia,Barbieri,3755542528,alessia.barbieri@cbitaly.it,,Business Basic,2019-11-11,,agentiroma,Inactive,2019-12-04,,False
+CBI038,Alessandra,Di Toro,3928464187,alessandra.ditoro@cbitaly.it,,Business Basic,2019-10-25,2024-10-25,Broker,Inactive,2019-12-04,FATT. 1017/2023<br /><br />DISATTIVATA IN DATA 12/07/2024,False
+CBI038,Silvia,Sgarallino,3381991277,silvia.sgarallino@cbitaly.it,,Business Basic,2019-01-09,2024-01-09,agentiroma,Active,2019-12-04,,False
+CBI038,,,,amministrazionebodini@cbitaly.it,,Business Premium,2019-02-26,2026-02-26,agenzia,Active,2019-12-04,,True
+CBI038,,,,internationalbodini@cbitaly.it,,Business Basic,2019-05-15,2024-05-15,agenzia,Active,2019-12-04,,True
+CBI038,Patrizio,Simone,3349936250,patrizio.simone@cbitaly.it,,Business Standard,2019-06-03,,Agent,Inactive,2019-12-04,,False
+CBI151,,BODINI,,bodini@cbitaly.it,,Business Standard,2021-02-01,2026-02-01,agenzia,Active,2019-12-04,upgrade in data 30/10/2025 ( claudia ),True
+CBI038,Paola ,Ermirio,3457163533,paola.ermirio@cbitaly.it,,Business Basic,2020-01-13,2025-01-13,agentiroma,Active,2019-12-04,FATT. 348/2024,False
+CBI038,Elena ,ROmano,3479047020,elena.romano@cbitaly.it,,Business Basic,2022-11-02,2024-11-02,agentiroma,Inactive,2022-02-11,,False
+CBI038,Roberta,Di Giorgio Morisani,3889770076,roberta.dgmorisani@cbitaly.it,,Starter ,2019-01-09,2025-01-09,GL Specialist,Active,2019-12-04,,False
+CBI038,Riccardo,Tuacris,3488439616,,,,2019-11-11,,agentiroma,Inactive,2019-12-04,,True
+CBI038,Valerio,Tordi,3337787782,valerio.tordi@cbitaly.it,valeriotordi@yahoo.it,Starter ,2020-07-01,2024-07-01,agentiroma,Inactive,2019-12-13,DISATTIVATA IN DATA 18/01/2024,False
+CBI038,Paola Francesca,Carello,3470778877,paolafrancesca.carello@cbitaly.it,,Starter ,2019-01-09,2025-01-09,agentiroma,Active,2019-12-04,,False
+CBI038,Camilla,Persiani,,camilla.persiani@cbitaly.it,,Business Standard,2020-07-01,,agentiroma,Inactive,2020-01-07,,True
+CBI038,Laura ,Scali,3386549916,,,,,,agentiroma,Active,2019-12-04,,True
+CBI038,Wanda ,Ronga,3336439183,,,,,,agentiroma,Active,2019-12-04,,True
+CBI038,Silvia ,Cavatrunci,3924688786,,,,,,agentiroma,Active,2019-12-04,,True
+CBI038,Tatiana,De Monte,,,,,,,agentiroma,Active,2019-12-04,,True
+CBI038,Emanuele,Casapulla,3286161124,emanuele.casapulla@cbitaly.it,,Business Basic,2021-08-04,,servizio,Inactive,2021-04-08,INSERITO CORRETTAMENTE IN DATA 03/11/2023<br />NON COLLABORA DA ANNI CON BODINI - DISATTIVATA IN DATA 03/11/2023 - CANCELLATA DA M365 IN DATA 03/11/2023,False
+CBI038,Rodolfo,Reggiannini,3280978657,,,Business Basic,2021-01-12,,agentiroma,Inactive,2021-12-01,,True
+CBI038,Mario ,Moretti,3402218286,,,,,,Agent,Inactive,2020-05-26,,True
+CBI038,Ferdinando ,Gabelli,3332885889,,,,,,agentiroma,Active,2019-12-04,,True
+CBI038,Federica,Cinque,,,,,2019-07-31,,agentiroma,Active,2019-12-04,,True
+CBI038,Carlotta,Marasca,3663273366,,,,2019-12-03,,agentiroma,Active,2019-12-04,,True
+CBI108,,,,globalcamperio@cbitaly.it,,Business Premium,2022-09-14,,agenzia,Inactive,,,True
+CBI038,Massimo ,Cambriani,3345085186,,,,,,agentiroma,Active,2019-12-04,,True
+CBI038,Federica ,Benassi,3332320127,,,,,,agentiroma,Active,2019-12-04,,True
+CBI038,Renato ,Caggiano,3385300599,,,,,,agentiroma,Inactive,2019-12-04,,True
+CBI031,Antonella,Chiama,,premium@cbitaly.it,info@premiumimmobiliare.it,Business Premium,2022-02-14,2024-02-14,agenzia,Inactive,2022-02-14,,True
+CBI038,Donatella,Capiati,3355297300,,,,2019-11-11,,agentiroma,Inactive,2019-12-04,restano 5 mesi da scalare su prossima apertura ,True
+CBI038,Federica,Capuccio,3396407315,,,,2019-10-25,,agentiroma,Inactive,2019-12-04,,True
+CBI112,Gianmarco ,Cattaneo,3484772386,gianmarco.cattaneo@cbitaly.it,giancattaneo@gmail.com,Business Basic,2022-02-14,2024-02-14,Broker,Active,2022-02-14,,False
+CBI034,Marisa ,Battaglia,3892399408,,,,,,agenticentro,Active,2019-12-04,,True
+CBI034,,,,sutri@cbitaly.it,,Business Standard,2019-01-14,2025-01-14,agenzia,Active,2019-12-05,FATT. 092/2024,True
+CBI034,Elisabetta,Blasi,+393295331368,,,,,,Broker,Active,2019-12-04,,True
+CBI028,Rita,Fucellara,3474513448,,,,,,agenticentro,Active,2019-12-04,,True
+CBI145,,,0510301284,bologna@cbitaly.it,,Business Premium,2023-01-26,2026-01-26,agenzia,Active,2023-01-26,,True
+CBI028,Michela ,Pintus,3476267780,michela.pintus@cbitaly.it,,Business Basic,2020-02-07,2025-02-07,Broker,Active,2019-12-04,,False
+CBI028,,,0761220676,sintony@cbitaly.it,,Business Standard,2020-02-07,2025-02-07,agenzia,Active,2019-12-04,,True
+CBI145,Pasquale,Fusco,3331194030,pasquale.fusco@cbitaly.it,,Business Standard,2022-09-01,2026-09-01,Broker,Active,2022-09-01,FATT. 904/2024,False
+CBI028,Michela,Sordi,3494050800,,,,,,agenticentro,Active,2019-12-04,,True
+CBI145,Rossana,Caggiano,3475050364,rossana.caggiano@cbitaly.it,,Starter ,2022-10-24,2026-11-24,agentinord,Active,2022-10-24,,False
+CBI145,Ettore,Schena,,ettore.schena@cbitaly.it,,Starter ,2022-12-15,2024-12-14,agentinord,Inactive,2022-12-15,FATT. 1084/2023<br /><br />DISATTIVATA IN DATA 09/04/2024,True
+CBI145,Luciana,Ciniero,3381465730,luciana.ciniero@cbitaly.it,,Starter ,2023-05-30,2025-05-30,agentinord,Inactive,2023-05-30,eccezione (a carico Daisy) creata mail in data 30/05/2023 ,False
+CBI028,Luca,Porceddu,3384497222,luca.porceddu@cbitaly.it,,Starter ,2020-11-23,2024-11-23,agenticentro,Active,2019-12-04,FATT. 986/2023,False
+CBI028,Alessia,Arena,3297629426,,,,,,agenticentro,Active,2019-12-04,,True
+CBI021,Simone,Minerva,3371060561,simone.minerva@cbitaly.it,,Starter ,2020-11-27,2023-11-27,agenticentro,Inactive,2020-11-27,DISATTIVATO IN DATA 05/10/2023,False
+CBI026,,,,orbetello@cbitaly.it,,Business Basic,2020-01-28,2026-01-28,agenzia,Active,2019-12-04,,True
+CBI021,Fabio,De Valeri,3713720555,fabio.devaleri@cbitaly.it,,Starter ,2020-11-27,2026-11-27,agenticentro,Active,2020-11-25,FATT 923/2023,False
+CBI021,Claudia,Andrea,,claudia.andrea@cbitaly.it,,Business Basic,2023-03-06,2025-03-06,agenticentro,Inactive,2023-03-06,DISATTIVATA IN DATA 05/03/25,True
+CBI021,Marilena,Cicala,3282718428,marilena.cicala@cbitaly.it,,Starter ,2020-11-27,2026-11-27,agenticentro,Active,2020-11-27,FATT 923/2023,False
+CBI026,Fabrizio,Cardoselli,3351799696,fabrizio.cardoselli@cbitaly.it,,Business Standard,2020-01-28,2026-01-28,Broker,Active,2019-12-04,FATT. 132/2024,False
+CBI026,Eleonora,Casale,,,,Business Standard,2020-07-02,,agenticentro,Inactive,2020-02-07,,True
+CBI026,Andrea,Fanteria,3803041770,andrea.fanteria@cbitaly.it,,Business Standard,2020-01-28,2026-01-28,agenticentro,Active,2019-12-04,FATT. 132/2024,False
+CBI021,Davide,Samà,3280482739,davide.sama@cbitaly.it,,Starter ,2020-11-25,2023-11-25,agenticentro,Inactive,2020-11-25,DISATTIVATA IN DATA 07/09/2023,False
+CBI021,Patryk Denis,Liuzza,3296960499,patrykdenis.liuzza@cbitaly.it,,Starter ,2020-11-25,2023-11-25,agenticentro,Inactive,2020-11-25,DISATTIVATA IN DATA 25/11/24,False
+CBI021,Mario,Inglese,3914904455,mario.inglese@cbitaly.it,,Starter ,2020-11-25,2026-11-25,agenticentro,Active,2020-11-25,FATT 923/2023,False
+CBI021,Massimiliano,Mariani,3282795047,massimiliano.mariani@cbitaly.it,,Starter ,2020-11-25,2026-11-25,agenticentro,Active,2019-12-04,FATT 923/2023,False
+CBI021,Fabrizio,Roffi,3498157238,fabrizio.roffi@cbitaly.it,,Starter ,2020-11-25,2026-11-25,agenticentro,Active,2019-12-04,FATT 923/2023,False
+CBI021,Alessandro ,Ponzani,3389035819,alessandro.ponzani@cbitaly.it,,Business Standard,2020-11-25,2026-11-25,agenticentro,Active,2019-12-04,FATT 923/2023,False
+CBI021,Stefano,Pintus,3925585302,stefano.pintus@cbitaly.it,,Business Premium,2020-11-25,2026-11-25,Broker,Active,2019-12-04,FATT 923/2023,False
+CBI021,Aldo,Smorfa,3395779625,aldo.smorfa@cbitaly.it,,Starter ,2020-11-25,,agenticentro,Inactive,2019-12-04,,False
+CBI021,Sandro,Valentini,3333201641,sandro.valentini@cbitaly.it,,Starter ,2020-11-25,2026-11-25,agenticentro,Active,2020-07-27,FATT 923/2023,False
+CBI021,Pierpaolo,Flori,3248707977,pierpaolo.flori@cbitaly.it,,Starter ,2020-11-25,2026-11-25,agenticentro,Active,2019-12-04,FATT 923/2023,False
+CBI021,Donato,De Prezzo,3278893962,donato.deprezzo@cbitaly.it,,Business Standard,2021-11-09,2026-11-09,agenticentro,Active,2021-11-09,FATT. 923/2023,False
+CBI021,Miriam,Benevenga,3401370827,miriam.benevenga@cbitaly.it,,Business Premium,2020-11-25,2026-11-25,agenticentro,Active,2019-12-04,FATT. 923/2023,False
+CBI021,Fulvio ,Ghiglione,3333760595,fulviofranco.ghiglione@cbitaly.it,,Starter ,2020-11-25,2023-11-25,agenticentro,Inactive,2019-12-04,DISATTIVATA IN DATA 07/09/2023,False
+CBI021,Valeria,Maestri,3331799075,valeria.maestri@cbitaly.it,,Business Standard,2021-10-20,2026-10-20,agenticentro,Active,2021-10-20,,False
+CBI021,,,,civitacastellana@cbitaly.it,,Business Standard,2019-11-12,2026-11-12,agenzia,Active,2019-12-04,FATT 923/2023,True
+CBI021,Cristian,Ciolli,3294521606,cristian.ciolli@cbitaly.it,,Business Premium,2020-11-25,2026-11-25,agenticentro,Active,2019-12-04,FATT 923/2023,False
+CBI021,Camillo,Callari,3392093853,camillo.callari@cbitaly.it,,Starter ,2020-11-25,2026-11-25,agenticentro,Active,2020-11-25,FATT. 923/2023,False
+CBI021,Marco,Facci,3204097762,marco.facci@cbitaly.it,,Starter ,2020-11-25,2026-11-25,agenticentro,Active,2019-12-04,FATT 923/2023,False
+CBI021,Daniele,Giacomelli,3395849159,daniele.giacomelli@cbitaly.it,,Business Standard,2021-11-09,2026-11-09,agenticentro,Active,2021-11-09,FATT 923/2023,False
+CBI021,Francesco,Caporlingua,3669744440,francesco.caporlingua@cbitaly.it,,Starter ,2020-11-27,2023-11-27,agenticentro,Inactive,2020-11-25,DISATTIVATA IN DATA 07/09/2023,False
+CBI019,Laura,Liguori,3279461854,,,,,,agenticentro,Active,2019-12-04,,True
+CBI018,Gloria,Favaloro,,gloria.favaloro@cbitaly.it,,Business Basic,2023-02-28,2024-02-28,agenticentro,Inactive,2023-02-28,mandata pro forma - mail congelata in data 3 maggio per richiesta di Simona di Tarquinia<br /><br />DISATTIVATA IN DATA 11/07/2023<br />232 GIORNI DI CREDITO USATI PER IIL RINNOVO DI CLAUDIA CIURLUINI,True
+CBI019,Paolo,Castignani,,,,,,,agenticentro,Inactive,2019-12-04,,True
+CBI019,,,,tarquinialido@cbitaly.it,,Business Standard,2020-07-20,2026-07-20,agenzia,Active,2019-12-04,,True
+CBI021,Claudia,Pannella,3498732600,claudia.pannella@cbitaly.it,,Starter ,2021-03-15,2025-03-15,agenticentro,Active,2021-03-15,FATT 345/2024,False
+CBI021,Alessio,Damiani,,,,,,,agenticentro,Inactive,2019-12-04,,True
+CBI021,Carlo,Gaiofatto,3913666997,carlo.gaiofatto@cbitaly.it,,Starter ,2022-04-22,2024-04-22,Agent,Inactive,2022-04-22,DISATTIVATA IN DATA 07/09/2023,False
+CBI021,Sara,Continenza,3458807340,sara.continenza@cbitaly.it,,Business Premium,2021-09-07,2022-09-07,agenticentro,Inactive,2021-07-09,DISATTIVATA IN DATA 12/07/2023 ,False
+CBI019,Franca,Gigio,3334579707,franca.gigio@cbitaly.it,,Business Basic,2020-11-27,2025-11-27,Broker,Active,2019-12-04,,False
+CBI018,Roldano,Vandini,3356607289,roldano.vandini@cbitaly.it,,Business Basic,2020-11-30,2026-11-30,Broker,Active,2019-12-04,,False
+CBI018,,,,,,,,,servizio,Active,2021-11-23,,True
+CBI099,Federica,Gigio,3890289998,federica.gigio@cbitaly.it,,Business Standard,2019-10-25,2025-10-25,agentinord,Active,2019-12-04,25/26 CARICO DAISY,False
+CBI018,Maria,Superti,3291577442,maria.superti@cbitaly.it,,Business Basic,2020-11-25,2026-11-25,agenticentro,Active,2019-12-04,FATT. 997/2023,False
+CBI018,Simona,Cea,3288353791,tarquinia@cbitaly.it,,Business Standard,2019-05-29,2025-05-29,agenzia,Active,2019-12-04,,False
+CBI018,Andrea ,Celli,3339294516,andrea.celli@cbitaly.it,,Business Standard,2020-03-04,2025-03-04,agenticentro,Active,2019-12-04,carico Daisy,False
+CBI018,Claudia ,Ciurluini,,claudia.ciurluini@cbitaly.it,,Business Standard,2022-03-02,2025-10-21,servizio,Inactive,2022-03-02,DISATTIVATA IN DATA 19/05/25,True
+CBI018,Monica,Marini,3803630557,monica.marini@cbitaly.it,,Business Basic,2020-11-25,2026-11-25,Legal Representative,Active,2019-12-04,,False
+CBI078,Silvia,Di Marzio,3930866535,silvia.dimarzio@cbitaly.it,,Business Basic,2021-11-23,2024-11-23,agenticentro,Inactive,2021-11-23,tarquinialido@cbitaly.it,False
+CBI007,Simone ,Guzzon,3518581944,,,,,,agenticentro,Inactive,2019-12-04,,True
+CBI008,Matteo,Sabatini,3384985510,matteo.sabatini@cbitaly.it,,Starter ,2019-12-17,2023-12-17,Agent,Inactive,2019-12-04,DOWNGRADE STANDARD TO STARTER,False
+CBI007,Cassiano ,Sabatini,3356916221,cassiano.sabatini@cbitaly.it,,Starter ,2018-11-23,2024-11-23,Agent,Inactive,2019-12-04,DOWNGRADE DA PREMIUM A STARTER <br /><br />FATT. 982/2023,False
+CBI008,Roberta ,Sabatini,3385699300,roberta.sabatini@cbitaly.it,,Starter ,2019-12-17,2023-12-17,Agent,Inactive,2019-12-04,DOWNGRADE STANDARD TO STARTER,False
+CBI007,Sofia,Scotto,3337471698,sofia.scotto@cbitaly.it,,Starter ,2019-05-11,2024-05-11,Agent,Inactive,2019-12-04,DOWNGRADE DA BASIC A STARTER<br /><br />FATT. 982/2023,False
+CBI008,Isabella,Rispoli,3285723657,portoercole@cbitaly.it,,Starter ,2019-12-17,2023-12-17,Agent,Inactive,2019-12-04,,False
+CBI007,Claudia,Angelini,3917300796,portosantostefano@cbitaly.it,,Starter ,2019-05-11,2024-05-11,Agent,Inactive,2019-12-04,DOWNGRADE DA STANDARD A STARTER<br /><br />FATT. 982/2023,False
+CBI006,Laura,Platti,3408938548,laura.platti@cbitaly.it,,Business Basic,2021-02-09,2026-02-09,agenticentro,Active,2021-02-09,,False
+CBI006,Benedetta,Andreazza,3479064723,benedetta.andreazza@cbitaly.it,,Business Basic,2022-09-01,2026-09-01,agenticentro,Active,2022-09-01,FATT. 763/2023,False
+CBI006,Giacomo,Ciucci,3894792799,giacomo.ciucci@cbitaly.it,,Business Basic,2022-06-06,2026-06-06,agenticentro,Active,2022-06-06,A CARICO DAISY,False
+CBI153,Lorenzo,Ciofo,3311099633,lorenzo.ciofo@cbitaly.it,,Business Basic,2022-06-06,2024-06-06,agenticentro,Active,2022-06-06,"a carico daisy, a scadenza chiedere a Roberto come procedere <br /><br />da soluzioni immobiliari di viterbo è passato a cattolica prime properties",False
+CBI006,Emanuele,Bastiani,3484096959,emanuele.bastiani@cbitaly.it,bastianie78@gmail.com,Business Basic,2020-07-29,2026-07-29,agenticentro,Active,2019-12-04,,False
+CBI006,,,0761332038,viterbo@cbitaly.it,,Business Standard,2020-01-31,2025-06-30,agenzia,Active,2019-12-04,carico Daisy,True
+CBI006,,,,,,Business Premium,2020-11-27,2025-11-27,agenticentro,Active,2023-07-12,FATT.1030/2023,True
+CBI006,Barbara,Merlani,3471664364,barbara.merlani@cbitaly.it,,Business Basic,2020-12-21,2024-12-21,agenticentro,Active,2019-12-04,FATT. 1083/2023,False
+CBI006,Eleonora,Ciucci,3933621174,eleonora.ciucci@cbitaly.it,,Business Standard,2020-03-30,2025-03-30,Broker,Active,2019-12-04,carico daisy,False
+CBI003,Irena,Zambrelli,3386812547,irena.zambrelli@cbitaly.it,,Business Basic,2020-11-30,2023-11-30,agentinord,Inactive,2019-12-04,DISATTIVATA IN DATA 22/11/2023,False
+CBI003,Valentina ,Inconis,3471814561,valentina.inconis@cbitaly.it,,Business Basic,2021-10-05,2026-10-05,agentinord,Active,2021-10-05,FATT. 842/2023,False
+CBI006,Daniele,Buzzi ,3282716699,daniele.buzzi@cbitaly.it,,Business Basic,2026-01-12,2026-01-12,agenticentro,Active,2019-12-04,,False
+CBI002,Niccolò,Risi,3348090382,niccolo.risi@cbitaly.it,,Starter ,2020-11-27,2024-11-27,agentinord,Active,2019-12-04,FATT. 1001/2023,False
+CBI003,Vincenzo,Romano,3338263897,vincenzo.romano@cbitaly.it,,Business Basic,2020-11-30,,Agent,Inactive,2019-12-04,,False
+CBI002,Luisa,Tesa,3385033731,luisa.tesa@cbitaly.it,,Starter ,2020-11-27,2024-11-27,Broker,Active,2019-12-04,FATT. 1001/2023,False
+CBI003,Michele ,Zeuli,3386753254,michele.zeuli@cbitaly.it,,Business Basic,2020-11-30,2026-11-30,Broker,Active,2019-12-04,,False
+CBI006,Luca ,Zei,3493595630,,,,,,agenticentro,Inactive,2019-12-04,,True
+CBI006,Marco ,Cristofari,3285885262,marco.cristofari@cbitaly.it,,Business Basic,2023-02-03,2026-02-03,agenticentro,Active,2019-12-04,,False
+CBI003,Elisabetta,Visentin,,home@cbitaly.it,,Business Standard,2020-03-10,2026-03-24,agenzia,Active,2019-12-04,,True
+CBI000,Raffaella ,Pace,,raffaella.pace@cbitaly.it,rpace@coldwellbanker.it,Business Standard,2018-11-23,2023-11-23,master,Active,2019-12-04,,True
+CBI000,Alberto,Fasano,3914864085,alberto.fasano@cbitaly.it,,Business Basic,2022-01-09,,master,Inactive,2024-01-02,,False
+CBI002,,,,first@cbitaly.it,first@coldwellbanker.it,Business Standard,2020-11-27,2024-11-27,agentinord,Active,2019-12-04,FATT. 1001/2023,True
+CBI000,Roberto ,Gigio,,roberto.gigio@cbitaly.it,rgigio@coldwellbanker.it,Business Standard,2018-11-12,2023-11-12,master,Active,2019-12-04,,True
+CBI000,Pamela,Mariano,,pamela.mariano@cbitaly.it,pamela.mariano@coldwellbanker.it,Business Standard,2018-11-27,2023-11-27,master,Active,2019-12-04,,True
+CBI000,226Lab,,,226lab@cbitaly.it,,,2022-11-11,,servizio,Inactive,,,True
+CBI000,Sara ,Mazoni,,sara.mazoni@cbitaly.it,smazoni@coldwellbanker.it,Business Standard,2018-11-23,2023-11-23,master,Active,2019-12-04,,True
+CBI000,Catia,Demonte,,back.office@cbitaly.it,,Business Basic,2023-04-05,2024-04-05,master,Active,2023-05-04,,True
+CBI000,Claudia,Strinella,3201419968,claudia.strinella@cbitaly.it,,Business Standard,2019-11-21,2023-11-21,master,Active,2019-12-05,,False
+CBI000,Tommaso ,Malgnino,,,tmalagnino@coldwellbanker.it,,,,master,Inactive,2019-12-04,,True
+CBI000,Luca ,Gramaccioni,3480187251,luca.gramaccioni@cbitaly.it,lgramaccioni@coldwellbanker.it,Business Standard,2019-02-01,2024-02-01,master,Active,2019-12-04,,False
+CBI000,,la tiene Cassiano,,,barberini@coldwellbanker.it,,,,servizio,Inactive,2019-12-04,,True
+CBI000,,gest. Raf,,,sito@coldwellbanker.it,Cassetta condivisa,,,servizio,Active,2019-12-04,,True
+CBI000,,gest. Maurizio,,,international@coldwellbanker.it,,,,servizio,Inactive,2019-12-04,,True
+CBI000,Angelo,Semerano,,angelo.semerano@cbitaly.it,,Business Standard,2019-05-11,2023-05-11,servizio,Active,2019-12-04,,True
+CBI000,Massimiliano,Pochetti,,massimiliano.pochetti@cbitaly.it,,Starter ,2022-07-01,2024-02-01,servizio,Active,2022-01-07,,True
+CBI000,Ilaria ,Insardi,,ilaria.insardi@cbitaly.it,iinsardi@coldwellbanker.it,,,,master,Active,2019-12-04,,True
+CBI000,Dario,Biato,3485160233,dario.biato@cbitaly.it,,Business Standard,2020-05-15,,Agent,Inactive,2020-05-15,,False
+CBI000,Corrado,Cinquanta,,,ccinquanta@coldwellbanker.it,,,,master,Inactive,2019-12-04,,True
+CBI000,Sabrina,Fiorini,,,sfiorini@coldwellbanker.it,,,,servizio,Inactive,2019-12-04,,True
+CBI000,,gest.  Raf,,,info@coldwellbanker.it,,,,servizio,Active,2019-12-04,,True
+CBI000,Rosanna,Bernassola,,,rbernassola@coldwellbanker.it,,,,agentiroma,Inactive,2019-12-04,,True
+CBI000,Floriana,Branca,3283871004,,studiolegale.florianabranca@gmail.com,Starter ,2021-12-05,,master,Active,2021-05-12,,False
+CBI000,gest. Sara,,,,amministrazione@coldwellbanker.it,Cassetta condivisa,,,servizio,Active,2019-12-04,,True
+CBI000,gest. Sara,,,,italy@coldwellbanker.it,,,,servizio,Active,2019-12-04,,True
+CBI000,gestita da Luca,,,,formazione@coldwellbanker.it,,,,servizio,Active,2019-12-04,,True
+CBI000,gest. Sara,,,,privacy@coldwellbanker.it,,,,servizio,Active,2019-12-04,,True
+CBI000,gestita da Cassiano,,,,recruiting@coldwellbanker.it,,,,servizio,Inactive,2019-12-04,,True
+CBI134,Filippo,Innocenti,3491366613,filippo.innocenti@cbitaly.it,,Starter ,2024-08-30,2026-08-30,agenticentro,Active,2024-08-30,,False
+CBI164,Piercarlo,Agosto,3927021871,piercarlo.agosto@cbitaly.it,,Business Basic,2024-09-04,2025-09-04,agentinord,Inactive,2024-09-04,FATT. 943/2024,False
+CBI092,Vincenzo ,Marino,+393926810911,vincenzo.marino@cbitaly.it,,Starter ,2024-08-30,2025-08-30,agentisud,Active,2024-08-30,,False
+CBI134,Elisabetta ,Fiori,3925390637,elisabetta.fiori@cbitaly.it,,Starter ,2024-09-06,2025-09-06,agenticentro,Inactive,2024-09-06,,False
+CBI177,Silvia ,Longhi,3899757091,silvia.longhi@cbitaly.it,,Starter ,2024-09-12,2025-09-12,agenticentro,Inactive,2024-09-12,DISATTIVATA IN DATA 17/06/2025,False
+CBI074,Ciro,Bianco,3492289583,ciro.bianco@cbitaly.it,,Starter ,2024-09-10,2025-09-10,Broker,Active,2024-09-10,,False
+CBI177,Mario,Pitò,3476257203,mario.pito@cbitaly.it,,Starter ,2024-09-09,2025-09-09,agenticentro,Inactive,2024-09-09,DISATTIVATA IN DATA 03/12/24,False
+CBI161,Alessandra,Caccavale,3392392285,alessandra.caccavale@cbitaly.it,,Starter ,2024-09-09,2025-09-09,agenticentro,Inactive,2024-09-09,Credito Residuo,False
+CBI177,Pierpaolo ,De Dominicis,3386441735,pierpaolo.dedominicis@cbitaly.it,,Starter ,2024-06-17,2025-05-17,agenticentro,Active,2024-05-17,,False
+CBI177,Massimo,Novelli,3333914752,massimo.novelli@cbitaly.it,,Starter ,2024-05-21,2025-05-21,agenticentro,Inactive,2024-05-21,DISATTIVATA IN DATA 21/11/2024,False
+CBI153,Silvia,Mancini,3383934444,silvia.mancini@cbitaly.it,,Business Basic,2024-09-12,2025-09-12,agentinord,Active,2024-09-12,,False
+CBI129,Claudia,Ciardiello,3423184238,claudia.ciardiello@cbitaly.it,,Business Basic,2024-09-13,2025-09-13,agenticentro,Inactive,2024-09-13,,False
+CBI148,,,,advisor24re@cbitaly.it,,Starter ,2024-09-16,2025-09-16,agentisud,Active,2024-09-16,,True
+CBI138,Beatrice,Campisi,3665202305,beatrice.campisi@cbitaly.it,,Starter ,2024-09-17,2025-09-17,agentinord,Active,2024-09-17,,False
+CBI138,Daniele ,Verità,3470983136,daniele.verita@cbitaly.it,,Starter ,2024-09-17,2025-09-17,agentinord,Active,2024-09-17,,False
+CBI173,,,,24relegnano@cbitaly.it,,Business Premium,2024-02-22,2026-02-22,agenzia,Active,2024-02-22,,True
+CBI176,,,,andria@cbitaly.it,,Business Standard,2024-03-25,2026-03-25,agenzia,Active,2024-03-25,,True
+CBI177,Gianluca ,Lampredi,3939722339,gianluca.lampredi@cbitaly.it,,Starter ,2024-09-20,2025-09-20,agenticentro,Inactive,2024-09-20,DISATTIVATA IN DATA 03/12/24,False
+CBI134,Gianluca ,Lepri,3298728632,gianluca.lepri@cbitaly.it,,Starter ,2024-09-25,2025-09-25,agenticentro,Inactive,2024-09-25,,False
+CBI154,Debora,Ripamonti,3756439043,debora.ripamonti@cbitaly.it,,Business Basic,2024-09-25,2026-09-25,agentinord,Active,2024-09-25,,False
+CBI092,Angelo,Morelli,+393939456025,angelo.morelli@cbitaly.it,,Starter ,2024-10-02,2026-10-02,agentisud,Active,2024-10-02,,False
+CBI112,Daniele,Del Pozzo,3923564240,daniele.delpozzo@cbitaly.it,,Starter ,2024-10-02,2025-10-02,agentinord,Active,2024-10-02,SPOSTATO DA 24RE MILANO (CBI170) A BODINI MILANO (CBI112),False
+CBI038,Marco,Pefumi,,marco.pefumi@cbitaly.it,,Starter ,2024-10-04,2026-10-04,agenticentro,Active,2024-10-04,,True
+CBI112,Sergio,Carmona,3923382380,sergio.carmona@cbitaly.it,,Starter ,2024-10-09,2025-10-09,agentinord,Active,2024-10-09,,False
+CBI145,Marcello ,Leonelli,3757046910,marcello.leonelli@cbitaly.it,,Starter ,2025-10-09,2025-10-09,agentinord,Inactive,2024-10-09,,False
+CBI094,Giovanni ,Iacobellis,3494420407,giovanni.iacobellis@cbitaly.it,,Starter ,2024-10-10,2025-10-10,agentisud,Active,2024-10-10,,False
+CBI171,Simone ,Montanari,3332084958,simone.montanari@cbitaly.it,,Starter ,2024-10-11,2025-10-11,agentinord,Inactive,2024-10-11,,False
+CBI130,Marta,Papa,3717672834,marta.papa@cbitaly.it,,Starter ,2024-10-10,2025-10-10,agentinord,Active,2024-10-10,,False
+CBI130,Giove,Mncarini,3339852342,giove.mencarini@cbitaly.it,,Starter ,2024-10-10,2025-10-10,agentinord,Inactive,2024-10-10,DISATTIVATA IN DATA 06/03/25,False
+CBI150,Massimo,Peluso,3276552614,massimo.peluso@cbitaly.it,,Starter ,2024-10-14,2026-10-14,agentisud,Active,2024-10-14,,False
+CBI150,,,3336145729,francesca.devito@cbitaly.it,,Starter ,2024-10-14,2025-10-14,agentisud,Inactive,2024-10-14,,True
+CBI038,Luca,Paolantoni,+393663272217,luca.paolantoni@cbitaly.it,,Business Basic,2024-10-21,2026-10-21,Broker,Active,2024-10-21,,False
+CBI021,Lucrezia,Galia,,lucrezia.galia@cbitaly.it,,Business Standard,2024-10-29,2026-10-29,agenticentro,Active,2024-10-29,,True
+CBI179,Luca ,Greco,3513675466,luca.greco@cbitaly.it,,Starter ,2024-10-22,2025-10-22,agentisud,Inactive,2024-10-22,DISATTIVATA IN DATA 13/05/2025,False
+CBI170,Beatrice,Pazi,3495534768,beatrice.pazi@cbitaly.it,,Starter ,2024-10-23,2025-10-23,agentinord,Inactive,2024-10-23,DISATTIVATA IN DATA 22/07/2025,False
+CBI100,Giorgia,Aliano,3925887099,giorgia.aliano@cbitaly.it,,Starter ,2024-10-23,2025-10-23,agenticentro,Active,2024-10-23,,False
+CBI100,Daniela ,Scoponi,3289467362,daniela.scoponi@cbitaly.it,,Starter ,2024-11-20,2026-11-20,agenticentro,Active,2024-11-20,,False
+CBI094,Francesco,Cianciola,3468926334,francesco.cianciola@cbitaly.it,,Starter ,2024-10-24,2025-10-24,agentisud,Active,2024-10-24,,False
+CBI162,Maurizio,Cicoli,3459293389,maurizio.cicoli@cbitaly.it,,Starter ,2024-10-28,2026-10-28,agenticentro,Inactive,2024-10-28,,False
+CBI177,Gerardo Antonio,Pignatiello,3382653024,gerardoantonio.pignatiello@cbitaly.it,,Starter ,2024-10-29,2025-10-29,agenticentro,Inactive,2024-10-29,DISATTIVATO IN DATA 23/04/2025,False
+CBI177,Raffaella,Santoro,3408552496,raffaella.santoro@cbitaly.it,,Starter ,2024-10-29,2025-10-29,agenticentro,Inactive,2024-10-29,,False
+CBI177,Barbara,Piazza,3333149713,barbara.piazza@cbitaly.it,,Starter ,2024-10-29,2026-10-29,agenticentro,Active,2024-10-29,,False
+CBI185,,,,aquagroup@cbitaly.it,,Business Premium,2024-09-30,2025-09-30,agenzia,Active,2024-09-30,,True
+CBI170,Davide ,Guerra,3755583378,davide.guerra@cbitaly.it,,Starter ,2024-11-04,2026-11-04,agentinord,Active,2024-11-04,,False
+CBI179,Mario,Coco,3248691999,mario.coco@cbitaly.it,,Starter ,2024-11-05,2025-11-05,agentisud,Inactive,2024-11-05,,False
+CBI161,Sylvie,Contoz,3453313424,sylvie.contoz@cbitaly.it,,Starter ,2024-11-05,2025-11-05,agenticentro,Inactive,2024-11-05,DISATTIVATA IN DATA 14 LUGLIO 2025,False
+CBI094,Benedetto,Di Gennaro,3293777512,benedetto.digennaro@cbitaly.it,,Starter ,2024-11-06,2026-11-06,agentisud,Active,2024-11-06,,False
+CBI098,Katerina ,Kolycheva,3517767424,katerina.kolycheva@cbitaly.it,,Business Basic,2024-11-05,2025-11-05,agentinord,Inactive,2024-11-05,DISATTIVATA IN DATA 16/01/2025,False
+CBI175,Sonia,Frinella,301626883,sonia.farinella@cbitaly.it,,Business Basic,2024-11-07,,agentisud,Inactive,2024-11-07,DISATTIVATA IN DATA 05/05/2025,False
+CBI179,Mario,Musmarra,3934357314,mario.musmarra@cbitaly.it,,Starter ,,,agentisud,Active,2024-11-08,,False
+CBI038,Edoardo,Cosimi,3476212414,edoardo.cosimi@cbitaly.it,,Business Standard,2024-11-28,2025-11-28,agenticentro,Active,2024-11-28,,False
+CBI162,Lara,Giannoni,3383937357,lara.giannoni@cbitaly.it,,Starter ,2024-11-15,2025-11-15,agentinord,Inactive,2024-11-15,DISATTIVATA IN DATA 06/06/25,False
+CBI162,Giorgia,Barbieri,3927542590,giorgia.barbieri@cbitaly.it,,Starter ,2024-11-19,2026-11-19,agenticentro,Active,2024-11-19,,False
+CBI100,Nunzia,Rota,,nunzia.rota@cbitaly.it,,Starter ,2024-11-20,2025-11-20,agenticentro,Active,2024-11-20,,True
+CBI038,Carlotta ,Bodini,3663273366,carlotta.bodini@cbitaly.it,,Starter ,2024-12-27,2025-12-27,agentiroma,Inactive,2024-12-27,,False
+CBI189,,,0899761670,salerno@cbitaly.it,,Business Premium,2025-01-21,2026-01-21,agenzia,Active,2025-01-21,,True
+CBI021,Ivan,Guinetti,3401438476,ivan.guinetti@cbitaly.it,,Business Standard,2024-12-04,2025-12-04,agenticentro,Active,2024-12-04,UPGRADE EFFETTUATO IN DATA 24/11/2025,False
+CBI133,Yasin,Zougui,3458488567,yasin.zougui@cbitaly.it,,Business Basic,2024-12-10,2025-12-10,agentinord,Active,2024-12-10,,False
+CBI100,Fabio ,Fichi,3929721145,fabio.fichi@cbitaly.it,,Starter ,2024-12-18,2025-12-18,agenticentro,Active,2024-12-18,,False
+CBI100,Roberto,Passarella,3791533244,roberto.passarella@cbitaly.it,,Starter ,2024-12-18,2025-12-18,agenticentro,Inactive,2024-12-18,,False
+cbi161,Roberto,Sabatello,,roberto.sabatello@cbitaly.it,,Starter ,2024-12-19,2025-12-19,agenticentro,Inactive,2024-12-19,,True
+CBI127,Francesco,Mautone,3516601441,francesco.mautone@cbitaly.it,,Business Basic,2025-01-02,2026-01-02,agentinord,Active,2025-01-02,,False
+CBI179,Domenico,Coniglione,3351947906,domenico.coniglione@cbitaly.it,,Starter ,2025-01-08,2026-01-08,agentisud,Inactive,2025-01-08,,False
+CBI145,Alessandro ,Romboli,3920505449,alessandro.romboli@cbitaly.it,,Starter ,2025-01-10,2026-01-10,agentinord,Inactive,2025-01-10,,False
+cbi053,Giulio,Tiriolo,3336716726,giulio.tiriolo@cbitaly.it,,Starter ,2025-01-10,2026-01-10,agenticentro,Active,2025-01-10,,False
+cbi053,Alessandro,Vitti,3518429184,alessandro.vitti@cbitaly.it,,Starter ,2025-01-10,2026-01-10,agenticentro,Inactive,2025-01-10,,False
+CBI162,Oliver,Johnston,314193392,oliver.johnston@cbitaly.it,,Starter ,2025-01-15,2026-01-15,agenticentro,Inactive,2025-01-15,DISATTIVATAI N DATA 06/06/25,False
+CBI134,Giordano,Lapazio,3809028068,giordano.lapazio@cbitaly.it,,Starter ,2025-01-16,2026-01-16,agenticentro,Active,2025-01-16,,False
+CBI134,Alessandra,Boido,3338827844,alessandra.boido@cbitaly.it,,Starter ,2025-01-16,2026-01-16,agenticentro,Active,2025-01-16,,False
+CBI179,Lucia,Catania,,lucia.catania@cbitaly.it,,Starter ,2025-01-16,2026-01-16,agentisud,Inactive,2025-01-16,,True
+CBI099,Andrea,Castelli,3453436328,andrea.castelli@cbitaly.it,,Business Basic,2025-01-20,2026-01-20,agentinord,Active,2025-01-20,,False
+CBI138,Lisa,Ferro,3514035257,lisa.ferro@cbitaly.it,,Starter ,2025-01-21,2026-01-21,agentinord,Active,2025-01-21,,False
+CBI170,Filomena ,Ventre,3888171504,filomena.ventre@cbitaly.it,,Starter ,2024-10-07,2025-10-07,agentinord,Inactive,2024-10-07,DISATTIVATA IN DATA 29/01/25,False
+CBI148,Marcello,Stanzione,3334645617,marcello.stanzione@cbitaly.it,,Starter ,2025-01-29,2026-01-29,agentisud,Inactive,2025-01-29,,False
+CBI112,Matteo,Mesiti,3407898517,matteo.mesiti@cbitaly.it,,Starter ,2025-01-30,2026-01-30,agentinord,Active,2025-01-30,,False
+CBI096,Tiziano ,Porcedda,3351301004,tiziano.porcedda@cbitaly.it,,Starter ,2025-01-31,2026-01-31,agentisud,Active,2025-01-31,,False
+CBI129,Martina,Tatti,3397914762,martina.tatti@cbitaly.it,,Business Basic,2025-02-03,2026-02-03,agenticentro,Inactive,2025-02-03,,False
+CBI129,Paola,Margiotta,3294242741,paola.margiotta@cbitaly.it,,Business Basic,2025-02-03,2026-02-03,agenticentro,Active,2025-02-03,,False
+CBI189,Lidia,Avossa,3426399494,lidia.avossa@cbitaly.it,,Business Basic,2025-02-03,2026-02-03,agentisud,Inactive,2025-02-03,DISATTIVATA IN DATA 13/03/25,False
+CBI021,Lorenzo ,Santiccioli,3475946410,lorenzo.santiccioli@cbitaly.it,,Starter ,2025-02-07,2026-02-07,agenticentro,Active,2025-02-07,,False
+CBI112,Silvia ,Falcone,3472791135,silvia.falcone@cbitaly.it,,Starter ,2025-02-07,2026-02-07,agentinord,Active,2025-02-07,,False
+CBI162,Jamaica,Salvato,3926688223,jamaica.salvato@cbitaly.it,,Starter ,2025-02-12,2026-02-12,agenticentro,Inactive,2025-02-13,,False
+CBI179,Mario,Giuffrida,,mario.giuffrida@cbitaly.it,,Starter ,2025-02-18,2026-02-18,agentisud,Active,2025-02-18,,True
+cbi112,,,,,,,,,Agent,Active,,,True
+CBI192,Valle d’Itria,,,valleditria@cbitaly.it,,Business Basic,2025-03-03,2026-03-03,agentisud,Active,2025-03-03,,True
+CBI148,Gennaro,Lazzari,3342604048,gennaro.lazzari@cbitaly.it,,Starter ,2025-03-03,2026-03-03,agentisud,Inactive,2025-03-03,DISATTIVATA IN DATA 30/04/2025 @Back Office CALCOLARE EVENTUALE CREDITO,False
+CBi078,Gessica ,Giorgi,3289555179,gessica.giorgi@cbitaly.it,,Business Basic,2025-03-13,2026-03-14,agenticentro,Active,2025-03-13,,False
+CBI148,Giovanni ,Alfè,3391166871,giovanni.alfe@cbitaly.it,,Starter ,2025-03-13,2026-03-13,agentisud,Inactive,2025-03-13,DISATTIVATA IN DATA 18/04/2025,False
+CBI145,David,Pierinelli,3478252655,david.perinelli@cbitaly.it,,Starter ,2025-03-17,2026-03-17,agentinord,Active,2025-03-17,,False
+CBI170,Helena,Krakos,3776695993,helena.kravos@cbitaly.it,,Starter ,2025-03-19,2026-03-19,agentinord,Active,2025-03-19,,False
+CBI049,Adriano,Mancini,3397874371,adriano.mancini@cbitaly.it,,Starter ,2025-03-19,2026-03-19,agenticentro,Active,2025-03-19,,False
+CBI049,,,,,,,,,Agent,Active,,,True
+CBI148,Ugo,Pecorelli,,ugo.pecorelli@cbitaly.it,,Starter ,2025-03-21,2026-03-21,agentisud,Inactive,2025-03-21,DISATTIVATA IN DATA 27/06/25,True
+CBI179,Giusi,Manna,3476635758,giusi.manna@cbitaly.it,,Starter ,2025-03-21,2026-03-21,agentisud,Active,2025-03-21,,False
+CBI162,Marco,De Pietro,3474810608,marco.depietro@cbitaly.it,,Starter ,2025-04-24,2026-04-24,agenticentro,Active,2025-04-24,,False
+CBI179,Solenia,Lazzaro,3334149086,solenia.lazzaro@cbitaly.it,,Starter ,2025-03-21,2026-03-21,agentisud,Active,2025-03-21,,False
+CBI154,RECRUITING,PRIME REAL ESTATE,,recruiting.cbprimere@cbitaly.it,,Business Basic,2025-03-07,2026-03-07,agentinord,Active,2025-03-07,,True
+CBI197,,,,bodinilegnano@cbitaly.it,,Business Premium,2025-08-01,2026-08-01,agenzia,Active,2025-08-01,,True
+CBI154,Gianluigi ,Galbiati,3358193296,gianluigi.galbiati@cbitaly.it,,Business Basic,2025-11-20,2026-11-22,agentinord,Active,2025-03-27,ha scadenza di De Donatis al 20/11/25 (no fattura),False
+CBI138,Mattia ,Palmarin,3409434299,mattia.palmarin@cbitaly.it,,Starter ,2025-03-28,2026-03-28,agentinord,Active,2025-03-28,,False
+CBI154,Bianca,Bellunato,3756757634,bianca.bellunato@cbitaly.it,,Business Basic,2025-04-02,2026-04-02,agentinord,Active,2025-04-02,,False
+CBI130,Alessandro,Nardo,,,,Starter ,2025-04-02,2026-04-02,agentinord,Active,2025-04-02,,True
+CBI148,Annamaria,Pellino,339038817,annamaria.pellino@cbitaly.it,,Starter ,2025-04-04,2026-04-04,agentisud,Inactive,2025-04-04,DISATTIVATA IN DATA 17/06/2025,False
+CBI171,,,,provimm@cbitaly.it,,Business Premium,2024-04-08,2026-04-08,agentinord,Inactive,2024-04-08,,True
+CBI192,Carlo ,Inghingolo,3939166040,carlo.inghingolo@cbitaly.it,,Starter ,2025-04-16,2026-04-16,Broker,Active,2025-04-16,,False
+CBI154,Silvana ,Fuschino,3803822832,silvana.fuschino@cbitaly.it,,Business Basic,2025-04-15,2026-04-15,agentinord,Active,2025-04-15,,False
+CBI154,Alice,Regalia,3405752052,alice.regalia@cbitaly.it,,Business Basic,2025-06-03,2026-06-03,agentinord,Active,2025-06-03,,False
+CBI184,Via ,Oslavia,,oslavia@cbitaly.it,,,2025-04-16,,agenzia,Active,,è alias di mailto:futuragroup@cbitaly.it ,True
+CBI130,Niccolò,Grasso,3428078228,niccolo.grasso@cbitaly.it,,Starter ,2025-04-16,2026-04-16,agentinord,Inactive,2025-04-16,DISATTIVATA IN DATA 14 LUGLIO 2025,False
+CBI130,Alessandro ,Nardo,3477126409,alessandro.nardo@cbitaly.it,,,2025-04-02,2026-04-02,Agent,Active,2025-04-02,,False
+CBI191,,,,eretumregroup@cbitaly.it,,Business Premium,,,agenzia,Active,,UPGRADE DA STANDARD A PREMIUM IN DATA 16.04.25,True
+CBI134,Giorgia,Scutigliani,3703212699,giorgia.scutigliani@cbitaly.it,,Starter ,2025-04-17,2026-04-17,agenticentro,Active,2025-04-17,,False
+CBI112,Simonetta,Speri,,simonetta.speri@cbitaly.it,,Starter ,2025-04-24,2026-04-24,agentinord,Active,2025-04-24,,True
+CBI099,Patrizia ,Saitta,3401707567,patrizia.saitta@cbitaly.it,,Business Basic,2025-04-29,2026-04-29,agentinord,Active,2025-04-29,mail attivata su richiesta di roberto- da fatturare,False
+CBI179,Mario,Riolo,,mario.riolo@cbitaly.it,,Starter ,2025-04-29,2026-04-29,agentisud,Active,2025-04-29,,True
+CBI179,Elena,Tornabene,3471867004,elena.tornabene@cbitaly.it,,Starter ,2025-05-06,2026-05-06,agentisud,Active,2025-05-06,,False
+CBI148,RECRUITMENT,24RE,,recruitment24re@cbitaly.it,,Starter ,2026-05-08,,agentisud,Active,2025-05-08,,True
+CBI129,Rebecca,Salvietti,3334520916,rebecca.salvietti@cbitaly.it,,Business Basic,2025-05-12,2026-05-12,agenticentro,Active,2025-05-12,,False
+CBI170,Eugenia,Birlo,3509405973,eugenia.birlo@cbitaly.it,,Starter ,2025-05-13,,agentinord,Inactive,2025-05-13,,False
+CBI148,Gianfranco,Cingolani,3391770840,gianfranco.cingolani@cbitaly.it,,Starter ,2025-05-14,2026-05-14,agentisud,Active,2025-05-14,,False
+CBI127,Simona,Arlotti,3483917454,simona.arlotti@cbitaly.it,,Business Basic,2025-05-15,2026-05-16,agentinord,Active,2026-05-15,,False
+CBI099,Piero,Muscari,,piero.muscari@cbitaly.it,,Starter ,2025-05-21,2026-05-21,Agent,Active,2025-05-21,a carico daisy,True
+CBI021,Giovanni,Rossi,,giovanni.rossi@cbitaly.it,,Starter ,2025-05-21,2026-05-21,agenticentro,Active,,,True
+CBI162,Caterina,De Medici,3394405385,caterina.demedici@cbitaly.it,,Starter ,2025-05-22,2026-05-22,agenticentro,Active,2025-05-22,,False
+CBI018,Eleonora,Mangano,3287022167,eleonora.mangano@cbitaly.it,,Business Standard,2025-05-26,2026-05-26,agenticentro,Active,2025-05-26,,False
+CBI189,Francesca,Zampaglione,,francesca.zampaglione@cbitaly.it,,Business Basic,2025-05-26,2026-05-26,agentisud,Active,,,True
+CBI179,Giancarlo,Labruna,3773068525,giancarlo.labruna@cbitaly.it,,Business Basic,2025-05-27,2026-05-27,agentisud,Active,2025-05-27,,False
+CBI179,Marica,Cristaudo,3200603352,marica.cristaudo@cbitaly.it,,Starter ,2025-05-28,2026-05-28,agentisud,Active,2025-05-28,,False
+CBI143,Federico,Rizzello,3319571067,federico.rizzello@cbitaly.it,,Starter ,2025-06-06,2026-06-06,agenticentro,Active,2025-06-06,,False
+CBI162,Ziba,Bandpey,3807703775,ziba.bandpey@cbitaly.it,,Starter ,2025-06-09,2026-06-09,agenticentro,Active,2025-06-09,,False
+CBI162,Paolo ,Cestone,3717604450,paolo.cestone@cbitaly.it,,Starter ,2025-06-10,2026-06-10,agenticentro,Active,2025-06-10,,False
+CBI134,Marco,Flores Rodas,,marco.floresrodas@cbitaly.it,,Business Standard,2025-06-16,2026-06-16,agenticentro,Inactive,2025-06-16,,True
+CBI162,Alessandro,Paolini,3398013610,alessandro.paolini@cbitaly.it,,Starter ,2025-06-17,2026-06-17,agenticentro,Active,2025-06-17,,False
+CBI162,Roberto,Zammarano,3355360108,roberto.zammarano@cbitaly.it,,Starter ,2025-06-17,2026-06-17,agenticentro,Active,2025-06-17,,False
+CBI145,Shaheer ,Saleem,3880766470,shaheer.saleem@cbitaly.it,,Starter ,2025-06-18,2026-06-18,agentinord,Active,2025-06-18,,False
+CBI094,Alessandro,L’Erario,3401657482,alessandro.lerario@cbitaly.it,,Starter ,2025-06-19,2026-06-19,agentisud,Active,2025-06-19,,False
+CBI179,Isabella ,Beronius,3401483962,isabella.beronius@cbitaly.it,,Starter ,2025-06-20,2026-06-20,agentisud,Inactive,2025-06-20,,False
+CBI038,Daniele,Asprella,3665925193,daniele.asprella@cbitaly.it,,Starter ,2025-06-24,2026-06-24,agentiroma,Active,2025-06-24,,False
+CBI145,Alessandra,Fuzzi,3464104722,alessandra.fuzzi@cbitaly.it,,Starter ,2025-06-06,2026-06-06,agentinord,Active,2025-06-06,,False
+CBI189,Alessia ,Di Majo,3385413672,,,,,,Broker,Active,,,True
+CBI179,Claudio,Castro,,claudio.castro@cbitaly.it,,Starter ,2025-06-26,2026-06-26,agentisud,Active,2025-06-26,,True
+CBI196,Simone ,Bosi,+393478725090,simone.bosi@cbitaly.it,,Business Basic,2025-06-26,2026-06-26,Broker,Active,2025-06-26,,False
+CBI185,Alessandro,Di Giulio,3936171384,,alessandro@digiulio.me,,,,Broker,Active,,,False
+CBI154,Giorgio ,Barbasso,3312977999,giorgio.barbasso@cbitaly.it,,Business Basic,2025-07-02,2026-07-02,agentinord,Inactive,2025-07-02,,False
+CBI154,Francesco ,Militello,3801441211,francesco.militello@cbitaly.it,,Business Basic,2025-07-02,2026-07-02,agentinord,Inactive,2025-07-02,DISATTIVATA IN DATA 04/08/2025,False
+CBI154,Cristina,Villa,3757105269,cristina.villa@cbitaly.it,,Business Basic,2025-07-02,2026-07-02,agentinord,Inactive,2025-07-02,,False
+CBI179,Giovanni,Stassi,3291954376,giovanni.stassi@cbitaly.it,,Starter ,2025-07-02,2026-07-02,agentisud,Active,2025-07-02,,False
+CBI162,Bruno,Vairo,3471356291,bruno.vairo@cbitaly.it,,Starter ,2025-07-04,2026-07-04,agenticentro,Active,2025-07-04,,False
+CBI138,Alessandra,Pianon,3899540809,alessandra.pianon@cbitaly.it,,Starter ,2025-07-04,2026-07-04,agentinord,Active,2025-07-04,,False
+CBI133,Andrea ,Bruto,3355312994,andrea.bruto@cbitaly.it,,Business Basic,2025-02-19,2026-02-19,agentinord,Inactive,2025-02-19,,False
+CBI162,Domenico,Ambrosio,3713991898,domenico.ambrosio@cbitaly.it,,Starter ,2025-07-22,2026-07-22,agenticentro,Active,2025-07-22,,False
+CBI092,Marina ,Miggiano,+393393331919,marina.miggiano@cbitaly.it,,Starter ,2025-07-23,2026-07-23,agentisud,Active,2025-07-23,,False
+CBI179,Nicola ,Nicotra,3496782479,nicola.nicotra@cbitaly.it,,Starter ,2025-07-23,2026-07-23,agentisud,Inactive,2025-07-23,,False
+CBI006,Roberto,Gigio,,roberto.gigio@cbitaly.it,,Business Premium,,,Legal Representative,Active,,,True
+CBI038 ,Simona,Maestri,3385894512,simona.maestri@cbitaly.it,,Starter ,2026-07-24,,agenticentro,Active,2025-07-24,,False
+CBI196,Edoardo,Borri Giannelli,,edoardo.borrigiannelli@cbitaly.it,,Starter ,2025-07-31,2026-07-31,agenticentro,Active,2025-07-31,,True
+CBI162,Marta,Minsal,3318865195,marta.minsal@cbitaly.it,,Starter ,2025-07-31,2026-07-31,agenticentro,Active,2025-07-31,,False
+CBI179,Ruggero,Cosentino,3482261285,ruggero.cosentino@cbitaly.it,,Starter ,2025-07-31,2026-07-31,agentisud,Active,2025-07-31,,False
+CBI192,Giuseppe ,Venerito,,,,,,,Manager,Active,,,True
+CBI192,Martina Franca,,,martinafranca@cbitaly.it,,Business Basic,2025-08-06,2026-08-06,agenzia,Active,2025-08-06,,True
+CBI161,Andrea,Mazzilli,3463199255,andrea.mazzilli@cbitaly.it,,Starter ,2025-08-08,2026-08-08,agenticentro,Active,2025-08-08,,False
+CBI148,Cristian,Giusto,3927063278,cristian.giusto@cbiitaly.it,,Starter ,2025-08-08,2026-08-08,agentisud,Active,2025-08-08,,False
+CBI192,Valentina,Bodini,,,,,,,Legal Representative,Active,,,True
+CBI092,Valentina,Bodini,,,,,,,Legal Representative,Active,,,True
+CBI096,Paolo ,Costi,,,,,,,Legal Representative,Active,,,True
+CBI112,Valentina,Bodini,,,,,,,Legal Representative,Active,,,True
+CBI127,Federica,Gigio,,,,,,,Legal Representative,Active,,,True
+CBI148,Manuel,Moscariello,,,,,,,Manager,Active,,,True
+CBI177,Alessandro ,Moscariello,,,,,,,Legal Representative,Active,,,True
+CBI185,Maria,Meocci,,,,,,,Legal Representative,Active,,,True
+CBI139,Tiziana,Perinato,,,,,,,Broker,Active,,,True
+CBI168,Valeria ,Scivoletto,,,,,,,Legal Representative,Active,,,True
+CBI196,Francesco,Manigrasso,+393281737409,francesco.manigrasso@cbitaly.it,,Starter ,2025-08-26,2026-08-26,agentinord,Active,2025-08-26,,False
+CBI196,Rita,Manigrasso,+393408044665,rita.manigrasso@cbitaly.it,,Starter ,2025-08-26,2026-08-26,agentinord,Active,2025-08-26,,False
+CBI196,Sofia,Ciri,+393454979821,sofia.ciri@cbitaly.it,,Starter ,2025-08-26,2026-08-26,agentinord,Active,2025-08-26,,False
+,,,,,,,,,Agent,Active,,,True
+CBI160,Christian,Nardelli,3450485844,christian.nardelli@cbitaly.it,,Starter ,2025-08-29,2026-08-29,agenticentro,Active,2025-08-29,,False
+CBI148,Cosimo,Sotira,,,,Starter ,2025-09-01,2026-09-01,agentisud,Active,2025-09-01,,True
+CBI162,Antonella,Geri,3342895706,antonella.geri@cbitaly.it,,Starter ,2025-09-03,2026-09-03,agenticentro,Active,2025-09-03,,False
+CBI179,Giuseppe,Papale,,giuseppe.papale@cbitaly.it,,Starter ,2025-09-04,2026-09-04,agentisud,Active,2025-09-04,,True
+CBI151,Valentina ,Bodini,,,,,,,Legal Representative,Active,,,True
+CBI148,,,,24reconsulenza@cbitaly.it,,Starter ,2025-09-09,2026-09-09,Agent,Active,2025-09-09,,True
+CBI179,Aurora,Lanzafame,,aurora.lanzafame@cbitaly.it,,Starter ,2025-09-15,2026-09-15,agentisud,Active,2025-09-15,,True
+CBI094,Valentina ,Bodini,3939261930,,,,,,Legal Representative,Active,,,True
+CBI097,Costabile,Mondelli,,,,,,,Broker,Active,,,True
+CBI099,Eleonora ,Ciucci,,,,,,,Legal Representative,Active,,,True
+CBI099,Simone ,Cerquatelli,,,,,,,Manager,Active,,,True
+CBI099,Federica,Gigio,,,,,,,Broker,Active,,,True
+CBI104,Valentina ,Bodini,,,,,,,Legal Representative,Active,,,True
+CBI105,Giuseppe ,Brizziobello,3351040609,,,,,,Broker,Active,,,True
+CBI110,Giuliano ,Norscia ,3355372379,giuliano.norscia@cbitaly.it,,Business Standard,,2026-09-02,Broker,Active,,,False
+CBI117,Valentina ,Bodini,,,,,,,Legal Representative,Active,,,True
+CBI118,Valentina ,Bodini,,,,,,,Broker,Active,,,True
+CBI139,Andrea,Marin,,,,,,,Broker,Active,,,True
+CBI141,Valentina ,Bodini,,,,,,,Legal Representative,Active,,,True
+CBI150,Valentina ,Bodini,,,,,,,Legal Representative,Active,,,True
+CBI153,Eleonora ,Ciucci,,,,,,,Legal Representative,Active,,,True
+CBI153,Simone ,Cerquatelli,,,,,,,Manager,Active,,,True
+CBI155,Alessandro ,Beddini,,,,,,,Manager,Active,,,True
+CBI155,Maurizio,Cirelli,3391177934,,,,,,Legal Representative,Active,,,True
+CBI158,Alessandro,Marchetti,,,,,,,Broker,Active,,,True
+CBI158,Piercarlo,Marchetti,,,,,,,Legal Representative,Active,,,True
+CBI159,Valentina ,Bodini,,,,,,,Legal Representative,Active,,,True
+CBI160,Michele ,Spaziani,,,,,,,Broker,Active,,,True
+CBI160,Francesco,Spaziani,,,,,,,Broker,Active,,,True
+CBI162,Alessandro,Moscariello,,,,,,,Legal Representative,Active,,,True
+CBI162,Rino,Moscariello,335456096,,,,,,Broker,Active,,,True
+CBI163,Valeria ,Scivoletto,,,,,,,Legal Representative,Active,,,True
+CBI165,Valeria ,Scivoletto,,,,,,,Legal Representative,Active,,,True
+CBI166,Valeria ,Scivoletto,,,,,,,Legal Representative,Active,,,True
+CBI167,Valeria ,Scivoletto,,,,,,,Legal Representative,Active,,,True
+CBI169,Valeria ,Scivoletto,,,,,,,Legal Representative,Active,,,True
+CBI170,Alessandro,Moscariello,,,,,,,Legal Representative,Active,,,True
+CBI176,Valentina ,Bodini,,,,,,,Legal Representative,Active,,,True
+CBI178,Simone,Vasta,3405262658,,,,,,Broker,Active,,,True
+CBI178,Rossana ,Cavallaro,3382424988,,,,,,Broker,Active,,,True
+CBI180,Simone,Vasta,,,,,,,Broker,Active,,,True
+CBI180,Rossana,Cavallaro,,,,,,,Broker,Active,,,True
+CBI184,Alfredo,Ricci,,,,,,,Broker,Active,,,True
+CBI188,Fabio,Pancaldi,3893457446,,,,,,Broker,Active,,,True
+CBI188,Vincenzo,Raciti,,,,,,,Broker,Active,,,True
+CBI190,Fabio,Pancaldi,3893457446,,,,,,Broker,Active,,,True
+CBI190,Vincenzo ,Raciti,,,,,,,Broker,Active,,,True
+CBI191,Pietro,Cimei,3280974666,,,,,,Broker,Active,,,True
+CBI193,Michele ,Spaziani,3349635109,,,,,,Broker,Active,,,True
+CBI194,Valentina ,Bodini,,,,,,,Legal Representative,Active,,,True
+CBI194,Carlo,Inghingolo,3939166040,,,,,,Broker,Active,,,True
+CBI195,Maria ,Meocci,,,,,,,Legal Representative,Active,,,True
+CBI195,Alessandro,Di Giulio,,,,,,,Broker,Active,,,True
+CBI197,Valentina,Bodini,,,,,,,Legal Representative,Active,,,True
+CBI197,GIanmarco,Cattaneo,3484772386,,,,,,Broker,Active,,,True
+CBI056,Valentina ,Bodini,,,,,,,Legal Representative,Active,,,True
+CBI162,Martina,Sasa,3397646597,martina.sasa@cbitaly.it,,Starter ,2025-09-22,2026-09-22,agenticentro,Active,2025-09-22,,False
+CBI194,Francavilla,,,francavilla@cbitaly.it,,Business Standard,2025-09-25,2026-09-25,agenzia,Active,2025-09-25,,True
+,,,,,,,,,Agent,Active,,,True
+,,,,,,,,,Agent,Active,,,True
+,,,,,,,,,Agent,Active,,,True
+,,,,,,,,,Agent,Active,,,True
+CBI198a,Luciano,Vasciminno,+39335242459,lv@cbitaly.it,vasciminno.luciano@gmail.com,Starter ,2025-10-17,2026-10-17,Broker,Active,2025-10-17,,False
+,,,,,,,,,Agent,Active,,,True
+,,,,,,,,,Agent,Active,,,True
+CBI129,Carla,Grillotti,,carla.grillotti@cbitaly.it,,Business Basic,2025-09-26,2026-09-26,agenticentro,Active,2025-09-26,,True
+CBI100,Michele,Imbimbo,,michele.imbimbo@cbitaly.it,,Starter ,2025-09-26,2026-09-26,agenticentro,Active,2025-09-26,,True
+CBI130,Ylenia,Mangano,3347508491,yelenia.mangano@cbitaly.it,,Starter ,2025-09-30,2026-09-30,agentinord,Active,2025-09-30,,False
+CBI154,Yelena,Vais,3444027686,yelena.vais@cbitaly.it,,Starter ,2025-10-01,2026-10-01,agentinord,Inactive,2025-10-01,,False
+CBI177,,,,24reromaprati@cbitaly.it,,Business Premium,2024-06-14,2025-09-14,agenticentro,Inactive,,,True
+CBI150,Anna,Viggiano,3286756340,anna.viggiano@cbitaly.it,,Starter ,2025-10-06,2026-10-06,agentisud,Active,2025-10-06,PAGATA DA LUCA PILIEGO DA ANNOTARE IN FILE FATTURONE,False
+CBI003,,,,,,,,,agentinord,Active,,,True
+CBI003,,,,infobusto@cbitaly.it,,Business Basic,2025-10-08,2026-10-08,Agent,Active,2025-10-08,,True
+CBI038,Eugenia,Carotenuto,,eugenia.carotenuto@cbitaly.it,,Starter ,2025-10-14,2026-10-14,agenticentro,Active,2025-10-14,,True
+CBI130,Barbara,Mori,3485501596,barbara.mori@cbitaly.it,,Starter ,2025-10-16,2026-10-16,agentinord,Active,2025-10-16,,False
+CBI196,Agenzia,Foligno,0742774584,foligno@cbitaly.it,,Business Premium,2025-07-22,2026-07-22,agenzia,Active,2025-07-22,,False
+,,,,,,,,,Agent,Active,,,True
+CBI112,Mattia,Maggiolini,,mattia.maggiolini@cbitaly.it,,Starter ,2025-11-11,2026-11-11,agentinord,Active,2025-11-11,,True
+CBI100,Alice,Scatena,,alice.scatena@cbitaly.it,,Starter ,2025-10-20,2026-10-20,agenticentro,Active,2025-10-20,,True
+CBI112,Silvia,Petruccelli,,silvia.petruccelli@cbitaly.it,,Starter ,2025-11-11,2026-11-11,agentinord,Active,2025-11-11,,True
+CBI044,Valentina,Bodini,+393939261930,,,,,,Broker,Active,,,True
+CBI044,Monica,Merenda,+393477918464,monica.merenda@cbitaly.it,,Business Basic,,2026-03-23,Manager,Active,,,False
+CBI79,,,,,,,,,Agent,Active,,,True
+CBI179,Mario,Giardini,3939501905,mario.giardini@cbitaly.it,,Starter ,2025-10-27,2026-10-27,agentisud,Active,2025-10-27,,False
+CBI170,Marina,Merzina,3488211695,marina.merzina@cbitaly.it,,Starter ,2025-10-29,2026-10-29,agentinord,Active,2025-10-29,,False
+CBI038,,,,bodiniroma@cbitaly.it,,Starter ,2025-11-04,2026-11-04,agenzia,Active,2025-11-04,,True
+CBI099,Alessandro,Morganti,3669955233,alessandro.morganti@cbitaly.it,,Starter ,2025-11-06,2026-11-06,agentinord,Active,2025-11-06,,False
+CBI038,Federica,Bilotti,3396648664,federica.bilotti@cbitaly.it,,Starter ,2025-11-07,2026-11-07,agenticentro,Active,2025-11-07,,False
+CBI127,Aldo,Cingolani,,aldo.cingolani@cbitaly.it,,Starter ,2025-11-10,2026-11-10,agentinord,Active,2025-11-10,,True
+,,,,,,,,,Agent,Active,,,True
+,,,,,,,,,Agent,Active,,,True
+,,,,,,,,,Agent,Active,,,True
+CBI198a,House,Prestige,,houseprestige@cbitaly.it,,Business Premium,2025-10-16,2026-10-16,agenzia,Active,2025-10-16,,True
+CBI106,Mario,Imbriani,,mario.imbriani@cbitaly.it,,Starter ,2025-11-18,2026-11-18,agenticentro,Active,2025-11-18,,True
+CBI038,Cristina,Bartolomei,,cristina.bartolomei@cbitaly.it,,Starter ,2025-11-11,2026-11-11,agenticentro,Inactive,2025-11-11,richiesta attivazione ed immediata disattivazione,True
+CBI145,Roberto,Colella,3519789208,roberto.colella@cbitaly.it,,Starter ,2025-11-17,2026-11-17,agentinord,Active,2025-11-17,,False
+CBI179,Emanuele,Leo,,emanuele.leo@cbitaly.it,,Starter ,2025-11-18,2026-11-18,agentisud,Active,2025-11-18,,True
+CBI106,Mattia,Colaluce,3285454587,mattia.colaluce@cbitaly.it,,Starter ,2025-12-12,2026-12-12,agenticentro,Active,2025-12-12,,False
+CBI170,Clarissa,Carcano,,clarissa.carcano@cbitaly.it,,Starter ,2025-11-20,2026-11-20,agentinord,Active,2025-11-20,,True
+CBI049,Franca ,Porciello,,franca.porciello@cbitaly.it,,Business Basic,2025-11-19,2026-11-19,agenticentro,Active,2025-11-20,,True
+CBI049,Gianpiero,D’angelo,,gianpiero.dangelo@cbitaly.it,,Business Basic,2025-11-19,2026-11-19,agenticentro,Active,2025-11-20,,True
+CBI000,,,,neswletter@coldwellbanker.it,,Starter ,2025-11-21,2026-11-21,servizio,Active,2025-11-21,,True
+CBI148,Vito,Campanelli,,vito.campanelli@cbitaly.it,,Starter ,2025-11-03,2026-11-03,agentisud,Active,2025-11-27,,True
+CBI170,Rosario,Rusoo,,rosario.russo@cbitaly.it,,Starter ,2025-09-11,2026-09-11,agentinord,Active,2025-11-27,,True
+CBI162,Michele,Rutigliano,3713317981,,,Starter ,2025-12-15,2026-12-15,agenticentro,Active,2025-12-15,,True
+CBI162,Francesca,Roberti,3335778530,francesca.roberti@cbitaly.it,,Starter ,2025-12-17,2026-12-17,agenticentro,Active,2025-12-17,,False
+CBI000,Maurizio,Marioni,,maurizio.marioni@cbitaly.it,,Business Standard,2025-12-19,2026-12-19,Agent,Active,2025-12-19,,True
+CBI148,,,,commercial24re@cbitaly.it,,Starter ,2025-12-22,2026-12-22,Agent,Active,2025-12-22,,True
