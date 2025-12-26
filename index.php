@@ -83,10 +83,9 @@ $recentAgencies = $pdo->query("
         }
 
         :root {
-            --cb-blue: #003DA5;
-            --cb-light-blue: #0051D5;
-            --cb-gold: #D4AF37;
-            --cb-dark: #1a1a1a;
+            --cb-blue: #012169;
+            --cb-bright-blue: #1F69FF;
+            --cb-midnight: #0A1730;
             --cb-gray: #f5f5f5;
             --success: #10b981;
             --warning: #f59e0b;
@@ -96,7 +95,7 @@ $recentAgencies = $pdo->query("
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--cb-gray);
-            color: var(--cb-dark);
+            color: var(--cb-midnight);
             line-height: 1.6;
         }
 
@@ -207,12 +206,17 @@ $recentAgencies = $pdo->query("
             border-radius: 8px;
             padding: 1.5rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            max-height: 400px;
         }
 
         .chart-card h3 {
             font-size: 1.125rem;
-            color: var(--cb-dark);
+            color: var(--cb-midnight);
             margin-bottom: 1rem;
+        }
+        
+        .chart-card canvas {
+            max-height: 280px !important;
         }
 
         /* Recent Activity */
@@ -231,7 +235,7 @@ $recentAgencies = $pdo->query("
 
         .recent-item-title {
             font-weight: 600;
-            color: var(--cb-dark);
+            color: var(--cb-midnight);
             margin-bottom: 0.25rem;
         }
 
@@ -292,13 +296,16 @@ $recentAgencies = $pdo->query("
 <body>
     <!-- Header -->
     <div class="header">
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <h1>🏠 Dashboard CRM</h1>
-                <p>Coldwell Banker Italy - Network Overview</p>
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1.5rem;">
+                <img src="https://coldwellbankeritaly.tech/repository/dashboard/logo-white.png" alt="Coldwell Banker" style="height: 32px;">
+                <div>
+                    <h1 style="font-size: 1.25rem; margin-bottom: 0.25rem;">Dashboard CRM</h1>
+                    <p style="font-size: 0.875rem; opacity: 0.9; margin: 0;">Network Overview</p>
+                </div>
             </div>
             <div style="text-align: right;">
-                <p style="margin-bottom: 0.5rem; font-weight: 600;">
+                <p style="margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem;">
                     👤 <?= htmlspecialchars($_SESSION['crm_user']['name']) ?>
                 </p>
                 <a href="logout.php" style="color: white; text-decoration: underline; font-size: 0.875rem; opacity: 0.9;">
@@ -354,13 +361,13 @@ $recentAgencies = $pdo->query("
             <!-- Chart Agenzie -->
             <div class="chart-card">
                 <h3>Distribuzione Agenzie</h3>
-                <canvas id="agenciesChart" height="200"></canvas>
+                <canvas id="agenciesChart" height="150"></canvas>
             </div>
 
             <!-- Chart Agenti -->
             <div class="chart-card">
                 <h3>Distribuzione Agenti</h3>
-                <canvas id="agentsChart" height="200"></canvas>
+                <canvas id="agentsChart" height="150"></canvas>
             </div>
         </div>
 
@@ -409,16 +416,17 @@ $recentAgencies = $pdo->query("
                         <?= $agenciesStats['opening'] ?>
                     ],
                     backgroundColor: [
-                        '#10b981',
-                        '#ef4444',
-                        '#f59e0b',
-                        '#3b82f6'
+                        '#10b981',  // verde success per Active
+                        '#ef4444',  // rosso danger per Closed
+                        '#f59e0b',  // arancio warning per Prospect
+                        '#1F69FF'   // CB bright blue per Opening
                     ]
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
+                maintainAspectRatio: true,
+                aspectRatio: 2,
                 plugins: {
                     legend: {
                         position: 'bottom'
@@ -440,15 +448,16 @@ $recentAgencies = $pdo->query("
                         <?= $agentsStats['brokers'] ?>
                     ],
                     backgroundColor: [
-                        '#10b981',
-                        '#6b7280',
-                        '#003DA5'
+                        '#10b981',    // verde success per Attivi
+                        '#6b7280',    // grigio per Inattivi
+                        '#012169'     // CB blue per Broker
                     ]
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
+                maintainAspectRatio: true,
+                aspectRatio: 2,
                 plugins: {
                     legend: {
                         display: false
