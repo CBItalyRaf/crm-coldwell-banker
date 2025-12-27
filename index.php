@@ -138,7 +138,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 </div>
 <div class="container">
 <div class="welcome">
-<h1>👋 Benvenuto, <?= htmlspecialchars($user['name']) ?></h1>
+<h1>👋 Ciao, <?= htmlspecialchars($user['name']) ?></h1>
 <p>Overview del network Coldwell Banker Italy</p>
 </div>
 <div class="search-container">
