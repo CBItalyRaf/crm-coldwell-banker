@@ -140,6 +140,15 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .header-actions{width:100%;flex-direction:column}
 .btn-export,.btn-add{width:100%;justify-content:center}
 }
+.search-container{position:relative;background:white;border-radius:12px;padding:1rem 1.5rem;margin-bottom:2rem;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.search-container input{width:100%;border:none;font-size:1rem;outline:none;background:transparent}
+.search-results{position:absolute;top:100%;left:0;right:0;margin-top:.5rem;background:white;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.15);max-height:400px;overflow-y:auto;display:none;z-index:1000}
+.search-results.active{display:block}
+.search-item{padding:1rem 1.5rem;border-bottom:1px solid #f3f4f6;cursor:pointer;transition:background .2s}
+.search-item:last-child{border-bottom:none}
+.search-item:hover{background:var(--bg)}
+.search-item-title{font-weight:600;margin-bottom:.25rem}
+.search-item-meta{font-size:.85rem;color:var(--cb-gray)}
 </style>
 </head>
 <body>
@@ -245,6 +254,10 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 </div>
 </div>
 <div class="container">
+<div class="search-container">
+<input type="text" id="searchInput" placeholder="🔍 Cerca agenzie, agenti..." autocomplete="off">
+<div class="search-results" id="searchResults"></div>
+</div>
 <div class="page-header">
 <h1 class="page-title">🏢 Gestione Agenzie</h1>
 <div class="header-actions">
@@ -403,6 +416,43 @@ parent.classList.toggle('open');
 
 document.addEventListener('click',()=>{
 document.querySelectorAll('.nav-item').forEach(item=>item.classList.remove('open'));
+});
+
+// Autocomplete search
+const searchInput=document.getElementById('searchInput');
+const searchResults=document.getElementById('searchResults');
+let searchTimeout;
+
+searchInput.addEventListener('input',function(){
+clearTimeout(searchTimeout);
+const query=this.value.trim();
+if(query.length<2){
+searchResults.classList.remove('active');
+return;
+}
+searchTimeout=setTimeout(()=>{
+fetch('https://admin.mycb.it/search_api.php?q='+encodeURIComponent(query))
+.then(r=>r.json())
+.then(data=>{
+if(data.length===0){
+searchResults.innerHTML='<div style="padding:1rem;text-align:center;color:#6D7180">Nessun risultato</div>';
+}else{
+searchResults.innerHTML=data.map(item=>`
+<div class="search-item" onclick="window.location.href='${item.url}'">
+<div class="search-item-title">${item.title}</div>
+<div class="search-item-meta">${item.meta}</div>
+</div>
+`).join('');
+}
+searchResults.classList.add('active');
+});
+},300);
+});
+
+document.addEventListener('click',function(e){
+if(!e.target.closest('.search-container')){
+searchResults.classList.remove('active');
+}
 });
 </script>
 </body>
