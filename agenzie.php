@@ -4,8 +4,8 @@ require_once 'config/database.php';
 
 $pdo = getDB();
 
-// Filtri
-$statusFilter = $_GET['status'] ?? 'all';
+// Filtri - DEFAULT ACTIVE
+$statusFilter = $_GET['status'] ?? 'Active';
 $search = $_GET['search'] ?? '';
 
 // Query con filtri (escludi Prospect)
@@ -59,6 +59,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .dropdown-menu{position:absolute;top:100%;left:0;margin-top:.5rem;background:white;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.15);min-width:200px;opacity:0;visibility:hidden;transform:translateY(-10px);transition:all .2s;z-index:1000}
 .nav-item:hover .dropdown-menu,.nav-item.open .dropdown-menu{opacity:1;visibility:visible;transform:translateY(0)}
 .dropdown-item{display:block;padding:.75rem 1.25rem;color:var(--cb-midnight);text-decoration:none;font-size:.9rem;transition:background .2s}
+.dropdown-item:first-child{border-radius:8px 8px 0 0}
+.dropdown-item:last-child{border-radius:0 0 8px 8px}
 .dropdown-item:hover{background:var(--bg)}
 .user-menu{position:relative}
 .user-button{display:flex;align-items:center;gap:.75rem;background:transparent;border:none;color:white;padding:.5rem 1rem;cursor:pointer;border-radius:6px;font-size:.95rem;transition:background .2s}
@@ -83,6 +85,9 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .container{max-width:1400px;margin:0 auto;padding:2rem 1.5rem}
 .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
 .page-title{font-size:1.75rem;font-weight:600}
+.header-actions{display:flex;gap:1rem}
+.btn-export{background:var(--success);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;font-size:.95rem;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;gap:.5rem;font-weight:500}
+.btn-export:hover{background:#059669}
 .btn-add{background:var(--cb-bright-blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;font-size:.95rem;cursor:pointer;transition:background .2s;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;font-weight:500}
 .btn-add:hover{background:var(--cb-blue)}
 .filters-bar{background:white;border-radius:12px;padding:1.5rem;margin-bottom:2rem;box-shadow:0 1px 3px rgba(0,0,0,.08)}
@@ -94,24 +99,34 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .filter-btn{background:white;border:1px solid #E5E7EB;padding:.5rem 1rem;border-radius:8px;font-size:.875rem;cursor:pointer;transition:all .2s}
 .filter-btn:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue)}
 .filter-btn.active{background:var(--cb-bright-blue);color:white;border-color:var(--cb-bright-blue)}
-.agencies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem}
-.agency-card{background:white;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.08);transition:all .2s;cursor:pointer;border-left:4px solid var(--cb-bright-blue)}
-.agency-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
-.agency-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:1rem}
-.agency-code{font-size:.875rem;color:var(--cb-gray);font-weight:600}
-.status-badge{padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.table-container{background:white;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden}
+.agencies-table{width:100%;border-collapse:collapse}
+.agencies-table th{text-align:left;padding:1rem 1.5rem;background:var(--bg);font-size:.875rem;font-weight:600;color:var(--cb-gray);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #E5E7EB}
+.agencies-table td{padding:1rem 1.5rem;border-bottom:1px solid #F3F4F6}
+.agencies-table tbody tr:last-child td{border-bottom:none}
+.agencies-table tbody tr:hover{background:var(--bg);cursor:pointer}
+.agency-name{font-weight:600;color:var(--cb-blue)}
+.status-badge{padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;display:inline-block}
 .status-badge.active{background:#D1FAE5;color:#065F46}
 .status-badge.closed{background:#FEE2E2;color:#991B1B}
 .status-badge.opening{background:#FEF3C7;color:#92400E}
-.agency-name{font-size:1.125rem;font-weight:600;margin-bottom:.5rem;color:var(--cb-blue)}
-.agency-location{font-size:.875rem;color:var(--cb-gray);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
-.agency-footer{display:flex;justify-content:space-between;align-items:center;padding-top:1rem;border-top:1px solid #F3F4F6}
-.broker-name{font-size:.875rem;color:var(--cb-gray)}
-.agency-actions{display:flex;gap:.5rem}
-.btn-icon{background:transparent;border:none;color:var(--cb-gray);cursor:pointer;padding:.5rem;border-radius:6px;transition:all .2s}
-.btn-icon:hover{background:var(--bg);color:var(--cb-bright-blue)}
 .empty-state{text-align:center;padding:4rem 2rem;color:var(--cb-gray)}
 .empty-state-icon{font-size:4rem;margin-bottom:1rem;opacity:.3}
+.modal{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.5);z-index:3000;align-items:center;justify-content:center}
+.modal.open{display:flex}
+.modal-content{background:white;border-radius:12px;padding:2rem;max-width:600px;width:90%;max-height:80vh;overflow-y:auto}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+.modal-title{font-size:1.25rem;font-weight:600}
+.modal-close{background:transparent;border:none;font-size:1.5rem;cursor:pointer;color:var(--cb-gray)}
+.checkbox-group{margin-bottom:1.5rem}
+.checkbox-group h3{font-size:1rem;font-weight:600;margin-bottom:1rem;color:var(--cb-midnight)}
+.checkbox-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.75rem}
+.checkbox-label{display:flex;align-items:center;gap:.5rem;cursor:pointer;padding:.5rem;border-radius:6px;transition:background .2s}
+.checkbox-label:hover{background:var(--bg)}
+.checkbox-label input{cursor:pointer}
+.modal-actions{display:flex;gap:1rem;justify-content:flex-end;margin-top:1.5rem}
+.btn-cancel{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;transition:all .2s}
+.btn-cancel:hover{border-color:var(--cb-gray);color:var(--cb-midnight)}
 @media(max-width:768px){
 .hamburger{display:block}
 .header-left{gap:1rem}
@@ -119,8 +134,11 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .container{padding:1rem}
 .page-title{font-size:1.5rem}
 .filters-grid{grid-template-columns:1fr}
-.agencies-grid{grid-template-columns:1fr}
-.agency-footer{flex-direction:column;gap:.5rem;align-items:flex-start}
+.table-container{overflow-x:auto}
+.agencies-table{font-size:.875rem}
+.agencies-table th,.agencies-table td{padding:.75rem .5rem}
+.header-actions{width:100%;flex-direction:column}
+.btn-export,.btn-add{width:100%;justify-content:center}
 }
 </style>
 </head>
@@ -229,7 +247,10 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <div class="container">
 <div class="page-header">
 <h1 class="page-title">🏢 Gestione Agenzie</h1>
+<div class="header-actions">
+<button class="btn-export" onclick="openExportModal()">📥 Esporta CSV</button>
 <a href="agenzia_add.php" class="btn-add">➕ Nuova Agenzia</a>
+</div>
 </div>
 <div class="filters-bar">
 <div class="filters-grid">
@@ -257,32 +278,91 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <p>Prova a modificare i filtri o aggiungi una nuova agenzia</p>
 </div>
 <?php else: ?>
-<div class="agencies-grid">
+<div class="table-container">
+<table class="agencies-table">
+<thead>
+<tr>
+<th>Codice</th>
+<th>Nome</th>
+<th>Città</th>
+<th>Broker Manager</th>
+<th>Status</th>
+<th>Email</th>
+<th>Telefono</th>
+</tr>
+</thead>
+<tbody>
 <?php foreach ($agencies as $agency): ?>
-<div class="agency-card" onclick="window.location.href='agenzia_detail.php?code=<?= urlencode($agency['code']) ?>'">
-<div class="agency-header">
-<span class="agency-code"><?= htmlspecialchars($agency['code']) ?></span>
-<span class="status-badge <?= strtolower($agency['status']) ?>"><?= htmlspecialchars($agency['status']) ?></span>
-</div>
-<h3 class="agency-name"><?= htmlspecialchars($agency['name']) ?></h3>
-<div class="agency-location">📍 <?= htmlspecialchars($agency['city']) ?><?= $agency['province'] ? ', ' . htmlspecialchars($agency['province']) : '' ?></div>
-<div class="agency-footer">
-<div class="broker-name">👤 <?= htmlspecialchars($agency['broker_manager'] ?: 'Non assegnato') ?></div>
-<div class="agency-actions" onclick="event.stopPropagation()">
-<a href="tel:<?= htmlspecialchars($agency['phone']) ?>" class="btn-icon" title="Chiama">📞</a>
-<a href="mailto:<?= htmlspecialchars($agency['email']) ?>" class="btn-icon" title="Email">✉️</a>
-</div>
-</div>
-</div>
+<tr onclick="window.location.href='agenzia_detail.php?code=<?= urlencode($agency['code']) ?>'">
+<td><?= htmlspecialchars($agency['code']) ?></td>
+<td class="agency-name"><?= htmlspecialchars($agency['name']) ?></td>
+<td><?= htmlspecialchars($agency['city']) ?><?= $agency['province'] ? ', ' . htmlspecialchars($agency['province']) : '' ?></td>
+<td><?= htmlspecialchars($agency['broker_manager'] ?: 'Non assegnato') ?></td>
+<td><span class="status-badge <?= strtolower($agency['status']) ?>"><?= htmlspecialchars($agency['status']) ?></span></td>
+<td><?= htmlspecialchars($agency['email'] ?: '-') ?></td>
+<td><?= htmlspecialchars($agency['phone'] ?: '-') ?></td>
+</tr>
 <?php endforeach; ?>
+</tbody>
+</table>
 </div>
 <?php endif; ?>
 </div>
+
+<div class="modal" id="exportModal">
+<div class="modal-content">
+<div class="modal-header">
+<h2 class="modal-title">📥 Esporta Agenzie</h2>
+<button class="modal-close" onclick="closeExportModal()">✕</button>
+</div>
+<form method="POST" action="agenzie_export.php">
+<div class="checkbox-group">
+<h3>Info Base</h3>
+<div class="checkbox-grid">
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="code" checked> Codice</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="name" checked> Nome</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="city" checked> Città</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="province"> Provincia</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="email"> Email</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="phone"> Telefono</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="broker"> Broker Manager</label>
+</div>
+</div>
+<div class="checkbox-group">
+<h3>Contrattuale</h3>
+<div class="checkbox-grid">
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="tech_fee"> Tech Fee</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="contract_expiry"> Scadenza</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="activation_date"> Attivazione</label>
+</div>
+</div>
+<div class="checkbox-group">
+<h3>Servizi</h3>
+<div class="checkbox-grid">
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="cb_suite"> CB Suite</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="canva"> Canva</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="regold"> Regold</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="james"> James Edition</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="docudrop"> Docudrop</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="unique"> Unique</label>
+</div>
+</div>
+<input type="hidden" name="status_filter" value="<?= htmlspecialchars($statusFilter) ?>">
+<input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
+<div class="modal-actions">
+<button type="button" class="btn-cancel" onclick="closeExportModal()">Annulla</button>
+<button type="submit" class="btn-export">📥 Esporta CSV</button>
+</div>
+</form>
+</div>
+</div>
+
 <script>
 const hamburger=document.getElementById('hamburger');
 const mobileSidebar=document.getElementById('mobileSidebar');
 const sidebarBackdrop=document.getElementById('sidebarBackdrop');
 const sidebarClose=document.getElementById('sidebarClose');
+const exportModal=document.getElementById('exportModal');
 
 hamburger?.addEventListener('click',()=>{
 mobileSidebar.classList.add('open');
@@ -300,6 +380,14 @@ sidebarBackdrop.classList.remove('open');
 function toggleSidebarDropdown(id){
 const dropdown=document.getElementById('dropdown-'+id);
 dropdown?.classList.toggle('open');
+}
+
+function openExportModal(){
+exportModal.classList.add('open');
+}
+
+function closeExportModal(){
+exportModal.classList.remove('open');
 }
 
 document.querySelectorAll('.nav-button').forEach(btn=>{

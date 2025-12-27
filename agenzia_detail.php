@@ -49,6 +49,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .dropdown-menu{position:absolute;top:100%;left:0;margin-top:.5rem;background:white;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.15);min-width:200px;opacity:0;visibility:hidden;transform:translateY(-10px);transition:all .2s;z-index:1000}
 .nav-item:hover .dropdown-menu,.nav-item.open .dropdown-menu{opacity:1;visibility:visible;transform:translateY(0)}
 .dropdown-item{display:block;padding:.75rem 1.25rem;color:var(--cb-midnight);text-decoration:none;font-size:.9rem;transition:background .2s}
+.dropdown-item:first-child{border-radius:8px 8px 0 0}
+.dropdown-item:last-child{border-radius:0 0 8px 8px}
 .dropdown-item:hover{background:var(--bg)}
 .user-menu{position:relative}
 .user-button{display:flex;align-items:center;gap:.75rem;background:transparent;border:none;color:white;padding:.5rem 1rem;cursor:pointer;border-radius:6px;font-size:.95rem;transition:background .2s}
@@ -97,14 +99,21 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .info-value{font-size:1rem;color:var(--cb-midnight);font-weight:500}
 .info-value.empty{color:var(--cb-gray);font-style:italic}
 .section-title{font-size:1.125rem;font-weight:600;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:2px solid #F3F4F6}
-.services-list{display:grid;gap:1rem}
-.service-item{background:var(--bg);padding:1.25rem;border-radius:8px;display:flex;justify-content:space-between;align-items:center;gap:1rem}
-.service-info h4{font-size:1rem;font-weight:600;margin-bottom:.25rem}
-.service-dates{font-size:.875rem;color:var(--cb-gray)}
-.service-toggle{position:relative;width:48px;height:24px;background:#E5E7EB;border-radius:12px;cursor:pointer;transition:background .3s}
-.service-toggle.active{background:var(--success)}
-.service-toggle::after{content:'';position:absolute;width:20px;height:20px;background:white;border-radius:50%;top:2px;left:2px;transition:left .3s}
-.service-toggle.active::after{left:26px}
+.service-card{background:var(--bg);border-radius:8px;margin-bottom:1rem;overflow:hidden;border-left:4px solid var(--cb-bright-blue)}
+.service-header{padding:1.25rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .2s}
+.service-header:hover{background:#E5E7EB}
+.service-title{display:flex;align-items:center;gap:.75rem}
+.service-title h3{font-size:1rem;font-weight:600}
+.service-status{padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:600;text-transform:uppercase}
+.service-status.active{background:#D1FAE5;color:#065F46}
+.service-status.inactive{background:#FEE2E2;color:#991B1B}
+.service-expand{font-size:1.25rem;color:var(--cb-gray);transition:transform .3s}
+.service-expand.open{transform:rotate(180deg)}
+.service-details{padding:0 1.25rem 1.25rem;display:none}
+.service-details.open{display:block}
+.service-info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1rem}
+.file-download{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1rem;background:var(--cb-bright-blue);color:white;border-radius:6px;text-decoration:none;font-size:.875rem;margin-top:.5rem}
+.file-download:hover{background:var(--cb-blue)}
 .agents-table{width:100%;border-collapse:collapse}
 .agents-table th{text-align:left;padding:1rem;background:var(--bg);font-size:.875rem;font-weight:600;color:var(--cb-gray);text-transform:uppercase;letter-spacing:.05em}
 .agents-table td{padding:1rem;border-bottom:1px solid #F3F4F6}
@@ -132,9 +141,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <body>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="mobile-sidebar" id="mobileSidebar">
-<div class="sidebar-header">
-<button class="sidebar-close" id="sidebarClose">✕</button>
-</div>
+<div class="sidebar-header"><button class="sidebar-close" id="sidebarClose">✕</button></div>
 <div class="sidebar-nav">
 <div class="sidebar-item">
 <button class="sidebar-button" onclick="toggleSidebarDropdown('gestione')">GESTIONE ▼</button>
@@ -159,9 +166,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <a href="fornitori.php" class="sidebar-dropdown-item">🏪 Fornitori</a>
 </div>
 </div>
-<div class="sidebar-item">
-<a href="sviluppo.php" class="sidebar-button">SVILUPPO</a>
-</div>
+<div class="sidebar-item"><a href="sviluppo.php" class="sidebar-button">SVILUPPO</a></div>
 <div class="sidebar-item">
 <button class="sidebar-button" onclick="toggleSidebarDropdown('team')">TEAM ▼</button>
 <div class="sidebar-dropdown" id="dropdown-team">
@@ -252,119 +257,73 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <button class="tab-button" onclick="switchTab('services')">⚙️ Servizi</button>
 <button class="tab-button" onclick="switchTab('agents')">👥 Agenti (<?= count($agents) ?>)</button>
 </div>
+
 <div class="tab-content active" id="tab-info">
 <h2 class="section-title">Informazioni Generali</h2>
 <div class="info-grid">
-<div class="info-item">
-<div class="info-label">Codice Agenzia</div>
-<div class="info-value"><?= htmlspecialchars($agency['code']) ?></div>
-</div>
-<div class="info-item">
-<div class="info-label">Nome Agenzia</div>
-<div class="info-value"><?= htmlspecialchars($agency['name']) ?></div>
-</div>
-<div class="info-item">
-<div class="info-label">Tipo</div>
-<div class="info-value"><?= htmlspecialchars($agency['type'] ?: 'Non specificato') ?></div>
-</div>
-<div class="info-item">
-<div class="info-label">Broker Manager</div>
-<div class="info-value"><?= htmlspecialchars($agency['broker_manager'] ?: 'Non assegnato') ?></div>
-</div>
-<div class="info-item">
-<div class="info-label">Indirizzo</div>
-<div class="info-value"><?= htmlspecialchars($agency['address'] ?: 'Non disponibile') ?></div>
-</div>
-<div class="info-item">
-<div class="info-label">Città</div>
-<div class="info-value"><?= htmlspecialchars($agency['city']) ?><?= $agency['province'] ? ' (' . htmlspecialchars($agency['province']) . ')' : '' ?></div>
-</div>
-<div class="info-item">
-<div class="info-label">CAP</div>
-<div class="info-value"><?= htmlspecialchars($agency['zip_code'] ?: 'Non disponibile') ?></div>
-</div>
-<div class="info-item">
-<div class="info-label">Email</div>
-<div class="info-value"><?= htmlspecialchars($agency['email'] ?: 'Non disponibile') ?></div>
-</div>
-<div class="info-item">
-<div class="info-label">Telefono</div>
-<div class="info-value"><?= htmlspecialchars($agency['phone'] ?: 'Non disponibile') ?></div>
-</div>
-<div class="info-item">
-<div class="info-label">P.IVA</div>
-<div class="info-value"><?= htmlspecialchars($agency['vat_number'] ?: 'Non disponibile') ?></div>
-</div>
-<div class="info-item">
-<div class="info-label">Codice Fiscale</div>
-<div class="info-value"><?= htmlspecialchars($agency['tax_code'] ?: 'Non disponibile') ?></div>
-</div>
-<div class="info-item">
-<div class="info-label">Codice SDI</div>
-<div class="info-value"><?= htmlspecialchars($agency['sdi_code'] ?: 'Non disponibile') ?></div>
+<div class="info-item"><div class="info-label">Codice Agenzia</div><div class="info-value"><?= htmlspecialchars($agency['code']) ?></div></div>
+<div class="info-item"><div class="info-label">Nome Agenzia</div><div class="info-value"><?= htmlspecialchars($agency['name']) ?></div></div>
+<div class="info-item"><div class="info-label">Tipo</div><div class="info-value"><?= htmlspecialchars($agency['type'] ?: 'Non specificato') ?></div></div>
+<div class="info-item"><div class="info-label">Broker Manager</div><div class="info-value"><?= htmlspecialchars($agency['broker_manager'] ?: 'Non assegnato') ?></div></div>
+<div class="info-item"><div class="info-label">Indirizzo</div><div class="info-value"><?= htmlspecialchars($agency['address'] ?: 'Non disponibile') ?></div></div>
+<div class="info-item"><div class="info-label">Città</div><div class="info-value"><?= htmlspecialchars($agency['city']) ?><?= $agency['province'] ? ' (' . htmlspecialchars($agency['province']) . ')' : '' ?></div></div>
+<div class="info-item"><div class="info-label">CAP</div><div class="info-value"><?= htmlspecialchars($agency['zip_code'] ?: 'Non disponibile') ?></div></div>
+<div class="info-item"><div class="info-label">Email</div><div class="info-value"><?= htmlspecialchars($agency['email'] ?: 'Non disponibile') ?></div></div>
+<div class="info-item"><div class="info-label">Telefono</div><div class="info-value"><?= htmlspecialchars($agency['phone'] ?: 'Non disponibile') ?></div></div>
+<div class="info-item"><div class="info-label">P.IVA</div><div class="info-value"><?= htmlspecialchars($agency['vat_number'] ?: 'Non disponibile') ?></div></div>
+<div class="info-item"><div class="info-label">Codice Fiscale</div><div class="info-value"><?= htmlspecialchars($agency['tax_code'] ?: 'Non disponibile') ?></div></div>
+<div class="info-item"><div class="info-label">Codice SDI</div><div class="info-value"><?= htmlspecialchars($agency['sdi_code'] ?: 'Non disponibile') ?></div></div>
 </div>
 </div>
-</div>
+
 <div class="tab-content" id="tab-contract">
 <h2 class="section-title">Informazioni Contrattuali</h2>
 <div class="info-grid">
+<div class="info-item"><div class="info-label">Data Attivazione</div><div class="info-value"><?= $agency['activation_date'] ? date('d/m/Y', strtotime($agency['activation_date'])) : 'Non disponibile' ?></div></div>
+<div class="info-item"><div class="info-label">Data Chiusura</div><div class="info-value"><?= $agency['closed_date'] ? date('d/m/Y', strtotime($agency['closed_date'])) : 'Non applicabile' ?></div></div>
+<div class="info-item"><div class="info-label">Data Firma Contratto</div><div class="info-value"><?= $agency['sold_date'] ? date('d/m/Y', strtotime($agency['sold_date'])) : 'Non disponibile' ?></div></div>
+<div class="info-item"><div class="info-label">Durata Contratto (anni)</div><div class="info-value"><?= $agency['contract_duration_years'] ?: 'Non specificata' ?></div></div>
+<div class="info-item"><div class="info-label">Scadenza Contratto</div><div class="info-value"><?= $agency['contract_expiry'] ? date('d/m/Y', strtotime($agency['contract_expiry'])) : 'Non disponibile' ?></div></div>
+<div class="info-item"><div class="info-label">Tech Fee</div><div class="info-value"><?= $agency['tech_fee'] ? '€ ' . number_format($agency['tech_fee'], 2, ',', '.') : 'Non specificata' ?></div></div>
+</div>
+
+<h2 class="section-title" style="margin-top:2rem">Contratto e Zona di Rispetto</h2>
+<div class="info-grid">
 <div class="info-item">
-<div class="info-label">Data Attivazione</div>
-<div class="info-value"><?= $agency['activation_date'] ? date('d/m/Y', strtotime($agency['activation_date'])) : 'Non disponibile' ?></div>
+<div class="info-label">Contratto</div>
+<div class="info-value">
+<?php if ($agency['contract_file']): ?>
+<a href="/uploads/contracts/<?= htmlspecialchars($agency['contract_file']) ?>" class="file-download" target="_blank">📄 Scarica Contratto</a>
+<?php else: ?>
+<span class="empty">Nessun file caricato</span>
+<?php endif; ?>
+</div>
 </div>
 <div class="info-item">
-<div class="info-label">Data Chiusura</div>
-<div class="info-value"><?= $agency['closed_date'] ? date('d/m/Y', strtotime($agency['closed_date'])) : 'Non applicabile' ?></div>
-</div>
-<div class="info-item">
-<div class="info-label">Data Firma Contratto</div>
-<div class="info-value"><?= $agency['sold_date'] ? date('d/m/Y', strtotime($agency['sold_date'])) : 'Non disponibile' ?></div>
-</div>
-<div class="info-item">
-<div class="info-label">Durata Contratto (anni)</div>
-<div class="info-value"><?= $agency['contract_duration_years'] ?: 'Non specificata' ?></div>
-</div>
-<div class="info-item">
-<div class="info-label">Scadenza Contratto</div>
-<div class="info-value"><?= $agency['contract_expiry'] ? date('d/m/Y', strtotime($agency['contract_expiry'])) : 'Non disponibile' ?></div>
-</div>
-<div class="info-item">
-<div class="info-label">Tech Fee</div>
-<div class="info-value"><?= $agency['tech_fee'] ? '€ ' . number_format($agency['tech_fee'], 2, ',', '.') : 'Non specificata' ?></div>
+<div class="info-label">Zona di Rispetto</div>
+<div class="info-value">
+<?php if ($agency['exclusivity_zone_text']): ?>
+<?= nl2br(htmlspecialchars($agency['exclusivity_zone_text'])) ?>
+<?php elseif ($agency['exclusivity_zone_file']): ?>
+<a href="/uploads/contracts/<?= htmlspecialchars($agency['exclusivity_zone_file']) ?>" class="file-download" target="_blank">🗺️ Vedi Mappa</a>
+<?php else: ?>
+<span class="empty">Non definita</span>
+<?php endif; ?>
 </div>
 </div>
+</div>
+
 <h2 class="section-title" style="margin-top:2rem">Note Contrattuali</h2>
 <div class="info-item">
 <div class="info-value"><?= $agency['contract_notes'] ? nl2br(htmlspecialchars($agency['contract_notes'])) : 'Nessuna nota' ?></div>
 </div>
 </div>
+
 <div class="tab-content" id="tab-services">
-<h2 class="section-title">Servizi Attivi</h2>
-<p style="color:var(--cb-gray);margin-bottom:2rem">Gestione servizi disponibile in Fase 2</p>
-<div class="services-list">
-<div class="service-item">
-<div class="service-info">
-<h4>📧 Email Aziendale</h4>
-<div class="service-dates">Non configurato</div>
+<h2 class="section-title">Servizi Sottoscritti</h2>
+<p style="color:var(--cb-gray);margin-bottom:2rem;font-size:.9rem">I campi servizi verranno mappati una volta identificati i nomi esatti nel database</p>
 </div>
-<div class="service-toggle"></div>
-</div>
-<div class="service-item">
-<div class="service-info">
-<h4>🌐 Sito Web</h4>
-<div class="service-dates">Non configurato</div>
-</div>
-<div class="service-toggle"></div>
-</div>
-<div class="service-item">
-<div class="service-info">
-<h4>📱 Social Media</h4>
-<div class="service-dates">Non configurato</div>
-</div>
-<div class="service-toggle"></div>
-</div>
-</div>
-</div>
+
 <div class="tab-content" id="tab-agents">
 <button class="btn-add-agent" onclick="window.location.href='agente_add.php?agency_id=<?= $agency['id'] ?>'">➕ Aggiungi Agente</button>
 <?php if (empty($agents)): ?>
@@ -376,13 +335,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <?php else: ?>
 <table class="agents-table">
 <thead>
-<tr>
-<th>Nome</th>
-<th>Email</th>
-<th>Telefono</th>
-<th>Ruolo</th>
-<th>Status</th>
-</tr>
+<tr><th>Nome</th><th>Email</th><th>Telefono</th><th>Ruolo</th><th>Status</th></tr>
 </thead>
 <tbody>
 <?php foreach ($agents as $agent): ?>
@@ -401,50 +354,16 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 </div>
 </div>
 <script>
-const hamburger=document.getElementById('hamburger');
-const mobileSidebar=document.getElementById('mobileSidebar');
-const sidebarBackdrop=document.getElementById('sidebarBackdrop');
-const sidebarClose=document.getElementById('sidebarClose');
-
-hamburger?.addEventListener('click',()=>{
-mobileSidebar.classList.add('open');
-sidebarBackdrop.classList.add('open');
-});
-
+const hamburger=document.getElementById('hamburger'),mobileSidebar=document.getElementById('mobileSidebar'),sidebarBackdrop=document.getElementById('sidebarBackdrop'),sidebarClose=document.getElementById('sidebarClose');
+hamburger?.addEventListener('click',()=>{mobileSidebar.classList.add('open');sidebarBackdrop.classList.add('open')});
 sidebarClose?.addEventListener('click',closeSidebar);
 sidebarBackdrop?.addEventListener('click',closeSidebar);
-
-function closeSidebar(){
-mobileSidebar.classList.remove('open');
-sidebarBackdrop.classList.remove('open');
-}
-
-function toggleSidebarDropdown(id){
-const dropdown=document.getElementById('dropdown-'+id);
-dropdown?.classList.toggle('open');
-}
-
-document.querySelectorAll('.nav-button').forEach(btn=>{
-btn.addEventListener('click',function(e){
-e.stopPropagation();
-const parent=this.closest('.nav-item');
-document.querySelectorAll('.nav-item').forEach(item=>{
-if(item!==parent)item.classList.remove('open');
-});
-parent.classList.toggle('open');
-});
-});
-
-document.addEventListener('click',()=>{
-document.querySelectorAll('.nav-item').forEach(item=>item.classList.remove('open'));
-});
-
-function switchTab(tabName){
-document.querySelectorAll('.tab-button').forEach(btn=>btn.classList.remove('active'));
-document.querySelectorAll('.tab-content').forEach(content=>content.classList.remove('active'));
-document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
-document.getElementById('tab-'+tabName).classList.add('active');
-}
+function closeSidebar(){mobileSidebar.classList.remove('open');sidebarBackdrop.classList.remove('open')}
+function toggleSidebarDropdown(id){document.getElementById('dropdown-'+id)?.classList.toggle('open')}
+document.querySelectorAll('.nav-button').forEach(btn=>{btn.addEventListener('click',function(e){e.stopPropagation();const parent=this.closest('.nav-item');document.querySelectorAll('.nav-item').forEach(item=>{if(item!==parent)item.classList.remove('open')});parent.classList.toggle('open')})});
+document.addEventListener('click',()=>{document.querySelectorAll('.nav-item').forEach(item=>item.classList.remove('open'))});
+function switchTab(tabName){document.querySelectorAll('.tab-button').forEach(btn=>btn.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(content=>content.classList.remove('active'));document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');document.getElementById('tab-'+tabName).classList.add('active')}
+function toggleService(serviceId){document.getElementById('service-'+serviceId).classList.toggle('open');document.getElementById('expand-'+serviceId).classList.toggle('open')}
 </script>
 </body>
 </html>
