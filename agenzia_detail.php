@@ -148,6 +148,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .agents-table th,.agents-table td{padding:.75rem .5rem}
 }
 .inactive-agent{display:none}
+.show-inactive .inactive-agent{display:table-row}
 </style>
 </head>
 <body>
@@ -446,7 +447,7 @@ document.querySelectorAll('.nav-button').forEach(btn=>{btn.addEventListener('cli
 document.addEventListener('click',()=>{document.querySelectorAll('.nav-item').forEach(item=>item.classList.remove('open'))});
 function switchTab(tabName){document.querySelectorAll('.tab-button').forEach(btn=>btn.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(content=>content.classList.remove('active'));document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');document.getElementById('tab-'+tabName).classList.add('active')}
 function toggleService(serviceId){document.getElementById('service-'+serviceId).classList.toggle('open');document.getElementById('expand-'+serviceId).classList.toggle('open')}
-document.getElementById('showInactive')?.addEventListener('change',function(){document.querySelectorAll('.inactive-agent').forEach(row=>{row.style.display=this.checked?'':'none'})})
+document.getElementById('showInactive')?.addEventListener('change',function(){document.querySelector('.agents-table').classList.toggle('show-inactive',this.checked)})
 </script>
 </body>
 </html>

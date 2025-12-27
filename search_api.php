@@ -35,7 +35,7 @@ foreach ($agencies as $agency) {
         'type' => 'agency',
         'title' => strtoupper($agency['name']),
         'meta' => "({$agency['code']}, {$agency['city']})",
-        'url' => "agenzie.php?code={$agency['code']}"
+        'url' => "agenzia_detail.php?code={$agency['code']}"
     ];
 }
 
@@ -56,7 +56,7 @@ foreach ($agents as $agent) {
         'type' => 'agent',
         'title' => strtoupper($agent['first_name'] . ' ' . $agent['last_name']),
         'meta' => "({$agent['code']}, {$agent['agency_name']}, {$agent['city']})",
-        'url' => "agenti.php?id={$agent['id']}"
+        'url' => "agente_detail.php?id={$agent['id']}"
     ];
 }
 
