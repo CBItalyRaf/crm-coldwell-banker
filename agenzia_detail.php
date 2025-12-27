@@ -25,6 +25,17 @@ $stmt = $pdo->prepare("SELECT id, first_name, last_name, email_personal, mobile,
 $stmt->execute([$agency['id']]);
 $agents = $stmt->fetchAll();
 
+// Servizi dell'agenzia
+$stmt = $pdo->prepare("SELECT service_name, is_active, activation_date, expiration_date, renewal_required, invoice_reference, notes FROM agency_services WHERE agency_id = ? ORDER BY service_name");
+$stmt->execute([$agency['id']]);
+$services = $stmt->fetchAll();
+
+// Organizza servizi per nome
+$servicesData = [];
+foreach ($services as $service) {
+    $servicesData[$service['service_name']] = $service;
+}
+
 $user = $_SESSION['crm_user'];
 ?>
 <!DOCTYPE html>
@@ -321,7 +332,71 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 
 <div class="tab-content" id="tab-services">
 <h2 class="section-title">Servizi Sottoscritti</h2>
-<p style="color:var(--cb-gray);margin-bottom:2rem;font-size:.9rem">I campi servizi verranno mappati una volta identificati i nomi esatti nel database</p>
+
+<?php
+$serviceLabels = [
+    'cb_suite' => 'CB Suite (EuroMq/iRealtors)',
+    'canva' => 'Canva',
+    'regold' => 'Regold',
+    'james_edition' => 'James Edition',
+    'docudrop' => 'Docudrop',
+    'unique' => 'Unique'
+];
+
+foreach ($serviceLabels as $serviceName => $serviceLabel):
+    $service = $servicesData[$serviceName] ?? null;
+    $isActive = $service && $service['is_active'];
+?>
+<div class="service-card">
+<div class="service-header" onclick="toggleService('<?= $serviceName ?>')">
+<div class="service-title">
+<h3><?= $serviceLabel ?></h3>
+<span class="service-status <?= $isActive ? 'active' : 'inactive' ?>">
+<?= $isActive ? 'Attivo' : 'Non attivo' ?>
+</span>
+</div>
+<span class="service-expand" id="expand-<?= $serviceName ?>">▼</span>
+</div>
+<div class="service-details" id="service-<?= $serviceName ?>">
+<?php if ($service): ?>
+<div class="service-info-grid">
+<?php if ($service['activation_date']): ?>
+<div class="info-item">
+<div class="info-label">Data Attivazione</div>
+<div class="info-value"><?= date('d/m/Y', strtotime($service['activation_date'])) ?></div>
+</div>
+<?php endif; ?>
+<?php if ($service['expiration_date']): ?>
+<div class="info-item">
+<div class="info-label">Data Scadenza</div>
+<div class="info-value"><?= date('d/m/Y', strtotime($service['expiration_date'])) ?></div>
+</div>
+<?php endif; ?>
+<?php if ($serviceName === 'cb_suite' && $service['renewal_required']): ?>
+<div class="info-item">
+<div class="info-label">Obbligo Rinnovo</div>
+<div class="info-value"><?= htmlspecialchars($service['renewal_required']) ?></div>
+</div>
+<?php endif; ?>
+<?php if ($service['invoice_reference']): ?>
+<div class="info-item">
+<div class="info-label">Fattura</div>
+<div class="info-value"><?= htmlspecialchars($service['invoice_reference']) ?></div>
+</div>
+<?php endif; ?>
+<?php if ($service['notes']): ?>
+<div class="info-item" style="grid-column:1/-1">
+<div class="info-label">Note</div>
+<div class="info-value"><?= nl2br(htmlspecialchars($service['notes'])) ?></div>
+</div>
+<?php endif; ?>
+</div>
+<?php else: ?>
+<p style="color:var(--cb-gray);font-size:.9rem;margin-top:1rem">Servizio non sottoscritto</p>
+<?php endif; ?>
+</div>
+</div>
+<?php endforeach; ?>
 </div>
 
 <div class="tab-content" id="tab-agents">
