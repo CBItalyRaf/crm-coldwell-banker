@@ -11,7 +11,7 @@ $pdo = getDB();
 
 // Query agenzie attive
 $stmt = $pdo->query("
-    SELECT code, name, city, province, email, phone, broker_manager, status
+    SELECT code, name, city, province, email, phone, broker_manager
     FROM agencies
     WHERE status = 'Active'
     ORDER BY name ASC
@@ -29,7 +29,7 @@ $output = fopen('php://output', 'w');
 fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
 
 // Header CSV
-fputcsv($output, ['Codice', 'Nome', 'Città', 'Provincia', 'Email', 'Telefono', 'Broker Manager', 'Status']);
+fputcsv($output, ['Codice', 'Nome', 'Città', 'Provincia', 'Email', 'Telefono', 'Broker Manager']);
 
 // Dati
 foreach ($agencies as $agency) {
@@ -40,8 +40,7 @@ foreach ($agencies as $agency) {
         $agency['province'],
         $agency['email'],
         $agency['phone'],
-        $agency['broker_manager'],
-        $agency['status']
+        $agency['broker_manager']
     ]);
 }
 

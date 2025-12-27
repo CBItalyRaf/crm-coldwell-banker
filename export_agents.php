@@ -19,8 +19,7 @@ $stmt = $pdo->query("
         a.role,
         ag.code as agency_code,
         ag.name as agency_name,
-        ag.city as agency_city,
-        a.status
+        ag.city as agency_city
     FROM agents a
     LEFT JOIN agencies ag ON a.agency_id = ag.id
     WHERE a.status = 'Active'
@@ -39,7 +38,7 @@ $output = fopen('php://output', 'w');
 fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
 
 // Header CSV
-fputcsv($output, ['Nome', 'Cognome', 'Email', 'Cellulare', 'Ruolo', 'Codice Agenzia', 'Nome Agenzia', 'Città Agenzia', 'Status']);
+fputcsv($output, ['Nome', 'Cognome', 'Email', 'Cellulare', 'Ruolo', 'Codice Agenzia', 'Nome Agenzia', 'Città Agenzia']);
 
 // Dati
 foreach ($agents as $agent) {
@@ -51,8 +50,7 @@ foreach ($agents as $agent) {
         $agent['role'],
         $agent['agency_code'],
         $agent['agency_name'],
-        $agent['agency_city'],
-        $agent['status']
+        $agent['agency_city']
     ]);
 }
 
