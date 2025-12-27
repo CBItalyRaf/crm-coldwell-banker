@@ -14,52 +14,78 @@ if (empty($exportFields)) {
     exit;
 }
 
-// Mappa campi DB
+// Separa campi agenzia da servizi
+$agencyFields = ['code', 'name', 'city', 'province', 'email', 'phone', 'broker', 'tech_fee', 'contract_expiry', 'activation_date'];
+$serviceFields = ['cb_suite', 'canva', 'regold', 'james', 'docudrop', 'unique'];
+
+$requestedAgencyFields = array_intersect($exportFields, $agencyFields);
+$requestedServiceFields = array_intersect($exportFields, $serviceFields);
+
+// Mappa campi DB agenzie
 $fieldMap = [
-    'code' => 'code',
-    'name' => 'name',
-    'city' => 'city',
-    'province' => 'province',
-    'email' => 'email',
-    'phone' => 'phone',
-    'broker' => 'broker_manager',
-    'tech_fee' => 'tech_fee',
-    'contract_expiry' => 'contract_expiry',
-    'activation_date' => 'activation_date',
-    // Servizi - TODO: mappare con nomi esatti DB
-    'cb_suite' => 'cb_suite_status',
-    'canva' => 'canva_active',
-    'regold' => 'regold_status',
-    'james' => 'james_edition_status',
-    'docudrop' => 'docudrop_status',
-    'unique' => 'unique_active'
+    'code' => 'a.code',
+    'name' => 'a.name',
+    'city' => 'a.city',
+    'province' => 'a.province',
+    'email' => 'a.email',
+    'phone' => 'a.phone',
+    'broker' => 'a.broker_manager',
+    'tech_fee' => 'a.tech_fee',
+    'contract_expiry' => 'a.contract_expiry',
+    'activation_date' => 'a.activation_date'
 ];
 
-// Costruisci SELECT
-$selectFields = [];
-foreach ($exportFields as $field) {
+// Costruisci SELECT per campi agenzia
+$selectFields = ['a.id'];
+foreach ($requestedAgencyFields as $field) {
     if (isset($fieldMap[$field])) {
         $selectFields[] = $fieldMap[$field];
     }
 }
 
-if (empty($selectFields)) {
-    header('Location: agenzie.php?error=invalid_fields');
-    exit;
+// Aggiungi JOIN per servizi richiesti
+$joins = '';
+$serviceSelects = [];
+
+if (in_array('cb_suite', $requestedServiceFields)) {
+    $joins .= " LEFT JOIN agency_services svc_cb ON a.id = svc_cb.agency_id AND svc_cb.service_name = 'cb_suite'";
+    $serviceSelects[] = "IF(svc_cb.is_active, 'Attivo', 'Non attivo') as cb_suite_status";
+}
+if (in_array('canva', $requestedServiceFields)) {
+    $joins .= " LEFT JOIN agency_services svc_canva ON a.id = svc_canva.agency_id AND svc_canva.service_name = 'canva'";
+    $serviceSelects[] = "IF(svc_canva.is_active, 'Attivo', 'Non attivo') as canva_status";
+}
+if (in_array('regold', $requestedServiceFields)) {
+    $joins .= " LEFT JOIN agency_services svc_regold ON a.id = svc_regold.agency_id AND svc_regold.service_name = 'regold'";
+    $serviceSelects[] = "IF(svc_regold.is_active, 'Attivo', 'Non attivo') as regold_status";
+}
+if (in_array('james', $requestedServiceFields)) {
+    $joins .= " LEFT JOIN agency_services svc_james ON a.id = svc_james.agency_id AND svc_james.service_name = 'james_edition'";
+    $serviceSelects[] = "IF(svc_james.is_active, 'Attivo', 'Non attivo') as james_status";
+}
+if (in_array('docudrop', $requestedServiceFields)) {
+    $joins .= " LEFT JOIN agency_services svc_docudrop ON a.id = svc_docudrop.agency_id AND svc_docudrop.service_name = 'docudrop'";
+    $serviceSelects[] = "IF(svc_docudrop.is_active, 'Attivo', 'Non attivo') as docudrop_status";
+}
+if (in_array('unique', $requestedServiceFields)) {
+    $joins .= " LEFT JOIN agency_services svc_unique ON a.id = svc_unique.agency_id AND svc_unique.service_name = 'unique'";
+    $serviceSelects[] = "IF(svc_unique.is_active, 'Attivo', 'Non attivo') as unique_status";
 }
 
+$allSelects = array_merge($selectFields, $serviceSelects);
+
 // Query
-$sql = "SELECT " . implode(', ', $selectFields) . " FROM agencies WHERE status != 'Prospect'";
+$sql = "SELECT " . implode(', ', $allSelects) . " FROM agencies a" . $joins . " WHERE a.status != 'Prospect'";
 
 if ($statusFilter !== 'all') {
-    $sql .= " AND status = :status";
+    $sql .= " AND a.status = :status";
 }
 
 if ($search) {
-    $sql .= " AND (name LIKE :search OR code LIKE :search OR city LIKE :search)";
+    $sql .= " AND (a.name LIKE :search OR a.code LIKE :search OR a.city LIKE :search)";
 }
 
-$sql .= " ORDER BY name ASC";
+$sql .= " ORDER BY a.name ASC";
 
 $stmt = $pdo->prepare($sql);
 
@@ -110,14 +136,20 @@ fputcsv($output, $headers);
 foreach ($agencies as $agency) {
     $row = [];
     foreach ($exportFields as $field) {
-        $dbField = $fieldMap[$field] ?? $field;
-        $value = $agency[$dbField] ?? '';
-        
-        // Formattazione speciale
-        if ($field === 'tech_fee' && $value) {
-            $value = '€ ' . number_format($value, 2, ',', '.');
-        } elseif (in_array($field, ['activation_date', 'contract_expiry']) && $value) {
-            $value = date('d/m/Y', strtotime($value));
+        if (in_array($field, $agencyFields)) {
+            // Campo agenzia
+            $dbField = str_replace('a.', '', $fieldMap[$field] ?? $field);
+            $value = $agency[$dbField] ?? '';
+            
+            // Formattazione speciale
+            if ($field === 'tech_fee' && $value) {
+                $value = '€ ' . number_format($value, 2, ',', '.');
+            } elseif (in_array($field, ['activation_date', 'contract_expiry']) && $value) {
+                $value = date('d/m/Y', strtotime($value));
+            }
+        } else {
+            // Campo servizio
+            $value = $agency[$field . '_status'] ?? 'Non attivo';
         }
         
         $row[] = $value;
