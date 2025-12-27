@@ -28,7 +28,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .logo{height:32px}
 .main-nav{display:flex;gap:.25rem;align-items:center}
 .nav-item{position:relative}
-.nav-button{background:transparent;border:none;color:white;padding:.75rem 1.25rem;font-size:.875rem;font-weight:600;cursor:pointer;border-radius:6px;transition:background .2s;display:flex;align-items:center;gap:.5rem;text-decoration:none;text-transform:uppercase;letter-spacing:.05em}
+.nav-button{background:transparent;border:none;color:white;padding:.75rem 1.25rem;font-size:.875rem;font-weight:500;cursor:pointer;border-radius:6px;transition:background .2s;display:flex;align-items:center;gap:.5rem;text-decoration:none;text-transform:uppercase;letter-spacing:.05em}
 .nav-button:hover{background:rgba(255,255,255,.15)}
 .dropdown-menu{position:absolute;top:100%;left:0;margin-top:.5rem;background:white;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.15);min-width:200px;opacity:0;visibility:hidden;transform:translateY(-10px);transition:all .2s;z-index:1000}
 .nav-item:hover .dropdown-menu,.nav-item.open .dropdown-menu{opacity:1;visibility:visible;transform:translateY(0)}
@@ -54,10 +54,11 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .search-item-title{font-weight:600;margin-bottom:.25rem;color:var(--cb-midnight)}
 .search-item-meta{font-size:.875rem;color:var(--cb-gray)}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-bottom:2rem}
-.stat-card{background:white;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.08);border-left:4px solid var(--cb-bright-blue)}
+.stat-card{background:white;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.08);border-left:4px solid var(--cb-bright-blue);position:relative}
 .stat-card h3{font-size:.875rem;text-transform:uppercase;letter-spacing:.05em;color:var(--cb-gray);margin-bottom:.75rem;font-weight:600}
 .stat-value{font-size:2.5rem;font-weight:700;color:var(--cb-blue);margin-bottom:.5rem}
-.stat-subtitle{font-size:.875rem;color:var(--cb-gray)}
+.btn-csv{position:absolute;top:1rem;right:1rem;background:var(--cb-bright-blue);color:white;border:none;padding:.5rem 1rem;border-radius:6px;font-size:.8rem;cursor:pointer;transition:background .2s;text-decoration:none;display:inline-block}
+.btn-csv:hover{background:var(--cb-blue)}
 .widgets-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem;margin-bottom:2rem}
 .widget{background:white;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .widget-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid #E5E7EB}
@@ -146,14 +147,14 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 </div>
 <div class="stats-grid">
 <div class="stat-card">
+<a href="export_agencies.php" class="btn-csv">📥 CSV</a>
 <h3>Agenzie Attive</h3>
 <div class="stat-value"><?= $agenciesStats['total'] ?></div>
-<div class="stat-subtitle">In rete</div>
 </div>
 <div class="stat-card">
+<a href="export_agents.php" class="btn-csv">📥 CSV</a>
 <h3>Agenti Attivi</h3>
 <div class="stat-value"><?= $agentsStats['total'] ?></div>
-<div class="stat-subtitle">In rete</div>
 </div>
 <div class="stat-card">
 <h3>Ticket</h3>
