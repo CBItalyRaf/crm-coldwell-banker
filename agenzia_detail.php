@@ -21,7 +21,7 @@ if (!$agency) {
 }
 
 // Agenti dell'agenzia
-$stmt = $pdo->prepare("SELECT id, first_name, last_name, email_work, mobile, role, status FROM agents WHERE agency_id = ? ORDER BY last_name ASC");
+$stmt = $pdo->prepare("SELECT id, first_name, last_name, email_corporate, mobile, role, status FROM agents WHERE agency_id = ? ORDER BY last_name ASC");
 $stmt->execute([$agency['id']]);
 $agents = $stmt->fetchAll();
 
@@ -395,7 +395,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <?php foreach ($agents as $agent): ?>
 <tr class="<?= strtolower($agent['status']) !== 'active' ? 'inactive-agent' : '' ?>">
 <td><span class="agent-name" onclick="window.location.href='agente_detail.php?id=<?= $agent['id'] ?>'"><?= htmlspecialchars($agent['first_name'] . ' ' . $agent['last_name']) ?></span></td>
-<td><?= htmlspecialchars($agent['email_work'] ?: 'Non disponibile') ?></td>
+<td><?= htmlspecialchars($agent['email_corporate'] ?: 'Non disponibile') ?></td>
 <td><?= htmlspecialchars($agent['mobile'] ?: 'Non disponibile') ?></td>
 <td><?= htmlspecialchars($agent['role'] ?: 'Non specificato') ?></td>
 <td><span class="status-badge <?= strtolower($agent['status']) ?>"><?= htmlspecialchars($agent['status']) ?></span></td>
