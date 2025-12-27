@@ -26,7 +26,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .header-content{max-width:1400px;margin:0 auto;padding:0 1.5rem;display:flex;justify-content:space-between;align-items:center;min-height:70px}
 .header-left{display:flex;align-items:center;gap:3rem}
 .logo{height:32px}
-.hamburger{display:none;background:transparent;border:none;color:white;font-size:1.5rem;cursor:pointer;padding:.5rem}
 .main-nav{display:flex;gap:.25rem;align-items:center}
 .nav-item{position:relative}
 .nav-button{background:transparent;border:none;color:white;padding:.75rem 1.25rem;font-size:.875rem;font-weight:500;cursor:pointer;border-radius:6px;transition:background .2s;display:flex;align-items:center;gap:.5rem;text-decoration:none;text-transform:uppercase;letter-spacing:.05em}
@@ -41,22 +40,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .user-button{display:flex;align-items:center;gap:.75rem;background:transparent;border:none;color:white;padding:.5rem 1rem;cursor:pointer;border-radius:6px;font-size:.95rem;transition:background .2s}
 .user-button:hover{background:rgba(255,255,255,.1)}
 .user-avatar{width:32px;height:32px;border-radius:50%;background:var(--cb-bright-blue);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.9rem}
-.mobile-sidebar{position:fixed;top:0;left:-300px;width:300px;height:100vh;background:var(--cb-blue);z-index:2000;transition:left .3s;overflow-y:auto;padding:1rem 0}
-.mobile-sidebar.open{left:0}
-.sidebar-header{padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:1rem}
-.sidebar-close{background:transparent;border:none;color:white;font-size:1.5rem;cursor:pointer;float:right}
-.sidebar-nav{padding:0 1rem}
-.sidebar-item{margin-bottom:.5rem}
-.sidebar-button{width:100%;background:transparent;border:none;color:white;padding:.75rem 1rem;text-align:left;font-size:.875rem;font-weight:500;cursor:pointer;border-radius:6px;text-transform:uppercase;letter-spacing:.05em}
-.sidebar-button:hover{background:rgba(255,255,255,.1)}
-.sidebar-dropdown{padding-left:1rem;margin-top:.5rem;display:none}
-.sidebar-dropdown.open{display:block}
-.sidebar-dropdown-item{display:block;padding:.75rem 1rem;color:white;text-decoration:none;font-size:.85rem;border-radius:6px}
-.sidebar-dropdown-item:hover{background:rgba(255,255,255,.1)}
-.sidebar-user{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,.1);margin-top:1rem}
-.sidebar-user-info{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;color:white}
-.sidebar-backdrop{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.5);z-index:1999;display:none}
-.sidebar-backdrop.open{display:block}
 .container{max-width:1400px;margin:0 auto;padding:2rem 1.5rem}
 .welcome{margin-bottom:2rem}
 .welcome h1{font-size:1.75rem;font-weight:600;margin-bottom:.5rem}
@@ -92,9 +75,9 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .footer{background:white;border-top:1px solid #E5E7EB;margin-top:3rem;padding:1.5rem 0}
 .footer-content{max-width:1400px;margin:0 auto;padding:0 1.5rem;text-align:center;color:var(--cb-gray);font-size:.875rem}
 @media(max-width:768px){
-.hamburger{display:block}
-.header-left{gap:1rem}
-.main-nav,.user-menu{display:none}
+.header-content{flex-direction:column;min-height:auto;padding:1rem;gap:1rem}
+.header-left{width:100%;flex-direction:column;gap:1rem;align-items:flex-start}
+.main-nav{overflow-x:auto;width:100%;padding:.5rem 0}
 .container{padding:1rem}
 .welcome h1{font-size:1.5rem}
 .stats-grid,.widgets-grid{grid-template-columns:1fr}
@@ -102,60 +85,9 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 </style>
 </head>
 <body>
-<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-<div class="mobile-sidebar" id="mobileSidebar">
-<div class="sidebar-header">
-<button class="sidebar-close" id="sidebarClose">✕</button>
-<div style="clear:both"></div>
-</div>
-<div class="sidebar-nav">
-<div class="sidebar-item">
-<button class="sidebar-button" onclick="toggleSidebarDropdown('gestione')">GESTIONE ▼</button>
-<div class="sidebar-dropdown" id="dropdown-gestione">
-<a href="agenzie.php" class="sidebar-dropdown-item">🏢 Agenzie</a>
-<a href="agenti.php" class="sidebar-dropdown-item">👥 Agenti</a>
-<a href="servizi.php" class="sidebar-dropdown-item">⚙️ Servizi</a>
-</div>
-</div>
-<div class="sidebar-item">
-<button class="sidebar-button" onclick="toggleSidebarDropdown('operations')">OPERATIONS ▼</button>
-<div class="sidebar-dropdown" id="dropdown-operations">
-<a href="onboarding.php" class="sidebar-dropdown-item">📥 Onboarding</a>
-<a href="offboarding.php" class="sidebar-dropdown-item">📤 Offboarding</a>
-<a href="ticket.php" class="sidebar-dropdown-item">🎫 Ticket</a>
-</div>
-</div>
-<div class="sidebar-item">
-<button class="sidebar-button" onclick="toggleSidebarDropdown('admin')">AMMINISTRAZIONE ▼</button>
-<div class="sidebar-dropdown" id="dropdown-admin">
-<a href="fatture.php" class="sidebar-dropdown-item">💰 Fatture</a>
-<a href="fornitori.php" class="sidebar-dropdown-item">🏪 Fornitori</a>
-</div>
-</div>
-<div class="sidebar-item">
-<a href="sviluppo.php" class="sidebar-button" style="display:block">SVILUPPO</a>
-</div>
-<div class="sidebar-item">
-<button class="sidebar-button" onclick="toggleSidebarDropdown('team')">TEAM ▼</button>
-<div class="sidebar-dropdown" id="dropdown-team">
-<a href="ferie.php" class="sidebar-dropdown-item">🌴 Ferie</a>
-<a href="calendario.php" class="sidebar-dropdown-item">📅 Calendario</a>
-</div>
-</div>
-</div>
-<div class="sidebar-user">
-<div class="sidebar-user-info">
-<div class="user-avatar"><?= strtoupper(substr($user['name'],0,1)) ?></div>
-<span><?= htmlspecialchars($user['name']) ?></span>
-</div>
-<a href="https://coldwellbankeritaly.tech/repository/dashboard/" class="sidebar-dropdown-item">🏠 Dashboard CB Italia</a>
-<a href="logout.php" class="sidebar-dropdown-item">🚪 Logout</a>
-</div>
-</div>
 <div class="header">
 <div class="header-content">
 <div class="header-left">
-<button class="hamburger" id="hamburger">☰</button>
 <img src="https://coldwellbankeritaly.tech/repository/dashboard/logo-white.png" alt="Coldwell Banker" class="logo">
 <nav class="main-nav">
 <div class="nav-item">
@@ -206,7 +138,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 </div>
 <div class="container">
 <div class="welcome">
-<h1>👋 Ciao, <?= htmlspecialchars($user['name']) ?></h1>
+<h1>👋 Benvenuto, <?= htmlspecialchars($user['name']) ?></h1>
 <p>Overview del network Coldwell Banker Italy</p>
 </div>
 <div class="search-container">
@@ -278,29 +210,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 </div>
 </div>
 <script>
-const hamburger=document.getElementById('hamburger');
-const mobileSidebar=document.getElementById('mobileSidebar');
-const sidebarBackdrop=document.getElementById('sidebarBackdrop');
-const sidebarClose=document.getElementById('sidebarClose');
-
-hamburger.addEventListener('click',()=>{
-mobileSidebar.classList.add('open');
-sidebarBackdrop.classList.add('open');
-});
-
-sidebarClose.addEventListener('click',closeSidebar);
-sidebarBackdrop.addEventListener('click',closeSidebar);
-
-function closeSidebar(){
-mobileSidebar.classList.remove('open');
-sidebarBackdrop.classList.remove('open');
-}
-
-function toggleSidebarDropdown(id){
-const dropdown=document.getElementById('dropdown-'+id);
-dropdown.classList.toggle('open');
-}
-
 const searchInput=document.getElementById('searchInput');
 const searchResults=document.getElementById('searchResults');
 let searchTimeout;
@@ -313,7 +222,7 @@ searchResults.classList.remove('active');
 return;
 }
 searchTimeout=setTimeout(()=>{
-fetch('search_api.php?q='+encodeURIComponent(query))
+fetch('https://admin.mycb.it/search_api.php?q='+encodeURIComponent(query))
 .then(r=>r.json())
 .then(data=>{
 if(data.length===0){
