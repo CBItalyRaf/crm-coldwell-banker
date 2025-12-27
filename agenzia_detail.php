@@ -331,7 +331,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 </div>
 
 <div class="tab-content" id="tab-services">
-<h2 class="section-title">Servizi Sottoscritti TEST2</h2>
+<h2 class="section-title">Servizi Sottoscritti TEST3</h2>
 
 <?php
 $serviceLabels = [
