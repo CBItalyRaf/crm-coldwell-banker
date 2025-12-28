@@ -38,52 +38,10 @@ foreach ($services as $service) {
 
 $user = $_SESSION['crm_user'];
 ?>
-<!DOCTYPE html>
-<html lang="it">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><?= htmlspecialchars($agency['name']) ?> - CRM Coldwell Banker</title>
+require_once 'header.php';
+?>
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--cb-blue:#012169;--cb-bright-blue:#1F69FF;--cb-midnight:#0A1730;--cb-gray:#6D7180;--bg:#F5F7FA;--success:#10B981;--warning:#F59E0B;--danger:#EF4444}
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--cb-midnight);line-height:1.6}
-.header{background:var(--cb-blue);color:white;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-.header-content{max-width:1400px;margin:0 auto;padding:0 1.5rem;display:flex;justify-content:space-between;align-items:center;min-height:70px}
-.header-left{display:flex;align-items:center;gap:3rem}
-.logo{height:32px}
-.hamburger{display:none;background:transparent;border:none;color:white;font-size:1.5rem;cursor:pointer;padding:.5rem}
-.main-nav{display:flex;gap:.25rem;align-items:center}
-.nav-item{position:relative}
-.nav-button{background:transparent;border:none;color:white;padding:.75rem 1.25rem;font-size:.875rem;font-weight:500;cursor:pointer;border-radius:6px;transition:background .2s;display:flex;align-items:center;gap:.5rem;text-decoration:none;text-transform:uppercase;letter-spacing:.05em}
-.nav-button:hover{background:rgba(255,255,255,.15)}
-.dropdown-menu{position:absolute;top:100%;left:0;margin-top:.5rem;background:white;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.15);min-width:200px;opacity:0;visibility:hidden;transform:translateY(-10px);transition:all .2s;z-index:1000}
-.nav-item:hover .dropdown-menu,.nav-item.open .dropdown-menu{opacity:1;visibility:visible;transform:translateY(0)}
-.dropdown-item{display:block;padding:.75rem 1.25rem;color:var(--cb-midnight);text-decoration:none;font-size:.9rem;transition:background .2s}
-.dropdown-item:first-child{border-radius:8px 8px 0 0}
-.dropdown-item:last-child{border-radius:0 0 8px 8px}
-.dropdown-item:hover{background:var(--bg)}
-.user-menu{position:relative}
-.user-button{display:flex;align-items:center;gap:.75rem;background:transparent;border:none;color:white;padding:.5rem 1rem;cursor:pointer;border-radius:6px;font-size:.95rem;transition:background .2s}
-.user-button:hover{background:rgba(255,255,255,.1)}
-.user-avatar{width:32px;height:32px;border-radius:50%;background:var(--cb-bright-blue);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.9rem}
-.mobile-sidebar{position:fixed;top:0;left:-300px;width:300px;height:100vh;background:var(--cb-blue);z-index:2000;transition:left .3s;overflow-y:auto;padding:1rem 0}
-.mobile-sidebar.open{left:0}
-.sidebar-header{padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:1rem}
-.sidebar-close{background:transparent;border:none;color:white;font-size:1.5rem;cursor:pointer;float:right}
-.sidebar-nav{padding:0 1rem}
-.sidebar-item{margin-bottom:.5rem}
-.sidebar-button{width:100%;background:transparent;border:none;color:white;padding:.75rem 1rem;text-align:left;font-size:.875rem;font-weight:500;cursor:pointer;border-radius:6px;text-transform:uppercase;letter-spacing:.05em}
-.sidebar-button:hover{background:rgba(255,255,255,.1)}
-.sidebar-dropdown{padding-left:1rem;margin-top:.5rem;display:none}
-.sidebar-dropdown.open{display:block}
-.sidebar-dropdown-item{display:block;padding:.75rem 1rem;color:white;text-decoration:none;font-size:.85rem;border-radius:6px}
-.sidebar-dropdown-item:hover{background:rgba(255,255,255,.1)}
-.sidebar-user{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,.1);margin-top:1rem}
-.sidebar-user-info{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;color:white}
-.sidebar-backdrop{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.5);z-index:1999;display:none}
-.sidebar-backdrop.open{display:block}
-.container{max-width:1400px;margin:0 auto;padding:2rem 1.5rem}
 .page-header{background:white;border-radius:12px;padding:1.5rem;margin-bottom:2rem;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
 .header-left-content{display:flex;align-items:center;gap:1rem}
 .btn-back{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.5rem 1rem;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;font-size:.9rem;transition:all .2s}
@@ -150,105 +108,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .inactive-agent{display:none}
 .show-inactive .inactive-agent{display:table-row}
 </style>
-</head>
-<body>
-<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-<div class="mobile-sidebar" id="mobileSidebar">
-<div class="sidebar-header"><button class="sidebar-close" id="sidebarClose">✕</button></div>
-<div class="sidebar-nav">
-<div class="sidebar-item">
-<button class="sidebar-button" onclick="toggleSidebarDropdown('gestione')">GESTIONE ▼</button>
-<div class="sidebar-dropdown open" id="dropdown-gestione">
-<a href="agenzie.php" class="sidebar-dropdown-item">🏢 Agenzie</a>
-<a href="agenti.php" class="sidebar-dropdown-item">👥 Agenti</a>
-<a href="servizi.php" class="sidebar-dropdown-item">⚙️ Servizi</a>
-</div>
-</div>
-<div class="sidebar-item">
-<button class="sidebar-button" onclick="toggleSidebarDropdown('operations')">OPERATIONS ▼</button>
-<div class="sidebar-dropdown" id="dropdown-operations">
-<a href="onboarding.php" class="sidebar-dropdown-item">📥 Onboarding</a>
-<a href="offboarding.php" class="sidebar-dropdown-item">📤 Offboarding</a>
-<a href="ticket.php" class="sidebar-dropdown-item">🎫 Ticket</a>
-</div>
-</div>
-<div class="sidebar-item">
-<button class="sidebar-button" onclick="toggleSidebarDropdown('admin')">AMMINISTRAZIONE ▼</button>
-<div class="sidebar-dropdown" id="dropdown-admin">
-<a href="fatture.php" class="sidebar-dropdown-item">💰 Fatture</a>
-<a href="fornitori.php" class="sidebar-dropdown-item">🏪 Fornitori</a>
-</div>
-</div>
-<div class="sidebar-item"><a href="sviluppo.php" class="sidebar-button">SVILUPPO</a></div>
-<div class="sidebar-item">
-<button class="sidebar-button" onclick="toggleSidebarDropdown('team')">TEAM ▼</button>
-<div class="sidebar-dropdown" id="dropdown-team">
-<a href="ferie.php" class="sidebar-dropdown-item">🌴 Ferie</a>
-<a href="calendario.php" class="sidebar-dropdown-item">📅 Calendario</a>
-</div>
-</div>
-</div>
-<div class="sidebar-user">
-<div class="sidebar-user-info">
-<div class="user-avatar"><?= strtoupper(substr($user['name'],0,1)) ?></div>
-<span><?= htmlspecialchars($user['name']) ?></span>
-</div>
-<a href="index.php" class="sidebar-dropdown-item">🏠 Dashboard</a>
-<a href="logout.php" class="sidebar-dropdown-item">🚪 Logout</a>
-</div>
-</div>
-<div class="header">
-<div class="header-content">
-<div class="header-left">
-<button class="hamburger" id="hamburger">☰</button>
-<a href="index.php"><img src="https://coldwellbankeritaly.tech/repository/dashboard/logo-white.png" alt="Coldwell Banker" class="logo"></a>
-<nav class="main-nav">
-<div class="nav-item">
-<button class="nav-button">GESTIONE ▼</button>
-<div class="dropdown-menu">
-<a href="agenzie.php" class="dropdown-item">🏢 Agenzie</a>
-<a href="agenti.php" class="dropdown-item">👥 Agenti</a>
-<a href="servizi.php" class="dropdown-item">⚙️ Servizi</a>
-</div>
-</div>
-<div class="nav-item">
-<button class="nav-button">OPERATIONS ▼</button>
-<div class="dropdown-menu">
-<a href="onboarding.php" class="dropdown-item">📥 Onboarding</a>
-<a href="offboarding.php" class="dropdown-item">📤 Offboarding</a>
-<a href="ticket.php" class="dropdown-item">🎫 Ticket</a>
-</div>
-</div>
-<div class="nav-item">
-<button class="nav-button">AMMINISTRAZIONE ▼</button>
-<div class="dropdown-menu">
-<a href="fatture.php" class="dropdown-item">💰 Fatture</a>
-<a href="fornitori.php" class="dropdown-item">🏪 Fornitori</a>
-</div>
-</div>
-<a href="sviluppo.php" class="nav-button">SVILUPPO</a>
-<div class="nav-item">
-<button class="nav-button">TEAM ▼</button>
-<div class="dropdown-menu">
-<a href="ferie.php" class="dropdown-item">🌴 Ferie</a>
-<a href="calendario.php" class="dropdown-item">📅 Calendario</a>
-</div>
-</div>
-</nav>
-</div>
-<div class="nav-item user-menu">
-<button class="user-button">
-<div class="user-avatar"><?= strtoupper(substr($user['name'],0,1)) ?></div>
-<span><?= htmlspecialchars($user['name']) ?></span>
-<span>▼</span>
-</button>
-<div class="dropdown-menu" style="right:0;left:auto">
-<a href="https://coldwellbankeritaly.tech/repository/dashboard/" class="dropdown-item">🏠 Dashboard CB Italia</a>
-<a href="logout.php" class="dropdown-item">🚪 Logout</a>
-</div>
-</div>
-</div>
-</div>
 <div class="container">
 <div class="page-header">
 <div class="header-left-content">
@@ -436,18 +295,26 @@ foreach ($serviceLabels as $serviceName => $serviceLabel):
 </div>
 </div>
 </div>
+
 <script>
-const hamburger=document.getElementById('hamburger'),mobileSidebar=document.getElementById('mobileSidebar'),sidebarBackdrop=document.getElementById('sidebarBackdrop'),sidebarClose=document.getElementById('sidebarClose');
-hamburger?.addEventListener('click',()=>{mobileSidebar.classList.add('open');sidebarBackdrop.classList.add('open')});
-sidebarClose?.addEventListener('click',closeSidebar);
-sidebarBackdrop?.addEventListener('click',closeSidebar);
-function closeSidebar(){mobileSidebar.classList.remove('open');sidebarBackdrop.classList.remove('open')}
-function toggleSidebarDropdown(id){document.getElementById('dropdown-'+id)?.classList.toggle('open')}
-document.querySelectorAll('.nav-button').forEach(btn=>{btn.addEventListener('click',function(e){e.stopPropagation();const parent=this.closest('.nav-item');document.querySelectorAll('.nav-item').forEach(item=>{if(item!==parent)item.classList.remove('open')});parent.classList.toggle('open')})});
-document.addEventListener('click',()=>{document.querySelectorAll('.nav-item').forEach(item=>item.classList.remove('open'))});
-function switchTab(tabName){document.querySelectorAll('.tab-button').forEach(btn=>btn.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(content=>content.classList.remove('active'));document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');document.getElementById('tab-'+tabName).classList.add('active')}
-function toggleService(serviceId){document.getElementById('service-'+serviceId).classList.toggle('open');document.getElementById('expand-'+serviceId).classList.toggle('open')}
-document.getElementById('showInactive')?.addEventListener('change',function(){document.querySelector('.agents-table').classList.toggle('show-inactive',this.checked)})
+// Tab switching
+function switchTab(tabName){
+document.querySelectorAll('.tab-button').forEach(btn=>btn.classList.remove('active'));
+document.querySelectorAll('.tab-content').forEach(content=>content.classList.remove('active'));
+document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+document.getElementById('tab-'+tabName).classList.add('active');
+}
+
+// Service card toggle
+function toggleService(serviceId){
+document.getElementById('service-'+serviceId).classList.toggle('open');
+document.getElementById('expand-'+serviceId).classList.toggle('open');
+}
+
+// Checkbox agenti inattivi
+document.getElementById('showInactive')?.addEventListener('change',function(){
+document.querySelector('.agents-table').classList.toggle('show-inactive',this.checked);
+});
 </script>
-</body>
-</html>
+
+<?php require_once 'footer.php'; ?>
