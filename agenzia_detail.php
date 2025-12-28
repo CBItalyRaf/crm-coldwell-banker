@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL); 
+ini_set("display_errors", 1);
 require_once 'check_auth.php';
 require_once 'config/database.php';
 
@@ -21,8 +23,8 @@ if (!$agency) {
     exit;
 }
 
-$stmt = $pdo->prepare("SELECT * FROM agents WHERE agency_code = :code ORDER BY status DESC, name ASC");
-$stmt->execute(['code' => $code]);
+$stmt = $pdo->prepare("SELECT * FROM agents WHERE agency_id = :agency_id ORDER BY status DESC, full_name ASC");
+$stmt->execute(['agency_id' => $agency['id']]);
 $agents = $stmt->fetchAll();
 
 require_once 'header.php';
@@ -174,9 +176,9 @@ require_once 'header.php';
 <?php else: ?>
 <?php foreach($agents as $agent): ?>
 <tr>
-<td><?= htmlspecialchars($agent['name']) ?></td>
+<td><?= htmlspecialchars($agent['full_name']) ?></td>
 <td><?= htmlspecialchars($agent['email_corporate'] ?: $agent['email_personal'] ?: '-') ?></td>
-<td><?= htmlspecialchars($agent['phone'] ?: '-') ?></td>
+<td><?= htmlspecialchars($agent['mobile'] ?: '-') ?></td>
 <td><span class="status-badge <?= strtolower($agent['status']) ?>"><?= htmlspecialchars($agent['status']) ?></span></td>
 </tr>
 <?php endforeach; ?>
