@@ -54,6 +54,13 @@ require_once 'header.php';
 .search-box{position:relative;flex:1}
 .search-box input{width:100%;padding:.75rem 1rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem}
 .search-box input:focus{outline:none;border-color:var(--cb-bright-blue)}
+.search-results{position:absolute;top:100%;left:0;right:0;margin-top:.5rem;background:white;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.15);max-height:400px;overflow-y:auto;display:none;z-index:1000}
+.search-results.active{display:block}
+.search-item{padding:1rem 1.5rem;border-bottom:1px solid #f3f4f6;cursor:pointer;transition:background .2s}
+.search-item:last-child{border-bottom:none}
+.search-item:hover{background:var(--bg)}
+.search-item-title{font-weight:600;margin-bottom:.25rem}
+.search-item-meta{font-size:.85rem;color:var(--cb-gray)}
 .status-filters{display:flex;gap:.5rem;flex-wrap:wrap}
 .filter-btn{background:white;border:1px solid #E5E7EB;padding:.5rem 1rem;border-radius:8px;font-size:.875rem;cursor:pointer;transition:all .2s}
 .filter-btn:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue)}
@@ -108,10 +115,8 @@ require_once 'header.php';
 <div class="filters-bar">
 <div class="filters-grid">
 <div class="search-box">
-<form method="GET" style="display:flex;gap:.5rem">
-<input type="text" name="search" placeholder="🔍 Cerca per nome, codice o città..." value="<?= htmlspecialchars($search) ?>">
-<input type="hidden" name="status" value="<?= htmlspecialchars($statusFilter) ?>">
-</form>
+<input type="text" id="agenciesSearch" placeholder="🔍 Cerca per nome, codice o città..." autocomplete="off">
+<div class="search-results" id="agenciesSearchResults"></div>
 </div>
 <div class="status-filters">
 <form method="GET" id="statusForm">
@@ -220,6 +225,70 @@ exportModal.classList.add('open');
 
 function closeExportModal(){
 exportModal.classList.remove('open');
+}
+
+// Autocomplete search + filtro tabella
+const searchInput=document.getElementById('agenciesSearch');
+const searchResults=document.getElementById('agenciesSearchResults');
+const agenciesTable=document.querySelector('.agencies-table tbody');
+let searchTimeout;
+let allRows=[];
+
+// Salva tutte le righe all'avvio
+if(agenciesTable){
+allRows=Array.from(agenciesTable.querySelectorAll('tr'));
+}
+
+if(searchInput && searchResults){
+searchInput.addEventListener('input',function(){
+clearTimeout(searchTimeout);
+const query=this.value.trim().toLowerCase();
+
+// Filtro tabella in real-time
+if(agenciesTable){
+if(query.length===0){
+// Mostra tutte le righe
+allRows.forEach(row=>row.style.display='');
+}else{
+// Filtra righe
+allRows.forEach(row=>{
+const text=row.textContent.toLowerCase();
+row.style.display=text.includes(query)?'':'none';
+});
+}
+}
+
+// Autocomplete API
+if(query.length<2){
+searchResults.classList.remove('active');
+return;
+}
+
+searchTimeout=setTimeout(()=>{
+fetch('https://admin.mycb.it/search_api.php?q='+encodeURIComponent(query))
+.then(r=>r.json())
+.then(data=>{
+if(data.length===0){
+searchResults.innerHTML='<div style="padding:1rem;text-align:center;color:#6D7180">Nessun risultato</div>';
+}else{
+searchResults.innerHTML=data.map(item=>`
+<div class="search-item" onclick="window.location.href='${item.url}'">
+<div class="search-item-title">${item.title}</div>
+<div class="search-item-meta">${item.meta}</div>
+</div>
+`).join('');
+}
+searchResults.classList.add('active');
+});
+},300);
+});
+
+// Chiudi autocomplete cliccando fuori
+document.addEventListener('click',function(e){
+if(!e.target.closest('.search-box')){
+searchResults.classList.remove('active');
+}
+});
 }
 </script>
 
