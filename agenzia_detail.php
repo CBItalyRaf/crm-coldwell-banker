@@ -71,8 +71,8 @@ require_once 'header.php';
 </div>
 <span class="status-badge <?= strtolower($agency['status']) ?>"><?= htmlspecialchars($agency['status']) ?></span>
 </div>
-<?php if(in_array($user['role'], ['admin', 'editor'])): ?>
-<button class="edit-btn">🔓 Modifica</button>
+<?php if(in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])): ?>
+<button class="edit-btn" onclick="window.location.href='agenzia_edit.php?code=<?= urlencode($agency['code']) ?>'">🔓 Modifica</button>
 <?php else: ?>
 <button class="edit-btn" disabled>🔒 Sola Lettura</button>
 <?php endif; ?>
@@ -96,6 +96,10 @@ require_once 'header.php';
 <div class="info-field">
 <label>Broker Manager</label>
 <div class="value"><?= htmlspecialchars($agency['broker_manager'] ?: '-') ?></div>
+</div>
+<div class="info-field">
+<label>Cellulare Broker</label>
+<div class="value"><?= htmlspecialchars($agency['broker_mobile'] ?: '-') ?></div>
 </div>
 <div class="info-field">
 <label>Rappresentante Legale</label>
