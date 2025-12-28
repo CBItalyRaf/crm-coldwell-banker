@@ -4,88 +4,64 @@ require_once 'config/database.php';
 
 $pdo = getDB();
 
-// Campi selezionati
-$exportFields = $_POST['export'] ?? [];
+// Prendi filtri dalla ricerca
 $statusFilter = $_POST['status_filter'] ?? 'Active';
 $search = $_POST['search'] ?? '';
 
-if (empty($exportFields)) {
+// Campi da esportare
+$fields = $_POST['export'] ?? [];
+
+if (empty($fields)) {
     header('Location: agenzie.php?error=no_fields');
     exit;
 }
 
-// Separa campi agenzia da servizi
-$agencyFields = ['code', 'name', 'city', 'province', 'email', 'phone', 'broker', 'tech_fee', 'contract_expiry', 'activation_date'];
-$serviceFields = ['cb_suite', 'canva', 'regold', 'james', 'docudrop', 'unique'];
-
-$requestedAgencyFields = array_intersect($exportFields, $agencyFields);
-$requestedServiceFields = array_intersect($exportFields, $serviceFields);
-
-// Mappa campi DB agenzie
+// Mappa campi form -> colonne DB
 $fieldMap = [
-    'code' => 'a.code',
-    'name' => 'a.name',
-    'city' => 'a.city',
-    'province' => 'a.province',
-    'email' => 'a.email',
-    'phone' => 'a.phone',
-    'broker' => 'a.broker_manager',
-    'tech_fee' => 'a.tech_fee',
-    'contract_expiry' => 'a.contract_expiry',
-    'activation_date' => 'a.activation_date'
+    'code' => 'code',
+    'name' => 'name',
+    'city' => 'city',
+    'province' => 'province',
+    'email' => 'email',
+    'phone' => 'phone',
+    'broker' => 'broker_manager',
+    'tech_fee' => 'tech_fee',
+    'contract_expiry' => 'contract_expiry',
+    'activation_date' => 'activation_date',
+    // Servizi - per ora non implementati
+    'cb_suite' => null,
+    'canva' => null,
+    'regold' => null,
+    'james' => null,
+    'docudrop' => null,
+    'unique' => null
 ];
 
-// Costruisci SELECT per campi agenzia
-$selectFields = ['a.id'];
-foreach ($requestedAgencyFields as $field) {
-    if (isset($fieldMap[$field])) {
+// Costruisci SELECT
+$selectFields = [];
+foreach ($fields as $field) {
+    if (isset($fieldMap[$field]) && $fieldMap[$field] !== null) {
         $selectFields[] = $fieldMap[$field];
     }
 }
 
-// Aggiungi JOIN per servizi richiesti
-$joins = '';
-$serviceSelects = [];
-
-if (in_array('cb_suite', $requestedServiceFields)) {
-    $joins .= " LEFT JOIN agency_services svc_cb ON a.id = svc_cb.agency_id AND svc_cb.service_name = 'cb_suite'";
-    $serviceSelects[] = "IF(svc_cb.is_active, 'Attivo', 'Non attivo') as cb_suite_status";
-}
-if (in_array('canva', $requestedServiceFields)) {
-    $joins .= " LEFT JOIN agency_services svc_canva ON a.id = svc_canva.agency_id AND svc_canva.service_name = 'canva'";
-    $serviceSelects[] = "IF(svc_canva.is_active, 'Attivo', 'Non attivo') as canva_status";
-}
-if (in_array('regold', $requestedServiceFields)) {
-    $joins .= " LEFT JOIN agency_services svc_regold ON a.id = svc_regold.agency_id AND svc_regold.service_name = 'regold'";
-    $serviceSelects[] = "IF(svc_regold.is_active, 'Attivo', 'Non attivo') as regold_status";
-}
-if (in_array('james', $requestedServiceFields)) {
-    $joins .= " LEFT JOIN agency_services svc_james ON a.id = svc_james.agency_id AND svc_james.service_name = 'james_edition'";
-    $serviceSelects[] = "IF(svc_james.is_active, 'Attivo', 'Non attivo') as james_status";
-}
-if (in_array('docudrop', $requestedServiceFields)) {
-    $joins .= " LEFT JOIN agency_services svc_docudrop ON a.id = svc_docudrop.agency_id AND svc_docudrop.service_name = 'docudrop'";
-    $serviceSelects[] = "IF(svc_docudrop.is_active, 'Attivo', 'Non attivo') as docudrop_status";
-}
-if (in_array('unique', $requestedServiceFields)) {
-    $joins .= " LEFT JOIN agency_services svc_unique ON a.id = svc_unique.agency_id AND svc_unique.service_name = 'unique'";
-    $serviceSelects[] = "IF(svc_unique.is_active, 'Attivo', 'Non attivo') as unique_status";
+if (empty($selectFields)) {
+    header('Location: agenzie.php?error=no_valid_fields');
+    exit;
 }
 
-$allSelects = array_merge($selectFields, $serviceSelects);
-
-// Query
-$sql = "SELECT " . implode(', ', $allSelects) . " FROM agencies a" . $joins . " WHERE a.status != 'Prospect'";
+// Query (stessa logica di agenzie.php)
+$sql = "SELECT " . implode(', ', $selectFields) . " FROM agencies WHERE status != 'Prospect'";
 
 if ($statusFilter !== 'all') {
-    $sql .= " AND a.status = :status";
+    $sql .= " AND status = :status";
 }
 
 if ($search) {
-    $sql .= " AND (a.name LIKE :search OR a.code LIKE :search OR a.city LIKE :search)";
+    $sql .= " AND (name LIKE :search OR code LIKE :search OR city LIKE :search)";
 }
 
-$sql .= " ORDER BY a.name ASC";
+$sql .= " ORDER BY name ASC";
 
 $stmt = $pdo->prepare($sql);
 
@@ -100,59 +76,40 @@ $stmt->execute();
 $agencies = $stmt->fetchAll();
 
 // Headers CSV
-$headerLabels = [
+header('Content-Type: text/csv; charset=utf-8');
+header('Content-Disposition: attachment; filename="agenzie_export_' . date('Y-m-d_His') . '.csv"');
+
+$output = fopen('php://output', 'w');
+
+// BOM UTF-8 per Excel
+fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+
+// Header CSV (nomi leggibili)
+$headerNames = [
     'code' => 'Codice',
     'name' => 'Nome',
     'city' => 'Città',
     'province' => 'Provincia',
     'email' => 'Email',
     'phone' => 'Telefono',
-    'broker' => 'Broker Manager',
+    'broker_manager' => 'Broker Manager',
     'tech_fee' => 'Tech Fee',
     'contract_expiry' => 'Scadenza Contratto',
-    'activation_date' => 'Data Attivazione',
-    'cb_suite' => 'CB Suite',
-    'canva' => 'Canva',
-    'regold' => 'Regold',
-    'james' => 'James Edition',
-    'docudrop' => 'Docudrop',
-    'unique' => 'Unique'
+    'activation_date' => 'Data Attivazione'
 ];
 
 $headers = [];
-foreach ($exportFields as $field) {
-    $headers[] = $headerLabels[$field] ?? $field;
+foreach ($selectFields as $field) {
+    $headers[] = $headerNames[$field] ?? $field;
 }
-
-// Output CSV
-header('Content-Type: text/csv; charset=utf-8');
-header('Content-Disposition: attachment; filename="agenzie_export_' . date('Y-m-d_His') . '.csv"');
-
-$output = fopen('php://output', 'w');
-fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM UTF-8
 
 fputcsv($output, $headers);
 
+// Dati
 foreach ($agencies as $agency) {
     $row = [];
-    foreach ($exportFields as $field) {
-        if (in_array($field, $agencyFields)) {
-            // Campo agenzia
-            $dbField = str_replace('a.', '', $fieldMap[$field] ?? $field);
-            $value = $agency[$dbField] ?? '';
-            
-            // Formattazione speciale
-            if ($field === 'tech_fee' && $value) {
-                $value = '€ ' . number_format($value, 2, ',', '.');
-            } elseif (in_array($field, ['activation_date', 'contract_expiry']) && $value) {
-                $value = date('d/m/Y', strtotime($value));
-            }
-        } else {
-            // Campo servizio
-            $value = $agency[$field . '_status'] ?? 'Non attivo';
-        }
-        
-        $row[] = $value;
+    foreach ($selectFields as $field) {
+        $row[] = $agency[$field] ?? '';
     }
     fputcsv($output, $row);
 }

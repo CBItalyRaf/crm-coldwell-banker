@@ -12,16 +12,8 @@ if (!$code) {
     exit;
 }
 
-// Query agenzia con servizi
-$stmt = $pdo->prepare("
-    SELECT a.*, 
-    GROUP_CONCAT(DISTINCT s.service_name) as servizi
-    FROM agencies a
-    LEFT JOIN agency_services ags ON a.id = ags.agency_id
-    LEFT JOIN services s ON ags.service_id = s.id
-    WHERE a.code = :code
-    GROUP BY a.id
-");
+// Query agenzia (senza servizi per ora, li prendiamo dopo)
+$stmt = $pdo->prepare("SELECT * FROM agencies WHERE code = :code");
 $stmt->execute(['code' => $code]);
 $agency = $stmt->fetch();
 
@@ -159,13 +151,10 @@ require_once 'header.php';
 
 <div class="tab-content" id="tab-servizi">
 <div class="info-grid">
-<?php 
-$servizi_list = $agency['servizi'] ? explode(',', $agency['servizi']) : [];
-foreach(['CB Suite', 'Canva', 'Regold', 'James Edition', 'Docudrop', 'Unique'] as $servizio): 
-?>
+<?php foreach(['CB Suite', 'Canva', 'Regold', 'James Edition', 'Docudrop', 'Unique'] as $servizio): ?>
 <div class="info-card">
 <h3><?= $servizio ?></h3>
-<div class="value"><?= in_array($servizio, $servizi_list) ? '✅ Attivo' : '❌ Non attivo' ?></div>
+<div class="value">⚙️ Da configurare</div>
 </div>
 <?php endforeach; ?>
 </div>
