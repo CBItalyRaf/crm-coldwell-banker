@@ -12,6 +12,7 @@ $pageTitle = "Modifica Agenzia - CRM Coldwell Banker";
 $pdo = getDB();
 
 $code = $_GET['code'] ?? '';
+$returnTab = $_GET['return_tab'] ?? 'info';
 
 if (!$code) {
     header('Location: agenzie.php');
@@ -20,6 +21,8 @@ if (!$code) {
 
 // Gestione POST - salva modifiche
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $returnTab = $_POST['return_tab'] ?? 'info';
+    
     $sql = "UPDATE agencies SET 
             name = :name,
             type = :type,
@@ -88,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     
-    header("Location: agenzia_detail.php?code=" . urlencode($code) . "&success=1");
+    header("Location: agenzia_detail.php?code=" . urlencode($code) . "&success=1#tab-" . $returnTab);
     exit;
 }
 
@@ -145,6 +148,7 @@ require_once 'header.php';
 </div>
 
 <form method="POST">
+<input type="hidden" name="return_tab" value="<?= htmlspecialchars($returnTab) ?>">
 <div class="form-card">
 
 <div class="form-section">

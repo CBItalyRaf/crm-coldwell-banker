@@ -82,7 +82,7 @@ require_once 'header.php';
 <span class="status-badge <?= strtolower($agency['status']) ?>"><?= htmlspecialchars($agency['status']) ?></span>
 </div>
 <?php if(in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])): ?>
-<button class="edit-btn" onclick="window.location.href='agenzia_edit.php?code=<?= urlencode($agency['code']) ?>'">🔓 Modifica</button>
+<button class="edit-btn" id="editBtn">🔓 Modifica</button>
 <?php else: ?>
 <button class="edit-btn" disabled>🔒 Sola Lettura</button>
 <?php endif; ?>
@@ -287,11 +287,38 @@ foreach ($services as $service):
 </div>
 
 <script>
+let currentTab = 'info';
+
 function switchTab(tabName){
+currentTab = tabName;
 document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.remove('active'));
 document.querySelectorAll('.tab-content').forEach(content=>content.classList.remove('active'));
 event.target.classList.add('active');
 document.getElementById('tab-'+tabName).classList.add('active');
+}
+
+// Apri tab da hash URL
+window.addEventListener('DOMContentLoaded', function(){
+const hash = window.location.hash;
+if(hash && hash.startsWith('#tab-')){
+const tabName = hash.replace('#tab-', '');
+currentTab = tabName;
+document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.remove('active'));
+document.querySelectorAll('.tab-content').forEach(content=>content.classList.remove('active'));
+const targetBtn = document.querySelector(`.tab-btn[onclick*="'${tabName}'"]`);
+const targetContent = document.getElementById('tab-'+tabName);
+if(targetBtn && targetContent){
+targetBtn.classList.add('active');
+targetContent.classList.add('active');
+}
+}
+});
+
+const editBtn = document.getElementById('editBtn');
+if(editBtn) {
+editBtn.addEventListener('click', function(){
+window.location.href = 'agenzia_edit.php?code=<?= urlencode($agency['code']) ?>&return_tab=' + currentTab;
+});
 }
 </script>
 
