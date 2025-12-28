@@ -38,6 +38,9 @@ if ($search) {
 $stmt->execute();
 $agents = $stmt->fetchAll();
 
+// Count totale (senza filtri)
+$totalCount = $pdo->query("SELECT COUNT(*) FROM agents")->fetchColumn();
+
 require_once 'header.php';
 ?>
 
@@ -91,6 +94,14 @@ require_once 'header.php';
 </form>
 </div>
 </div>
+</div>
+
+<div style="background:white;padding:1rem 1.5rem;margin-bottom:1rem;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);color:var(--cb-gray);font-size:.95rem">
+<?php if($statusFilter !== 'all' || $search): ?>
+Mostrando <strong style="color:var(--cb-midnight)"><?= count($agents) ?></strong> di <strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenti
+<?php else: ?>
+<strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenti totali
+<?php endif; ?>
 </div>
 
 <?php if (empty($agents)): ?>

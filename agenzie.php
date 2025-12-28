@@ -36,6 +36,9 @@ if ($search) {
 $stmt->execute();
 $agencies = $stmt->fetchAll();
 
+// Count totale (senza filtri)
+$totalCount = $pdo->query("SELECT COUNT(*) FROM agencies WHERE status != 'Prospect'")->fetchColumn();
+
 require_once 'header.php';
 ?>
 
@@ -84,7 +87,7 @@ require_once 'header.php';
 .status-badge.opening{background:#FEF3C7;color:#92400E}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:1000}
 .modal.open{display:flex}
-.modal-content{background:white;border-radius:12px;max-width:600px;width:90%;max-height:70vh;overflow-y:auto}
+.modal-content{background:white;border-radius:12px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto}
 .modal-header{padding:1.5rem;border-bottom:1px solid #E5E7EB;display:flex;justify-content:space-between;align-items:center}
 .modal-title{font-size:1.25rem;font-weight:600}
 .modal-close{background:transparent;border:none;font-size:1.5rem;cursor:pointer;color:var(--cb-gray)}
@@ -131,6 +134,14 @@ require_once 'header.php';
 </form>
 </div>
 </div>
+</div>
+
+<div style="background:white;padding:1rem 1.5rem;margin-bottom:1rem;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);color:var(--cb-gray);font-size:.95rem">
+<?php if($statusFilter !== 'all' || $search): ?>
+Mostrando <strong style="color:var(--cb-midnight)"><?= count($agencies) ?></strong> di <strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenzie
+<?php else: ?>
+<strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenzie totali
+<?php endif; ?>
 </div>
 
 <?php if (empty($agencies)): ?>
@@ -187,7 +198,6 @@ require_once 'header.php';
 <label class="checkbox-label"><input type="checkbox" name="export[]" value="email"> Email</label>
 <label class="checkbox-label"><input type="checkbox" name="export[]" value="phone"> Telefono</label>
 <label class="checkbox-label"><input type="checkbox" name="export[]" value="broker"> Broker Manager</label>
-<label class="checkbox-label"><input type="checkbox" name="export[]" value="broker_mobile"> Cellulare Broker</label>
 </div>
 </div>
 <div class="checkbox-group">
