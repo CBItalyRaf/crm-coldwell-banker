@@ -76,6 +76,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'code' => $code
     ]);
     
+    // Gestione servizi - prima cancella tutti
+    $stmtDel = $pdo->prepare("DELETE FROM agency_services WHERE agency_id = (SELECT id FROM agencies WHERE code = :code)");
+    $stmtDel->execute(['code' => $code]);
+    
+    // Poi inserisci quelli selezionati
+    if (!empty($_POST['services'])) {
+        $stmtIns = $pdo->prepare("INSERT INTO agency_services (agency_id, service_name, is_active) VALUES ((SELECT id FROM agencies WHERE code = :code), :service, 1)");
+        foreach ($_POST['services'] as $service) {
+            $stmtIns->execute(['code' => $code, 'service' => $service]);
+        }
+    }
+    
     header("Location: agenzia_detail.php?code=" . urlencode($code) . "&success=1");
     exit;
 }
@@ -89,6 +101,11 @@ if (!$agency) {
     header('Location: agenzie.php');
     exit;
 }
+
+// Carica servizi dell'agenzia
+$stmt = $pdo->prepare("SELECT service_name FROM agency_services WHERE agency_id = :agency_id AND is_active = 1");
+$stmt->execute(['agency_id' => $agency['id']]);
+$activeServices = array_column($stmt->fetchAll(), 'service_name');
 
 require_once 'header.php';
 ?>
@@ -109,6 +126,7 @@ require_once 'header.php';
 .form-field label{font-size:.875rem;font-weight:600;color:var(--cb-gray)}
 .form-field input,.form-field select{padding:.75rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem}
 .form-field input:focus,.form-field select:focus{outline:none;border-color:var(--cb-bright-blue)}
+.form-field label input[type="checkbox"]{margin-right:.5rem}
 .form-actions{display:flex;gap:1rem;justify-content:flex-end;margin-top:2rem;padding-top:2rem;border-top:2px solid #F3F4F6}
 .btn-cancel{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;text-decoration:none;transition:all .2s}
 .btn-cancel:hover{border-color:var(--cb-gray)}
@@ -235,6 +253,48 @@ require_once 'header.php';
 <div class="form-field">
 <label>Codice SDI</label>
 <input type="text" name="sdi_code" value="<?= htmlspecialchars($agency['sdi_code'] ?: '') ?>">
+</div>
+</div>
+</div>
+
+<div class="form-section">
+<h3>Servizi</h3>
+<div class="form-grid">
+<div class="form-field">
+<label>
+<input type="checkbox" name="services[]" value="cb_suite" <?= in_array('cb_suite', $activeServices) ? 'checked' : '' ?>>
+CB Suite
+</label>
+</div>
+<div class="form-field">
+<label>
+<input type="checkbox" name="services[]" value="canva" <?= in_array('canva', $activeServices) ? 'checked' : '' ?>>
+Canva
+</label>
+</div>
+<div class="form-field">
+<label>
+<input type="checkbox" name="services[]" value="regold" <?= in_array('regold', $activeServices) ? 'checked' : '' ?>>
+Regold
+</label>
+</div>
+<div class="form-field">
+<label>
+<input type="checkbox" name="services[]" value="james_edition" <?= in_array('james_edition', $activeServices) ? 'checked' : '' ?>>
+James Edition
+</label>
+</div>
+<div class="form-field">
+<label>
+<input type="checkbox" name="services[]" value="docudrop" <?= in_array('docudrop', $activeServices) ? 'checked' : '' ?>>
+Docudrop
+</label>
+</div>
+<div class="form-field">
+<label>
+<input type="checkbox" name="services[]" value="unique" <?= in_array('unique', $activeServices) ? 'checked' : '' ?>>
+Unique
+</label>
 </div>
 </div>
 </div>
