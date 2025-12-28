@@ -49,6 +49,11 @@ require_once 'header.php';
 <p>Overview del network Coldwell Banker Italy</p>
 </div>
 
+<div class="search-container">
+<input type="text" id="searchInput" placeholder="🔍 Cerca agenzie, agenti..." autocomplete="off">
+<div class="search-results" id="searchResults"></div>
+</div>
+
 <div class="stats-grid">
 <div class="stat-card">
 <a href="export_agencies.php" class="btn-csv">📥 CSV</a>

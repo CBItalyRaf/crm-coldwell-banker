@@ -1,4 +1,5 @@
 <?php
+//fixato
 require_once 'check_auth.php';
 require_once 'config/database.php';
 

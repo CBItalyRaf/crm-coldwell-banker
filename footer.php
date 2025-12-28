@@ -1,4 +1,11 @@
 </div><!-- Fine container -->
+
+<div class="footer">
+<div class="footer-content">
+Powered by Coldwell Banker Italy
+</div>
+</div>
+
 <script>
 // Menu dropdown
 document.querySelectorAll('.nav-button').forEach(btn=>{
