@@ -1,6 +1,4 @@
 <?php
-error_reporting(E_ALL); 
-ini_set("display_errors", 1);
 require_once 'check_auth.php';
 require_once 'config/database.php';
 
@@ -37,6 +35,9 @@ require_once 'header.php';
 .back-btn:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue)}
 .agency-title{font-size:1.5rem;font-weight:600;color:var(--cb-midnight);margin:0}
 .agency-code{color:var(--cb-bright-blue);font-weight:600;font-size:1rem}
+.edit-btn{background:var(--cb-bright-blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;font-size:.95rem;transition:background .2s}
+.edit-btn:hover{background:var(--cb-blue)}
+.edit-btn:disabled{background:#D1D5DB;cursor:not-allowed}
 .tabs{background:white;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .tabs-nav{display:flex;border-bottom:2px solid #E5E7EB;padding:0 1.5rem}
 .tab-btn{background:transparent;border:none;padding:1rem 1.5rem;cursor:pointer;font-size:.95rem;font-weight:500;color:var(--cb-gray);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s}
@@ -44,10 +45,13 @@ require_once 'header.php';
 .tab-btn.active{color:var(--cb-bright-blue);border-bottom-color:var(--cb-bright-blue)}
 .tab-content{padding:2rem;display:none}
 .tab-content.active{display:block}
-.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
-.info-card{background:var(--bg);padding:1.5rem;border-radius:10px;border-left:4px solid var(--cb-bright-blue)}
-.info-card h3{font-size:.875rem;text-transform:uppercase;letter-spacing:.05em;color:var(--cb-gray);margin:0 0 .75rem 0;font-weight:600}
-.info-card .value{font-size:1.125rem;font-weight:600;color:var(--cb-midnight)}
+.info-section{margin-bottom:2rem;padding-bottom:2rem;border-bottom:2px solid #F3F4F6}
+.info-section:last-child{border:none;margin-bottom:0;padding-bottom:0}
+.info-section h3{font-size:1rem;font-weight:600;color:var(--cb-blue);margin:0 0 1.5rem 0;text-transform:uppercase;letter-spacing:.05em}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem}
+.info-field{display:flex;flex-direction:column;gap:.25rem}
+.info-field label{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--cb-gray);font-weight:600}
+.info-field .value{font-size:1rem;color:var(--cb-midnight);font-weight:500}
 .agents-table{width:100%;border-collapse:collapse}
 .agents-table th{text-align:left;padding:1rem;background:var(--bg);font-size:.875rem;font-weight:600;color:var(--cb-gray);text-transform:uppercase}
 .agents-table td{padding:1rem;border-top:1px solid #F3F4F6}
@@ -65,97 +69,140 @@ require_once 'header.php';
 </div>
 <span class="status-badge <?= strtolower($agency['status']) ?>"><?= htmlspecialchars($agency['status']) ?></span>
 </div>
+<?php if(in_array($user['role'], ['admin', 'editor'])): ?>
+<button class="edit-btn">🔓 Modifica</button>
+<?php else: ?>
+<button class="edit-btn" disabled>🔒 Sola Lettura</button>
+<?php endif; ?>
 </div>
 
 <div class="tabs">
 <div class="tabs-nav">
-<button class="tab-btn active" onclick="switchTab('info')">📊 Info Base</button>
+<button class="tab-btn active" onclick="switchTab('info')">📊 Info Agenzia</button>
 <button class="tab-btn" onclick="switchTab('contrattuale')">📄 Contrattuale</button>
 <button class="tab-btn" onclick="switchTab('agenti')">👥 Agenti (<?= count($agents) ?>)</button>
 </div>
 
 <div class="tab-content active" id="tab-info">
+<div class="info-section">
+<h3>Anagrafica</h3>
 <div class="info-grid">
-<div class="info-card">
-<h3>Codice</h3>
-<div class="value"><?= htmlspecialchars($agency['code']) ?></div>
-</div>
-<div class="info-card">
-<h3>Tipo</h3>
+<div class="info-field">
+<label>Tipo Agenzia</label>
 <div class="value"><?= htmlspecialchars($agency['type']) ?></div>
 </div>
-<div class="info-card">
-<h3>Broker Manager</h3>
+<div class="info-field">
+<label>Broker Manager</label>
 <div class="value"><?= htmlspecialchars($agency['broker_manager'] ?: '-') ?></div>
 </div>
-<div class="info-card">
-<h3>Rappresentante Legale</h3>
+<div class="info-field">
+<label>Rappresentante Legale</label>
 <div class="value"><?= htmlspecialchars($agency['legal_representative'] ?: '-') ?></div>
 </div>
-<div class="info-card">
-<h3>Indirizzo</h3>
-<div class="value"><?= htmlspecialchars($agency['address'] ?: '-') ?></div>
-</div>
-<div class="info-card">
-<h3>Città</h3>
-<div class="value"><?= htmlspecialchars($agency['city'] ?: '-') ?>, <?= htmlspecialchars($agency['province'] ?: '') ?></div>
-</div>
-<div class="info-card">
-<h3>CAP</h3>
-<div class="value"><?= htmlspecialchars($agency['zip_code'] ?: '-') ?></div>
-</div>
-<div class="info-card">
-<h3>Email</h3>
-<div class="value" style="font-size:1rem"><?= htmlspecialchars($agency['email'] ?: '-') ?></div>
-</div>
-<div class="info-card">
-<h3>Telefono</h3>
-<div class="value"><?= htmlspecialchars($agency['phone'] ?: '-') ?></div>
-</div>
-<div class="info-card">
-<h3>PEC</h3>
-<div class="value" style="font-size:0.9rem"><?= htmlspecialchars($agency['pec'] ?: '-') ?></div>
-</div>
-<div class="info-card">
-<h3>P.IVA</h3>
-<div class="value"><?= htmlspecialchars($agency['vat_number'] ?: '-') ?></div>
-</div>
-<div class="info-card">
-<h3>Codice Fiscale</h3>
-<div class="value"><?= htmlspecialchars($agency['tax_code'] ?: '-') ?></div>
-</div>
-<div class="info-card">
-<h3>Codice SDI</h3>
-<div class="value"><?= htmlspecialchars($agency['sdi_code'] ?: '-') ?></div>
-</div>
-<div class="info-card">
-<h3>Ragione Sociale</h3>
+<div class="info-field">
+<label>Ragione Sociale</label>
 <div class="value"><?= htmlspecialchars($agency['company_name'] ?: '-') ?></div>
 </div>
 </div>
 </div>
 
-<div class="tab-content" id="tab-contrattuale">
+<div class="info-section">
+<h3>Sede</h3>
 <div class="info-grid">
-<div class="info-card">
-<h3>Data Attivazione</h3>
+<div class="info-field" style="grid-column:1/-1">
+<label>Indirizzo</label>
+<div class="value"><?= htmlspecialchars($agency['address'] ?: '-') ?></div>
+</div>
+<div class="info-field">
+<label>Città</label>
+<div class="value"><?= htmlspecialchars($agency['city'] ?: '-') ?></div>
+</div>
+<div class="info-field">
+<label>Provincia</label>
+<div class="value"><?= htmlspecialchars($agency['province'] ?: '-') ?></div>
+</div>
+<div class="info-field">
+<label>CAP</label>
+<div class="value"><?= htmlspecialchars($agency['zip_code'] ?: '-') ?></div>
+</div>
+</div>
+</div>
+
+<div class="info-section">
+<h3>Contatti</h3>
+<div class="info-grid">
+<div class="info-field">
+<label>Email</label>
+<div class="value"><?= htmlspecialchars($agency['email'] ?: '-') ?></div>
+</div>
+<div class="info-field">
+<label>Telefono</label>
+<div class="value"><?= htmlspecialchars($agency['phone'] ?: '-') ?></div>
+</div>
+<div class="info-field">
+<label>PEC</label>
+<div class="value" style="font-size:.85rem"><?= htmlspecialchars($agency['pec'] ?: '-') ?></div>
+</div>
+<div class="info-field">
+<label>Sito Web</label>
+<div class="value"><?= htmlspecialchars($agency['website'] ?: '-') ?></div>
+</div>
+</div>
+</div>
+
+<div class="info-section">
+<h3>Dati Fiscali</h3>
+<div class="info-grid">
+<div class="info-field">
+<label>Partita IVA</label>
+<div class="value"><?= htmlspecialchars($agency['vat_number'] ?: '-') ?></div>
+</div>
+<div class="info-field">
+<label>Codice Fiscale</label>
+<div class="value"><?= htmlspecialchars($agency['tax_code'] ?: '-') ?></div>
+</div>
+<div class="info-field">
+<label>Codice SDI</label>
+<div class="value"><?= htmlspecialchars($agency['sdi_code'] ?: '-') ?></div>
+</div>
+<div class="info-field">
+<label>REA</label>
+<div class="value"><?= htmlspecialchars($agency['rea'] ?: '-') ?></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="tab-content" id="tab-contrattuale">
+<div class="info-section">
+<h3>Date Contrattuali</h3>
+<div class="info-grid">
+<div class="info-field">
+<label>Data Attivazione</label>
 <div class="value"><?= $agency['activation_date'] ? date('d/m/Y', strtotime($agency['activation_date'])) : '-' ?></div>
 </div>
-<div class="info-card">
-<h3>Scadenza Contratto</h3>
+<div class="info-field">
+<label>Scadenza Contratto</label>
 <div class="value"><?= $agency['contract_expiry'] ? date('d/m/Y', strtotime($agency['contract_expiry'])) : '-' ?></div>
 </div>
-<div class="info-card">
-<h3>Durata (anni)</h3>
-<div class="value"><?= htmlspecialchars($agency['contract_duration_years'] ?: '-') ?></div>
+<div class="info-field">
+<label>Durata Contratto</label>
+<div class="value"><?= $agency['contract_duration_years'] ? $agency['contract_duration_years'] . ' anni' : '-' ?></div>
 </div>
-<div class="info-card">
-<h3>Tech Fee</h3>
+<div class="info-field">
+<label>Data Chiusura</label>
+<div class="value"><?= $agency['closed_date'] ? date('d/m/Y', strtotime($agency['closed_date'])) : '-' ?></div>
+</div>
+</div>
+</div>
+
+<div class="info-section">
+<h3>Condizioni Economiche</h3>
+<div class="info-grid">
+<div class="info-field">
+<label>Tech Fee</label>
 <div class="value"><?= $agency['tech_fee'] ? '€ ' . number_format($agency['tech_fee'], 2, ',', '.') : '-' ?></div>
 </div>
-<div class="info-card">
-<h3>Data Chiusura</h3>
-<div class="value"><?= $agency['closed_date'] ? date('d/m/Y', strtotime($agency['closed_date'])) : '-' ?></div>
 </div>
 </div>
 </div>
