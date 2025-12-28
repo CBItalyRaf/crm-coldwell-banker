@@ -25,6 +25,11 @@ $stmt = $pdo->prepare("SELECT * FROM agents WHERE agency_id = :agency_id ORDER B
 $stmt->execute(['agency_id' => $agency['id']]);
 $agents = $stmt->fetchAll();
 
+// Carica servizi
+$stmt = $pdo->prepare("SELECT service_name, is_active, activation_date, expiration_date FROM agency_services WHERE agency_id = :agency_id ORDER BY service_name");
+$stmt->execute(['agency_id' => $agency['id']]);
+$services = $stmt->fetchAll();
+
 require_once 'header.php';
 ?>
 
@@ -60,6 +65,11 @@ require_once 'header.php';
 .status-badge{padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:600;text-transform:uppercase}
 .status-badge.active{background:#D1FAE5;color:#065F46}
 .status-badge.inactive{background:#FEE2E2;color:#991B1B}
+.service-box{background:var(--bg);border-left:4px solid var(--cb-bright-blue);padding:1rem 1.5rem;margin-bottom:1rem;border-radius:8px;display:flex;justify-content:space-between;align-items:center}
+.service-name{font-weight:600;color:var(--cb-midnight)}
+.service-badge{padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:600;text-transform:uppercase}
+.service-badge.attivo{background:#D1FAE5;color:#065F46}
+.service-badge.non-attivo{background:#FEE2E2;color:#991B1B}
 </style>
 
 <div class="detail-header">
@@ -82,6 +92,7 @@ require_once 'header.php';
 <div class="tabs-nav">
 <button class="tab-btn active" onclick="switchTab('info')">📊 Info Agenzia</button>
 <button class="tab-btn" onclick="switchTab('contrattuale')">📄 Contrattuale</button>
+<button class="tab-btn" onclick="switchTab('servizi')">⚙️ Servizi (<?= count($services) ?>)</button>
 <button class="tab-btn" onclick="switchTab('agenti')">👥 Agenti (<?= count($agents) ?>)</button>
 </div>
 
@@ -211,6 +222,40 @@ require_once 'header.php';
 </div>
 </div>
 </div>
+</div>
+
+<div class="tab-content" id="tab-servizi">
+<h3 style="font-size:1.25rem;font-weight:600;margin-bottom:1.5rem">Servizi Sottoscritti</h3>
+<?php if(empty($services)): ?>
+<div style="text-align:center;padding:3rem;color:var(--cb-gray)">
+<div style="font-size:3rem;margin-bottom:1rem;opacity:.5">⚙️</div>
+<p>Nessun servizio attivo</p>
+</div>
+<?php else: ?>
+<?php 
+$serviceNames = [
+    'cb_suite' => 'CB Suite (EuroMg/iRealtors)',
+    'canva' => 'Canva',
+    'regold' => 'Regold',
+    'james_edition' => 'James Edition',
+    'docudrop' => 'Docudrop',
+    'unique' => 'Unique'
+];
+foreach ($services as $service): 
+?>
+<div class="service-box">
+<div>
+<div class="service-name"><?= $serviceNames[$service['service_name']] ?? ucfirst($service['service_name']) ?></div>
+</div>
+<div style="display:flex;align-items:center;gap:1rem">
+<span class="service-badge <?= $service['is_active'] ? 'attivo' : 'non-attivo' ?>">
+<?= $service['is_active'] ? 'ATTIVO' : 'NON ATTIVO' ?>
+</span>
+<span style="font-size:1.2rem;color:var(--cb-gray);cursor:pointer">▼</span>
+</div>
+</div>
+<?php endforeach; ?>
+<?php endif; ?>
 </div>
 
 <div class="tab-content" id="tab-agenti">
