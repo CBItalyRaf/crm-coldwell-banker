@@ -2,7 +2,9 @@
 require_once 'check_auth.php';
 require_once 'config/database.php';
 
+$pageTitle = "Dettaglio Agenzia - CRM Coldwell Banker";
 $pdo = getDB();
+
 $code = $_GET['code'] ?? '';
 
 if (!$code) {
@@ -10,9 +12,17 @@ if (!$code) {
     exit;
 }
 
-// Dati agenzia
-$stmt = $pdo->prepare("SELECT * FROM agencies WHERE code = ?");
-$stmt->execute([$code]);
+// Query agenzia con servizi
+$stmt = $pdo->prepare("
+    SELECT a.*, 
+    GROUP_CONCAT(DISTINCT s.service_name) as servizi
+    FROM agencies a
+    LEFT JOIN agency_services ags ON a.id = ags.agency_id
+    LEFT JOIN services s ON ags.service_id = s.id
+    WHERE a.code = :code
+    GROUP BY a.id
+");
+$stmt->execute(['code' => $code]);
 $agency = $stmt->fetch();
 
 if (!$agency) {
@@ -20,301 +30,189 @@ if (!$agency) {
     exit;
 }
 
-// Agenti dell'agenzia
-$stmt = $pdo->prepare("SELECT id, first_name, last_name, email_corporate, mobile, role, status FROM agents WHERE agency_id = ? ORDER BY last_name ASC");
-$stmt->execute([$agency['id']]);
+// Query agenti
+$stmt = $pdo->prepare("SELECT * FROM agents WHERE agency_code = :code ORDER BY status DESC, name ASC");
+$stmt->execute(['code' => $code]);
 $agents = $stmt->fetchAll();
 
-// Servizi dell'agenzia
-$stmt = $pdo->prepare("SELECT service_name, is_active, activation_date, expiration_date, renewal_required, invoice_reference, notes FROM agency_services WHERE agency_id = ? ORDER BY service_name");
-$stmt->execute([$agency['id']]);
-$services = $stmt->fetchAll();
-
-// Organizza servizi per nome
-$servicesData = [];
-foreach ($services as $service) {
-    $servicesData[$service['service_name']] = $service;
-}
-
-$user = $_SESSION['crm_user'];
-?>
 require_once 'header.php';
 ?>
 
 <style>
-.page-header{background:white;border-radius:12px;padding:1.5rem;margin-bottom:2rem;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
-.header-left-content{display:flex;align-items:center;gap:1rem}
-.btn-back{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.5rem 1rem;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;font-size:.9rem;transition:all .2s}
-.btn-back:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue)}
-.page-title-content h1{font-size:1.5rem;font-weight:600;margin-bottom:.25rem}
-.agency-meta{display:flex;gap:1rem;align-items:center;font-size:.875rem;color:var(--cb-gray)}
-.status-badge{padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
-.status-badge.active{background:#D1FAE5;color:#065F46}
-.status-badge.closed{background:#FEE2E2;color:#991B1B}
-.status-badge.opening{background:#FEF3C7;color:#92400E}
-.btn-edit{background:var(--cb-bright-blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;font-size:.95rem;cursor:pointer;transition:background .2s;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem}
-.btn-edit:hover{background:var(--cb-blue)}
-.tabs-container{background:white;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden}
-.tabs-nav{display:flex;border-bottom:2px solid #F3F4F6;overflow-x:auto}
-.tab-button{background:transparent;border:none;padding:1rem 1.5rem;cursor:pointer;font-size:.95rem;font-weight:500;color:var(--cb-gray);transition:all .2s;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap}
-.tab-button:hover{color:var(--cb-bright-blue)}
-.tab-button.active{color:var(--cb-bright-blue);border-bottom-color:var(--cb-bright-blue)}
+.detail-header{background:white;padding:1.5rem;margin-bottom:2rem;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.header-left{display:flex;align-items:center;gap:1.5rem}
+.back-btn{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.5rem 1rem;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;font-size:.9rem;transition:all .2s}
+.back-btn:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue)}
+.agency-title{font-size:1.5rem;font-weight:600;color:var(--cb-midnight);margin:0}
+.agency-code{color:var(--cb-bright-blue);font-weight:600;font-size:1rem}
+.edit-btn{background:var(--cb-bright-blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;font-size:.95rem;transition:background .2s}
+.edit-btn:hover{background:var(--cb-blue)}
+.tabs{background:white;border-radius:12px;margin-bottom:2rem;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tabs-nav{display:flex;border-bottom:2px solid #E5E7EB;padding:0 1.5rem}
+.tab-btn{background:transparent;border:none;padding:1rem 1.5rem;cursor:pointer;font-size:.95rem;font-weight:500;color:var(--cb-gray);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s}
+.tab-btn:hover{color:var(--cb-midnight)}
+.tab-btn.active{color:var(--cb-bright-blue);border-bottom-color:var(--cb-bright-blue)}
 .tab-content{padding:2rem;display:none}
-.tab-content.active{display:block;animation:fadeIn .3s}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
-.info-item{padding:1rem;background:var(--bg);border-radius:8px}
-.info-label{font-size:.875rem;color:var(--cb-gray);margin-bottom:.5rem;font-weight:500}
-.info-value{font-size:1rem;color:var(--cb-midnight);font-weight:500}
-.info-value.empty{color:var(--cb-gray);font-style:italic}
-.section-title{font-size:1.125rem;font-weight:600;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:2px solid #F3F4F6}
-.service-card{background:var(--bg);border-radius:8px;margin-bottom:1rem;overflow:hidden;border-left:4px solid var(--cb-bright-blue)}
-.service-header{padding:1.25rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .2s}
-.service-header:hover{background:#E5E7EB}
-.service-title{display:flex;align-items:center;gap:.75rem}
-.service-title h3{font-size:1rem;font-weight:600}
-.service-status{padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:600;text-transform:uppercase}
-.service-status.active{background:#D1FAE5;color:#065F46}
-.service-status.inactive{background:#FEE2E2;color:#991B1B}
-.service-expand{font-size:1.25rem;color:var(--cb-gray);transition:transform .3s}
-.service-expand.open{transform:rotate(180deg)}
-.service-details{padding:0 1.25rem 1.25rem;display:none}
-.service-details.open{display:block}
-.service-info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1rem}
-.file-download{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1rem;background:var(--cb-bright-blue);color:white;border-radius:6px;text-decoration:none;font-size:.875rem;margin-top:.5rem}
-.file-download:hover{background:var(--cb-blue)}
-.agents-table{width:100%;border-collapse:collapse}
+.tab-content.active{display:block}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-bottom:2rem}
+.info-card{background:var(--bg);padding:1.5rem;border-radius:10px;border-left:4px solid var(--cb-bright-blue)}
+.info-card h3{font-size:.875rem;text-transform:uppercase;letter-spacing:.05em;color:var(--cb-gray);margin:0 0 .75rem 0;font-weight:600}
+.info-card .value{font-size:1.125rem;font-weight:600;color:var(--cb-midnight);margin-bottom:.25rem}
+.info-card .label{font-size:.85rem;color:var(--cb-gray)}
+.agents-table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden}
 .agents-table th{text-align:left;padding:1rem;background:var(--bg);font-size:.875rem;font-weight:600;color:var(--cb-gray);text-transform:uppercase;letter-spacing:.05em}
-.agents-table td{padding:1rem;border-bottom:1px solid #F3F4F6}
-.agents-table tr:last-child td{border-bottom:none}
+.agents-table td{padding:1rem;border-top:1px solid #F3F4F6}
 .agents-table tr:hover{background:var(--bg)}
-.agent-name{font-weight:600;color:var(--cb-blue);cursor:pointer}
-.agent-name:hover{text-decoration:underline}
-.btn-add-agent{background:var(--cb-bright-blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;font-size:.95rem;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;gap:.5rem;margin-bottom:1.5rem}
-.btn-add-agent:hover{background:var(--cb-blue)}
-.empty-agents{text-align:center;padding:3rem;color:var(--cb-gray)}
-@media(max-width:768px){
-.hamburger{display:block}
-.header-left{gap:1rem}
-.main-nav,.user-menu{display:none}
-.container{padding:1rem}
-.page-header{flex-direction:column;align-items:flex-start}
-.tabs-nav{flex-wrap:nowrap;overflow-x:auto}
-.tab-content{padding:1rem}
-.info-grid{grid-template-columns:1fr}
-.agents-table{font-size:.875rem}
-.agents-table th,.agents-table td{padding:.75rem .5rem}
-}
-.inactive-agent{display:none}
-.show-inactive .inactive-agent{display:table-row}
+.status-badge{padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:600;text-transform:uppercase}
+.status-badge.active{background:#D1FAE5;color:#065F46}
+.status-badge.inactive{background:#FEE2E2;color:#991B1B}
+.checkbox-label{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem}
 </style>
-<div class="container">
-<div class="page-header">
-<div class="header-left-content">
-<a href="agenzie.php" class="btn-back">← Torna</a>
-<div class="page-title-content">
-<h1><?= htmlspecialchars($agency['name']) ?></h1>
-<div class="agency-meta">
-<span><?= htmlspecialchars($agency['code']) ?></span>
+
+<div class="detail-header">
+<div class="header-left">
+<a href="agenzie.php" class="back-btn">← Torna</a>
+<div>
+<h1 class="agency-title"><?= htmlspecialchars($agency['name']) ?></h1>
+<div class="agency-code"><?= htmlspecialchars($agency['code']) ?></div>
+</div>
 <span class="status-badge <?= strtolower($agency['status']) ?>"><?= htmlspecialchars($agency['status']) ?></span>
 </div>
+<button class="edit-btn">✏️ Modifica</button>
 </div>
-</div>
-<a href="agenzia_edit.php?code=<?= urlencode($agency['code']) ?>" class="btn-edit">✏️ Modifica</a>
-</div>
-<div class="tabs-container">
+
+<div class="tabs">
 <div class="tabs-nav">
-<button class="tab-button active" onclick="switchTab('info')">📊 Info Base</button>
-<button class="tab-button" onclick="switchTab('contract')">📝 Contrattuale</button>
-<button class="tab-button" onclick="switchTab('services')">⚙️ Servizi</button>
-<button class="tab-button" onclick="switchTab('agents')">👥 Agenti (<?= count($agents) ?>)</button>
+<button class="tab-btn active" onclick="switchTab('info')">📊 Info Base</button>
+<button class="tab-btn" onclick="switchTab('contrattuale')">📄 Contrattuale</button>
+<button class="tab-btn" onclick="switchTab('servizi')">⚙️ Servizi</button>
+<button class="tab-btn" onclick="switchTab('agenti')">👥 Agenti (<?= count($agents) ?>)</button>
 </div>
 
 <div class="tab-content active" id="tab-info">
-<h2 class="section-title">Informazioni Generali</h2>
 <div class="info-grid">
-<div class="info-item"><div class="info-label">Codice Agenzia</div><div class="info-value"><?= htmlspecialchars($agency['code']) ?></div></div>
-<div class="info-item"><div class="info-label">Nome Agenzia</div><div class="info-value"><?= htmlspecialchars($agency['name']) ?></div></div>
-<div class="info-item"><div class="info-label">Tipo</div><div class="info-value"><?= htmlspecialchars($agency['type'] ?: 'Non specificato') ?></div></div>
-<div class="info-item"><div class="info-label">Broker Manager</div><div class="info-value"><?= htmlspecialchars($agency['broker_manager'] ?: 'Non assegnato') ?></div></div>
-<div class="info-item"><div class="info-label">Indirizzo</div><div class="info-value"><?= htmlspecialchars($agency['address'] ?: 'Non disponibile') ?></div></div>
-<div class="info-item"><div class="info-label">Città</div><div class="info-value"><?= htmlspecialchars($agency['city']) ?><?= $agency['province'] ? ' (' . htmlspecialchars($agency['province']) . ')' : '' ?></div></div>
-<div class="info-item"><div class="info-label">CAP</div><div class="info-value"><?= htmlspecialchars($agency['zip_code'] ?: 'Non disponibile') ?></div></div>
-<div class="info-item"><div class="info-label">Email</div><div class="info-value"><?= htmlspecialchars($agency['email'] ?: 'Non disponibile') ?></div></div>
-<div class="info-item"><div class="info-label">Telefono</div><div class="info-value"><?= htmlspecialchars($agency['phone'] ?: 'Non disponibile') ?></div></div>
-<div class="info-item"><div class="info-label">P.IVA</div><div class="info-value"><?= htmlspecialchars($agency['vat_number'] ?: 'Non disponibile') ?></div></div>
-<div class="info-item"><div class="info-label">Codice Fiscale</div><div class="info-value"><?= htmlspecialchars($agency['tax_code'] ?: 'Non disponibile') ?></div></div>
-<div class="info-item"><div class="info-label">Codice SDI</div><div class="info-value"><?= htmlspecialchars($agency['sdi_code'] ?: 'Non disponibile') ?></div></div>
+<div class="info-card">
+<h3>Codice Agenzia</h3>
+<div class="value"><?= htmlspecialchars($agency['code']) ?></div>
+</div>
+<div class="info-card">
+<h3>Broker Manager</h3>
+<div class="value"><?= htmlspecialchars($agency['broker_manager'] ?: 'Non assegnato') ?></div>
+</div>
+<div class="info-card">
+<h3>Indirizzo</h3>
+<div class="value"><?= htmlspecialchars($agency['address'] ?: '-') ?></div>
+<div class="label"><?= htmlspecialchars($agency['address_number'] ?: '') ?></div>
+</div>
+<div class="info-card">
+<h3>Città</h3>
+<div class="value"><?= htmlspecialchars($agency['city'] ?: '-') ?></div>
+<div class="label"><?= htmlspecialchars($agency['province'] ?: '') ?></div>
+</div>
+<div class="info-card">
+<h3>CAP</h3>
+<div class="value"><?= htmlspecialchars($agency['zip_code'] ?: '-') ?></div>
+</div>
+<div class="info-card">
+<h3>Email</h3>
+<div class="value" style="font-size:1rem"><?= htmlspecialchars($agency['email'] ?: '-') ?></div>
+</div>
+<div class="info-card">
+<h3>Telefono</h3>
+<div class="value"><?= htmlspecialchars($agency['phone'] ?: '-') ?></div>
+</div>
+<div class="info-card">
+<h3>P.IVA</h3>
+<div class="value"><?= htmlspecialchars($agency['vat_number'] ?: '-') ?></div>
+</div>
+<div class="info-card">
+<h3>Codice Fiscale</h3>
+<div class="value"><?= htmlspecialchars($agency['tax_code'] ?: '-') ?></div>
+</div>
+<div class="info-card">
+<h3>Codice SDI</h3>
+<div class="value"><?= htmlspecialchars($agency['sdi_code'] ?: '-') ?></div>
+</div>
 </div>
 </div>
 
-<div class="tab-content" id="tab-contract">
-<h2 class="section-title">Informazioni Contrattuali</h2>
+<div class="tab-content" id="tab-contrattuale">
 <div class="info-grid">
-<div class="info-item"><div class="info-label">Data Attivazione</div><div class="info-value"><?= $agency['activation_date'] ? date('d/m/Y', strtotime($agency['activation_date'])) : 'Non disponibile' ?></div></div>
-<div class="info-item"><div class="info-label">Data Chiusura</div><div class="info-value"><?= $agency['closed_date'] ? date('d/m/Y', strtotime($agency['closed_date'])) : 'Non applicabile' ?></div></div>
-<div class="info-item"><div class="info-label">Data Firma Contratto</div><div class="info-value"><?= $agency['sold_date'] ? date('d/m/Y', strtotime($agency['sold_date'])) : 'Non disponibile' ?></div></div>
-<div class="info-item"><div class="info-label">Durata Contratto (anni)</div><div class="info-value"><?= $agency['contract_duration_years'] ?: 'Non specificata' ?></div></div>
-<div class="info-item"><div class="info-label">Scadenza Contratto</div><div class="info-value"><?= $agency['contract_expiry'] ? date('d/m/Y', strtotime($agency['contract_expiry'])) : 'Non disponibile' ?></div></div>
-<div class="info-item"><div class="info-label">Tech Fee</div><div class="info-value"><?= $agency['tech_fee'] ? '€ ' . number_format($agency['tech_fee'], 2, ',', '.') : 'Non specificata' ?></div></div>
+<div class="info-card">
+<h3>Tipo Contratto</h3>
+<div class="value"><?= htmlspecialchars($agency['contract_type'] ?: 'Standard') ?></div>
+</div>
+<div class="info-card">
+<h3>Data Attivazione</h3>
+<div class="value"><?= $agency['activation_date'] ? date('d/m/Y', strtotime($agency['activation_date'])) : '-' ?></div>
+</div>
+<div class="info-card">
+<h3>Scadenza Contratto</h3>
+<div class="value"><?= $agency['contract_expiry'] ? date('d/m/Y', strtotime($agency['contract_expiry'])) : '-' ?></div>
+</div>
+<div class="info-card">
+<h3>Tech Fee</h3>
+<div class="value"><?= htmlspecialchars($agency['tech_fee'] ?: '-') ?></div>
+</div>
+</div>
 </div>
 
-<h2 class="section-title" style="margin-top:2rem">Contratto e Zona di Rispetto</h2>
+<div class="tab-content" id="tab-servizi">
 <div class="info-grid">
-<div class="info-item">
-<div class="info-label">Contratto</div>
-<div class="info-value">
-<?php if ($agency['contract_file']): ?>
-<a href="/uploads/contracts/<?= htmlspecialchars($agency['contract_file']) ?>" class="file-download" target="_blank">📄 Scarica Contratto</a>
-<?php else: ?>
-<span class="empty">Nessun file caricato</span>
-<?php endif; ?>
-</div>
-</div>
-<div class="info-item">
-<div class="info-label">Zona di Rispetto</div>
-<div class="info-value">
-<?php if ($agency['exclusivity_zone_text']): ?>
-<?= nl2br(htmlspecialchars($agency['exclusivity_zone_text'])) ?>
-<?php elseif ($agency['exclusivity_zone_file']): ?>
-<a href="/uploads/contracts/<?= htmlspecialchars($agency['exclusivity_zone_file']) ?>" class="file-download" target="_blank">🗺️ Vedi Mappa</a>
-<?php else: ?>
-<span class="empty">Non definita</span>
-<?php endif; ?>
-</div>
-</div>
-</div>
-
-<h2 class="section-title" style="margin-top:2rem">Note Contrattuali</h2>
-<div class="info-item">
-<div class="info-value"><?= $agency['contract_notes'] ? nl2br(htmlspecialchars($agency['contract_notes'])) : 'Nessuna nota' ?></div>
-</div>
-</div>
-
-<div class="tab-content" id="tab-services">
-<h2 class="section-title">Servizi Sottoscritti</h2>
-
-<?php
-$serviceLabels = [
-    'cb_suite' => 'CB Suite (EuroMq/iRealtors)',
-    'canva' => 'Canva',
-    'regold' => 'Regold',
-    'james_edition' => 'James Edition',
-    'docudrop' => 'Docudrop',
-    'unique' => 'Unique'
-];
-
-foreach ($serviceLabels as $serviceName => $serviceLabel):
-    $service = $servicesData[$serviceName] ?? null;
-    $isActive = $service && $service['is_active'];
+<?php 
+$servizi_list = $agency['servizi'] ? explode(',', $agency['servizi']) : [];
+foreach(['CB Suite', 'Canva', 'Regold', 'James Edition', 'Docudrop', 'Unique'] as $servizio): 
 ?>
-<div class="service-card">
-<div class="service-header" onclick="toggleService('<?= $serviceName ?>')">
-<div class="service-title">
-<h3><?= $serviceLabel ?></h3>
-<span class="service-status <?= $isActive ? 'active' : 'inactive' ?>">
-<?= $isActive ? 'Attivo' : 'Non attivo' ?>
-</span>
-</div>
-<span class="service-expand" id="expand-<?= $serviceName ?>">▼</span>
-</div>
-<div class="service-details" id="service-<?= $serviceName ?>">
-<?php if ($service): ?>
-<div class="service-info-grid">
-<?php if ($service['activation_date']): ?>
-<div class="info-item">
-<div class="info-label">Data Attivazione</div>
-<div class="info-value"><?= date('d/m/Y', strtotime($service['activation_date'])) ?></div>
-</div>
-<?php endif; ?>
-<?php if ($service['expiration_date']): ?>
-<div class="info-item">
-<div class="info-label">Data Scadenza</div>
-<div class="info-value"><?= date('d/m/Y', strtotime($service['expiration_date'])) ?></div>
-</div>
-<?php endif; ?>
-<?php if ($serviceName === 'cb_suite' && $service['renewal_required']): ?>
-<div class="info-item">
-<div class="info-label">Obbligo Rinnovo</div>
-<div class="info-value"><?= htmlspecialchars($service['renewal_required']) ?></div>
-</div>
-<?php endif; ?>
-<?php if ($service['invoice_reference']): ?>
-<div class="info-item">
-<div class="info-label">Fattura</div>
-<div class="info-value"><?= htmlspecialchars($service['invoice_reference']) ?></div>
-</div>
-<?php endif; ?>
-<?php if ($service['notes']): ?>
-<div class="info-item" style="grid-column:1/-1">
-<div class="info-label">Note</div>
-<div class="info-value"><?= nl2br(htmlspecialchars($service['notes'])) ?></div>
-</div>
-<?php endif; ?>
-</div>
-<?php else: ?>
-<p style="color:var(--cb-gray);font-size:.9rem;margin-top:1rem">Servizio non sottoscritto</p>
-<?php endif; ?>
-</div>
+<div class="info-card">
+<h3><?= $servizio ?></h3>
+<div class="value"><?= in_array($servizio, $servizi_list) ? '✅ Attivo' : '❌ Non attivo' ?></div>
 </div>
 <?php endforeach; ?>
 </div>
+</div>
 
-<div class="tab-content" id="tab-agents">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
-<button class="btn-add-agent" onclick="window.location.href='agente_add.php?agency_id=<?= $agency['id'] ?>'">➕ Aggiungi Agente</button>
-<label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.9rem">
-<input type="checkbox" id="showInactive" style="cursor:pointer">
-<span>Mostra inattivi</span>
+<div class="tab-content" id="tab-agenti">
+<label class="checkbox-label">
+<input type="checkbox" id="showInactive" onchange="toggleInactive()">
+Mostra agenti inattivi
 </label>
-</div>
-<?php if (empty($agents)): ?>
-<div class="empty-agents">
-<div style="font-size:3rem;margin-bottom:1rem">👥</div>
-<h3>Nessun agente registrato</h3>
-<p>Aggiungi il primo agente per questa agenzia</p>
-</div>
-<?php else: ?>
 <table class="agents-table">
 <thead>
-<tr><th>Nome</th><th>Email</th><th>Telefono</th><th>Ruolo</th><th>Status</th></tr>
+<tr>
+<th>Nome</th>
+<th>Email</th>
+<th>Telefono</th>
+<th>Status</th>
+</tr>
 </thead>
 <tbody>
-<?php foreach ($agents as $agent): ?>
-<tr class="<?= strtolower($agent['status']) !== 'active' ? 'inactive-agent' : '' ?>">
-<td><span class="agent-name" onclick="window.location.href='agente_detail.php?id=<?= $agent['id'] ?>'"><?= htmlspecialchars($agent['first_name'] . ' ' . $agent['last_name']) ?></span></td>
-<td><?= htmlspecialchars($agent['email_corporate'] ?: 'Non disponibile') ?></td>
-<td><?= htmlspecialchars($agent['mobile'] ?: 'Non disponibile') ?></td>
-<td><?= htmlspecialchars($agent['role'] ?: 'Non specificato') ?></td>
+<?php foreach($agents as $agent): ?>
+<tr class="agent-row <?= $agent['status'] === 'Inactive' ? 'inactive-agent' : '' ?>" style="<?= $agent['status'] === 'Inactive' ? 'display:none' : '' ?>">
+<td><?= htmlspecialchars($agent['name']) ?></td>
+<td><?= htmlspecialchars($agent['email_corporate'] ?: $agent['email_personal'] ?: '-') ?></td>
+<td><?= htmlspecialchars($agent['phone'] ?: '-') ?></td>
 <td><span class="status-badge <?= strtolower($agent['status']) ?>"><?= htmlspecialchars($agent['status']) ?></span></td>
 </tr>
 <?php endforeach; ?>
 </tbody>
 </table>
-<?php endif; ?>
-</div>
 </div>
 </div>
 
 <script>
-// Tab switching
 function switchTab(tabName){
-document.querySelectorAll('.tab-button').forEach(btn=>btn.classList.remove('active'));
+document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.remove('active'));
 document.querySelectorAll('.tab-content').forEach(content=>content.classList.remove('active'));
-document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+event.target.classList.add('active');
 document.getElementById('tab-'+tabName).classList.add('active');
 }
 
-// Service card toggle
-function toggleService(serviceId){
-document.getElementById('service-'+serviceId).classList.toggle('open');
-document.getElementById('expand-'+serviceId).classList.toggle('open');
-}
-
-// Checkbox agenti inattivi
-document.getElementById('showInactive')?.addEventListener('change',function(){
-document.querySelector('.agents-table').classList.toggle('show-inactive',this.checked);
+function toggleInactive(){
+const show=document.getElementById('showInactive').checked;
+document.querySelectorAll('.inactive-agent').forEach(row=>{
+row.style.display=show?'':'none';
 });
+}
 </script>
 
 <?php require_once 'footer.php'; ?>

@@ -148,13 +148,13 @@ require_once 'header.php';
 <table class="agencies-table">
 <thead>
 <tr>
-<th class="sortable" data-sort="code">Codice <span class="sort-arrow">⇅</span></th>
-<th class="sortable" data-sort="name">Nome <span class="sort-arrow">⇅</span></th>
-<th class="sortable" data-sort="city">Città <span class="sort-arrow">⇅</span></th>
-<th>Broker Manager</th>
-<th>Status</th>
-<th>Email</th>
-<th>Telefono</th>
+<th class="sortable" data-sort="code"><span style="color:var(--cb-bright-blue)">CBI</span> <span class="sort-arrow">⇅</span></th>
+<th class="sortable" data-sort="name"><span style="color:var(--cb-bright-blue)">NOME</span> <span class="sort-arrow">⇅</span></th>
+<th class="sortable" data-sort="city"><span style="color:var(--cb-bright-blue)">CITTÀ</span> <span class="sort-arrow">⇅</span></th>
+<th>BROKER MANAGER</th>
+<th>STATUS</th>
+<th>EMAIL</th>
+<th>TELEFONO</th>
 </tr>
 </thead>
 <tbody>
