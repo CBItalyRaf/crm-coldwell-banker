@@ -19,28 +19,28 @@ require_once 'header.php';
 .welcome{margin-bottom:2rem}
 .welcome h1{font-size:1.75rem;font-weight:600;margin-bottom:.5rem}
 .welcome p{color:var(--cb-gray);font-size:.95rem}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-bottom:2rem}
-.stat-card{background:white;padding:1.5rem;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);position:relative}
-.stat-card h3{font-size:.9rem;color:var(--cb-gray);margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.05em}
-.stat-value{font-size:2rem;font-weight:700;color:var(--cb-bright-blue)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-bottom:2rem}
+.stat-card{background:white;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.08);border-left:4px solid var(--cb-bright-blue);position:relative}
+.stat-card h3{font-size:.875rem;text-transform:uppercase;letter-spacing:.05em;color:var(--cb-gray);margin-bottom:.75rem;font-weight:600}
+.stat-value{font-size:2.5rem;font-weight:700;color:var(--cb-blue);margin-bottom:.5rem}
 .stat-subtitle{font-size:.85rem;color:var(--cb-gray);margin-top:.5rem}
-.btn-csv{position:absolute;top:1rem;right:1rem;background:var(--cb-bright-blue);color:white;border:none;padding:.5rem 1rem;border-radius:6px;font-size:.8rem;cursor:pointer;text-decoration:none;display:inline-block}
-.btn-csv:hover{opacity:.9}
-.widgets-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
-.widget{background:white;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden}
-.widget-header{padding:1.5rem;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;gap:1rem}
+.btn-csv{position:absolute;top:1rem;right:1rem;background:var(--cb-bright-blue);color:white;border:none;padding:.5rem 1rem;border-radius:6px;font-size:.8rem;cursor:pointer;transition:background .2s;text-decoration:none;display:inline-block}
+.btn-csv:hover{background:var(--cb-blue)}
+.widgets-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem;margin-bottom:2rem}
+.widget{background:white;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.widget-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid #E5E7EB}
 .widget-icon{font-size:1.5rem}
-.widget-title{font-size:1.1rem;font-weight:600}
+.widget-title{font-size:1.125rem;font-weight:600}
+.widget-placeholder{text-align:center;padding:2rem 1rem;color:var(--cb-gray)}
+.widget-placeholder-icon{font-size:3rem;margin-bottom:.75rem;opacity:.3}
 .widget-content{padding:1.5rem}
-.widget-placeholder{padding:3rem;text-align:center;color:var(--cb-gray)}
-.widget-placeholder-icon{font-size:3rem;margin-bottom:1rem;opacity:.3}
 .recent-item{padding:1rem;border-bottom:1px solid #f3f4f6;transition:background .2s}
 .recent-item:last-child{border-bottom:none}
 .recent-item:hover{background:var(--bg)}
 .recent-item-name{font-weight:600;margin-bottom:.25rem}
 .recent-item-meta{font-size:.85rem;color:var(--cb-gray)}
 @media (max-width:768px){
-.stats-grid{grid-template-columns:1fr}
+.stats-grid,.widgets-grid{grid-template-columns:1fr}
 }
 </style>
 
@@ -76,6 +76,28 @@ require_once 'header.php';
 <div class="widget-placeholder">
 <div class="widget-placeholder-icon">🚧</div>
 <p>Calendario eventi<br><small>Disponibile in Fase 2</small></p>
+</div>
+</div>
+
+<div class="widget">
+<div class="widget-header">
+<span class="widget-icon">🎫</span>
+<h3 class="widget-title">Ticket Urgenti</h3>
+</div>
+<div class="widget-placeholder">
+<div class="widget-placeholder-icon">🚧</div>
+<p>Sistema ticketing<br><small>Disponibile in Fase 2</small></p>
+</div>
+</div>
+
+<div class="widget">
+<div class="widget-header">
+<span class="widget-icon">📰</span>
+<h3 class="widget-title">News Recenti</h3>
+</div>
+<div class="widget-placeholder">
+<div class="widget-placeholder-icon">🚧</div>
+<p>Integrazione News API<br><small>Disponibile in Fase 2</small></p>
 </div>
 </div>
 

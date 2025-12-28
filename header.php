@@ -1,5 +1,5 @@
 <?php
-// Header comune per tutte le pagine
+// Header comune per tutte le pagine, fixato
 // Variabili richieste: $pageTitle (opzionale, default "CRM Coldwell Banker")
 $pageTitle = $pageTitle ?? 'CRM Coldwell Banker';
 $user = $_SESSION['crm_user'] ?? null;
