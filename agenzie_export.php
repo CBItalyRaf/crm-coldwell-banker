@@ -25,6 +25,7 @@ $fieldMap = [
     'email' => 'email',
     'phone' => 'phone',
     'broker' => 'broker_manager',
+    'broker_mobile' => 'broker_mobile',
     'tech_fee' => 'tech_fee',
     'contract_expiry' => 'contract_expiry',
     'activation_date' => 'activation_date',
@@ -58,7 +59,7 @@ if ($statusFilter !== 'all') {
 }
 
 if ($search) {
-    $sql .= " AND (name LIKE :search OR code LIKE :search OR city LIKE :search)";
+    $sql .= " AND (name LIKE :search1 OR code LIKE :search2 OR city LIKE :search3)";
 }
 
 $sql .= " ORDER BY name ASC";
@@ -69,7 +70,11 @@ if ($statusFilter !== 'all') {
     $stmt->bindValue(':status', $statusFilter);
 }
 if ($search) {
-    $stmt->bindValue(':search', "%$search%");
+if ($search) {
+    $stmt->bindValue(":search1", "%$search%");
+    $stmt->bindValue(":search2", "%$search%");
+    $stmt->bindValue(":search3", "%$search%");
+}
 }
 
 $stmt->execute();
@@ -93,6 +98,7 @@ $headerNames = [
     'email' => 'Email',
     'phone' => 'Telefono',
     'broker_manager' => 'Broker Manager',
+    'broker_mobile' => 'broker_mobile',
     'tech_fee' => 'Tech Fee',
     'contract_expiry' => 'Scadenza Contratto',
     'activation_date' => 'Data Attivazione'
