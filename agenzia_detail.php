@@ -23,7 +23,11 @@ if (!$agency) {
 
 $stmt = $pdo->prepare("SELECT * FROM agents WHERE agency_id = :agency_id ORDER BY status DESC, full_name ASC");
 $stmt->execute(['agency_id' => $agency['id']]);
-$agents = $stmt->fetchAll();
+$allAgents = $stmt->fetchAll();
+
+// Separa Active e Inactive
+$activeAgents = array_filter($allAgents, fn($a) => $a['status'] === 'Active');
+$inactiveAgents = array_filter($allAgents, fn($a) => $a['status'] !== 'Active');
 
 // Carica servizi
 $stmt = $pdo->prepare("SELECT service_name, is_active, activation_date, expiration_date FROM agency_services WHERE agency_id = :agency_id ORDER BY service_name");
@@ -93,7 +97,7 @@ require_once 'header.php';
 <button class="tab-btn active" onclick="switchTab('info')">📊 Info Agenzia</button>
 <button class="tab-btn" onclick="switchTab('contrattuale')">📄 Contrattuale</button>
 <button class="tab-btn" onclick="switchTab('servizi')">⚙️ Servizi (<?= count($services) ?>)</button>
-<button class="tab-btn" onclick="switchTab('agenti')">👥 Agenti (<?= count($agents) ?>)</button>
+<button class="tab-btn" onclick="switchTab('agenti')">👥 Agenti (<?= count($activeAgents) ?>)</button>
 </div>
 
 <div class="tab-content active" id="tab-info">
@@ -285,6 +289,15 @@ foreach ($services as $i => $service):
 </div>
 
 <div class="tab-content" id="tab-agenti">
+<div style="margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center">
+<h3 style="margin:0;font-size:1.1rem;font-weight:600">Agenti Agenzia</h3>
+<?php if(count($inactiveAgents) > 0): ?>
+<label style="display:flex;align-items:center;gap:.5rem;cursor:pointer">
+<input type="checkbox" id="showInactiveAgents" onchange="toggleInactiveAgents()">
+<span style="font-size:.9rem;color:var(--cb-gray)">Mostra inattivi (<?= count($inactiveAgents) ?>)</span>
+</label>
+<?php endif; ?>
+</div>
 <table class="agents-table">
 <thead>
 <tr>
@@ -295,15 +308,23 @@ foreach ($services as $i => $service):
 </tr>
 </thead>
 <tbody>
-<?php if(empty($agents)): ?>
+<?php if(empty($activeAgents) && empty($inactiveAgents)): ?>
 <tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--cb-gray)">Nessun agente trovato</td></tr>
 <?php else: ?>
-<?php foreach($agents as $agent): ?>
-<tr>
+<?php foreach($activeAgents as $agent): ?>
+<tr onclick="window.location.href='agente_detail.php?id=<?= $agent['id'] ?>'" style="cursor:pointer">
 <td><?= htmlspecialchars($agent['full_name']) ?></td>
 <td><?= htmlspecialchars($agent['email_corporate'] ?: $agent['email_personal'] ?: '-') ?></td>
 <td><?= htmlspecialchars($agent['mobile'] ?: '-') ?></td>
-<td><span class="status-badge <?= strtolower($agent['status']) ?>"><?= htmlspecialchars($agent['status']) ?></span></td>
+<td><span class="status-badge active">Active</span></td>
+</tr>
+<?php endforeach; ?>
+<?php foreach($inactiveAgents as $agent): ?>
+<tr class="inactive-agent" style="display:none;cursor:pointer" onclick="window.location.href='agente_detail.php?id=<?= $agent['id'] ?>'">
+<td><?= htmlspecialchars($agent['full_name']) ?></td>
+<td><?= htmlspecialchars($agent['email_corporate'] ?: $agent['email_personal'] ?: '-') ?></td>
+<td><?= htmlspecialchars($agent['mobile'] ?: '-') ?></td>
+<td><span class="status-badge inactive"><?= htmlspecialchars($agent['status']) ?></span></td>
 </tr>
 <?php endforeach; ?>
 <?php endif; ?>
@@ -333,6 +354,13 @@ arrow.style.transform = 'rotate(180deg)';
 details.style.display = 'none';
 arrow.style.transform = 'rotate(0deg)';
 }
+}
+
+function toggleInactiveAgents(){
+const show = document.getElementById('showInactiveAgents').checked;
+document.querySelectorAll('.inactive-agent').forEach(row => {
+row.style.display = show ? '' : 'none';
+});
 }
 
 // Apri tab da hash URL
