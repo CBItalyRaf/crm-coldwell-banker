@@ -20,7 +20,7 @@ if ($statusFilter !== 'all') {
 }
 
 if ($search) {
-    $sql .= " AND (name LIKE :search OR code LIKE :search OR city LIKE :search)";
+    $sql .= " AND (name LIKE :search1 OR code LIKE :search2 OR city LIKE :search3)";
 }
 
 $sql .= " ORDER BY name ASC";
@@ -31,7 +31,9 @@ if ($statusFilter !== 'all') {
     $stmt->bindValue(':status', $statusFilter);
 }
 if ($search) {
-    $stmt->bindValue(':search', "%$search%");
+    $stmt->bindValue(':search1', "%$search%");
+    $stmt->bindValue(':search2', "%$search%");
+    $stmt->bindValue(':search3', "%$search%");
 }
 
 $stmt->execute();
