@@ -1,16 +1,13 @@
 <?php
-//fixato
 require_once 'check_auth.php';
 require_once 'config/database.php';
 
 $pageTitle = "Gestione Agenzie - CRM Coldwell Banker";
 $pdo = getDB();
 
-// Filtri - DEFAULT ACTIVE
 $statusFilter = $_GET['status'] ?? 'Active';
 $search = $_GET['search'] ?? '';
 
-// Query con filtri (escludi Prospect)
 $sql = "SELECT code, name, city, province, status, broker_manager, email, phone 
         FROM agencies 
         WHERE status != 'Prospect'";
@@ -51,48 +48,59 @@ require_once 'header.php';
 .btn-export:hover{background:#059669}
 .btn-add{background:var(--cb-bright-blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;font-size:.95rem;cursor:pointer;transition:background .2s;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;font-weight:500}
 .btn-add:hover{background:var(--cb-blue)}
-.filters-bar{background:white;border-radius:12px;padding:1.5rem;margin-bottom:2rem;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.filters-bar{background:white;padding:1.5rem;margin-bottom:2rem;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .filters-grid{display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:center}
 .search-box{position:relative;flex:1}
 .search-box input{width:100%;padding:.75rem 1rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem}
 .search-box input:focus{outline:none;border-color:var(--cb-bright-blue)}
+.search-results{position:absolute;top:100%;left:0;right:0;background:white;border:1px solid #E5E7EB;border-radius:8px;margin-top:.5rem;max-height:400px;overflow-y:auto;box-shadow:0 4px 6px rgba(0,0,0,.1);z-index:1000;display:none}
+.search-results.active{display:block}
+.search-item{padding:1rem;border-bottom:1px solid #F3F4F6;cursor:pointer;transition:background .2s}
+.search-item:last-child{border-bottom:none}
+.search-item:hover{background:var(--bg)}
+.search-item-title{font-weight:600;color:var(--cb-midnight);margin-bottom:.25rem}
+.search-item-meta{font-size:.85rem;color:var(--cb-gray)}
 .status-filters{display:flex;gap:.5rem;flex-wrap:wrap}
-.filter-btn{background:white;border:1px solid #E5E7EB;padding:.5rem 1rem;border-radius:8px;font-size:.875rem;cursor:pointer;transition:all .2s}
+.filter-btn{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.5rem 1rem;border-radius:8px;cursor:pointer;transition:all .2s;font-size:.9rem}
 .filter-btn:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue)}
 .filter-btn.active{background:var(--cb-bright-blue);color:white;border-color:var(--cb-bright-blue)}
-.table-container{background:white;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden}
+.table-container{background:white;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .agencies-table{width:100%;border-collapse:collapse}
 .agencies-table th{text-align:left;padding:1rem 1.5rem;background:var(--bg);font-size:.875rem;font-weight:600;color:var(--cb-gray);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #E5E7EB}
+.agencies-table th.sortable{cursor:pointer;user-select:none;transition:background .2s}
+.agencies-table th.sortable:hover{background:#E5E7EB}
+.agencies-table th.sortable .sort-arrow{font-size:.7em;opacity:.3;margin-left:.25rem}
+.agencies-table th.sortable.asc .sort-arrow{opacity:1}
+.agencies-table th.sortable.asc .sort-arrow::after{content:'↑'}
+.agencies-table th.sortable.desc .sort-arrow{opacity:1}
+.agencies-table th.sortable.desc .sort-arrow::after{content:'↓'}
 .agencies-table td{padding:1rem 1.5rem;border-bottom:1px solid #F3F4F6}
-.agencies-table tbody tr:last-child td{border-bottom:none}
-.agencies-table tbody tr:hover{background:var(--bg);cursor:pointer}
-.agency-name{font-weight:600;color:var(--cb-blue)}
-.status-badge{padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;display:inline-block}
+.agencies-table tbody tr{cursor:pointer;transition:background .2s}
+.agencies-table tbody tr:hover{background:var(--bg)}
+.agency-name{font-weight:600;color:var(--cb-midnight)}
+.status-badge{padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:600;text-transform:uppercase}
 .status-badge.active{background:#D1FAE5;color:#065F46}
 .status-badge.closed{background:#FEE2E2;color:#991B1B}
 .status-badge.opening{background:#FEF3C7;color:#92400E}
-.empty-state{text-align:center;padding:4rem 2rem;color:var(--cb-gray)}
-.empty-state-icon{font-size:4rem;margin-bottom:1rem;opacity:.3}
-.modal{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.5);z-index:3000;align-items:center;justify-content:center}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:1000}
 .modal.open{display:flex}
-.modal-content{background:white;border-radius:12px;padding:2rem;max-width:600px;width:90%;max-height:80vh;overflow-y:auto}
-.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+.modal-content{background:white;border-radius:12px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto}
+.modal-header{padding:1.5rem;border-bottom:1px solid #E5E7EB;display:flex;justify-content:space-between;align-items:center}
 .modal-title{font-size:1.25rem;font-weight:600}
 .modal-close{background:transparent;border:none;font-size:1.5rem;cursor:pointer;color:var(--cb-gray)}
-.checkbox-group{margin-bottom:1.5rem}
-.checkbox-group h3{font-size:1rem;font-weight:600;margin-bottom:1rem;color:var(--cb-midnight)}
-.checkbox-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.75rem}
-.checkbox-label{display:flex;align-items:center;gap:.5rem;cursor:pointer;padding:.5rem;border-radius:6px;transition:background .2s}
-.checkbox-label:hover{background:var(--bg)}
-.checkbox-label input{cursor:pointer}
-.modal-actions{display:flex;gap:1rem;justify-content:flex-end;margin-top:1.5rem}
-.btn-cancel{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;transition:all .2s}
-.btn-cancel:hover{border-color:var(--cb-gray);color:var(--cb-midnight)}
+.modal-close:hover{color:var(--cb-midnight)}
+.checkbox-group{padding:1.5rem}
+.checkbox-group h3{font-size:1rem;font-weight:600;margin-bottom:1rem}
+.checkbox-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+.checkbox-label{display:flex;align-items:center;gap:.5rem;cursor:pointer}
+.modal-actions{padding:1.5rem;border-top:1px solid #E5E7EB;display:flex;justify-content:flex-end;gap:1rem}
+.btn-cancel{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.75rem 1.5rem;border-radius:8px;cursor:pointer}
+.btn-cancel:hover{border-color:var(--cb-gray)}
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--cb-gray)}
+.empty-state-icon{font-size:4rem;margin-bottom:1rem;opacity:.5}
 @media(max-width:768px){
-.page-title{font-size:1.5rem}
 .filters-grid{grid-template-columns:1fr}
-.table-container{overflow-x:auto}
-.agencies-table{font-size:.875rem}
+.checkbox-grid{grid-template-columns:1fr}
 .agencies-table th,.agencies-table td{padding:.75rem .5rem}
 .header-actions{width:100%;flex-direction:column}
 .btn-export,.btn-add{width:100%;justify-content:center}
@@ -110,10 +118,8 @@ require_once 'header.php';
 <div class="filters-bar">
 <div class="filters-grid">
 <div class="search-box">
-<form method="GET" style="display:flex;gap:.5rem">
-<input type="text" name="search" placeholder="🔍 Cerca per nome, codice o città..." value="<?= htmlspecialchars($search) ?>">
-<input type="hidden" name="status" value="<?= htmlspecialchars($statusFilter) ?>">
-</form>
+<input type="text" id="agenciesSearch" placeholder="🔍 Cerca per nome, codice o città..." autocomplete="off">
+<div class="search-results" id="agenciesSearchResults"></div>
 </div>
 <div class="status-filters">
 <form method="GET" id="statusForm">
@@ -138,13 +144,13 @@ require_once 'header.php';
 <table class="agencies-table">
 <thead>
 <tr>
-<th>Codice</th>
-<th>Nome</th>
-<th>Città</th>
-<th>Broker Manager</th>
-<th>Status</th>
-<th>Email</th>
-<th>Telefono</th>
+<th class="sortable" data-sort="code"><span style="color:var(--cb-bright-blue)">CBI</span> <span class="sort-arrow">⇅</span></th>
+<th class="sortable" data-sort="name"><span style="color:var(--cb-bright-blue)">NOME</span> <span class="sort-arrow">⇅</span></th>
+<th class="sortable" data-sort="city"><span style="color:var(--cb-bright-blue)">CITTÀ</span> <span class="sort-arrow">⇅</span></th>
+<th>BROKER MANAGER</th>
+<th>STATUS</th>
+<th>EMAIL</th>
+<th>TELEFONO</th>
 </tr>
 </thead>
 <tbody>
@@ -213,13 +219,10 @@ require_once 'header.php';
 </div>
 
 <script>
-// Export modal
 const exportModal=document.getElementById('exportModal');
 
 function openExportModal(){
-// Prendi valore corrente dalla ricerca
 const searchValue = document.getElementById('agenciesSearch').value;
-// Aggiorna campo hidden nel form export
 const hiddenSearch = document.querySelector('#exportModal input[name="search"]');
 if(hiddenSearch) hiddenSearch.value = searchValue;
 exportModal.classList.add('open');
@@ -228,6 +231,94 @@ exportModal.classList.add('open');
 function closeExportModal(){
 exportModal.classList.remove('open');
 }
+
+const searchInput=document.getElementById('agenciesSearch');
+const searchResults=document.getElementById('agenciesSearchResults');
+const agenciesTable=document.querySelector('.agencies-table tbody');
+let searchTimeout;
+let allRows=[];
+
+if(agenciesTable){
+allRows=Array.from(agenciesTable.querySelectorAll('tr'));
+}
+
+if(searchInput && searchResults){
+searchInput.addEventListener('input',function(){
+clearTimeout(searchTimeout);
+const query=this.value.trim().toLowerCase();
+
+if(agenciesTable){
+if(query.length===0){
+allRows.forEach(row=>row.style.display='');
+}else{
+allRows.forEach(row=>{
+const text=row.textContent.toLowerCase();
+row.style.display=text.includes(query)?'':'none';
+});
+}
+}
+
+if(query.length<2){
+searchResults.classList.remove('active');
+return;
+}
+
+searchTimeout=setTimeout(()=>{
+fetch('https://admin.mycb.it/search_api.php?q='+encodeURIComponent(query))
+.then(r=>r.json())
+.then(data=>{
+if(data.length===0){
+searchResults.innerHTML='<div style="padding:1rem;text-align:center;color:#6D7180">Nessun risultato</div>';
+}else{
+searchResults.innerHTML=data.map(item=>`
+<div class="search-item" onclick="window.location.href='${item.url}'">
+<div class="search-item-title">${item.title}</div>
+<div class="search-item-meta">${item.meta}</div>
+</div>
+`).join('');
+}
+searchResults.classList.add('active');
+});
+},300);
+});
+
+document.addEventListener('click',function(e){
+if(!e.target.closest('.search-box')){
+searchResults.classList.remove('active');
+}
+});
+}
+
+let currentSort={column:null,direction:'asc'};
+
+document.querySelectorAll('.sortable').forEach(header=>{
+header.addEventListener('click',function(){
+const column=this.dataset.sort;
+const columnIndex={code:0,name:1,city:2}[column];
+
+if(currentSort.column===column){
+currentSort.direction=currentSort.direction==='asc'?'desc':'asc';
+}else{
+currentSort.column=column;
+currentSort.direction='asc';
+}
+
+document.querySelectorAll('.sortable').forEach(h=>h.classList.remove('asc','desc'));
+this.classList.add(currentSort.direction);
+
+const sortedRows=allRows.slice().sort((a,b)=>{
+const aText=a.cells[columnIndex].textContent.trim();
+const bText=b.cells[columnIndex].textContent.trim();
+const comparison=aText.localeCompare(bText,'it',{numeric:true});
+return currentSort.direction==='asc'?comparison:-comparison;
+});
+
+agenciesTable.innerHTML='';
+sortedRows.forEach(row=>agenciesTable.appendChild(row));
+
+allRows=sortedRows;
+});
+});
 </script>
 
 <?php require_once 'footer.php'; ?>
