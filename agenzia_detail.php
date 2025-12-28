@@ -38,7 +38,9 @@ require_once 'header.php';
 .edit-btn{background:var(--cb-bright-blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;font-size:.95rem;transition:background .2s}
 .edit-btn:hover{background:var(--cb-blue)}
 .edit-btn:disabled{background:#D1D5DB;cursor:not-allowed}
-.tabs{background:white;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tabs{background:white;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1);border-left:6px solid var(--cb-bright-blue)}
+.tabs.status-closed{border-left-color:#9CA3AF}
+.tabs.status-opening{border-left-color:#F59E0B}
 .tabs-nav{display:flex;border-bottom:2px solid #E5E7EB;padding:0 1.5rem}
 .tab-btn{background:transparent;border:none;padding:1rem 1.5rem;cursor:pointer;font-size:.95rem;font-weight:500;color:var(--cb-gray);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s}
 .tab-btn:hover{color:var(--cb-midnight)}
@@ -76,7 +78,7 @@ require_once 'header.php';
 <?php endif; ?>
 </div>
 
-<div class="tabs">
+<div class="tabs status-<?= strtolower($agency['status']) ?>">
 <div class="tabs-nav">
 <button class="tab-btn active" onclick="switchTab('info')">📊 Info Agenzia</button>
 <button class="tab-btn" onclick="switchTab('contrattuale')">📄 Contrattuale</button>
