@@ -241,9 +241,9 @@ $serviceNames = [
     'docudrop' => 'Docudrop',
     'unique' => 'Unique'
 ];
-foreach ($services as $service): 
+foreach ($services as $i => $service): 
 ?>
-<div class="service-box">
+<div class="service-box" style="cursor:pointer;margin-bottom:0;border-radius:8px 8px 0 0" onclick="toggleService(<?= $i ?>)">
 <div>
 <div class="service-name"><?= $serviceNames[$service['service_name']] ?? ucfirst($service['service_name']) ?></div>
 </div>
@@ -251,8 +251,34 @@ foreach ($services as $service):
 <span class="service-badge <?= $service['is_active'] ? 'attivo' : 'non-attivo' ?>">
 <?= $service['is_active'] ? 'ATTIVO' : 'NON ATTIVO' ?>
 </span>
-<span style="font-size:1.2rem;color:var(--cb-gray);cursor:pointer">▼</span>
+<span id="arrow-<?= $i ?>" style="font-size:1.2rem;color:var(--cb-gray);transition:transform .2s">▼</span>
 </div>
+</div>
+<div id="service-details-<?= $i ?>" style="display:none;background:white;padding:1.5rem;border:1px solid #E5E7EB;border-top:none;border-radius:0 0 8px 8px;margin-bottom:1rem">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem">
+<div>
+<div style="font-size:.75rem;text-transform:uppercase;color:var(--cb-gray);margin-bottom:.25rem">Data Attivazione</div>
+<div style="font-weight:500"><?= $service['activation_date'] ? date('d/m/Y', strtotime($service['activation_date'])) : '-' ?></div>
+</div>
+<div>
+<div style="font-size:.75rem;text-transform:uppercase;color:var(--cb-gray);margin-bottom:.25rem">Data Scadenza</div>
+<div style="font-weight:500"><?= $service['expiration_date'] ? date('d/m/Y', strtotime($service['expiration_date'])) : '-' ?></div>
+</div>
+<div>
+<div style="font-size:.75rem;text-transform:uppercase;color:var(--cb-gray);margin-bottom:.25rem">Rinnovo Richiesto</div>
+<div style="font-weight:500"><?= $service['renewal_required'] ?: '-' ?></div>
+</div>
+<div>
+<div style="font-size:.75rem;text-transform:uppercase;color:var(--cb-gray);margin-bottom:.25rem">Riferimento Fattura</div>
+<div style="font-weight:500"><?= htmlspecialchars($service['invoice_reference'] ?: '-') ?></div>
+</div>
+</div>
+<?php if($service['notes']): ?>
+<div style="margin-top:1rem;padding-top:1rem;border-top:1px solid #F3F4F6">
+<div style="font-size:.75rem;text-transform:uppercase;color:var(--cb-gray);margin-bottom:.5rem">Note</div>
+<div style="font-weight:500"><?= nl2br(htmlspecialchars($service['notes'])) ?></div>
+</div>
+<?php endif; ?>
 </div>
 <?php endforeach; ?>
 <?php endif; ?>
@@ -295,6 +321,18 @@ document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.remove('active'
 document.querySelectorAll('.tab-content').forEach(content=>content.classList.remove('active'));
 event.target.classList.add('active');
 document.getElementById('tab-'+tabName).classList.add('active');
+}
+
+function toggleService(index){
+const details = document.getElementById('service-details-' + index);
+const arrow = document.getElementById('arrow-' + index);
+if(details.style.display === 'none'){
+details.style.display = 'block';
+arrow.style.transform = 'rotate(180deg)';
+} else {
+details.style.display = 'none';
+arrow.style.transform = 'rotate(0deg)';
+}
 }
 
 // Apri tab da hash URL

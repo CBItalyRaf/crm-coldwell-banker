@@ -83,12 +83,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmtDel = $pdo->prepare("DELETE FROM agency_services WHERE agency_id = (SELECT id FROM agencies WHERE code = :code)");
     $stmtDel->execute(['code' => $code]);
     
-    // Poi inserisci quelli selezionati
-    if (!empty($_POST['services'])) {
-        $stmtIns = $pdo->prepare("INSERT INTO agency_services (agency_id, service_name, is_active) VALUES ((SELECT id FROM agencies WHERE code = :code), :service, 1)");
-        foreach ($_POST['services'] as $service) {
-            $stmtIns->execute(['code' => $code, 'service' => $service]);
-        }
+    // Poi inserisci/aggiorna quelli dal form
+    $allServices = ['cb_suite', 'canva', 'regold', 'james_edition', 'docudrop', 'unique'];
+    $stmtIns = $pdo->prepare("INSERT INTO agency_services (agency_id, service_name, is_active, activation_date, expiration_date, renewal_required, invoice_reference, notes) 
+                              VALUES ((SELECT id FROM agencies WHERE code = :code), :service, :is_active, :activation_date, :expiration_date, :renewal_required, :invoice_reference, :notes)");
+    
+    foreach ($allServices as $service) {
+        $prefix = str_replace('_', '', $service);
+        $isActive = isset($_POST['service_active_' . $service]) ? 1 : 0;
+        
+        $stmtIns->execute([
+            'code' => $code,
+            'service' => $service,
+            'is_active' => $isActive,
+            'activation_date' => $_POST['service_activation_' . $service] ?: null,
+            'expiration_date' => $_POST['service_expiration_' . $service] ?: null,
+            'renewal_required' => $_POST['service_renewal_' . $service] ?: null,
+            'invoice_reference' => $_POST['service_invoice_' . $service] ?: null,
+            'notes' => $_POST['service_notes_' . $service] ?: null
+        ]);
     }
     
     header("Location: agenzia_detail.php?code=" . urlencode($code) . "&success=1#tab-" . $returnTab);
@@ -105,10 +118,13 @@ if (!$agency) {
     exit;
 }
 
-// Carica servizi dell'agenzia
-$stmt = $pdo->prepare("SELECT service_name FROM agency_services WHERE agency_id = :agency_id AND is_active = 1");
+// Carica servizi dell'agenzia con tutti i dettagli
+$stmt = $pdo->prepare("SELECT * FROM agency_services WHERE agency_id = :agency_id ORDER BY service_name");
 $stmt->execute(['agency_id' => $agency['id']]);
-$activeServices = array_column($stmt->fetchAll(), 'service_name');
+$existingServices = [];
+foreach($stmt->fetchAll() as $svc) {
+    $existingServices[$svc['service_name']] = $svc;
+}
 
 require_once 'header.php';
 ?>
@@ -127,8 +143,8 @@ require_once 'header.php';
 .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem}
 .form-field{display:flex;flex-direction:column;gap:.5rem}
 .form-field label{font-size:.875rem;font-weight:600;color:var(--cb-gray)}
-.form-field input,.form-field select{padding:.75rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem}
-.form-field input:focus,.form-field select:focus{outline:none;border-color:var(--cb-bright-blue)}
+.form-field input,.form-field select,.form-field textarea{padding:.75rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{outline:none;border-color:var(--cb-bright-blue)}
 .form-field label input[type="checkbox"]{margin-right:.5rem}
 .form-actions{display:flex;gap:1rem;justify-content:flex-end;margin-top:2rem;padding-top:2rem;border-top:2px solid #F3F4F6}
 .btn-cancel{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;text-decoration:none;transition:all .2s}
@@ -263,44 +279,49 @@ require_once 'header.php';
 
 <div class="form-section">
 <h3>Servizi</h3>
+<?php 
+$serviceNames = [
+    'cb_suite' => 'CB Suite (EuroMg/iRealtors)',
+    'canva' => 'Canva',
+    'regold' => 'Regold',
+    'james_edition' => 'James Edition',
+    'docudrop' => 'Docudrop',
+    'unique' => 'Unique'
+];
+foreach($serviceNames as $serviceKey => $serviceName):
+    $existing = $existingServices[$serviceKey] ?? null;
+?>
+<div style="background:var(--bg);padding:1.5rem;margin-bottom:1.5rem;border-radius:8px;border-left:4px solid var(--cb-bright-blue)">
+<div style="margin-bottom:1rem">
+<label style="display:flex;align-items:center;gap:.5rem;font-size:1.05rem;font-weight:600">
+<input type="checkbox" name="service_active_<?= $serviceKey ?>" value="1" <?= $existing && $existing['is_active'] ? 'checked' : '' ?>>
+<?= $serviceName ?>
+</label>
+</div>
 <div class="form-grid">
 <div class="form-field">
-<label>
-<input type="checkbox" name="services[]" value="cb_suite" <?= in_array('cb_suite', $activeServices) ? 'checked' : '' ?>>
-CB Suite
-</label>
+<label>Data Attivazione</label>
+<input type="date" name="service_activation_<?= $serviceKey ?>" value="<?= $existing['activation_date'] ?? '' ?>">
 </div>
 <div class="form-field">
-<label>
-<input type="checkbox" name="services[]" value="canva" <?= in_array('canva', $activeServices) ? 'checked' : '' ?>>
-Canva
-</label>
+<label>Data Scadenza</label>
+<input type="date" name="service_expiration_<?= $serviceKey ?>" value="<?= $existing['expiration_date'] ?? '' ?>">
 </div>
 <div class="form-field">
-<label>
-<input type="checkbox" name="services[]" value="regold" <?= in_array('regold', $activeServices) ? 'checked' : '' ?>>
-Regold
-</label>
+<label>Rinnovo Richiesto</label>
+<input type="text" name="service_renewal_<?= $serviceKey ?>" value="<?= htmlspecialchars($existing['renewal_required'] ?? '') ?>" placeholder="es. Annuale, Mensile">
 </div>
 <div class="form-field">
-<label>
-<input type="checkbox" name="services[]" value="james_edition" <?= in_array('james_edition', $activeServices) ? 'checked' : '' ?>>
-James Edition
-</label>
+<label>Riferimento Fattura</label>
+<input type="text" name="service_invoice_<?= $serviceKey ?>" value="<?= htmlspecialchars($existing['invoice_reference'] ?? '') ?>">
 </div>
-<div class="form-field">
-<label>
-<input type="checkbox" name="services[]" value="docudrop" <?= in_array('docudrop', $activeServices) ? 'checked' : '' ?>>
-Docudrop
-</label>
-</div>
-<div class="form-field">
-<label>
-<input type="checkbox" name="services[]" value="unique" <?= in_array('unique', $activeServices) ? 'checked' : '' ?>>
-Unique
-</label>
+<div class="form-field" style="grid-column:1/-1">
+<label>Note</label>
+<textarea name="service_notes_<?= $serviceKey ?>" rows="2" style="padding:.75rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem;font-family:inherit;resize:vertical"><?= htmlspecialchars($existing['notes'] ?? '') ?></textarea>
 </div>
 </div>
+</div>
+<?php endforeach; ?>
 </div>
 
 <div class="form-section">
