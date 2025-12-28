@@ -47,8 +47,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .search-item:hover{background:var(--bg)}
 .search-item-title{font-weight:600;margin-bottom:.25rem}
 .search-item-meta{font-size:.85rem;color:var(--cb-gray)}
-.footer{background:var(--cb-blue);color:white;margin-top:3rem;padding:2.5rem 0}
-.footer-content{max-width:1400px;margin:0 auto;padding:0 1.5rem;text-align:center;font-size:1rem;font-weight:600}
+.footer{background:var(--cb-blue);color:white;margin-top:3rem;padding:1.5rem 0}
+.footer-content{max-width:1400px;margin:0 auto;padding:0 1.5rem;text-align:center;font-size:.875rem}
 .hamburger{display:none;background:transparent;border:none;color:white;font-size:1.5rem;cursor:pointer;padding:.5rem}
 @media (max-width:768px){
 .hamburger{display:block}

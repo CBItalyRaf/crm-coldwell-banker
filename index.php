@@ -122,4 +122,45 @@ require_once 'header.php';
 </div>
 </div>
 
+<script>
+// Autocomplete search per index.php
+const searchInput=document.getElementById('searchInput');
+const searchResults=document.getElementById('searchResults');
+let searchTimeout;
+
+if(searchInput && searchResults){
+searchInput.addEventListener('input',function(){
+clearTimeout(searchTimeout);
+const query=this.value.trim();
+if(query.length<2){
+searchResults.classList.remove('active');
+return;
+}
+searchTimeout=setTimeout(()=>{
+fetch('https://admin.mycb.it/search_api.php?q='+encodeURIComponent(query))
+.then(r=>r.json())
+.then(data=>{
+if(data.length===0){
+searchResults.innerHTML='<div style="padding:1rem;text-align:center;color:#6D7180">Nessun risultato</div>';
+}else{
+searchResults.innerHTML=data.map(item=>`
+<div class="search-item" onclick="window.location.href='${item.url}'">
+<div class="search-item-title">${item.title}</div>
+<div class="search-item-meta">${item.meta}</div>
+</div>
+`).join('');
+}
+searchResults.classList.add('active');
+});
+},300);
+});
+
+document.addEventListener('click',function(e){
+if(!e.target.closest('.search-container')){
+searchResults.classList.remove('active');
+}
+});
+}
+</script>
+
 <?php require_once 'footer.php'; ?>

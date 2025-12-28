@@ -68,6 +68,13 @@ require_once 'header.php';
 .table-container{background:white;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden}
 .agencies-table{width:100%;border-collapse:collapse}
 .agencies-table th{text-align:left;padding:1rem 1.5rem;background:var(--bg);font-size:.875rem;font-weight:600;color:var(--cb-gray);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #E5E7EB}
+.agencies-table th.sortable{cursor:pointer;user-select:none;transition:background .2s}
+.agencies-table th.sortable:hover{background:#E5E7EB}
+.agencies-table th.sortable .sort-arrow{font-size:.7em;opacity:.3;margin-left:.25rem}
+.agencies-table th.sortable.asc .sort-arrow{opacity:1}
+.agencies-table th.sortable.asc .sort-arrow::after{content:'↑'}
+.agencies-table th.sortable.desc .sort-arrow{opacity:1}
+.agencies-table th.sortable.desc .sort-arrow::after{content:'↓'}
 .agencies-table td{padding:1rem 1.5rem;border-bottom:1px solid #F3F4F6}
 .agencies-table tbody tr:last-child td{border-bottom:none}
 .agencies-table tbody tr:hover{background:var(--bg);cursor:pointer}
@@ -141,9 +148,9 @@ require_once 'header.php';
 <table class="agencies-table">
 <thead>
 <tr>
-<th>Codice</th>
-<th>Nome</th>
-<th>Città</th>
+<th class="sortable" data-sort="code">Codice <span class="sort-arrow">⇅</span></th>
+<th class="sortable" data-sort="name">Nome <span class="sort-arrow">⇅</span></th>
+<th class="sortable" data-sort="city">Città <span class="sort-arrow">⇅</span></th>
 <th>Broker Manager</th>
 <th>Status</th>
 <th>Email</th>
@@ -290,6 +297,44 @@ searchResults.classList.remove('active');
 }
 });
 }
+
+// Ordinamento tabella
+let currentSort={column:null,direction:'asc'};
+
+document.querySelectorAll('.sortable').forEach(header=>{
+header.addEventListener('click',function(){
+const column=this.dataset.sort;
+const columnIndex={code:0,name:1,city:2}[column];
+
+// Cambia direzione se stessa colonna
+if(currentSort.column===column){
+currentSort.direction=currentSort.direction==='asc'?'desc':'asc';
+}else{
+currentSort.column=column;
+currentSort.direction='asc';
+}
+
+// Rimuovi classi da tutte le intestazioni
+document.querySelectorAll('.sortable').forEach(h=>h.classList.remove('asc','desc'));
+// Aggiungi classe all'intestazione corrente
+this.classList.add(currentSort.direction);
+
+// Ordina righe
+const sortedRows=allRows.slice().sort((a,b)=>{
+const aText=a.cells[columnIndex].textContent.trim();
+const bText=b.cells[columnIndex].textContent.trim();
+const comparison=aText.localeCompare(bText,'it',{numeric:true});
+return currentSort.direction==='asc'?comparison:-comparison;
+});
+
+// Riapplica righe ordinate alla tabella
+agenciesTable.innerHTML='';
+sortedRows.forEach(row=>agenciesTable.appendChild(row));
+
+// Aggiorna allRows con il nuovo ordine
+allRows=sortedRows;
+});
+});
 </script>
 
 <?php require_once 'footer.php'; ?>
