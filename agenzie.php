@@ -54,13 +54,6 @@ require_once 'header.php';
 .search-box{position:relative;flex:1}
 .search-box input{width:100%;padding:.75rem 1rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem}
 .search-box input:focus{outline:none;border-color:var(--cb-bright-blue)}
-.search-results{position:absolute;top:100%;left:0;right:0;margin-top:.5rem;background:white;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.15);max-height:400px;overflow-y:auto;display:none;z-index:1000}
-.search-results.active{display:block}
-.search-item{padding:1rem 1.5rem;border-bottom:1px solid #f3f4f6;cursor:pointer;transition:background .2s}
-.search-item:last-child{border-bottom:none}
-.search-item:hover{background:var(--bg)}
-.search-item-title{font-weight:600;margin-bottom:.25rem}
-.search-item-meta{font-size:.85rem;color:var(--cb-gray)}
 .status-filters{display:flex;gap:.5rem;flex-wrap:wrap}
 .filter-btn{background:white;border:1px solid #E5E7EB;padding:.5rem 1rem;border-radius:8px;font-size:.875rem;cursor:pointer;transition:all .2s}
 .filter-btn:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue)}
@@ -68,13 +61,6 @@ require_once 'header.php';
 .table-container{background:white;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden}
 .agencies-table{width:100%;border-collapse:collapse}
 .agencies-table th{text-align:left;padding:1rem 1.5rem;background:var(--bg);font-size:.875rem;font-weight:600;color:var(--cb-gray);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #E5E7EB}
-.agencies-table th.sortable{cursor:pointer;user-select:none;transition:background .2s}
-.agencies-table th.sortable:hover{background:#E5E7EB}
-.agencies-table th.sortable .sort-arrow{font-size:.7em;opacity:.3;margin-left:.25rem}
-.agencies-table th.sortable.asc .sort-arrow{opacity:1}
-.agencies-table th.sortable.asc .sort-arrow::after{content:'↑'}
-.agencies-table th.sortable.desc .sort-arrow{opacity:1}
-.agencies-table th.sortable.desc .sort-arrow::after{content:'↓'}
 .agencies-table td{padding:1rem 1.5rem;border-bottom:1px solid #F3F4F6}
 .agencies-table tbody tr:last-child td{border-bottom:none}
 .agencies-table tbody tr:hover{background:var(--bg);cursor:pointer}
@@ -122,8 +108,10 @@ require_once 'header.php';
 <div class="filters-bar">
 <div class="filters-grid">
 <div class="search-box">
-<input type="text" id="agenciesSearch" placeholder="🔍 Cerca per nome, codice o città..." autocomplete="off">
-<div class="search-results" id="agenciesSearchResults"></div>
+<form method="GET" style="display:flex;gap:.5rem">
+<input type="text" name="search" placeholder="🔍 Cerca per nome, codice o città..." value="<?= htmlspecialchars($search) ?>">
+<input type="hidden" name="status" value="<?= htmlspecialchars($statusFilter) ?>">
+</form>
 </div>
 <div class="status-filters">
 <form method="GET" id="statusForm">
@@ -148,13 +136,13 @@ require_once 'header.php';
 <table class="agencies-table">
 <thead>
 <tr>
-<th class="sortable" data-sort="code"><span style="color:var(--cb-bright-blue)">CBI</span> <span class="sort-arrow">⇅</span></th>
-<th class="sortable" data-sort="name"><span style="color:var(--cb-bright-blue)">NOME</span> <span class="sort-arrow">⇅</span></th>
-<th class="sortable" data-sort="city"><span style="color:var(--cb-bright-blue)">CITTÀ</span> <span class="sort-arrow">⇅</span></th>
-<th>BROKER MANAGER</th>
-<th>STATUS</th>
-<th>EMAIL</th>
-<th>TELEFONO</th>
+<th>Codice</th>
+<th>Nome</th>
+<th>Città</th>
+<th>Broker Manager</th>
+<th>Status</th>
+<th>Email</th>
+<th>Telefono</th>
 </tr>
 </thead>
 <tbody>
@@ -227,114 +215,17 @@ require_once 'header.php';
 const exportModal=document.getElementById('exportModal');
 
 function openExportModal(){
+// Prendi valore corrente dalla ricerca
+const searchValue = document.getElementById('agenciesSearch').value;
+// Aggiorna campo hidden nel form export
+const hiddenSearch = document.querySelector('#exportModal input[name="search"]');
+if(hiddenSearch) hiddenSearch.value = searchValue;
 exportModal.classList.add('open');
 }
 
 function closeExportModal(){
 exportModal.classList.remove('open');
 }
-
-// Autocomplete search + filtro tabella
-const searchInput=document.getElementById('agenciesSearch');
-const searchResults=document.getElementById('agenciesSearchResults');
-const agenciesTable=document.querySelector('.agencies-table tbody');
-let searchTimeout;
-let allRows=[];
-
-// Salva tutte le righe all'avvio
-if(agenciesTable){
-allRows=Array.from(agenciesTable.querySelectorAll('tr'));
-}
-
-if(searchInput && searchResults){
-searchInput.addEventListener('input',function(){
-clearTimeout(searchTimeout);
-const query=this.value.trim().toLowerCase();
-
-// Filtro tabella in real-time
-if(agenciesTable){
-if(query.length===0){
-// Mostra tutte le righe
-allRows.forEach(row=>row.style.display='');
-}else{
-// Filtra righe
-allRows.forEach(row=>{
-const text=row.textContent.toLowerCase();
-row.style.display=text.includes(query)?'':'none';
-});
-}
-}
-
-// Autocomplete API
-if(query.length<2){
-searchResults.classList.remove('active');
-return;
-}
-
-searchTimeout=setTimeout(()=>{
-fetch('https://admin.mycb.it/search_api.php?q='+encodeURIComponent(query))
-.then(r=>r.json())
-.then(data=>{
-if(data.length===0){
-searchResults.innerHTML='<div style="padding:1rem;text-align:center;color:#6D7180">Nessun risultato</div>';
-}else{
-searchResults.innerHTML=data.map(item=>`
-<div class="search-item" onclick="window.location.href='${item.url}'">
-<div class="search-item-title">${item.title}</div>
-<div class="search-item-meta">${item.meta}</div>
-</div>
-`).join('');
-}
-searchResults.classList.add('active');
-});
-},300);
-});
-
-// Chiudi autocomplete cliccando fuori
-document.addEventListener('click',function(e){
-if(!e.target.closest('.search-box')){
-searchResults.classList.remove('active');
-}
-});
-}
-
-// Ordinamento tabella
-let currentSort={column:null,direction:'asc'};
-
-document.querySelectorAll('.sortable').forEach(header=>{
-header.addEventListener('click',function(){
-const column=this.dataset.sort;
-const columnIndex={code:0,name:1,city:2}[column];
-
-// Cambia direzione se stessa colonna
-if(currentSort.column===column){
-currentSort.direction=currentSort.direction==='asc'?'desc':'asc';
-}else{
-currentSort.column=column;
-currentSort.direction='asc';
-}
-
-// Rimuovi classi da tutte le intestazioni
-document.querySelectorAll('.sortable').forEach(h=>h.classList.remove('asc','desc'));
-// Aggiungi classe all'intestazione corrente
-this.classList.add(currentSort.direction);
-
-// Ordina righe
-const sortedRows=allRows.slice().sort((a,b)=>{
-const aText=a.cells[columnIndex].textContent.trim();
-const bText=b.cells[columnIndex].textContent.trim();
-const comparison=aText.localeCompare(bText,'it',{numeric:true});
-return currentSort.direction==='asc'?comparison:-comparison;
-});
-
-// Riapplica righe ordinate alla tabella
-agenciesTable.innerHTML='';
-sortedRows.forEach(row=>agenciesTable.appendChild(row));
-
-// Aggiorna allRows con il nuovo ordine
-allRows=sortedRows;
-});
-});
 </script>
 
 <?php require_once 'footer.php'; ?>
