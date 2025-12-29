@@ -30,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $oldData = $stmt->fetch(PDO::FETCH_ASSOC);
     
     $sql = "UPDATE agencies SET 
+            code = :new_code,
             name = :name,
             type = :type,
             broker_manager = :broker_manager,
@@ -54,10 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             tech_fee = :tech_fee,
             closed_date = :closed_date,
             status = :status
-            WHERE code = :code";
+            WHERE id = :id";
     
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
+        'new_code' => $_POST['code'],
         'name' => $_POST['name'],
         'type' => $_POST['type'],
         'broker_manager' => $_POST['broker_manager'] ?: null,
@@ -82,11 +84,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'tech_fee' => $_POST['tech_fee'] ?: null,
         'closed_date' => $_POST['closed_date'] ?: null,
         'status' => $_POST['status'],
-        'code' => $code
+        'id' => $oldData['id']
     ]);
     
     // Log modifiche
     $newData = [
+        'code' => $_POST['code'],
         'name' => $_POST['name'],
         'type' => $_POST['type'],
         'broker_manager' => $_POST['broker_manager'] ?: null,
@@ -128,20 +131,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     // Gestione servizi - prima cancella tutti
-    $stmtDel = $pdo->prepare("DELETE FROM agency_services WHERE agency_id = (SELECT id FROM agencies WHERE code = :code)");
-    $stmtDel->execute(['code' => $code]);
+    $stmtDel = $pdo->prepare("DELETE FROM agency_services WHERE agency_id = :agency_id");
+    $stmtDel->execute(['agency_id' => $oldData['id']]);
     
     // Poi inserisci/aggiorna quelli dal form
     $allServices = ['cb_suite', 'canva', 'regold', 'james_edition', 'docudrop', 'unique'];
     $stmtIns = $pdo->prepare("INSERT INTO agency_services (agency_id, service_name, is_active, activation_date, expiration_date, renewal_required, invoice_reference, notes) 
-                              VALUES ((SELECT id FROM agencies WHERE code = :code), :service, :is_active, :activation_date, :expiration_date, :renewal_required, :invoice_reference, :notes)");
+                              VALUES (:agency_id, :service, :is_active, :activation_date, :expiration_date, :renewal_required, :invoice_reference, :notes)");
     
     foreach ($allServices as $service) {
         $prefix = str_replace('_', '', $service);
         $isActive = isset($_POST['service_active_' . $service]) ? 1 : 0;
         
         $stmtIns->execute([
-            'code' => $code,
+            'agency_id' => $oldData['id'],
             'service' => $service,
             'is_active' => $isActive,
             'activation_date' => $_POST['service_activation_' . $service] ?: null,
@@ -152,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
     }
     
-    header("Location: agenzia_detail.php?code=" . urlencode($code) . "&success=1#tab-" . $returnTab);
+    header("Location: agenzia_detail.php?code=" . urlencode($_POST['code']) . "&success=1#tab-" . $returnTab);
     exit;
 }
 
@@ -218,6 +221,10 @@ require_once 'header.php';
 <div class="form-section">
 <h3>Anagrafica</h3>
 <div class="form-grid">
+<div class="form-field">
+<label>Codice Agenzia *</label>
+<input type="text" name="code" value="<?= htmlspecialchars($agency['code']) ?>" required>
+</div>
 <div class="form-field">
 <label>Nome Agenzia *</label>
 <input type="text" name="name" value="<?= htmlspecialchars($agency['name']) ?>" required>
