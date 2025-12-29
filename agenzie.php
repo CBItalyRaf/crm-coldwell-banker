@@ -38,22 +38,17 @@ if ($search) {
 
 $sql .= " ORDER BY name ASC";
 
-try {
-    $stmt = $pdo->prepare($sql);
-    
-    if ($statusFilter !== 'all') {
-        $stmt->bindValue(':status', $statusFilter);
-    }
-    if ($search) {
-        $stmt->bindValue(':search', "%$search%");
-    }
-    
-    $stmt->execute();
-    $agencies = $stmt->fetchAll();
-} catch (Exception $e) {
-    error_log("Errore in agenzie.php query: " . $e->getMessage() . " - SQL: " . $sql);
-    die("Errore nel caricamento delle agenzie. Controlla i log.");
+$stmt = $pdo->prepare($sql);
+
+if ($statusFilter !== 'all') {
+    $stmt->bindValue(':status', $statusFilter);
 }
+if ($search) {
+    $stmt->bindValue(':search', "%$search%");
+}
+
+$stmt->execute();
+$agencies = $stmt->fetchAll();
 
 // Count totale con status filter applicato (ma senza search)
 $countSql = "SELECT COUNT(*) FROM agencies WHERE status != 'Prospect'";
