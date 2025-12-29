@@ -7,6 +7,7 @@ $pdo = getDB();
 
 $statusFilter = $_GET['status'] ?? 'Active';
 $search = $_GET['search'] ?? '';
+$searchType = $_GET['search_type'] ?? 'all'; // all, location, agency, people
 
 $sql = "SELECT code, name, city, province, status, broker_manager, email, phone 
         FROM agencies 
@@ -17,7 +18,19 @@ if ($statusFilter !== 'all') {
 }
 
 if ($search) {
-    $sql .= " AND (name LIKE :search1 OR code LIKE :search2 OR city LIKE :search3)";
+    switch($searchType) {
+        case 'location':
+            $sql .= " AND (city LIKE :search1 OR province LIKE :search2)";
+            break;
+        case 'agency':
+            $sql .= " AND (name LIKE :search1 OR code LIKE :search2)";
+            break;
+        case 'people':
+            $sql .= " AND broker_manager LIKE :search1";
+            break;
+        default: // 'all'
+            $sql .= " AND (name LIKE :search1 OR code LIKE :search2 OR city LIKE :search3 OR broker_manager LIKE :search4)";
+    }
 }
 
 $sql .= " ORDER BY name ASC";
@@ -28,9 +41,24 @@ if ($statusFilter !== 'all') {
     $stmt->bindValue(':status', $statusFilter);
 }
 if ($search) {
-    $stmt->bindValue(':search1', "%$search%");
-    $stmt->bindValue(':search2', "%$search%");
-    $stmt->bindValue(':search3', "%$search%");
+    switch($searchType) {
+        case 'location':
+            $stmt->bindValue(':search1', "%$search%");
+            $stmt->bindValue(':search2', "%$search%");
+            break;
+        case 'agency':
+            $stmt->bindValue(':search1', "%$search%");
+            $stmt->bindValue(':search2', "%$search%");
+            break;
+        case 'people':
+            $stmt->bindValue(':search1', "%$search%");
+            break;
+        default: // 'all'
+            $stmt->bindValue(':search1', "%$search%");
+            $stmt->bindValue(':search2', "%$search%");
+            $stmt->bindValue(':search3', "%$search%");
+            $stmt->bindValue(':search4', "%$search%");
+    }
 }
 
 $stmt->execute();
@@ -121,12 +149,21 @@ require_once 'header.php';
 <div class="filters-bar">
 <div class="filters-grid">
 <div class="search-box">
-<input type="text" id="agenciesSearch" placeholder="🔍 Cerca per nome, codice o città..." autocomplete="off">
+<div style="display:flex;gap:.5rem">
+<select id="searchType" name="search_type" style="padding:.75rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem;background:white;cursor:pointer;min-width:140px">
+<option value="all" <?= $searchType === 'all' ? 'selected' : '' ?>>🌐 Tutto</option>
+<option value="location" <?= $searchType === 'location' ? 'selected' : '' ?>>📍 Città/Provincia</option>
+<option value="agency" <?= $searchType === 'agency' ? 'selected' : '' ?>>🏢 Agenzia/Codice</option>
+<option value="people" <?= $searchType === 'people' ? 'selected' : '' ?>>👤 Broker Manager</option>
+</select>
+<input type="text" id="agenciesSearch" placeholder="🔍 Cerca..." autocomplete="off" style="flex:1">
+</div>
 <div class="search-results" id="agenciesSearchResults"></div>
 </div>
 <div class="status-filters">
 <form method="GET" id="statusForm">
 <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
+<input type="hidden" name="search_type" value="<?= htmlspecialchars($searchType) ?>">
 <button type="submit" name="status" value="all" class="filter-btn <?= $statusFilter === 'all' ? 'active' : '' ?>">Tutte</button>
 <button type="submit" name="status" value="Active" class="filter-btn <?= $statusFilter === 'Active' ? 'active' : '' ?>">Active</button>
 <button type="submit" name="status" value="Opening" class="filter-btn <?= $statusFilter === 'Opening' ? 'active' : '' ?>">Opening</button>
@@ -221,6 +258,7 @@ Mostrando <strong style="color:var(--cb-midnight)"><?= count($agencies) ?></stro
 </div>
 <input type="hidden" name="status_filter" value="<?= htmlspecialchars($statusFilter) ?>">
 <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
+<input type="hidden" name="search_type" value="<?= htmlspecialchars($searchType) ?>">
 <div class="modal-actions">
 <button type="button" class="btn-cancel" onclick="closeExportModal()">Annulla</button>
 <button type="submit" class="btn-export">📥 Esporta CSV</button>
@@ -234,8 +272,11 @@ const exportModal=document.getElementById('exportModal');
 
 function openExportModal(){
 const searchValue = document.getElementById('agenciesSearch').value;
+const searchTypeValue = document.getElementById('searchType').value;
 const hiddenSearch = document.querySelector('#exportModal input[name="search"]');
+const hiddenSearchType = document.querySelector('#exportModal input[name="search_type"]');
 if(hiddenSearch) hiddenSearch.value = searchValue;
+if(hiddenSearchType) hiddenSearchType.value = searchTypeValue;
 exportModal.classList.add('open');
 }
 
@@ -243,7 +284,35 @@ function closeExportModal(){
 exportModal.classList.remove('open');
 }
 
+// Gestione cambio tipo ricerca
+const searchTypeSelect = document.getElementById('searchType');
 const searchInput=document.getElementById('agenciesSearch');
+
+if(searchTypeSelect && searchInput) {
+    // Aggiorna placeholder in base al tipo
+    function updatePlaceholder() {
+        const placeholders = {
+            'all': '🔍 Cerca ovunque...',
+            'location': '📍 Cerca città o provincia...',
+            'agency': '🏢 Cerca nome agenzia o codice...',
+            'people': '👤 Cerca broker manager...'
+        };
+        searchInput.placeholder = placeholders[searchTypeSelect.value] || '🔍 Cerca...';
+    }
+    
+    updatePlaceholder();
+    
+    // Reload quando cambia tipo ricerca
+    searchTypeSelect.addEventListener('change', function() {
+        const url = new URLSearchParams(window.location.search);
+        url.set('search_type', this.value);
+        if(searchInput.value) {
+            url.set('search', searchInput.value);
+        }
+        window.location.search = url.toString();
+    });
+}
+
 const searchResults=document.getElementById('agenciesSearchResults');
 const agenciesTable=document.querySelector('.agencies-table tbody');
 let searchTimeout;
