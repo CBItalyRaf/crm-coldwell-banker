@@ -51,8 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 3. Inserisci servizi OBBLIGATORI
         if (!empty($_POST['mandatory_services'])) {
             $stmtIns = $pdo->prepare("INSERT INTO agency_contract_services 
-                (agency_id, service_id, is_mandatory, notes) 
-                VALUES (:agency_id, :service_id, 1, :notes)");
+                (agency_id, service_id, is_mandatory, custom_price, notes) 
+                VALUES (:agency_id, :service_id, 1, NULL, :notes)");
             
             foreach ($_POST['mandatory_services'] as $serviceId) {
                 $stmtIns->execute([
@@ -63,16 +63,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         
-        // 4. Inserisci servizi FACOLTATIVI (solo marcati come facoltativi nel contratto)
+        // 4. Inserisci servizi FACOLTATIVI (solo quelli attivi in agency_services)
         if (!empty($_POST['optional_services'])) {
             $stmtIns = $pdo->prepare("INSERT INTO agency_contract_services 
-                (agency_id, service_id, is_mandatory, notes) 
-                VALUES (:agency_id, :service_id, 0, :notes)");
+                (agency_id, service_id, is_mandatory, custom_price, notes) 
+                VALUES (:agency_id, :service_id, 0, :custom_price, :notes)");
             
             foreach ($_POST['optional_services'] as $serviceId) {
+                $customPrice = $_POST['optional_price_' . $serviceId] ?? null;
+                
                 $stmtIns->execute([
                     'agency_id' => $agency['id'],
                     'service_id' => $serviceId,
+                    'custom_price' => $customPrice ?: null,
                     'notes' => $_POST['optional_notes_' . $serviceId] ?? null
                 ]);
             }
@@ -111,7 +114,19 @@ foreach ($stmt->fetchAll() as $row) {
 $stmt = $pdo->prepare("
     SELECT DISTINCT sm.id, sm.service_name 
     FROM agency_services ags
-    JOIN services_master sm ON ags.service_name = sm.service_name
+    JOIN services_master sm ON sm.service_name = (
+        CASE ags.service_name
+            WHEN 'cb_suite' THEN 'CB Suite'
+            WHEN 'canva' THEN 'Canva Pro'
+            WHEN 'regold' THEN 'Regold'
+            WHEN 'james_edition' THEN 'James Edition'
+            WHEN 'docudrop' THEN 'Docudrop'
+            WHEN 'unique' THEN 'Unique Estates'
+            WHEN 'casella_mail_agenzia' THEN 'Casella Mail Agenzia'
+            WHEN 'euromq' THEN 'EuroMq'
+            WHEN 'gestim' THEN 'Gestim'
+        END
+    )
     WHERE ags.agency_id = :agency_id AND ags.is_active = 1
 ");
 $stmt->execute(['agency_id' => $agency['id']]);
@@ -208,6 +223,7 @@ foreach ($allServices as $service):
     $hasOptional = true;
     
     $isChecked = isset($existingContract[$service['id']]) && $existingContract[$service['id']]['is_mandatory'] == 0;
+    $customPrice = isset($existingContract[$service['id']]) ? $existingContract[$service['id']]['custom_price'] : $service['default_price'];
 ?>
 <div class="service-item <?= $isChecked ? 'optional' : '' ?>" id="optional-item-<?= $service['id'] ?>">
 <div class="service-header">
@@ -215,12 +231,15 @@ foreach ($allServices as $service):
     <?= $isChecked ? 'checked' : '' ?>
     onchange="toggleOptional(<?= $service['id'] ?>)">
 <div class="service-name"><?= htmlspecialchars($service['service_name']) ?></div>
+<div class="service-price">Default: € <?= number_format($service['default_price'], 2, ',', '.') ?></div>
 </div>
-<div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid rgba(0,0,0,.1)">
-<label style="font-size:.85rem;font-weight:600;color:var(--cb-gray);display:block;margin-bottom:.5rem">Note</label>
+<div class="service-fields">
+<input type="number" name="optional_price_<?= $service['id'] ?>" 
+    step="0.01" min="0" 
+    placeholder="Prezzo custom (€)" 
+    value="<?= $customPrice ?>">
 <input type="text" name="optional_notes_<?= $service['id'] ?>" 
     placeholder="Note aggiuntive..." 
-    style="width:100%;padding:.5rem;font-size:.9rem;border:1px solid #E5E7EB;border-radius:8px"
     value="<?= isset($existingContract[$service['id']]) ? htmlspecialchars($existingContract[$service['id']]['notes']) : '' ?>">
 </div>
 </div>
