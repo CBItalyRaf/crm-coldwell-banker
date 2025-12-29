@@ -7,6 +7,11 @@ $pdo = getDB();
 $user = $_SESSION['crm_user'];
 $pageTitle = "Impostazioni Notifiche";
 
+// Controlla che user_id esista
+if (empty($user['id'])) {
+    die("Errore: ID utente non valido. Contatta l'amministratore.");
+}
+
 // Salva preferenze
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $saved = saveUserPreferences(
