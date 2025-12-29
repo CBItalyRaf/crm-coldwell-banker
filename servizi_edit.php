@@ -31,45 +31,63 @@ $stmtAgency = $pdo->prepare("SELECT * FROM agency_services WHERE agency_id = :ag
 $stmtAgency->execute(['agency_id' => $agency['id']]);
 $agencyServices = [];
 foreach ($stmtAgency->fetchAll() as $svc) {
-    $agencyServices[$svc['service_id']] = $svc;
+    $agencyServices[$svc['service_name']] = $svc;
 }
+
+// Mappa service_name da services_master
+$serviceNameMap = [
+    'CB Suite' => 'cb_suite',
+    'Canva Pro' => 'canva',
+    'Regold' => 'regold',
+    'James Edition' => 'james_edition',
+    'Docudrop' => 'docudrop',
+    'Unique Estates' => 'unique'
+];
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($allServices as $service) {
         $serviceId = $service['id'];
+        $serviceName = $serviceNameMap[$service['service_name']] ?? null;
+        
+        if (!$serviceName) continue;
+        
         $isActive = isset($_POST['service_' . $serviceId]) ? 1 : 0;
         $activationDate = $_POST['activation_date_' . $serviceId] ?? null;
         $deactivationDate = $_POST['deactivation_date_' . $serviceId] ?? null;
+        $notes = $_POST['notes_' . $serviceId] ?? null;
         
         // Check if service exists for this agency
-        if (isset($agencyServices[$serviceId])) {
-            // Update existing
+        if (isset($agencyServices[$serviceName])) {
+            // Update existing (sempre, anche se disattivato)
             $stmt = $pdo->prepare("
                 UPDATE agency_services 
                 SET is_active = :is_active,
                     activation_date = :activation_date,
-                    deactivation_date = :deactivation_date
-                WHERE agency_id = :agency_id AND service_id = :service_id
+                    expiration_date = :expiration_date,
+                    notes = :notes
+                WHERE agency_id = :agency_id AND service_name = :service_name
             ");
             $stmt->execute([
                 'is_active' => $isActive,
                 'activation_date' => $activationDate ?: null,
-                'deactivation_date' => $deactivationDate ?: null,
+                'expiration_date' => $deactivationDate ?: null,
+                'notes' => $notes ?: null,
                 'agency_id' => $agency['id'],
-                'service_id' => $serviceId
+                'service_name' => $serviceName
             ]);
         } else if ($isActive) {
             // Insert new only if active
             $stmt = $pdo->prepare("
-                INSERT INTO agency_services (agency_id, service_id, is_active, activation_date, deactivation_date)
-                VALUES (:agency_id, :service_id, 1, :activation_date, :deactivation_date)
+                INSERT INTO agency_services (agency_id, service_name, is_active, activation_date, expiration_date, notes)
+                VALUES (:agency_id, :service_name, 1, :activation_date, :expiration_date, :notes)
             ");
             $stmt->execute([
                 'agency_id' => $agency['id'],
-                'service_id' => $serviceId,
+                'service_name' => $serviceName,
                 'activation_date' => $activationDate ?: null,
-                'deactivation_date' => $deactivationDate ?: null
+                'expiration_date' => $deactivationDate ?: null,
+                'notes' => $notes ?: null
             ]);
         }
     }
@@ -109,7 +127,8 @@ require_once 'header.php';
 <form method="POST">
 <?php foreach ($allServices as $service): ?>
 <?php 
-$agencyService = $agencyServices[$service['id']] ?? null;
+$serviceName = $serviceNameMap[$service['service_name']] ?? null;
+$agencyService = $serviceName ? ($agencyServices[$serviceName] ?? null) : null;
 $isActive = $agencyService ? $agencyService['is_active'] : 0;
 ?>
 <div class="service-card <?= $isActive ? 'active' : '' ?>" data-service="<?= $service['id'] ?>">
@@ -126,8 +145,12 @@ $isActive = $agencyService ? $agencyService['is_active'] : 0;
 <input type="date" name="activation_date_<?= $service['id'] ?>" value="<?= $agencyService['activation_date'] ?? '' ?>">
 </div>
 <div class="form-group">
-<label>Data Disattivazione</label>
-<input type="date" name="deactivation_date_<?= $service['id'] ?>" value="<?= $agencyService['deactivation_date'] ?? '' ?>">
+<label>Data Scadenza</label>
+<input type="date" name="deactivation_date_<?= $service['id'] ?>" value="<?= $agencyService['expiration_date'] ?? '' ?>">
+</div>
+<div class="form-group" style="grid-column:1/-1">
+<label>Note</label>
+<textarea name="notes_<?= $service['id'] ?>" rows="2" style="width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:4px;font-family:inherit"><?= htmlspecialchars($agencyService['notes'] ?? '') ?></textarea>
 </div>
 </div>
 </div>
