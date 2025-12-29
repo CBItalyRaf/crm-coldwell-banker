@@ -1,7 +1,4 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 require_once 'check_auth.php';
 require_once 'config/database.php';
 
@@ -32,14 +29,20 @@ $allAgents = $stmt->fetchAll();
 $activeAgents = array_filter($allAgents, fn($a) => $a['status'] === 'Active');
 $inactiveAgents = array_filter($allAgents, fn($a) => $a['status'] !== 'Active');
 
-// Carica TUTTI i servizi dal master con info su attivazione agenzia
+// Carica TUTTI i servizi dal master con info su attivazione agenzia E contratto
 $stmt = $pdo->prepare("
     SELECT 
         sm.id,
         sm.service_name,
         sm.is_cb_suite,
         sm.display_order,
-        COALESCE(ags.is_active, 0) as is_active,
+        COALESCE(ags.is_active, 0) as is_active_services,
+        acs.is_mandatory,
+        CASE 
+            WHEN acs.is_mandatory = 1 THEN 1
+            WHEN ags.is_active = 1 THEN 1
+            ELSE 0
+        END as is_active,
         ags.activation_date,
         ags.expiration_date,
         ags.renewal_required,
@@ -47,6 +50,7 @@ $stmt = $pdo->prepare("
         ags.notes
     FROM services_master sm
     LEFT JOIN agency_services ags ON sm.service_name = ags.service_name AND ags.agency_id = :agency_id
+    LEFT JOIN agency_contract_services acs ON sm.id = acs.service_id AND acs.agency_id = :agency_id
     WHERE sm.is_active = 1
     ORDER BY sm.display_order ASC, sm.service_name ASC
 ");
@@ -387,16 +391,12 @@ Tech Fee: €<?= number_format($agency['tech_fee'] ?? 0, 2, ',', '.') ?>
 <div id="cbsuite-details" style="display:none;margin-bottom:2rem;padding-left:2rem">
 <?php foreach($cbSuiteServices as $i => $service): ?>
 <div class="service-box" style="cursor:pointer;margin-bottom:.75rem;border-radius:8px" onclick="toggleService(<?= $i ?>)">
-<div style="display:flex;justify-content:space-between;align-items:center">
-<div>
 <div class="service-name"><?= htmlspecialchars($service['service_name']) ?></div>
-</div>
 <div style="display:flex;align-items:center;gap:1rem">
 <span class="service-badge <?= $service['is_active'] ? 'attivo' : 'non-attivo' ?>">
 <?= $service['is_active'] ? 'ATTIVO' : 'NON ATTIVO' ?>
 </span>
 <span id="arrow-<?= $i ?>" style="font-size:1.2rem;color:var(--cb-gray);transition:transform .2s">▼</span>
-</div>
 </div>
 </div>
 
@@ -438,16 +438,12 @@ Tech Fee: €<?= number_format($agency['tech_fee'] ?? 0, 2, ',', '.') ?>
 $idx = 'standalone_' . $i;
 ?>
 <div class="service-box" style="cursor:pointer;margin-bottom:.75rem;border-radius:8px" onclick="toggleService('<?= $idx ?>')">
-<div style="display:flex;justify-content:space-between;align-items:center">
-<div>
 <div class="service-name"><?= htmlspecialchars($service['service_name']) ?></div>
-</div>
 <div style="display:flex;align-items:center;gap:1rem">
 <span class="service-badge <?= $service['is_active'] ? 'attivo' : 'non-attivo' ?>">
 <?= $service['is_active'] ? 'ATTIVO' : 'NON ATTIVO' ?>
 </span>
 <span id="arrow-<?= $idx ?>" style="font-size:1.2rem;color:var(--cb-gray);transition:transform .2s">▼</span>
-</div>
 </div>
 </div>
 
