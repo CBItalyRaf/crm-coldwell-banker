@@ -310,28 +310,24 @@ $stmtMandatory = $pdo->prepare("
 $stmtMandatory->execute(['agency_id' => $agency['id']]);
 $mandatoryServices = $stmtMandatory->fetchAll();
 
-// Carica servizi FACOLTATIVI dal contratto (is_mandatory = 0) + date da agency_services
-// Updated: 2025-12-29 - Query semplificata per mostrare solo servizi da agency_contract_services
+// Carica servizi FACOLTATIVI attivi da agency_services
 $stmtOptional = $pdo->prepare("
-    SELECT acs.*, sm.service_name, sm.default_price,
-           ags.activation_date, ags.expiration_date
-    FROM agency_contract_services acs
-    JOIN services_master sm ON acs.service_id = sm.id
-    LEFT JOIN agency_services ags ON ags.agency_id = acs.agency_id 
-        AND ags.service_name = (
-            CASE sm.service_name
-                WHEN 'CB Suite' THEN 'cb_suite'
-                WHEN 'Canva Pro' THEN 'canva'
-                WHEN 'Regold' THEN 'regold'
-                WHEN 'James Edition' THEN 'james_edition'
-                WHEN 'Docudrop' THEN 'docudrop'
-                WHEN 'Unique Estates' THEN 'unique'
-                WHEN 'Casella Mail Agenzia' THEN 'casella_mail_agenzia'
-                WHEN 'EuroMq' THEN 'euromq'
-                WHEN 'Gestim' THEN 'gestim'
-            END
-        )
-    WHERE acs.agency_id = :agency_id AND acs.is_mandatory = 0
+    SELECT ags.*, sm.service_name, sm.default_price
+    FROM agency_services ags
+    JOIN services_master sm ON sm.service_name = (
+        CASE ags.service_name
+            WHEN 'cb_suite' THEN 'CB Suite'
+            WHEN 'canva' THEN 'Canva Pro'
+            WHEN 'regold' THEN 'Regold'
+            WHEN 'james_edition' THEN 'James Edition'
+            WHEN 'docudrop' THEN 'Docudrop'
+            WHEN 'unique' THEN 'Unique Estates'
+            WHEN 'casella_mail_agenzia' THEN 'Casella Mail Agenzia'
+            WHEN 'euromq' THEN 'EuroMq'
+            WHEN 'gestim' THEN 'Gestim'
+        END
+    )
+    WHERE ags.agency_id = :agency_id AND ags.is_active = 1
     ORDER BY sm.service_name ASC
 ");
 $stmtOptional->execute(['agency_id' => $agency['id']]);
