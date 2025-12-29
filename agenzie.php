@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once 'check_auth.php';
 require_once 'config/database.php';
 
@@ -49,6 +52,9 @@ if ($search) {
 
 $stmt->execute();
 $agencies = $stmt->fetchAll();
+
+// Debug
+error_log("AGENZIE.PHP DEBUG - Found " . count($agencies) . " agencies with search='$search' searchType='$searchType' status='$statusFilter'");
 
 // Count totale con status filter applicato (ma senza search)
 $countSql = "SELECT COUNT(*) FROM agencies WHERE status != 'Prospect'";
