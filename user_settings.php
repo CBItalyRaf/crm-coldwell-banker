@@ -1,8 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 require_once 'check_auth.php';
 require_once 'config/database.php';
 require_once 'helpers/user_preferences.php';

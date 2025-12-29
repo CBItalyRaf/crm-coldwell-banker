@@ -90,6 +90,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <div class="nav-item">
 <button class="nav-button">AMMINISTRAZIONE ▼</button>
 <div class="dropdown-menu">
+<a href="calendario_scadenze.php" class="dropdown-item">📅 Calendario Scadenze</a>
 <a href="fatture.php" class="dropdown-item">💰 Fatture</a>
 <a href="fornitori.php" class="dropdown-item">🏪 Fornitori</a>
 <?php if($user['crm_role'] === 'admin'): ?>
@@ -131,7 +132,7 @@ if (file_exists(__DIR__ . '/helpers/user_preferences.php') &&
 ?>
 
 <?php if($userPrefs && $userPrefs['notify_scadenze_badge'] && $scadenzeCount > 0): ?>
-<a href="index.php#scadenze" class="nav-button" style="position:relative;margin-right:1rem" title="Scadenze imminenti">
+<a href="calendario_scadenze.php" class="nav-button" style="position:relative;margin-right:1rem" title="Scadenze imminenti">
     🔔
     <span style="position:absolute;top:-.25rem;right:-.25rem;background:#EF4444;color:white;font-size:.7rem;padding:.15rem .4rem;border-radius:999px;font-weight:700;min-width:1.25rem;text-align:center"><?= $scadenzeCount ?></span>
 </a>

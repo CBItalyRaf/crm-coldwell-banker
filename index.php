@@ -1,8 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 require_once 'check_auth.php';
 require_once 'config/database.php';
 
@@ -29,11 +25,6 @@ $onboardings = $pdo->query("
 ")->fetchAll();
 
 require_once 'header.php';
-
-// Widget scadenze (se file esiste e utente ha preferenza attiva)
-if (file_exists(__DIR__ . '/widgets/scadenze_dashboard.php')) {
-    include __DIR__ . '/widgets/scadenze_dashboard.php';
-}
 ?>
 
 <style>
@@ -106,6 +97,13 @@ if (file_exists(__DIR__ . '/widgets/scadenze_dashboard.php')) {
 <div class="stat-subtitle">Aperti</div>
 </div>
 </div>
+
+<?php
+// Widget scadenze (se file esiste e utente ha preferenza attiva)
+if (file_exists(__DIR__ . '/widgets/scadenze_dashboard.php')) {
+    include __DIR__ . '/widgets/scadenze_dashboard.php';
+}
+?>
 
 <div class="widgets-grid">
 <div class="widget">
