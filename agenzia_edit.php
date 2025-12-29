@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once 'check_auth.php';
 require_once 'config/database.php';
 require_once 'log_functions.php';
@@ -22,12 +25,17 @@ if (!$code) {
 
 // Gestione POST - salva modifiche
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $returnTab = $_POST['return_tab'] ?? 'info';
-    
-    // Carica dati vecchi prima della modifica
-    $stmt = $pdo->prepare("SELECT * FROM agencies WHERE code = :code");
-    $stmt->execute(['code' => $code]);
-    $oldData = $stmt->fetch(PDO::FETCH_ASSOC);
+    try {
+        $returnTab = $_POST['return_tab'] ?? 'info';
+        
+        // Carica dati vecchi prima della modifica
+        $stmt = $pdo->prepare("SELECT * FROM agencies WHERE code = :code");
+        $stmt->execute(['code' => $code]);
+        $oldData = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$oldData) {
+            die("Agenzia non trovata");
+        }
     
     $sql = "UPDATE agencies SET 
             code = :new_code,
@@ -86,6 +94,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'status' => $_POST['status'],
         'id' => $oldData['id']
     ]);
+    
+    if ($stmt->rowCount() === 0) {
+        error_log("UPDATE non ha modificato nessuna riga per agency id: " . $oldData['id']);
+    }
     
     // Log modifiche
     $newData = [
@@ -155,8 +167,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
     }
     
+    // Redirect con flush
     header("Location: agenzia_detail.php?code=" . urlencode($_POST['code']) . "&success=1#tab-" . $returnTab);
-    exit;
+    exit();
+    
+    } catch (Exception $e) {
+        error_log("Errore in agenzia_edit: " . $e->getMessage());
+        die("Errore durante il salvataggio: " . $e->getMessage());
+    }
 }
 
 // Carica dati agenzia
