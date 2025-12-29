@@ -16,25 +16,41 @@ $pageTitle = "Nuovo Agente - CRM Coldwell Banker";
 $pdo = getDB();
 
 $agencyCode = $_GET['agency'] ?? '';
+$agency = null;
 
-if (!$agencyCode) {
-    header('Location: agenzie.php');
-    exit;
+if ($agencyCode) {
+    // Carica agenzia specifica
+    $stmt = $pdo->prepare("SELECT * FROM agencies WHERE code = :code");
+    $stmt->execute(['code' => $agencyCode]);
+    $agency = $stmt->fetch();
+    
+    if (!$agency) {
+        header('Location: agenzie.php');
+        exit;
+    }
 }
 
-// Carica agenzia
-$stmt = $pdo->prepare("SELECT * FROM agencies WHERE code = :code");
-$stmt->execute(['code' => $agencyCode]);
-$agency = $stmt->fetch();
-
+// Carica tutte le agenzie per dropdown (se agency non specificata)
+$allAgencies = [];
 if (!$agency) {
-    header('Location: agenzie.php');
-    exit;
+    $stmt = $pdo->query("SELECT id, code, name FROM agencies WHERE status = 'Active' ORDER BY name ASC");
+    $allAgencies = $stmt->fetchAll();
 }
 
 // Gestione POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        $agencyId = $_POST['agency_id'];
+        
+        // Verifica che l'agenzia esista
+        $stmt = $pdo->prepare("SELECT code FROM agencies WHERE id = :id");
+        $stmt->execute(['id' => $agencyId]);
+        $agencyData = $stmt->fetch();
+        
+        if (!$agencyData) {
+            throw new Exception("Agenzia non valida");
+        }
+        
         $stmt = $pdo->prepare("
             INSERT INTO agents 
             (agency_id, first_name, last_name, mobile, email_corporate, email_personal, 
@@ -45,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ");
         
         $stmt->execute([
-            'agency_id' => $agency['id'],
+            'agency_id' => $agencyId,
             'first_name' => trim($_POST['first_name']),
             'last_name' => trim($_POST['last_name']),
             'mobile' => $_POST['mobile'] ?: null,
@@ -67,11 +83,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             logAudit($pdo, $userId, $_SESSION['crm_user']['email'] ?? 'unknown', 'agents', $agentId, 'INSERT', []);
         }
         
-        header("Location: agenzia_detail.php?code=" . urlencode($agencyCode) . "&success=agent_created#tab-agenti");
+        header("Location: agenzia_detail.php?code=" . urlencode($agencyData['code']) . "&success=agent_created#tab-agenti");
         exit();
         
     } catch (Exception $e) {
-        error_log("Errore in agente_create: " . $e->getMessage());
+        error_log("Errore in agente_add: " . $e->getMessage());
         $error = "Errore durante la creazione: " . $e->getMessage();
     }
 }
@@ -106,9 +122,11 @@ require_once 'header.php';
 <div class="page-header">
 <div>
 <h1 class="page-title">👤 Nuovo Agente</h1>
+<?php if ($agency): ?>
 <div style="color:var(--cb-bright-blue);font-weight:600;margin-top:.5rem"><?= htmlspecialchars($agency['code']) ?> - <?= htmlspecialchars($agency['name']) ?></div>
+<?php endif; ?>
 </div>
-<a href="agenzia_detail.php?code=<?= urlencode($agencyCode) ?>#tab-agenti" class="back-btn">← Torna</a>
+<a href="<?= $agency ? 'agenzia_detail.php?code=' . urlencode($agency['code']) . '#tab-agenti' : 'agenti.php' ?>" class="back-btn">← Torna</a>
 </div>
 
 <?php if (isset($error)): ?>
@@ -117,6 +135,23 @@ require_once 'header.php';
 
 <form method="POST">
 <div class="form-card">
+
+<?php if (!$agency): ?>
+<div class="form-section">
+<h3>Agenzia</h3>
+<div class="form-field">
+<label>Seleziona Agenzia <span class="required">*</span></label>
+<select name="agency_id" required>
+<option value="">-- Seleziona un'agenzia --</option>
+<?php foreach ($allAgencies as $ag): ?>
+<option value="<?= $ag['id'] ?>"><?= htmlspecialchars($ag['code']) ?> - <?= htmlspecialchars($ag['name']) ?></option>
+<?php endforeach; ?>
+</select>
+</div>
+</div>
+<?php else: ?>
+<input type="hidden" name="agency_id" value="<?= $agency['id'] ?>">
+<?php endif; ?>
 
 <div class="form-section">
 <h3>Dati Anagrafici</h3>
@@ -202,7 +237,7 @@ require_once 'header.php';
 </div>
 
 <div class="form-actions">
-<a href="agenzia_detail.php?code=<?= urlencode($agencyCode) ?>#tab-agenti" class="btn-cancel">Annulla</a>
+<a href="<?= $agency ? 'agenzia_detail.php?code=' . urlencode($agency['code']) . '#tab-agenti' : 'agenti.php' ?>" class="btn-cancel">Annulla</a>
 <button type="submit" class="btn-save">💾 Crea Agente</button>
 </div>
 
