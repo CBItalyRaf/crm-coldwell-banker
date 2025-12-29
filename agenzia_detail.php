@@ -135,12 +135,12 @@ require_once 'header.php';
 
 <div class="tabs status-<?= strtolower($agency['status']) ?>">
 <div class="tabs-nav">
-<button class="tab-btn active" onclick="switchTab('info', this)">📊 Info Agenzia</button>
+<button class="tab-btn active" onclick="switchTab('info')">📊 Info Agenzia</button>
 <?php if($_SESSION['crm_user']['crm_role'] === 'admin'): ?>
-<button class="tab-btn" onclick="switchTab('contrattuale', this)">📄 Contrattuale</button>
+<button class="tab-btn" onclick="switchTab('contrattuale')">📄 Contrattuale</button>
 <?php endif; ?>
-<button class="tab-btn" onclick="switchTab('servizi', this)">⚙️ Servizi (<?= count(array_filter($allServicesData, fn($s) => $s['is_active'] == 1)) ?>)</button>
-<button class="tab-btn" onclick="switchTab('agenti', this)">👥 Agenti (<?= count($activeAgents) ?>)</button>
+<button class="tab-btn" onclick="switchTab('servizi')">⚙️ Servizi (<?= count(array_filter($allServicesData, fn($s) => $s['is_active'] == 1)) ?>)</button>
+<button class="tab-btn" onclick="switchTab('agenti')">👥 Agenti (<?= count($activeAgents) ?>)</button>
 </div>
 
 <div class="tab-content active" id="tab-info">
@@ -666,17 +666,12 @@ $idx = 'standalone_' . $i;
 <script>
 let currentTab = 'info';
 
-function switchTab(tabName, btn){
-try {
+function switchTab(tabName){
 currentTab = tabName;
-document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.remove('active'));
 document.querySelectorAll('.tab-content').forEach(content=>content.classList.remove('active'));
-if(btn) btn.classList.add('active');
-const targetTab = document.getElementById('tab-'+tabName);
-if(targetTab) targetTab.classList.add('active');
-} catch(e) {
-console.error('switchTab error:', e);
-}
+event.target.classList.add('active');
+document.getElementById('tab-'+tabName).classList.add('active');
 }
 
 function toggleService(index){
