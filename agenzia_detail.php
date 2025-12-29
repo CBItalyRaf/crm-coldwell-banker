@@ -312,28 +312,41 @@ foreach($stmtPrices->fetchAll() as $row) {
     $defaultPrices[$row['service_name']] = $row['default_price'];
 }
 
-// Escludi obbligatori e mappa nomi servizi
-$mandatoryIds = array_column($mandatoryServices, 'service_id');
-$mandatoryNames = array_column($mandatoryServices, 'service_name'); // Nomi dei servizi obbligatori
-
+// Mappa nomi servizi (chiave DB => nome visualizzato)
 $serviceNameMap = [
     'cb_suite' => 'CB Suite',
     'canva' => 'Canva Pro',
     'regold' => 'Regold',
     'james_edition' => 'James Edition',
     'docudrop' => 'Docudrop',
-    'unique' => 'Unique Estates'
+    'unique' => 'Unique Estates',
+    'casella_mail_agenzia' => 'Casella Mail Agenzia',
+    'euromq' => 'EuroMq',
+    'gestim' => 'Gestim'
 ];
+
+// Crea SET di chiavi DB obbligatorie confrontando con service_name di services_master
+$mandatoryDbKeys = [];
+foreach($mandatoryServices as $ms) {
+    // $ms['service_name'] è il nome da services_master (es: "Canva Pro")
+    // Trova la chiave DB corrispondente
+    $foundKey = array_search($ms['service_name'], $serviceNameMap);
+    if ($foundKey !== false) {
+        $mandatoryDbKeys[] = $foundKey;
+    }
+}
 
 $optionalServices = [];
 foreach($agencyServicesRaw as $svc) {
-    $mappedName = $serviceNameMap[$svc['service_name']] ?? $svc['service_name'];
+    // $svc['service_name'] è la chiave DB (es: "canva")
     
-    // SKIP se questo servizio è già negli obbligatori
-    if (in_array($mappedName, $mandatoryNames)) {
+    // SKIP se questa chiave DB è negli obbligatori
+    if (in_array($svc['service_name'], $mandatoryDbKeys)) {
         continue;
     }
     
+    // Mappa il nome per visualizzazione
+    $mappedName = $serviceNameMap[$svc['service_name']] ?? ucwords(str_replace('_', ' ', $svc['service_name']));
     $svc['service_name'] = $mappedName;
     $svc['default_price'] = $defaultPrices[$mappedName] ?? 0;
     $optionalServices[] = $svc;
