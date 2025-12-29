@@ -1,4 +1,4 @@
-<?php
+<?php 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -130,11 +130,7 @@ $stmt = $pdo->prepare("
     WHERE ags.agency_id = :agency_id AND ags.is_active = 1
 ");
 $stmt->execute(['agency_id' => $agency['id']]);
-$activeServicesResult = $stmt->fetchAll();
-$activeServicesIds = array_column($activeServicesResult, 'id');
-
-// DEBUG TEMPORANEO
-$debugActiveServices = array_map(function($s) { return $s['service_name']; }, $activeServicesResult);
+$activeServicesIds = array_column($stmt->fetchAll(), 'id');
 
 require_once 'header.php';
 ?>
@@ -219,25 +215,11 @@ $isChecked = isset($existingContract[$service['id']]) && $existingContract[$serv
 <h3>Servizi Facoltativi <span style="font-weight:400;font-size:.9rem;color:var(--cb-gray)">(costi aggiuntivi)</span></h3>
 <div class="help-text" style="margin-bottom:1rem">💰 Gestisci solo i servizi che sono già ATTIVI nel tab "Servizi"</div>
 
-<!-- DEBUG TEMPORANEO -->
-<div style="background:#FFF4E6;border:2px solid #F59E0B;padding:1rem;margin-bottom:1rem;border-radius:8px">
-<strong>🔍 DEBUG - Servizi attivi trovati:</strong><br>
-IDs: <?= implode(', ', $activeServicesIds) ?><br>
-Nomi: <?= implode(', ', $debugActiveServices) ?><br>
-Totale: <?= count($activeServicesIds) ?>
-</div>
-
 <?php 
 $hasOptional = false;
-$debugSkipped = [];
-$debugShown = [];
 foreach ($allServices as $service): 
     // Mostra solo se è attivo in agency_services
-    if (!in_array($service['id'], $activeServicesIds)) {
-        $debugSkipped[] = $service['service_name'] . ' (ID:' . $service['id'] . ')';
-        continue;
-    }
-    $debugShown[] = $service['service_name'] . ' (ID:' . $service['id'] . ')';
+    if (!in_array($service['id'], $activeServicesIds)) continue;
     $hasOptional = true;
     
     $isChecked = isset($existingContract[$service['id']]) && $existingContract[$service['id']]['is_mandatory'] == 0;
@@ -262,13 +244,6 @@ foreach ($allServices as $service):
 </div>
 </div>
 <?php endforeach; ?>
-
-<!-- DEBUG LOOP RESULTS -->
-<div style="background:#E0F2FE;border:2px solid #0EA5E9;padding:1rem;margin:1rem 0;border-radius:8px">
-<strong>🔍 DEBUG - Risultati loop:</strong><br>
-<strong>Servizi MOSTRATI (<?= count($debugShown) ?>):</strong> <?= implode(', ', $debugShown) ?: 'NESSUNO' ?><br>
-<strong>Servizi SKIPPATI (<?= count($debugSkipped) ?>):</strong> <?= implode(', ', $debugSkipped) ?: 'NESSUNO' ?>
-</div>
 
 <?php if (!$hasOptional): ?>
 <div style="text-align:center;padding:2rem;color:var(--cb-gray);background:var(--bg);border-radius:8px">

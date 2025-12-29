@@ -52,7 +52,20 @@ $stmt = $pdo->prepare("
         ags.invoice_reference,
         ags.notes
     FROM services_master sm
-    LEFT JOIN agency_services ags ON sm.service_name = ags.service_name AND ags.agency_id = :agency_id1
+    LEFT JOIN agency_services ags ON ags.agency_id = :agency_id1 
+        AND ags.service_name = (
+            CASE sm.service_name
+                WHEN 'CB Suite' THEN 'cb_suite'
+                WHEN 'Canva Pro' THEN 'canva'
+                WHEN 'Regold' THEN 'regold'
+                WHEN 'James Edition' THEN 'james_edition'
+                WHEN 'Docudrop' THEN 'docudrop'
+                WHEN 'Unique Estates' THEN 'unique'
+                WHEN 'Casella Mail Agenzia' THEN 'casella_mail_agenzia'
+                WHEN 'EuroMq' THEN 'euromq'
+                WHEN 'Gestim' THEN 'gestim'
+            END
+        )
     LEFT JOIN agency_contract_services acs ON sm.id = acs.service_id AND acs.agency_id = :agency_id2
     WHERE sm.is_active = 1
     ORDER BY sm.display_order ASC, sm.service_name ASC
