@@ -361,6 +361,9 @@ $contractFiles = $stmtFiles->fetchAll();
 <h3>Servizi Facoltativi Attivi <span style="font-size:.85rem;font-weight:400;color:var(--cb-gray)">(costi aggiuntivi)</span></h3>
 <div style="display:grid;gap:.75rem">
 <?php foreach($optionalServices as $svc): 
+// Salta CB Suite (è un contenitore, non un servizio singolo)
+if ($svc['service_name'] === 'CB Suite') continue;
+
 $price = $svc['custom_price'] ?? $svc['default_price'];
 ?>
 <div style="background:#DBEAFE;border-left:4px solid #3B82F6;padding:1.5rem;border-radius:8px">

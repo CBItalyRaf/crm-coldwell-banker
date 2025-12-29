@@ -63,19 +63,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         
-        // 4. Inserisci servizi FACOLTATIVI (solo quelli attivi in agency_services)
+        // 4. Inserisci servizi FACOLTATIVI (solo marcati come facoltativi nel contratto)
         if (!empty($_POST['optional_services'])) {
             $stmtIns = $pdo->prepare("INSERT INTO agency_contract_services 
-                (agency_id, service_id, is_mandatory, custom_price, notes) 
-                VALUES (:agency_id, :service_id, 0, :custom_price, :notes)");
+                (agency_id, service_id, is_mandatory, notes) 
+                VALUES (:agency_id, :service_id, 0, :notes)");
             
             foreach ($_POST['optional_services'] as $serviceId) {
-                $customPrice = $_POST['optional_price_' . $serviceId] ?? null;
-                
                 $stmtIns->execute([
                     'agency_id' => $agency['id'],
                     'service_id' => $serviceId,
-                    'custom_price' => $customPrice ?: null,
                     'notes' => $_POST['optional_notes_' . $serviceId] ?? null
                 ]);
             }
@@ -211,7 +208,6 @@ foreach ($allServices as $service):
     $hasOptional = true;
     
     $isChecked = isset($existingContract[$service['id']]) && $existingContract[$service['id']]['is_mandatory'] == 0;
-    $customPrice = isset($existingContract[$service['id']]) ? $existingContract[$service['id']]['custom_price'] : $service['default_price'];
 ?>
 <div class="service-item <?= $isChecked ? 'optional' : '' ?>" id="optional-item-<?= $service['id'] ?>">
 <div class="service-header">
@@ -219,15 +215,12 @@ foreach ($allServices as $service):
     <?= $isChecked ? 'checked' : '' ?>
     onchange="toggleOptional(<?= $service['id'] ?>)">
 <div class="service-name"><?= htmlspecialchars($service['service_name']) ?></div>
-<div class="service-price">Default: € <?= number_format($service['default_price'], 2, ',', '.') ?></div>
 </div>
-<div class="service-fields">
-<input type="number" name="optional_price_<?= $service['id'] ?>" 
-    step="0.01" min="0" 
-    placeholder="Prezzo custom (€)" 
-    value="<?= $customPrice ?>">
+<div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid rgba(0,0,0,.1)">
+<label style="font-size:.85rem;font-weight:600;color:var(--cb-gray);display:block;margin-bottom:.5rem">Note</label>
 <input type="text" name="optional_notes_<?= $service['id'] ?>" 
     placeholder="Note aggiuntive..." 
+    style="width:100%;padding:.5rem;font-size:.9rem;border:1px solid #E5E7EB;border-radius:8px"
     value="<?= isset($existingContract[$service['id']]) ? htmlspecialchars($existingContract[$service['id']]['notes']) : '' ?>">
 </div>
 </div>
