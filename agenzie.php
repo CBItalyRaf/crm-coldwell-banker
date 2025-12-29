@@ -41,18 +41,17 @@ if ($search) {
 
 $sql .= " ORDER BY name ASC";
 
-// DEBUG
-error_log("AGENZIE.PHP SQL: " . $sql);
-error_log("AGENZIE.PHP PARAMS: statusFilter='$statusFilter' search='$search' searchType='$searchType'");
+// DEBUG - mostra query e parametri
+if ($search && $searchType === 'all') {
+    die("DEBUG SQL: <pre>" . htmlspecialchars($sql) . "</pre><br>statusFilter: $statusFilter<br>search: $search<br>searchType: $searchType");
+}
 
 $stmt = $pdo->prepare($sql);
 
 if ($statusFilter !== 'all') {
-    error_log("AGENZIE.PHP BINDING :status = $statusFilter");
     $stmt->bindValue(':status', $statusFilter);
 }
 if ($search) {
-    error_log("AGENZIE.PHP BINDING :search = %$search%");
     $stmt->bindValue(':search', "%$search%");
 }
 
