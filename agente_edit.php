@@ -22,6 +22,37 @@ if (!$id) {
     exit;
 }
 
+// Gestione DELETE - solo admin
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_agent'])) {
+    if ($_SESSION['crm_user']['crm_role'] !== 'admin') {
+        die("Accesso negato");
+    }
+    
+    try {
+        $pdo->beginTransaction();
+        
+        // Log prima di cancellare
+        $userId = $_SESSION['crm_user']['id'] ?? null;
+        if ($userId) {
+            logAudit($pdo, $userId, $_SESSION['crm_user']['email'] ?? 'unknown', 'agents', $id, 'DELETE', ['full_name' => $agent['full_name']]);
+        }
+        
+        // Cancella agente
+        $stmt = $pdo->prepare("DELETE FROM agents WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        
+        $pdo->commit();
+        
+        header("Location: agenti.php?success=agent_deleted");
+        exit();
+        
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        error_log("Errore in agente_edit DELETE: " . $e->getMessage());
+        die("Errore durante la cancellazione: " . $e->getMessage());
+    }
+}
+
 // Gestione POST - salva modifiche
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Carica dati vecchi prima della modifica
@@ -138,6 +169,14 @@ require_once 'header.php';
 .btn-cancel:hover{border-color:var(--cb-gray)}
 .btn-save{background:var(--cb-bright-blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;transition:background .2s}
 .btn-save:hover{background:var(--cb-blue)}
+.btn-delete{background:#EF4444;color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;transition:background .2s}
+.btn-delete:hover{background:#DC2626}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center}
+.modal.active{display:flex}
+.modal-content{background:white;border-radius:12px;padding:2rem;max-width:500px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-header{font-size:1.25rem;font-weight:600;color:var(--cb-midnight);margin-bottom:1rem}
+.modal-body{color:var(--cb-gray);margin-bottom:2rem;line-height:1.6}
+.modal-actions{display:flex;gap:1rem;justify-content:flex-end}
 </style>
 
 <div class="edit-header">
@@ -237,11 +276,57 @@ require_once 'header.php';
 </div>
 
 <div class="form-actions">
+<?php if ($_SESSION['crm_user']['crm_role'] === 'admin'): ?>
+<button type="button" class="btn-delete" onclick="showDeleteModal()">🗑️ Elimina Agente</button>
+<div style="flex:1"></div>
+<?php endif; ?>
 <a href="agente_detail.php?id=<?= $agent['id'] ?>" class="btn-cancel">Annulla</a>
 <button type="submit" class="btn-save">💾 Salva Modifiche</button>
 </div>
 
 </div>
 </form>
+
+<!-- Modal Conferma Eliminazione -->
+<div id="deleteModal" class="modal">
+<div class="modal-content">
+<div class="modal-header">⚠️ Conferma Eliminazione</div>
+<div class="modal-body">
+Sei sicuro di voler eliminare l'agente <strong><?= htmlspecialchars($agent['full_name']) ?></strong>?<br><br>
+Questa azione è <strong>irreversibile</strong>.
+</div>
+<div class="modal-actions">
+<button type="button" class="btn-cancel" onclick="closeDeleteModal()">Annulla</button>
+<form method="POST" style="display:inline">
+<input type="hidden" name="delete_agent" value="1">
+<button type="submit" class="btn-delete">Elimina Definitivamente</button>
+</form>
+</div>
+</div>
+</div>
+
+<script>
+function showDeleteModal() {
+    document.getElementById('deleteModal').classList.add('active');
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('active');
+}
+
+// Chiudi modal cliccando fuori
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDeleteModal();
+    }
+});
+
+// Chiudi con ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeDeleteModal();
+    }
+});
+</script>
 
 <?php require_once 'footer.php'; ?>

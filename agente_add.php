@@ -141,12 +141,21 @@ require_once 'header.php';
 <h3>Agenzia</h3>
 <div class="form-field">
 <label>Seleziona Agenzia <span class="required">*</span></label>
-<select name="agency_id" required>
-<option value="">-- Seleziona un'agenzia --</option>
+<input type="text" 
+    id="agencySearch" 
+    list="agenciesList" 
+    placeholder="Cerca per codice o nome agenzia..."
+    autocomplete="off"
+    required>
+<datalist id="agenciesList">
 <?php foreach ($allAgencies as $ag): ?>
-<option value="<?= $ag['id'] ?>"><?= htmlspecialchars($ag['code']) ?> - <?= htmlspecialchars($ag['name']) ?></option>
+<option value="<?= htmlspecialchars($ag['code']) ?>" data-id="<?= $ag['id'] ?>">
+<?= htmlspecialchars($ag['code']) ?> - <?= htmlspecialchars($ag['name']) ?>
+</option>
 <?php endforeach; ?>
-</select>
+</datalist>
+<input type="hidden" name="agency_id" id="agencyIdInput" required>
+<div id="agencyPreview" style="margin-top:.5rem;padding:.5rem;background:#F3F4F6;border-radius:6px;display:none;font-size:.9rem;color:var(--cb-gray)"></div>
 </div>
 </div>
 <?php else: ?>
@@ -243,5 +252,44 @@ require_once 'header.php';
 
 </div>
 </form>
+
+<?php if (!$agency): ?>
+<script>
+const agencySearch = document.getElementById('agencySearch');
+const agencyIdInput = document.getElementById('agencyIdInput');
+const agencyPreview = document.getElementById('agencyPreview');
+const agenciesData = <?= json_encode(array_map(function($ag) {
+    return ['id' => $ag['id'], 'code' => $ag['code'], 'name' => $ag['name']];
+}, $allAgencies)) ?>;
+
+agencySearch.addEventListener('input', function() {
+    const value = this.value.trim().toUpperCase();
+    
+    // Cerca per codice esatto o nome
+    const found = agenciesData.find(ag => 
+        ag.code.toUpperCase() === value || 
+        ag.code.toUpperCase().includes(value)
+    );
+    
+    if (found) {
+        agencyIdInput.value = found.id;
+        agencyPreview.textContent = '✅ ' + found.code + ' - ' + found.name;
+        agencyPreview.style.display = 'block';
+        agencyPreview.style.background = '#D1FAE5';
+        agencyPreview.style.color = '#065F46';
+    } else {
+        agencyIdInput.value = '';
+        if (value.length > 0) {
+            agencyPreview.textContent = '❌ Agenzia non trovata';
+            agencyPreview.style.display = 'block';
+            agencyPreview.style.background = '#FEE2E2';
+            agencyPreview.style.color = '#991B1B';
+        } else {
+            agencyPreview.style.display = 'none';
+        }
+    }
+});
+</script>
+<?php endif; ?>
 
 <?php require_once 'footer.php'; ?>
