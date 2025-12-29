@@ -352,15 +352,16 @@ $price = $svc['custom_price'] ?? $svc['default_price'];
 <div class="info-section" style="background:#F0F9FF;border:2px solid #3B82F6;border-radius:12px;padding:1.5rem">
 <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
 <div>
-<div style="font-size:.875rem;text-transform:uppercase;color:#1E40AF;margin-bottom:.5rem;font-weight:600">Costo Totale Mensile</div>
+<div style="font-size:.875rem;text-transform:uppercase;color:#1E40AF;margin-bottom:.5rem;font-weight:600">Costo Totale Annuo</div>
 <div style="font-size:2rem;font-weight:700;color:#1E40AF">
-€ <?= number_format(($agency['tech_fee'] ?? 0) + $totalOptional, 2, ',', '.') ?>
+€ <?= number_format((($agency['tech_fee'] ?? 0) + $totalOptional) * 12, 2, ',', '.') ?>
 </div>
 <div style="font-size:.85rem;color:#3B82F6;margin-top:.5rem">
-Tech Fee: €<?= number_format($agency['tech_fee'] ?? 0, 2, ',', '.') ?> 
+Tech Fee Mensile: €<?= number_format($agency['tech_fee'] ?? 0, 2, ',', '.') ?> 
 <?php if($totalOptional > 0): ?>
 + Facoltativi: €<?= number_format($totalOptional, 2, ',', '.') ?>
 <?php endif; ?>
+= €<?= number_format(($agency['tech_fee'] ?? 0) + $totalOptional, 2, ',', '.') ?>/mese × 12
 </div>
 </div>
 </div>

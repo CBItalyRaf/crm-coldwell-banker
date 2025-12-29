@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once 'check_auth.php';
 require_once 'config/database.php';
 require_once 'log_functions.php';
@@ -70,12 +73,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pdo->prepare("UPDATE agencies SET status = 'In Onboarding' WHERE id = ?")->execute([$agency_id]);
     
     // Log
-    logAudit($pdo, $_SESSION['crm_user']['id'] ?? 0, $_SESSION['crm_user']['email'], 'agencies', $agency_id, 'UPDATE', [
-        'status' => ['old' => 'Opening', 'new' => 'In Onboarding']
-    ]);
+    $userId = $_SESSION['crm_user']['id'] ?? null;
+    if ($userId) {
+        logAudit($pdo, $userId, $_SESSION['crm_user']['email'] ?? 'unknown', 'agencies', $agency_id, 'UPDATE', [
+            'status' => ['old' => 'Opening', 'new' => 'In Onboarding']
+        ]);
+    }
     
     header("Location: onboarding_detail.php?agency_id=$agency_id");
-    exit;
+    exit();
 }
 
 // Carica template task

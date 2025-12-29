@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once 'check_auth.php';
 require_once 'config/database.php';
 require_once 'log_functions.php';
@@ -83,19 +86,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $changes = getChangedFields($oldData, $newData);
     
     if (!empty($changes)) {
-        logAudit(
-            $pdo,
-            $_SESSION['crm_user']['id'],
-            $_SESSION['crm_user']['email'],
-            'agents',
-            $oldData['id'],
-            'UPDATE',
-            $changes
-        );
+        $userId = $_SESSION['crm_user']['id'] ?? null;
+        if ($userId) {
+            logAudit(
+                $pdo,
+                $userId,
+                $_SESSION['crm_user']['email'] ?? 'unknown',
+                'agents',
+                $oldData['id'],
+                'UPDATE',
+                $changes
+            );
+        }
     }
     
     header("Location: agente_detail.php?id=" . urlencode($id) . "&success=1");
-    exit;
+    exit();
 }
 
 // Carica dati agente
