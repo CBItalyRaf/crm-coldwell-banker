@@ -374,13 +374,6 @@ $price = $svc['custom_price'] ?? $svc['default_price'];
 </div>
 <?php endforeach; ?>
 </div>
-
-<div style="background:var(--bg);padding:1rem;border-radius:8px;margin-top:1rem">
-<div style="display:flex;justify-content:space-between;align-items:center">
-<div style="font-weight:600;color:var(--cb-midnight)">Totale Servizi Facoltativi:</div>
-<div style="font-size:1.5rem;font-weight:600;color:#3B82F6">€ <?= number_format($totalOptional, 2, ',', '.') ?></div>
-</div>
-</div>
 </div>
 <?php endif; ?>
 
@@ -391,24 +384,6 @@ $price = $svc['custom_price'] ?? $svc['default_price'];
 <a href="contratto_edit.php?code=<?= urlencode($agency['code']) ?>" style="display:inline-block;margin-top:1rem;background:var(--cb-bright-blue);color:white;padding:.75rem 1.5rem;border-radius:8px;text-decoration:none">Configura Contratto</a>
 </div>
 <?php endif; ?>
-
-<div class="info-section" style="background:#F0F9FF;border:2px solid #3B82F6;border-radius:12px;padding:1.5rem">
-<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-<div>
-<div style="font-size:.875rem;text-transform:uppercase;color:#1E40AF;margin-bottom:.5rem;font-weight:600">Costo Totale Annuo</div>
-<div style="font-size:2rem;font-weight:700;color:#1E40AF">
-€ <?= number_format((($agency['tech_fee'] ?? 0) + $totalOptional) * 12, 2, ',', '.') ?>
-</div>
-<div style="font-size:.85rem;color:#3B82F6;margin-top:.5rem">
-Tech Fee Mensile: €<?= number_format($agency['tech_fee'] ?? 0, 2, ',', '.') ?> 
-<?php if($totalOptional > 0): ?>
-+ Facoltativi: €<?= number_format($totalOptional, 2, ',', '.') ?>
-<?php endif; ?>
-= €<?= number_format(($agency['tech_fee'] ?? 0) + $totalOptional, 2, ',', '.') ?>/mese × 12
-</div>
-</div>
-</div>
-</div>
 
 <div class="info-section">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
