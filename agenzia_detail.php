@@ -206,8 +206,12 @@ require_once 'header.php';
 </div>
 
 <div class="tab-content" id="tab-contrattuale">
+
 <div class="info-section">
-<h3>Date Contrattuali</h3>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+<h3 style="margin:0">Date Contrattuali</h3>
+<a href="contratto_edit.php?code=<?= urlencode($agency['code']) ?>" class="edit-btn" style="text-decoration:none;font-size:.9rem;padding:.5rem 1rem">✏️ Modifica Contratto</a>
+</div>
 <div class="info-grid">
 <div class="info-field">
 <label>Data Attivazione</label>
@@ -232,11 +236,106 @@ require_once 'header.php';
 <h3>Condizioni Economiche</h3>
 <div class="info-grid">
 <div class="info-field">
-<label>Tech Fee</label>
-<div class="value"><?= $agency['tech_fee'] ? '€ ' . number_format($agency['tech_fee'], 2, ',', '.') : '-' ?></div>
+<label>Tech Fee (Forfait)</label>
+<div class="value" style="font-size:1.5rem;font-weight:600;color:var(--cb-bright-blue)">
+<?= $agency['tech_fee'] ? '€ ' . number_format($agency['tech_fee'], 2, ',', '.') : '€ 0,00' ?>
 </div>
 </div>
 </div>
+</div>
+
+<?php
+// Carica servizi obbligatori e facoltativi dal contratto
+$stmtContract = $pdo->prepare("
+    SELECT acs.*, sm.service_name, sm.default_price 
+    FROM agency_contract_services acs
+    JOIN services_master sm ON acs.service_id = sm.id
+    WHERE acs.agency_id = :agency_id
+    ORDER BY acs.is_mandatory DESC, sm.service_name ASC
+");
+$stmtContract->execute(['agency_id' => $agency['id']]);
+$contractServices = $stmtContract->fetchAll();
+
+$mandatoryServices = array_filter($contractServices, fn($s) => $s['is_mandatory'] == 1);
+$optionalServices = array_filter($contractServices, fn($s) => $s['is_mandatory'] == 0);
+
+$totalOptional = array_reduce($optionalServices, function($sum, $s) {
+    return $sum + ($s['custom_price'] ?? $s['default_price']);
+}, 0);
+?>
+
+<?php if(!empty($mandatoryServices)): ?>
+<div class="info-section">
+<h3>Servizi Obbligatori <span style="font-size:.85rem;font-weight:400;color:var(--cb-gray)">(coperti dalla Tech Fee)</span></h3>
+<div style="display:grid;gap:.75rem">
+<?php foreach($mandatoryServices as $svc): ?>
+<div style="background:#D1FAE5;border-left:4px solid #10B981;padding:1rem;border-radius:8px;display:flex;justify-content:space-between;align-items:center">
+<div>
+<div style="font-weight:600;color:#065F46"><?= htmlspecialchars($svc['service_name']) ?></div>
+<?php if($svc['notes']): ?>
+<div style="font-size:.85rem;color:#059669;margin-top:.25rem"><?= htmlspecialchars($svc['notes']) ?></div>
+<?php endif; ?>
+</div>
+<div style="background:#10B981;color:white;padding:.25rem .75rem;border-radius:6px;font-size:.85rem;font-weight:600">OBBLIGATORIO</div>
+</div>
+<?php endforeach; ?>
+</div>
+</div>
+<?php endif; ?>
+
+<?php if(!empty($optionalServices)): ?>
+<div class="info-section">
+<h3>Servizi Facoltativi Attivati <span style="font-size:.85rem;font-weight:400;color:var(--cb-gray)">(costi aggiuntivi)</span></h3>
+<div style="display:grid;gap:.75rem">
+<?php foreach($optionalServices as $svc): 
+$price = $svc['custom_price'] ?? $svc['default_price'];
+?>
+<div style="background:#DBEAFE;border-left:4px solid #3B82F6;padding:1rem;border-radius:8px;display:flex;justify-content:space-between;align-items:center">
+<div style="flex:1">
+<div style="font-weight:600;color:#1E40AF"><?= htmlspecialchars($svc['service_name']) ?></div>
+<?php if($svc['notes']): ?>
+<div style="font-size:.85rem;color:#2563EB;margin-top:.25rem"><?= htmlspecialchars($svc['notes']) ?></div>
+<?php endif; ?>
+</div>
+<div style="font-size:1.25rem;font-weight:600;color:#1E40AF">€ <?= number_format($price, 2, ',', '.') ?></div>
+</div>
+<?php endforeach; ?>
+</div>
+
+<div style="background:var(--bg);padding:1rem;border-radius:8px;margin-top:1rem">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div style="font-weight:600;color:var(--cb-midnight)">Totale Servizi Facoltativi:</div>
+<div style="font-size:1.5rem;font-weight:600;color:#3B82F6">€ <?= number_format($totalOptional, 2, ',', '.') ?></div>
+</div>
+</div>
+</div>
+<?php endif; ?>
+
+<?php if(empty($mandatoryServices) && empty($optionalServices)): ?>
+<div style="text-align:center;padding:3rem;color:var(--cb-gray)">
+<div style="font-size:3rem;margin-bottom:1rem;opacity:.5">📋</div>
+<p>Nessun servizio configurato nel contratto</p>
+<a href="contratto_edit.php?code=<?= urlencode($agency['code']) ?>" style="display:inline-block;margin-top:1rem;background:var(--cb-bright-blue);color:white;padding:.75rem 1.5rem;border-radius:8px;text-decoration:none">Configura Contratto</a>
+</div>
+<?php endif; ?>
+
+<div class="info-section" style="background:#F0F9FF;border:2px solid #3B82F6;border-radius:12px;padding:1.5rem">
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+<div>
+<div style="font-size:.875rem;text-transform:uppercase;color:#1E40AF;margin-bottom:.5rem;font-weight:600">Costo Totale Mensile</div>
+<div style="font-size:2rem;font-weight:700;color:#1E40AF">
+€ <?= number_format(($agency['tech_fee'] ?? 0) + $totalOptional, 2, ',', '.') ?>
+</div>
+<div style="font-size:.85rem;color:#3B82F6;margin-top:.5rem">
+Tech Fee: €<?= number_format($agency['tech_fee'] ?? 0, 2, ',', '.') ?> 
+<?php if($totalOptional > 0): ?>
++ Facoltativi: €<?= number_format($totalOptional, 2, ',', '.') ?>
+<?php endif; ?>
+</div>
+</div>
+</div>
+</div>
+
 </div>
 
 <div class="tab-content" id="tab-servizi">
