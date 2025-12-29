@@ -20,13 +20,13 @@ if ($statusFilter !== 'all') {
 if ($search) {
     switch($searchType) {
         case 'city':
-            $sql .= " AND city LIKE :search1";
+            $sql .= " AND city IS NOT NULL AND city LIKE :search1";
             break;
         case 'province':
-            $sql .= " AND province LIKE :search1";
+            $sql .= " AND province IS NOT NULL AND province LIKE :search1";
             break;
         case 'people':
-            $sql .= " AND broker_manager LIKE :search1";
+            $sql .= " AND broker_manager IS NOT NULL AND broker_manager LIKE :search1";
             break;
         default: // 'all'
             $sql .= " AND (name LIKE :search1 OR code LIKE :search2 OR city LIKE :search3 OR province LIKE :search4 OR broker_manager LIKE :search5)";
@@ -46,6 +46,10 @@ if ($search) {
         case 'province':
         case 'people':
             $stmt->bindValue(':search1', "%$search%");
+            // DEBUG
+            if($searchType !== 'all') {
+                error_log("SEARCH DEBUG - Type: $searchType, Value: %$search%, SQL: $sql");
+            }
             break;
         default: // 'all'
             $stmt->bindValue(':search1', "%$search%");
@@ -58,6 +62,16 @@ if ($search) {
 
 $stmt->execute();
 $agencies = $stmt->fetchAll();
+
+// DEBUG TEMPORANEO - Rimuovere dopo test
+if($search && $searchType !== 'all') {
+    echo "<!-- DEBUG:
+    Search: $search
+    Type: $searchType
+    Query: $sql
+    Results: " . count($agencies) . "
+    -->";
+}
 
 // Count totale (senza filtri)
 $totalCount = $pdo->query("SELECT COUNT(*) FROM agencies WHERE status != 'Prospect'")->fetchColumn();
