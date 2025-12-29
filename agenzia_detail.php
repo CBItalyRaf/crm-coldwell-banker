@@ -29,10 +29,30 @@ $allAgents = $stmt->fetchAll();
 $activeAgents = array_filter($allAgents, fn($a) => $a['status'] === 'Active');
 $inactiveAgents = array_filter($allAgents, fn($a) => $a['status'] !== 'Active');
 
-// Carica servizi
-$stmt = $pdo->prepare("SELECT service_name, is_active, activation_date, expiration_date FROM agency_services WHERE agency_id = :agency_id ORDER BY service_name");
+// Carica TUTTI i servizi dal master con info su attivazione agenzia
+$stmt = $pdo->prepare("
+    SELECT 
+        sm.id,
+        sm.service_name,
+        sm.is_cb_suite,
+        sm.display_order,
+        COALESCE(ags.is_active, 0) as is_active,
+        ags.activation_date,
+        ags.expiration_date,
+        ags.renewal_required,
+        ags.invoice_reference,
+        ags.notes
+    FROM services_master sm
+    LEFT JOIN agency_services ags ON sm.service_name = ags.service_name AND ags.agency_id = :agency_id
+    WHERE sm.is_active = 1
+    ORDER BY sm.display_order ASC, sm.service_name ASC
+");
 $stmt->execute(['agency_id' => $agency['id']]);
-$services = $stmt->fetchAll();
+$allServicesData = $stmt->fetchAll();
+
+// Separa CB Suite e servizi standalone
+$cbSuiteServices = array_filter($allServicesData, fn($s) => $s['is_cb_suite'] == 1);
+$standaloneServices = array_filter($allServicesData, fn($s) => $s['is_cb_suite'] == 0);
 
 require_once 'header.php';
 ?>
@@ -339,27 +359,34 @@ Tech Fee: €<?= number_format($agency['tech_fee'] ?? 0, 2, ',', '.') ?>
 </div>
 
 <div class="tab-content" id="tab-servizi">
-<h3 style="font-size:1.25rem;font-weight:600;margin-bottom:1.5rem">Servizi Sottoscritti</h3>
-<?php if(empty($services)): ?>
-<div style="text-align:center;padding:3rem;color:var(--cb-gray)">
-<div style="font-size:3rem;margin-bottom:1rem;opacity:.5">⚙️</div>
-<p>Nessun servizio attivo</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+<h3 style="font-size:1.25rem;font-weight:600;margin:0">Servizi</h3>
+<a href="servizi_edit.php?code=<?= urlencode($agency['code']) ?>" class="edit-btn" style="text-decoration:none;font-size:.9rem;padding:.5rem 1rem">✏️ Gestisci Servizi</a>
 </div>
-<?php else: ?>
-<?php 
-$serviceNames = [
-    'cb_suite' => 'CB Suite (EuroMg/iRealtors)',
-    'canva' => 'Canva',
-    'regold' => 'Regold',
-    'james_edition' => 'James Edition',
-    'docudrop' => 'Docudrop',
-    'unique' => 'Unique'
-];
-foreach ($services as $i => $service): 
-?>
-<div class="service-box" style="cursor:pointer;margin-bottom:0;border-radius:8px 8px 0 0" onclick="toggleService(<?= $i ?>)">
+
+<?php if(!empty($cbSuiteServices)): ?>
+<!-- CB Suite Container -->
+<div class="service-box" style="cursor:pointer;margin-bottom:1rem;background:linear-gradient(135deg, #012169 0%, #1F69FF 100%);color:white;border-radius:12px" onclick="toggleCBSuite()">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:1.5rem">
 <div>
-<div class="service-name"><?= $serviceNames[$service['service_name']] ?? ucfirst($service['service_name']) ?></div>
+<div style="font-size:1.5rem;font-weight:700;display:flex;align-items:center;gap:.75rem">
+📦 CB Suite
+<span style="background:rgba(255,255,255,.2);padding:.25rem .75rem;border-radius:6px;font-size:.75rem;font-weight:600">
+<?= count($cbSuiteServices) ?> servizi
+</span>
+</div>
+<div style="font-size:.9rem;opacity:.9;margin-top:.5rem">Pacchetto servizi integrati</div>
+</div>
+<span id="arrow-cbsuite" style="font-size:1.5rem;transition:transform .2s">▼</span>
+</div>
+</div>
+
+<div id="cbsuite-details" style="display:none;margin-bottom:2rem;padding-left:2rem">
+<?php foreach($cbSuiteServices as $i => $service): ?>
+<div class="service-box" style="cursor:pointer;margin-bottom:.75rem;border-radius:8px" onclick="toggleService(<?= $i ?>)">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div>
+<div class="service-name"><?= htmlspecialchars($service['service_name']) ?></div>
 </div>
 <div style="display:flex;align-items:center;gap:1rem">
 <span class="service-badge <?= $service['is_active'] ? 'attivo' : 'non-attivo' ?>">
@@ -368,7 +395,9 @@ foreach ($services as $i => $service):
 <span id="arrow-<?= $i ?>" style="font-size:1.2rem;color:var(--cb-gray);transition:transform .2s">▼</span>
 </div>
 </div>
-<div id="service-details-<?= $i ?>" style="display:none;background:white;padding:1.5rem;border:1px solid #E5E7EB;border-top:none;border-radius:0 0 8px 8px;margin-bottom:1rem">
+</div>
+
+<div id="service-details-<?= $i ?>" style="display:none;background:white;padding:1.5rem;border:1px solid #E5E7EB;border-top:none;border-radius:0 0 8px 8px;margin-bottom:.75rem;margin-left:2rem">
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem">
 <div>
 <div style="font-size:.75rem;text-transform:uppercase;color:var(--cb-gray);margin-bottom:.25rem">Data Attivazione</div>
@@ -395,7 +424,68 @@ foreach ($services as $i => $service):
 <?php endif; ?>
 </div>
 <?php endforeach; ?>
+</div>
 <?php endif; ?>
+
+<?php if(!empty($standaloneServices)): ?>
+<!-- Servizi Standalone -->
+<div style="margin-top:2rem">
+<h4 style="font-size:1.1rem;font-weight:600;margin-bottom:1rem;color:var(--cb-midnight)">Altri Servizi</h4>
+<?php foreach($standaloneServices as $i => $service): 
+$idx = 'standalone_' . $i;
+?>
+<div class="service-box" style="cursor:pointer;margin-bottom:.75rem;border-radius:8px" onclick="toggleService('<?= $idx ?>')">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div>
+<div class="service-name"><?= htmlspecialchars($service['service_name']) ?></div>
+</div>
+<div style="display:flex;align-items:center;gap:1rem">
+<span class="service-badge <?= $service['is_active'] ? 'attivo' : 'non-attivo' ?>">
+<?= $service['is_active'] ? 'ATTIVO' : 'NON ATTIVO' ?>
+</span>
+<span id="arrow-<?= $idx ?>" style="font-size:1.2rem;color:var(--cb-gray);transition:transform .2s">▼</span>
+</div>
+</div>
+</div>
+
+<div id="service-details-<?= $idx ?>" style="display:none;background:white;padding:1.5rem;border:1px solid #E5E7EB;border-top:none;border-radius:0 0 8px 8px;margin-bottom:.75rem">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem">
+<div>
+<div style="font-size:.75rem;text-transform:uppercase;color:var(--cb-gray);margin-bottom:.25rem">Data Attivazione</div>
+<div style="font-weight:500"><?= $service['activation_date'] ? date('d/m/Y', strtotime($service['activation_date'])) : '-' ?></div>
+</div>
+<div>
+<div style="font-size:.75rem;text-transform:uppercase;color:var(--cb-gray);margin-bottom:.25rem">Data Scadenza</div>
+<div style="font-weight:500"><?= $service['expiration_date'] ? date('d/m/Y', strtotime($service['expiration_date'])) : '-' ?></div>
+</div>
+<div>
+<div style="font-size:.75rem;text-transform:uppercase;color:var(--cb-gray);margin-bottom:.25rem">Rinnovo Richiesto</div>
+<div style="font-weight:500"><?= $service['renewal_required'] ?: '-' ?></div>
+</div>
+<div>
+<div style="font-size:.75rem;text-transform:uppercase;color:var(--cb-gray);margin-bottom:.25rem">Riferimento Fattura</div>
+<div style="font-weight:500"><?= htmlspecialchars($service['invoice_reference'] ?: '-') ?></div>
+</div>
+</div>
+<?php if($service['notes']): ?>
+<div style="margin-top:1rem;padding-top:1rem;border-top:1px solid #F3F4F6">
+<div style="font-size:.75rem;text-transform:uppercase;color:var(--cb-gray);margin-bottom:.5rem">Note</div>
+<div style="font-weight:500"><?= nl2br(htmlspecialchars($service['notes'])) ?></div>
+</div>
+<?php endif; ?>
+</div>
+<?php endforeach; ?>
+</div>
+<?php endif; ?>
+
+<?php if(empty($cbSuiteServices) && empty($standaloneServices)): ?>
+<div style="text-align:center;padding:3rem;color:var(--cb-gray)">
+<div style="font-size:3rem;margin-bottom:1rem;opacity:.5">⚙️</div>
+<p>Nessun servizio configurato</p>
+<a href="servizi_edit.php?code=<?= urlencode($agency['code']) ?>" style="display:inline-block;margin-top:1rem;background:var(--cb-bright-blue);color:white;padding:.75rem 1.5rem;border-radius:8px;text-decoration:none">Gestisci Servizi</a>
+</div>
+<?php endif; ?>
+
 </div>
 
 <div class="tab-content" id="tab-agenti">
@@ -457,6 +547,18 @@ document.getElementById('tab-'+tabName).classList.add('active');
 function toggleService(index){
 const details = document.getElementById('service-details-' + index);
 const arrow = document.getElementById('arrow-' + index);
+if(details.style.display === 'none'){
+details.style.display = 'block';
+arrow.style.transform = 'rotate(180deg)';
+} else {
+details.style.display = 'none';
+arrow.style.transform = 'rotate(0deg)';
+}
+}
+
+function toggleCBSuite(){
+const details = document.getElementById('cbsuite-details');
+const arrow = document.getElementById('arrow-cbsuite');
 if(details.style.display === 'none'){
 details.style.display = 'block';
 arrow.style.transform = 'rotate(180deg)';

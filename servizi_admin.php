@@ -17,20 +17,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         
         if ($_POST['action'] === 'add') {
-            $stmt = $pdo->prepare("INSERT INTO services_master (service_name, default_price, display_order) 
-                                   VALUES (:name, :price, (SELECT COALESCE(MAX(display_order), 0) + 1 FROM services_master AS sm))");
+            $stmt = $pdo->prepare("INSERT INTO services_master (service_name, is_cb_suite, default_price, display_order) 
+                                   VALUES (:name, :is_cb_suite, :price, (SELECT COALESCE(MAX(display_order), 0) + 1 FROM services_master AS sm))");
             $stmt->execute([
                 'name' => $_POST['service_name'],
+                'is_cb_suite' => isset($_POST['is_cb_suite']) ? 1 : 0,
                 'price' => $_POST['default_price'] ?: 0
             ]);
             $success = "Servizio aggiunto!";
         }
         
         if ($_POST['action'] === 'edit') {
-            $stmt = $pdo->prepare("UPDATE services_master SET service_name = :name, default_price = :price WHERE id = :id");
+            $stmt = $pdo->prepare("UPDATE services_master SET service_name = :name, is_cb_suite = :is_cb_suite, default_price = :price WHERE id = :id");
             $stmt->execute([
                 'id' => $_POST['service_id'],
                 'name' => $_POST['service_name'],
+                'is_cb_suite' => isset($_POST['is_cb_suite']) ? 1 : 0,
                 'price' => $_POST['default_price'] ?: 0
             ]);
             $success = "Servizio aggiornato!";
@@ -134,7 +136,8 @@ require_once 'header.php';
 <tr>
 <th style="width:50px"></th>
 <th>Nome Servizio</th>
-<th style="width:200px">Prezzo Default</th>
+<th style="width:120px">CB Suite</th>
+<th style="width:150px">Prezzo Default</th>
 <th style="width:120px">Azioni</th>
 </tr>
 </thead>
@@ -143,9 +146,16 @@ require_once 'header.php';
 <tr data-id="<?= $service['id'] ?>">
 <td><span class="drag-handle">☰</span></td>
 <td class="service-name"><?= htmlspecialchars($service['service_name']) ?></td>
+<td style="text-align:center">
+<?php if($service['is_cb_suite']): ?>
+<span style="background:#D1FAE5;color:#065F46;padding:.25rem .75rem;border-radius:6px;font-size:.85rem;font-weight:600">✓ Suite</span>
+<?php else: ?>
+<span style="color:var(--cb-gray);font-size:.85rem">-</span>
+<?php endif; ?>
+</td>
 <td class="service-price">€ <?= number_format($service['default_price'], 2, ',', '.') ?></td>
 <td>
-<button class="btn-icon" onclick="openEditModal(<?= $service['id'] ?>, '<?= htmlspecialchars($service['service_name'], ENT_QUOTES) ?>', <?= $service['default_price'] ?>)" title="Modifica">✏️</button>
+<button class="btn-icon" onclick="openEditModal(<?= $service['id'] ?>, '<?= htmlspecialchars($service['service_name'], ENT_QUOTES) ?>', <?= $service['is_cb_suite'] ?>, <?= $service['default_price'] ?>)" title="Modifica">✏️</button>
 <button class="btn-icon btn-delete" onclick="deleteService(<?= $service['id'] ?>, '<?= htmlspecialchars($service['service_name'], ENT_QUOTES) ?>')" title="Elimina">🗑️</button>
 </td>
 </tr>
@@ -168,6 +178,12 @@ require_once 'header.php';
 <div class="form-field">
 <label>Nome Servizio *</label>
 <input type="text" name="service_name" required>
+</div>
+<div class="form-field">
+<label style="display:flex;align-items:center;gap:.5rem;cursor:pointer">
+<input type="checkbox" name="is_cb_suite" style="width:auto">
+<span>Parte di CB Suite</span>
+</label>
 </div>
 <div class="form-field">
 <label>Prezzo Default (€)</label>
@@ -198,6 +214,12 @@ require_once 'header.php';
 <input type="text" name="service_name" id="edit_service_name" required>
 </div>
 <div class="form-field">
+<label style="display:flex;align-items:center;gap:.5rem;cursor:pointer">
+<input type="checkbox" name="is_cb_suite" id="edit_is_cb_suite" style="width:auto">
+<span>Parte di CB Suite</span>
+</label>
+</div>
+<div class="form-field">
 <label>Prezzo Default (€)</label>
 <input type="number" name="default_price" id="edit_default_price" step="0.01" min="0">
 </div>
@@ -222,9 +244,10 @@ function closeAddModal() {
 }
 
 // Modal Modifica
-function openEditModal(id, name, price) {
+function openEditModal(id, name, isSuite, price) {
     document.getElementById('edit_service_id').value = id;
     document.getElementById('edit_service_name').value = name;
+    document.getElementById('edit_is_cb_suite').checked = isSuite == 1;
     document.getElementById('edit_default_price').value = price;
     document.getElementById('editModal').classList.add('active');
 }
