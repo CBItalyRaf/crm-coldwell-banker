@@ -9,6 +9,12 @@ $statusFilter = $_GET['status'] ?? 'Active';
 $search = $_GET['search'] ?? '';
 $searchType = $_GET['search_type'] ?? 'all';
 
+// Valida searchType per evitare SQL injection o valori non previsti
+$validSearchTypes = ['all', 'city', 'province', 'people'];
+if (!in_array($searchType, $validSearchTypes)) {
+    $searchType = 'all';
+}
+
 $sql = "SELECT code, name, city, province, status, broker_manager, email, phone 
         FROM agencies 
         WHERE status != 'Prospect'";
@@ -25,24 +31,29 @@ if ($search) {
     } elseif ($searchType === 'people') {
         $sql .= " AND broker_manager LIKE :search";
     } else {
-        // all
+        // all - cerca in tutti i campi
         $sql .= " AND (name LIKE :search OR code LIKE :search OR city LIKE :search OR province LIKE :search OR broker_manager LIKE :search)";
     }
 }
 
 $sql .= " ORDER BY name ASC";
 
-$stmt = $pdo->prepare($sql);
-
-if ($statusFilter !== 'all') {
-    $stmt->bindValue(':status', $statusFilter);
+try {
+    $stmt = $pdo->prepare($sql);
+    
+    if ($statusFilter !== 'all') {
+        $stmt->bindValue(':status', $statusFilter);
+    }
+    if ($search) {
+        $stmt->bindValue(':search', "%$search%");
+    }
+    
+    $stmt->execute();
+    $agencies = $stmt->fetchAll();
+} catch (Exception $e) {
+    error_log("Errore in agenzie.php query: " . $e->getMessage() . " - SQL: " . $sql);
+    die("Errore nel caricamento delle agenzie. Controlla i log.");
 }
-if ($search) {
-    $stmt->bindValue(':search', "%$search%");
-}
-
-$stmt->execute();
-$agencies = $stmt->fetchAll();
 
 // Count totale con status filter applicato (ma senza search)
 $countSql = "SELECT COUNT(*) FROM agencies WHERE status != 'Prospect'";
@@ -326,8 +337,9 @@ allRows=Array.from(agenciesTable.querySelectorAll('tr'));
 if(searchInput && searchResults){
 searchInput.addEventListener('input',function(){
 clearTimeout(searchTimeout);
-const query=this.value.trim().toLowerCase();
-const searchType = document.getElementById('searchType').value; // Usa valore corrente del dropdown
+const query=this.value.trim(); // NON toLowerCase - LIKE è già case-insensitive
+const searchTypeElem = document.getElementById('searchType');
+const searchType = searchTypeElem ? searchTypeElem.value : 'all'; // Fallback a 'all' se non esiste
 
 // NON filtrare tabella lato client - usiamo sempre ricerca server-side
 // per gestire correttamente i filtri città/provincia/broker
@@ -343,7 +355,11 @@ return;
 
 // Submit automatico dopo 500ms di pausa
 searchTimeout=setTimeout(()=>{
-    const searchType = document.getElementById('searchType').value; // Usa valore corrente
+    const searchTypeElem = document.getElementById('searchType');
+    const searchType = searchTypeElem ? searchTypeElem.value : 'all'; // Fallback a 'all'
+    
+    console.log('Search submit:', {query: query, searchType: searchType, status: '<?= htmlspecialchars($statusFilter) ?>'});
+    
     const form = document.createElement('form');
     form.method = 'GET';
     form.style.display = 'none';
