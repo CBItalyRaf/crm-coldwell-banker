@@ -46,3 +46,5 @@ composer.lock
 node_modules/
 package-lock.json
 yarn.lock
+*.md
+ISTRUZIONI_PULIZIA_CSV.md
