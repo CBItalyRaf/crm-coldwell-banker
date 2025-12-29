@@ -7,16 +7,16 @@ $pdo = getDB();
 $user = $_SESSION['crm_user'];
 $pageTitle = "Impostazioni Notifiche";
 
-// Controlla che user_id esista
-if (empty($user['id'])) {
-    die("Errore: ID utente non valido. Contatta l'amministratore.");
+// Controlla che email esista
+if (empty($user['email'])) {
+    die("Errore: Email utente non valida. Contatta l'amministratore.");
 }
 
 // Salva preferenze
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $saved = saveUserPreferences(
         $pdo,
-        $user['id'],
+        $user['email'],
         isset($_POST['notify_email']) ? 1 : 0,
         isset($_POST['notify_badge']) ? 1 : 0,
         isset($_POST['notify_dashboard']) ? 1 : 0
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Carica preferenze attuali
-$userSettings = getUserPreferences($pdo, $user['id']);
+$userSettings = getUserPreferences($pdo, $user['email']);
 
 require_once 'header.php';
 ?>

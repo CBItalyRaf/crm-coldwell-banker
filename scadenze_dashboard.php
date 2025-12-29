@@ -8,9 +8,9 @@ require_once 'helpers/user_preferences.php';
 $userPrefs = null;
 $scadenze = [];
 
-// Controlla che user_id esista prima di procedere
-if (isset($user['id']) && !empty($user['id'])) {
-    $userPrefs = getUserPreferences($pdo, $user['id']);
+// Controlla che user_email esista prima di procedere
+if (!empty($user['email'])) {
+    $userPrefs = getUserPreferences($pdo, $user['email']);
     
     if ($userPrefs['notify_scadenze_dashboard']) {
         $scadenze = getScadenzeImminenti($pdo, 30);

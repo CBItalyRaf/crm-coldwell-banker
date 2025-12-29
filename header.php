@@ -117,12 +117,12 @@ $scadenzeCount = 0;
 
 if (file_exists(__DIR__ . '/helpers/user_preferences.php') && 
     file_exists(__DIR__ . '/helpers/scadenze.php') &&
-    isset($user['id'])) {  // <-- Controllo che user['id'] esista
+    !empty($user['email'])) {  // <-- Usa email invece di id
     
     require_once __DIR__ . '/helpers/user_preferences.php';
     require_once __DIR__ . '/helpers/scadenze.php';
     
-    $userPrefs = getUserPreferences($pdo, $user['id']);
+    $userPrefs = getUserPreferences($pdo, $user['email']);
     
     if($userPrefs['notify_scadenze_badge']) {
         $scadenzeCount = getScadenzeCount($pdo, 30);
