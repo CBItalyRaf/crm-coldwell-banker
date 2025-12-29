@@ -86,6 +86,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <a href="fatture.php" class="dropdown-item">💰 Fatture</a>
 <a href="fornitori.php" class="dropdown-item">🏪 Fornitori</a>
 <?php if($user['crm_role'] === 'admin'): ?>
+<a href="onboarding_template.php" class="dropdown-item">⚙️ Template Onboarding</a>
 <a href="log_activity.php" class="dropdown-item">📋 Log Attività</a>
 <?php endif; ?>
 </div>

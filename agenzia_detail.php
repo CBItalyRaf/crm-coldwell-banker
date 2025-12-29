@@ -85,11 +85,19 @@ require_once 'header.php';
 </div>
 <span class="status-badge <?= strtolower($agency['status']) ?>"><?= htmlspecialchars($agency['status']) ?></span>
 </div>
+<div style="display:flex;gap:.75rem">
+<?php if($agency['status'] === 'Opening' && in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])): ?>
+<a href="onboarding_start.php?agency_id=<?= $agency['id'] ?>" class="edit-btn" style="background:#10B981;text-decoration:none">🚀 Avvia Onboarding</a>
+<?php endif; ?>
+<?php if($agency['status'] === 'In Onboarding'): ?>
+<a href="onboarding_detail.php?agency_id=<?= $agency['id'] ?>" class="edit-btn" style="background:#10B981;text-decoration:none">📋 Vedi Onboarding</a>
+<?php endif; ?>
 <?php if(in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])): ?>
 <button class="edit-btn" id="editBtn">🔓 Modifica</button>
 <?php else: ?>
 <button class="edit-btn" disabled>🔒 Sola Lettura</button>
 <?php endif; ?>
+</div>
 </div>
 
 <div class="tabs status-<?= strtolower($agency['status']) ?>">

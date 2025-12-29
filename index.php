@@ -12,6 +12,18 @@ $ticketsOpen = 0;
 
 $recentAgencies = $pdo->query("SELECT name, city, created_at FROM agencies WHERE status = 'Active' ORDER BY created_at DESC LIMIT 5")->fetchAll();
 
+// Onboarding attivi
+$onboardings = $pdo->query("
+    SELECT o.*, a.name as agency_name, a.code as agency_code,
+    (SELECT COUNT(*) FROM onboarding_tasks WHERE onboarding_id = o.id) as total_tasks,
+    (SELECT COUNT(*) FROM onboarding_tasks WHERE onboarding_id = o.id AND is_completed = 1) as completed_tasks
+    FROM onboardings o
+    JOIN agencies a ON o.agency_id = a.id
+    WHERE o.status = 'active'
+    ORDER BY o.started_at DESC
+    LIMIT 5
+")->fetchAll();
+
 require_once 'header.php';
 ?>
 
@@ -39,6 +51,20 @@ require_once 'header.php';
 .recent-item:hover{background:var(--bg)}
 .recent-item-name{font-weight:600;margin-bottom:.25rem}
 .recent-item-meta{font-size:.85rem;color:var(--cb-gray)}
+.onboarding-item{padding:1rem;border-bottom:1px solid #f3f4f6;cursor:pointer;transition:background .2s}
+.onboarding-item:last-child{border-bottom:none}
+.onboarding-item:hover{background:var(--bg)}
+.onboarding-item.on{border-left:4px solid #10B981}
+.onboarding-item.off{border-left:4px solid #EF4444}
+.onboarding-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.onboarding-name{font-weight:600;color:var(--cb-midnight)}
+.onboarding-badge{padding:.25rem .5rem;border-radius:6px;font-size:.75rem;font-weight:600}
+.onboarding-badge.on{background:#D1FAE5;color:#065F46}
+.onboarding-badge.off{background:#FEE2E2;color:#991B1B}
+.onboarding-progress{height:8px;background:#E5E7EB;border-radius:4px;overflow:hidden;margin-top:.5rem}
+.onboarding-progress-bar{height:100%;background:#10B981;transition:width .3s}
+.onboarding-progress-bar.off{background:#EF4444}
+.onboarding-meta{font-size:.85rem;color:var(--cb-gray);margin-top:.25rem}
 @media (max-width:768px){
 .stats-grid,.widgets-grid{grid-template-columns:1fr}
 }
@@ -108,16 +134,32 @@ require_once 'header.php';
 
 <div class="widget">
 <div class="widget-header">
-<span class="widget-icon">🏢</span>
-<h3 class="widget-title">Ultime Agenzie</h3>
+<span class="widget-icon">🔄</span>
+<h3 class="widget-title">Onboarding & Offboarding</h3>
 </div>
 <div class="widget-content" style="padding:0">
-<?php foreach($recentAgencies as $agency): ?>
-<div class="recent-item">
-<div class="recent-item-name"><?= htmlspecialchars($agency['name']) ?></div>
-<div class="recent-item-meta"><?= htmlspecialchars($agency['city']) ?> • <?= date('d/m/Y', strtotime($agency['created_at'])) ?></div>
+<?php if(empty($onboardings)): ?>
+<div class="widget-placeholder">
+<div class="widget-placeholder-icon">✅</div>
+<p>Nessun onboarding attivo</p>
+</div>
+<?php else: ?>
+<?php foreach($onboardings as $onb): 
+$progress = $onb['total_tasks'] > 0 ? round(($onb['completed_tasks'] / $onb['total_tasks']) * 100) : 0;
+?>
+<div class="onboarding-item on" onclick="window.location.href='onboarding_detail.php?agency_id=<?= $onb['agency_id'] ?>'">
+<div class="onboarding-header">
+<div class="onboarding-name">➕ <?= htmlspecialchars($onb['agency_name']) ?></div>
+<span class="onboarding-badge on">In Corso</span>
+</div>
+<div class="onboarding-meta"><?= htmlspecialchars($onb['agency_code']) ?> • Avviato <?= date('d/m/Y', strtotime($onb['started_at'])) ?></div>
+<div class="onboarding-progress">
+<div class="onboarding-progress-bar" style="width:<?= $progress ?>%"></div>
+</div>
+<div class="onboarding-meta" style="text-align:right;margin-top:.25rem"><?= $onb['completed_tasks'] ?>/<?= $onb['total_tasks'] ?> (<?= $progress ?>%)</div>
 </div>
 <?php endforeach; ?>
+<?php endif; ?>
 </div>
 </div>
 </div>
