@@ -109,6 +109,27 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 </div>
 </nav>
 </div>
+
+<?php 
+// Carica preferenze utente e badge scadenze
+require_once __DIR__ . '/helpers/user_preferences.php';
+require_once __DIR__ . '/helpers/scadenze.php';
+
+$userPrefs = getUserPreferences($pdo, $user['id']);
+$scadenzeCount = 0;
+
+if($userPrefs['notify_scadenze_badge']) {
+    $scadenzeCount = getScadenzeCount($pdo, 30);
+}
+?>
+
+<?php if($userPrefs['notify_scadenze_badge'] && $scadenzeCount > 0): ?>
+<a href="index.php#scadenze" class="nav-button" style="position:relative;margin-right:1rem" title="Scadenze imminenti">
+    🔔
+    <span style="position:absolute;top:-.25rem;right:-.25rem;background:#EF4444;color:white;font-size:.7rem;padding:.15rem .4rem;border-radius:999px;font-weight:700;min-width:1.25rem;text-align:center"><?= $scadenzeCount ?></span>
+</a>
+<?php endif; ?>
+
 <div class="nav-item user-menu">
 <button class="user-button">
 <div class="user-avatar"><?= strtoupper(substr($user['name'],0,1)) ?></div>
@@ -116,6 +137,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <span>▼</span>
 </button>
 <div class="dropdown-menu" style="right:0;left:auto">
+<a href="user_settings.php" class="dropdown-item">⚙️ Impostazioni</a>
 <a href="https://coldwellbankeritaly.tech/repository/dashboard/" class="dropdown-item">🏠 Dashboard CB Italia</a>
 <a href="logout.php" class="dropdown-item">🚪 Logout</a>
 </div>
