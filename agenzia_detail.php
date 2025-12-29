@@ -286,7 +286,7 @@ require_once 'header.php';
 </div>
 
 <?php
-// Carica servizi OBBLIGATORI dal contratto (solo is_mandatory, no prezzi)
+// Carica servizi OBBLIGATORI dal contratto
 $stmtMandatory = $pdo->prepare("
     SELECT acs.*, sm.service_name
     FROM agency_contract_services acs
@@ -297,30 +297,39 @@ $stmtMandatory = $pdo->prepare("
 $stmtMandatory->execute(['agency_id' => $agency['id']]);
 $mandatoryServices = $stmtMandatory->fetchAll();
 
-// Carica servizi FACOLTATIVI attivi da agency_services
+// Carica servizi FACOLTATIVI da agency_services (senza JOIN)
 $stmtOptional = $pdo->prepare("
-    SELECT ags.*, sm.service_name, sm.default_price
-    FROM agency_services ags
-    JOIN services_master sm ON ags.service_name = (
-        CASE sm.service_name
-            WHEN 'CB Suite' THEN 'cb_suite'
-            WHEN 'Canva Pro' THEN 'canva'
-            WHEN 'Regold' THEN 'regold'
-            WHEN 'James Edition' THEN 'james_edition'
-            WHEN 'Docudrop' THEN 'docudrop'
-            WHEN 'Unique Estates' THEN 'unique'
-        END
-    )
-    WHERE ags.agency_id = :agency_id 
-    AND ags.is_active = 1
-    AND sm.id NOT IN (
-        SELECT service_id FROM agency_contract_services 
-        WHERE agency_id = :agency_id AND is_mandatory = 1
-    )
-    ORDER BY sm.service_name ASC
+    SELECT * FROM agency_services 
+    WHERE agency_id = :agency_id AND is_active = 1
 ");
 $stmtOptional->execute(['agency_id' => $agency['id']]);
-$optionalServices = $stmtOptional->fetchAll();
+$agencyServicesRaw = $stmtOptional->fetchAll();
+
+// Carica prezzi default da services_master
+$stmtPrices = $pdo->query("SELECT service_name, default_price FROM services_master");
+$defaultPrices = [];
+foreach($stmtPrices->fetchAll() as $row) {
+    $defaultPrices[$row['service_name']] = $row['default_price'];
+}
+
+// Escludi obbligatori e mappa nomi servizi
+$mandatoryIds = array_column($mandatoryServices, 'service_id');
+$serviceNameMap = [
+    'cb_suite' => 'CB Suite',
+    'canva' => 'Canva Pro',
+    'regold' => 'Regold',
+    'james_edition' => 'James Edition',
+    'docudrop' => 'Docudrop',
+    'unique' => 'Unique Estates'
+];
+
+$optionalServices = [];
+foreach($agencyServicesRaw as $svc) {
+    $mappedName = $serviceNameMap[$svc['service_name']] ?? $svc['service_name'];
+    $svc['service_name'] = $mappedName;
+    $svc['default_price'] = $defaultPrices[$mappedName] ?? 0;
+    $optionalServices[] = $svc;
+}
 
 // Carica allegati contrattuali
 $stmtFiles = $pdo->prepare("SELECT * FROM agency_contract_files WHERE agency_id = :agency_id ORDER BY uploaded_at DESC");
