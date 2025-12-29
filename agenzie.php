@@ -41,25 +41,18 @@ if ($search) {
 
 $sql .= " ORDER BY name ASC";
 
-// DEBUG - mostra query e parametri
-if ($search && $searchType === 'all') {
-    die("DEBUG SQL: <pre>" . htmlspecialchars($sql) . "</pre><br>statusFilter: $statusFilter<br>search: $search<br>searchType: $searchType");
+$params = [];
+
+if ($statusFilter !== 'all') {
+    $params[':status'] = $statusFilter;
+}
+if ($search) {
+    $params[':search'] = "%$search%";
 }
 
 $stmt = $pdo->prepare($sql);
-
-if ($statusFilter !== 'all') {
-    $stmt->bindValue(':status', $statusFilter);
-}
-if ($search) {
-    $stmt->bindValue(':search', "%$search%");
-}
-
-$stmt->execute();
+$stmt->execute($params);
 $agencies = $stmt->fetchAll();
-
-// Debug
-error_log("AGENZIE.PHP DEBUG - Found " . count($agencies) . " agencies with search='$search' searchType='$searchType' status='$statusFilter'");
 
 // Count totale con status filter applicato (ma senza search)
 $countSql = "SELECT COUNT(*) FROM agencies WHERE status != 'Prospect'";
