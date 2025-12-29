@@ -52,12 +52,12 @@ $stmt = $pdo->prepare("
         ags.invoice_reference,
         ags.notes
     FROM services_master sm
-    LEFT JOIN agency_services ags ON sm.service_name = ags.service_name AND ags.agency_id = :agency_id
-    LEFT JOIN agency_contract_services acs ON sm.id = acs.service_id AND acs.agency_id = :agency_id
+    LEFT JOIN agency_services ags ON sm.service_name = ags.service_name AND ags.agency_id = :agency_id1
+    LEFT JOIN agency_contract_services acs ON sm.id = acs.service_id AND acs.agency_id = :agency_id2
     WHERE sm.is_active = 1
     ORDER BY sm.display_order ASC, sm.service_name ASC
 ");
-$stmt->execute(['agency_id' => $agency['id']]);
+$stmt->execute(['agency_id1' => $agency['id'], 'agency_id2' => $agency['id']]);
 $allServicesData = $stmt->fetchAll();
 
 // Separa CB Suite e servizi standalone
