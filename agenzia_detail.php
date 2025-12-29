@@ -286,23 +286,41 @@ require_once 'header.php';
 </div>
 
 <?php
-// Carica servizi obbligatori e facoltativi dal contratto
-$stmtContract = $pdo->prepare("
-    SELECT acs.*, sm.service_name, sm.default_price 
+// Carica servizi OBBLIGATORI dal contratto (solo is_mandatory, no prezzi)
+$stmtMandatory = $pdo->prepare("
+    SELECT acs.*, sm.service_name
     FROM agency_contract_services acs
     JOIN services_master sm ON acs.service_id = sm.id
-    WHERE acs.agency_id = :agency_id
-    ORDER BY acs.is_mandatory DESC, sm.service_name ASC
+    WHERE acs.agency_id = :agency_id AND acs.is_mandatory = 1
+    ORDER BY sm.service_name ASC
 ");
-$stmtContract->execute(['agency_id' => $agency['id']]);
-$contractServices = $stmtContract->fetchAll();
+$stmtMandatory->execute(['agency_id' => $agency['id']]);
+$mandatoryServices = $stmtMandatory->fetchAll();
 
-$mandatoryServices = array_filter($contractServices, fn($s) => $s['is_mandatory'] == 1);
-$optionalServices = array_filter($contractServices, fn($s) => $s['is_mandatory'] == 0);
-
-$totalOptional = array_reduce($optionalServices, function($sum, $s) {
-    return $sum + ($s['custom_price'] ?? $s['default_price']);
-}, 0);
+// Carica servizi FACOLTATIVI attivi da agency_services
+$stmtOptional = $pdo->prepare("
+    SELECT ags.*, sm.service_name, sm.default_price
+    FROM agency_services ags
+    JOIN services_master sm ON ags.service_name = (
+        CASE sm.service_name
+            WHEN 'CB Suite' THEN 'cb_suite'
+            WHEN 'Canva Pro' THEN 'canva'
+            WHEN 'Regold' THEN 'regold'
+            WHEN 'James Edition' THEN 'james_edition'
+            WHEN 'Docudrop' THEN 'docudrop'
+            WHEN 'Unique Estates' THEN 'unique'
+        END
+    )
+    WHERE ags.agency_id = :agency_id 
+    AND ags.is_active = 1
+    AND sm.id NOT IN (
+        SELECT service_id FROM agency_contract_services 
+        WHERE agency_id = :agency_id AND is_mandatory = 1
+    )
+    ORDER BY sm.service_name ASC
+");
+$stmtOptional->execute(['agency_id' => $agency['id']]);
+$optionalServices = $stmtOptional->fetchAll();
 
 // Carica allegati contrattuali
 $stmtFiles = $pdo->prepare("SELECT * FROM agency_contract_files WHERE agency_id = :agency_id ORDER BY uploaded_at DESC");
