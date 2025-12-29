@@ -324,43 +324,48 @@ allRows=Array.from(agenciesTable.querySelectorAll('tr'));
 }
 
 if(searchInput && searchResults){
+const searchType = '<?= $searchType ?? "all" ?>';
+
 searchInput.addEventListener('input',function(){
 clearTimeout(searchTimeout);
 const query=this.value.trim().toLowerCase();
 
-if(agenciesTable){
-if(query.length===0){
-allRows.forEach(row=>row.style.display='');
-}else{
-allRows.forEach(row=>{
-const text=row.textContent.toLowerCase();
-row.style.display=text.includes(query)?'':'none';
-});
-}
-}
+// NON filtrare tabella lato client - usiamo sempre ricerca server-side
+// per gestire correttamente i filtri città/provincia/broker
 
 if(query.length<2){
 searchResults.classList.remove('active');
+// Se cancello la ricerca, ricarica senza filtro
+if(query.length === 0 && '<?= $search ?>' !== '') {
+    window.location.href = '?status=<?= htmlspecialchars($statusFilter) ?>&search_type=' + searchType;
+}
 return;
 }
 
+// Submit automatico dopo 500ms di pausa
 searchTimeout=setTimeout(()=>{
-fetch('https://admin.mycb.it/search_api.php?q='+encodeURIComponent(query))
-.then(r=>r.json())
-.then(data=>{
-if(data.length===0){
-searchResults.innerHTML='<div style="padding:1rem;text-align:center;color:#6D7180">Nessun risultato</div>';
-}else{
-searchResults.innerHTML=data.map(item=>`
-<div class="search-item" onclick="window.location.href='${item.url}'">
-<div class="search-item-title">${item.title}</div>
-<div class="search-item-meta">${item.meta}</div>
-</div>
-`).join('');
-}
-searchResults.classList.add('active');
-});
-},300);
+    const form = document.createElement('form');
+    form.method = 'GET';
+    form.style.display = 'none';
+    
+    const statusInput = document.createElement('input');
+    statusInput.name = 'status';
+    statusInput.value = '<?= htmlspecialchars($statusFilter) ?>';
+    form.appendChild(statusInput);
+    
+    const searchField = document.createElement('input');
+    searchField.name = 'search';
+    searchField.value = query;
+    form.appendChild(searchField);
+    
+    const typeInput = document.createElement('input');
+    typeInput.name = 'search_type';
+    typeInput.value = searchType;
+    form.appendChild(typeInput);
+    
+    document.body.appendChild(form);
+    form.submit();
+}, 500);
 });
 
 document.addEventListener('click',function(e){
