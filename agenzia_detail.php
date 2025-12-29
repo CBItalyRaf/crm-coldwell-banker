@@ -269,10 +269,18 @@ require_once 'header.php';
 <h3>Condizioni Economiche</h3>
 <div class="info-grid">
 <div class="info-field">
-<label>Tech Fee (Forfait)</label>
+<label>Tech Fee (Forfait Annuale)</label>
 <div class="value" style="font-size:1.5rem;font-weight:600;color:var(--cb-bright-blue)">
-<?= $agency['tech_fee'] ? '€ ' . number_format($agency['tech_fee'], 2, ',', '.') : '€ 0,00' ?>
+<?= $agency['tech_fee'] ? '€ ' . number_format($agency['tech_fee'], 2, ',', '.') : '€ 0,00' ?> <span style="font-size:.8rem;font-weight:400;color:var(--cb-gray)">/anno</span>
 </div>
+</div>
+<div class="info-field">
+<label>Data Attivazione</label>
+<div class="value"><?= $agency['tech_fee_activation_date'] ? date('d/m/Y', strtotime($agency['tech_fee_activation_date'])) : '-' ?></div>
+</div>
+<div class="info-field">
+<label>Data Scadenza/Rinnovo</label>
+<div class="value"><?= $agency['tech_fee_expiry_date'] ? date('d/m/Y', strtotime($agency['tech_fee_expiry_date'])) : '-' ?></div>
 </div>
 </div>
 </div>
