@@ -55,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $isActive = isset($_POST['service_' . $serviceId]) ? 1 : 0;
         $activationDate = $_POST['activation_date_' . $serviceId] ?? null;
         $deactivationDate = $_POST['deactivation_date_' . $serviceId] ?? null;
+        $customPrice = $_POST['custom_price_' . $serviceId] ?? null;
         $notes = $_POST['notes_' . $serviceId] ?? null;
         
         // Check if service exists for this agency
@@ -65,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 SET is_active = :is_active,
                     activation_date = :activation_date,
                     expiration_date = :expiration_date,
+                    custom_price = :custom_price,
                     notes = :notes
                 WHERE agency_id = :agency_id AND service_name = :service_name
             ");
@@ -72,6 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'is_active' => $isActive,
                 'activation_date' => $activationDate ?: null,
                 'expiration_date' => $deactivationDate ?: null,
+                'custom_price' => $customPrice ?: null,
                 'notes' => $notes ?: null,
                 'agency_id' => $agency['id'],
                 'service_name' => $serviceName
@@ -79,14 +82,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else if ($isActive) {
             // Insert new only if active
             $stmt = $pdo->prepare("
-                INSERT INTO agency_services (agency_id, service_name, is_active, activation_date, expiration_date, notes)
-                VALUES (:agency_id, :service_name, 1, :activation_date, :expiration_date, :notes)
+                INSERT INTO agency_services (agency_id, service_name, is_active, activation_date, expiration_date, custom_price, notes)
+                VALUES (:agency_id, :service_name, 1, :activation_date, :expiration_date, :custom_price, :notes)
             ");
             $stmt->execute([
                 'agency_id' => $agency['id'],
                 'service_name' => $serviceName,
                 'activation_date' => $activationDate ?: null,
                 'expiration_date' => $deactivationDate ?: null,
+                'custom_price' => $customPrice ?: null,
                 'notes' => $notes ?: null
             ]);
         }
@@ -108,7 +112,7 @@ require_once 'header.php';
 .service-toggle::after{content:'';position:absolute;width:24px;height:24px;background:white;border-radius:50%;top:4px;left:4px;transition:left .2s}
 .service-toggle.active::after{left:32px}
 .service-name{font-size:1.1rem;font-weight:600;flex:1}
-.service-dates{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+.service-dates{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1rem}
 .form-group label{display:block;font-size:.9rem;color:var(--cb-gray);margin-bottom:.5rem}
 .form-group input{width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:4px}
 .btn-save{background:var(--cb-bright-blue);color:white;border:none;padding:.75rem 2rem;border-radius:8px;cursor:pointer;font-weight:600}
@@ -147,6 +151,10 @@ $isActive = $agencyService ? $agencyService['is_active'] : 0;
 <div class="form-group">
 <label>Data Scadenza</label>
 <input type="date" name="deactivation_date_<?= $service['id'] ?>" value="<?= $agencyService['expiration_date'] ?? '' ?>">
+</div>
+<div class="form-group">
+<label>Prezzo Custom (€)</label>
+<input type="number" step="0.01" name="custom_price_<?= $service['id'] ?>" value="<?= $agencyService['custom_price'] ?? '' ?>" placeholder="Default: <?= number_format($service['default_price'] ?? 0, 2, ',', '.') ?>" style="width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:4px">
 </div>
 <div class="form-group" style="grid-column:1/-1">
 <label>Note</label>
