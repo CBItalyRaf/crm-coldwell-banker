@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once 'check_auth.php';
 require_once 'config/database.php';
 require_once 'helpers/user_preferences.php';
@@ -14,17 +18,23 @@ if (empty($user['email'])) {
 
 // Salva preferenze
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $saved = saveUserPreferences(
-        $pdo,
-        $user['email'],
-        isset($_POST['notify_email']) ? 1 : 0,
-        isset($_POST['notify_badge']) ? 1 : 0,
-        isset($_POST['notify_dashboard']) ? 1 : 0
-    );
-    
-    if ($saved) {
-        header('Location: user_settings.php?saved=1');
-        exit;
+    try {
+        $saved = saveUserPreferences(
+            $pdo,
+            $user['email'],
+            isset($_POST['notify_email']) ? 1 : 0,
+            isset($_POST['notify_badge']) ? 1 : 0,
+            isset($_POST['notify_dashboard']) ? 1 : 0
+        );
+        
+        if ($saved) {
+            header('Location: user_settings.php?saved=1');
+            exit;
+        } else {
+            die("Errore: salvataggio fallito");
+        }
+    } catch (Exception $e) {
+        die("ERRORE SALVATAGGIO: " . $e->getMessage());
     }
 }
 
