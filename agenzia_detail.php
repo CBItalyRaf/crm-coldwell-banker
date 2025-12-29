@@ -358,19 +358,31 @@ $contractFiles = $stmtFiles->fetchAll();
 
 <?php if(!empty($optionalServices)): ?>
 <div class="info-section">
-<h3>Servizi Facoltativi Attivati <span style="font-size:.85rem;font-weight:400;color:var(--cb-gray)">(costi aggiuntivi)</span></h3>
+<h3>Servizi Facoltativi Attivi <span style="font-size:.85rem;font-weight:400;color:var(--cb-gray)">(costi aggiuntivi)</span></h3>
 <div style="display:grid;gap:.75rem">
 <?php foreach($optionalServices as $svc): 
 $price = $svc['custom_price'] ?? $svc['default_price'];
 ?>
-<div style="background:#DBEAFE;border-left:4px solid #3B82F6;padding:1rem;border-radius:8px;display:flex;justify-content:space-between;align-items:center">
+<div style="background:#DBEAFE;border-left:4px solid #3B82F6;padding:1.5rem;border-radius:8px">
+<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:1rem">
 <div style="flex:1">
-<div style="font-weight:600;color:#1E40AF"><?= htmlspecialchars($svc['service_name']) ?></div>
+<div style="font-weight:600;font-size:1.1rem;color:#1E40AF"><?= htmlspecialchars($svc['service_name']) ?></div>
 <?php if($svc['notes']): ?>
-<div style="font-size:.85rem;color:#2563EB;margin-top:.25rem"><?= htmlspecialchars($svc['notes']) ?></div>
+<div style="font-size:.85rem;color:#2563EB;margin-top:.5rem"><?= htmlspecialchars($svc['notes']) ?></div>
 <?php endif; ?>
 </div>
-<div style="font-size:1.25rem;font-weight:600;color:#1E40AF">€ <?= number_format($price, 2, ',', '.') ?></div>
+<div style="font-size:1.5rem;font-weight:700;color:#1E40AF">€ <?= number_format($price, 2, ',', '.') ?></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;font-size:.9rem;color:#1E40AF">
+<div>
+<div style="font-weight:600;opacity:.7">Attivazione:</div>
+<div><?= $svc['activation_date'] ? date('d/m/Y', strtotime($svc['activation_date'])) : '-' ?></div>
+</div>
+<div>
+<div style="font-weight:600;opacity:.7">Scadenza:</div>
+<div><?= $svc['expiration_date'] ? date('d/m/Y', strtotime($svc['expiration_date'])) : '-' ?></div>
+</div>
+</div>
 </div>
 <?php endforeach; ?>
 </div>
