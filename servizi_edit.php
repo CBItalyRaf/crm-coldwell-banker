@@ -34,16 +34,6 @@ foreach ($stmtAgency->fetchAll() as $svc) {
     $agencyServices[$svc['service_name']] = $svc;
 }
 
-// Carica servizi OBBLIGATORI dal contratto
-$stmtMandatory = $pdo->prepare("
-    SELECT sm.id, sm.service_name 
-    FROM agency_contract_services acs
-    JOIN services_master sm ON acs.service_id = sm.id
-    WHERE acs.agency_id = :agency_id AND acs.is_mandatory = 1
-");
-$stmtMandatory->execute(['agency_id' => $agency['id']]);
-$mandatoryServiceIds = array_column($stmtMandatory->fetchAll(), 'id');
-
 // Mappa service_name da services_master
 $serviceNameMap = [
     'CB Suite' => 'cb_suite',
@@ -51,7 +41,10 @@ $serviceNameMap = [
     'Regold' => 'regold',
     'James Edition' => 'james_edition',
     'Docudrop' => 'docudrop',
-    'Unique Estates' => 'unique'
+    'Unique Estates' => 'unique',
+    'Casella Mail Agenzia' => 'casella_mail_agenzia',
+    'EuroMq' => 'euromq',
+    'Gestim' => 'gestim'
 ];
 
 // Handle form submission
@@ -116,18 +109,15 @@ require_once 'header.php';
 <style>
 .service-card{background:white;padding:1.5rem;border-radius:8px;margin-bottom:1rem;border:2px solid #E5E7EB;transition:all .2s}
 .service-card.active{border-color:var(--cb-bright-blue);background:#F0F9FF}
-.service-card.mandatory{border-color:#10B981;background:#D1FAE5}
 .service-header{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
 .service-toggle{width:60px;height:32px;background:#E5E7EB;border-radius:16px;position:relative;cursor:pointer;transition:background .2s}
 .service-toggle.active{background:var(--cb-bright-blue)}
-.service-toggle.disabled{cursor:not-allowed;opacity:.6;background:#10B981}
 .service-toggle::after{content:'';position:absolute;width:24px;height:24px;background:white;border-radius:50%;top:4px;left:4px;transition:left .2s}
 .service-toggle.active::after{left:32px}
 .service-name{font-size:1.1rem;font-weight:600;flex:1}
 .service-dates{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1rem}
 .form-group label{display:block;font-size:.9rem;color:var(--cb-gray);margin-bottom:.5rem}
-.form-group input,.form-group textarea{width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:4px}
-.form-group input:disabled,.form-group textarea:disabled{background:#F3F4F6;cursor:not-allowed;opacity:.6}
+.form-group input{width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:4px}
 .btn-save{background:var(--cb-bright-blue);color:white;border:none;padding:.75rem 2rem;border-radius:8px;cursor:pointer;font-weight:600}
 .btn-cancel{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.75rem 2rem;border-radius:8px;cursor:pointer}
 </style>
@@ -147,46 +137,32 @@ require_once 'header.php';
 $serviceName = $serviceNameMap[$service['service_name']] ?? null;
 $agencyService = $serviceName ? ($agencyServices[$serviceName] ?? null) : null;
 $isActive = $agencyService ? $agencyService['is_active'] : 0;
-$isMandatory = in_array($service['id'], $mandatoryServiceIds);
-
-// Se è obbligatorio, forza attivo
-if ($isMandatory) {
-    $isActive = 1;
-}
 ?>
-<div class="service-card <?= $isActive ? 'active' : '' ?> <?= $isMandatory ? 'mandatory' : '' ?>" data-service="<?= $service['id'] ?>" data-mandatory="<?= $isMandatory ? '1' : '0' ?>">
+<div class="service-card <?= $isActive ? 'active' : '' ?>" data-service="<?= $service['id'] ?>">
 <div class="service-header">
-<label class="service-toggle <?= $isActive ? 'active' : '' ?> <?= $isMandatory ? 'disabled' : '' ?>" onclick="<?= $isMandatory ? '' : 'toggleService(' . $service['id'] . ')' ?>">
-<input type="checkbox" name="service_<?= $service['id'] ?>" <?= $isActive ? 'checked' : '' ?> <?= $isMandatory ? 'disabled' : '' ?> style="display:none">
+<label class="service-toggle <?= $isActive ? 'active' : '' ?>" onclick="toggleService(<?= $service['id'] ?>)">
+<input type="checkbox" name="service_<?= $service['id'] ?>" <?= $isActive ? 'checked' : '' ?> style="display:none">
 </label>
 <div class="service-name"><?= htmlspecialchars($service['service_name']) ?></div>
-<?php if ($isMandatory): ?>
-<span style="background:#10B981;color:white;padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:600;text-transform:uppercase">OBBLIGATORIO</span>
-<?php endif; ?>
 </div>
 
 <div class="service-dates" id="dates-<?= $service['id'] ?>" style="display:<?= $isActive ? 'grid' : 'none' ?>">
 <div class="form-group">
 <label>Data Attivazione</label>
-<input type="date" name="activation_date_<?= $service['id'] ?>" value="<?= $agencyService['activation_date'] ?? '' ?>" <?= $isMandatory ? 'disabled' : '' ?>>
+<input type="date" name="activation_date_<?= $service['id'] ?>" value="<?= $agencyService['activation_date'] ?? '' ?>">
 </div>
 <div class="form-group">
 <label>Data Scadenza</label>
-<input type="date" name="deactivation_date_<?= $service['id'] ?>" value="<?= $agencyService['expiration_date'] ?? '' ?>" <?= $isMandatory ? 'disabled' : '' ?>>
+<input type="date" name="deactivation_date_<?= $service['id'] ?>" value="<?= $agencyService['expiration_date'] ?? '' ?>">
 </div>
 <div class="form-group">
 <label>Prezzo Custom (€)</label>
-<input type="number" step="0.01" name="custom_price_<?= $service['id'] ?>" value="<?= $agencyService['custom_price'] ?? '' ?>" placeholder="Default: <?= number_format($service['default_price'] ?? 0, 2, ',', '.') ?>" style="width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:4px" <?= $isMandatory ? 'disabled' : '' ?>>
+<input type="number" step="0.01" name="custom_price_<?= $service['id'] ?>" value="<?= $agencyService['custom_price'] ?? '' ?>" placeholder="Default: <?= number_format($service['default_price'] ?? 0, 2, ',', '.') ?>" style="width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:4px">
 </div>
 <div class="form-group" style="grid-column:1/-1">
 <label>Note</label>
-<textarea name="notes_<?= $service['id'] ?>" rows="2" style="width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:4px;font-family:inherit" <?= $isMandatory ? 'disabled' : '' ?>><?= htmlspecialchars($agencyService['notes'] ?? '') ?></textarea>
+<textarea name="notes_<?= $service['id'] ?>" rows="2" style="width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:4px;font-family:inherit"><?= htmlspecialchars($agencyService['notes'] ?? '') ?></textarea>
 </div>
-<?php if ($isMandatory): ?>
-<div style="grid-column:1/-1;background:#D1FAE5;color:#065F46;padding:.75rem;border-radius:6px;font-size:.9rem">
-ℹ️ Questo servizio è obbligatorio nel contratto e non può essere disattivato. Gestisci da "Modifica Contratto".
-</div>
-<?php endif; ?>
 </div>
 </div>
 <?php endforeach; ?>
@@ -201,12 +177,6 @@ if ($isMandatory) {
 <script>
 function toggleService(serviceId) {
     const card = document.querySelector(`.service-card[data-service="${serviceId}"]`);
-    
-    // Blocca se è obbligatorio
-    if (card.dataset.mandatory === '1') {
-        return;
-    }
-    
     const toggle = card.querySelector('.service-toggle');
     const checkbox = card.querySelector('input[type="checkbox"]');
     const dates = document.getElementById(`dates-${serviceId}`);
