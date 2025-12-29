@@ -130,7 +130,7 @@ require_once 'header.php';
 <div class="tabs-nav">
 <button class="tab-btn active" onclick="switchTab('info')">📊 Info Agenzia</button>
 <button class="tab-btn" onclick="switchTab('contrattuale')">📄 Contrattuale</button>
-<button class="tab-btn" onclick="switchTab('servizi')">⚙️ Servizi (<?= count($services) ?>)</button>
+<button class="tab-btn" onclick="switchTab('servizi')">⚙️ Servizi (<?= count(array_filter($allServicesData, fn($s) => $s['is_active'] == 1)) ?>)</button>
 <button class="tab-btn" onclick="switchTab('agenti')">👥 Agenti (<?= count($activeAgents) ?>)</button>
 </div>
 
