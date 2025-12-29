@@ -1,6 +1,7 @@
 <?php
 require_once 'check_auth.php';
 require_once 'config/database.php';
+require_once 'log_functions.php';
 
 // Solo admin e editor possono modificare
 if (!in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])) {
@@ -22,6 +23,11 @@ if (!$code) {
 // Gestione POST - salva modifiche
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $returnTab = $_POST['return_tab'] ?? 'info';
+    
+    // Carica dati vecchi prima della modifica
+    $stmt = $pdo->prepare("SELECT * FROM agencies WHERE code = :code");
+    $stmt->execute(['code' => $code]);
+    $oldData = $stmt->fetch(PDO::FETCH_ASSOC);
     
     $sql = "UPDATE agencies SET 
             name = :name,
@@ -78,6 +84,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'status' => $_POST['status'],
         'code' => $code
     ]);
+    
+    // Log modifiche
+    $newData = [
+        'name' => $_POST['name'],
+        'type' => $_POST['type'],
+        'broker_manager' => $_POST['broker_manager'] ?: null,
+        'broker_mobile' => $_POST['broker_mobile'] ?: null,
+        'legal_representative' => $_POST['legal_representative'] ?: null,
+        'company_name' => $_POST['company_name'] ?: null,
+        'rea' => $_POST['rea'] ?: null,
+        'address' => $_POST['address'] ?: null,
+        'city' => $_POST['city'] ?: null,
+        'province' => $_POST['province'] ?: null,
+        'zip_code' => $_POST['zip_code'] ?: null,
+        'email' => $_POST['email'] ?: null,
+        'phone' => $_POST['phone'] ?: null,
+        'pec' => $_POST['pec'] ?: null,
+        'website' => $_POST['website'] ?: null,
+        'vat_number' => $_POST['vat_number'] ?: null,
+        'tax_code' => $_POST['tax_code'] ?: null,
+        'sdi_code' => $_POST['sdi_code'] ?: null,
+        'activation_date' => $_POST['activation_date'] ?: null,
+        'contract_expiry' => $_POST['contract_expiry'] ?: null,
+        'contract_duration_years' => $_POST['contract_duration_years'] ?: null,
+        'tech_fee' => $_POST['tech_fee'] ?: null,
+        'closed_date' => $_POST['closed_date'] ?: null,
+        'status' => $_POST['status']
+    ];
+    
+    $changes = getChangedFields($oldData, $newData);
+    
+    if (!empty($changes)) {
+        logAudit(
+            $pdo,
+            $_SESSION['crm_user']['id'],
+            $_SESSION['crm_user']['email'],
+            'agencies',
+            $oldData['id'],
+            'UPDATE',
+            $changes
+        );
+    }
     
     // Gestione servizi - prima cancella tutti
     $stmtDel = $pdo->prepare("DELETE FROM agency_services WHERE agency_id = (SELECT id FROM agencies WHERE code = :code)");

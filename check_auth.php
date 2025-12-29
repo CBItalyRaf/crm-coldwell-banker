@@ -32,6 +32,7 @@ if (isset($_GET['sso_token'])) {
                 
                 // Salva dati user in sessione CRM
                 $_SESSION['crm_user'] = [
+                    'id' => $result['user']['id'] ?? null,
                     'email' => $result['user']['email'],
                     'name' => $result['user']['name'],
                     'is_admin' => $result['user']['is_admin'] ?? false,
@@ -39,6 +40,20 @@ if (isset($_GET['sso_token'])) {
                     'crm_role' => $result['user']['services']['crm'] ?? 'viewer',
                     'logged_at' => date('Y-m-d H:i:s')
                 ];
+                
+                // Log accesso
+                $_SESSION['login_time'] = time();
+                
+                require_once 'config/database.php';
+                require_once 'log_functions.php';
+                
+                $pdo = getDB();
+                logAccess(
+                    $pdo,
+                    $_SESSION['crm_user']['id'] ?? 0,
+                    $_SESSION['crm_user']['email'],
+                    'login'
+                );
                 
                 // Redirect per rimuovere token dall'URL
                 header('Location: index.php');

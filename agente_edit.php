@@ -1,6 +1,7 @@
 <?php
 require_once 'check_auth.php';
 require_once 'config/database.php';
+require_once 'log_functions.php';
 
 // Solo admin e editor possono modificare
 if (!in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])) {
@@ -20,6 +21,11 @@ if (!$id) {
 
 // Gestione POST - salva modifiche
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Carica dati vecchi prima della modifica
+    $stmt = $pdo->prepare("SELECT * FROM agents WHERE id = :id");
+    $stmt->execute(['id' => $id]);
+    $oldData = $stmt->fetch(PDO::FETCH_ASSOC);
+    
     $sql = "UPDATE agents SET 
             agency_id = :agency_id,
             first_name = :first_name,
@@ -55,6 +61,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'notes' => $_POST['notes'] ?: null,
         'id' => $id
     ]);
+    
+    // Log modifiche
+    $newData = [
+        'agency_id' => $_POST['agency_id'] ?: null,
+        'first_name' => $_POST['first_name'] ?: null,
+        'last_name' => $_POST['last_name'] ?: null,
+        'full_name' => $_POST['full_name'],
+        'mobile' => $_POST['mobile'] ?: null,
+        'email_corporate' => $_POST['email_corporate'] ?: null,
+        'email_personal' => $_POST['email_personal'] ?: null,
+        'm365_plan' => $_POST['m365_plan'] ?: null,
+        'email_activation_date' => $_POST['email_activation_date'] ?: null,
+        'email_expiry_date' => $_POST['email_expiry_date'] ?: null,
+        'email_disabled_date' => $_POST['email_disabled_date'] ?: null,
+        'role' => $_POST['role'] ?: null,
+        'status' => $_POST['status'],
+        'notes' => $_POST['notes'] ?: null
+    ];
+    
+    $changes = getChangedFields($oldData, $newData);
+    
+    if (!empty($changes)) {
+        logAudit(
+            $pdo,
+            $_SESSION['crm_user']['id'],
+            $_SESSION['crm_user']['email'],
+            'agents',
+            $oldData['id'],
+            'UPDATE',
+            $changes
+        );
+    }
     
     header("Location: agente_detail.php?id=" . urlencode($id) . "&success=1");
     exit;
