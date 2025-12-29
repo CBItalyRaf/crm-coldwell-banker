@@ -68,8 +68,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $agency_id = $pdo->lastInsertId();
         
-        // Log
-        logAudit($pdo, $_SESSION['crm_user']['id'] ?? 0, $_SESSION['crm_user']['email'], 'agencies', $agency_id, 'INSERT', []);
+        // Log solo se abbiamo un user_id valido
+        $userId = $_SESSION['crm_user']['id'] ?? null;
+        if ($userId) {
+            logAudit($pdo, $userId, $_SESSION['crm_user']['email'] ?? 'unknown', 'agencies', $agency_id, 'INSERT', []);
+        }
         
         header("Location: agenzia_detail.php?code=" . urlencode($_POST['code']) . "&success=created");
         exit;

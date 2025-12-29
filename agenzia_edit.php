@@ -131,15 +131,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $changes = getChangedFields($oldData, $newData);
     
     if (!empty($changes)) {
-        logAudit(
-            $pdo,
-            $_SESSION['crm_user']['id'],
-            $_SESSION['crm_user']['email'],
-            'agencies',
-            $oldData['id'],
-            'UPDATE',
-            $changes
-        );
+        $userId = $_SESSION['crm_user']['id'] ?? null;
+        $userEmail = $_SESSION['crm_user']['email'] ?? 'unknown';
+        
+        if ($userId) {
+            logAudit(
+                $pdo,
+                $userId,
+                $userEmail,
+                'agencies',
+                $oldData['id'],
+                'UPDATE',
+                $changes
+            );
+        }
     }
     
     // Gestione servizi - prima cancella tutti

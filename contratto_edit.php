@@ -82,7 +82,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         // Log
-        logAudit($pdo, $_SESSION['crm_user']['id'], $_SESSION['crm_user']['email'], 'agencies', $agency['id'], 'UPDATE', ['context' => 'contratto']);
+        $userId = $_SESSION['crm_user']['id'] ?? null;
+        if ($userId) {
+            logAudit($pdo, $userId, $_SESSION['crm_user']['email'] ?? 'unknown', 'agencies', $agency['id'], 'UPDATE', ['context' => 'contratto']);
+        }
         
         $pdo->commit();
         header("Location: agenzia_detail.php?code=" . urlencode($code) . "&success=1#tab-contrattuale");
