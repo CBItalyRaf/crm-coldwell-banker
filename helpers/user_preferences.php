@@ -45,9 +45,9 @@ function saveUserPreferences($pdo, $user_email, $email, $badge, $dashboard) {
         INSERT INTO user_preferences (user_email, notify_scadenze_email, notify_scadenze_badge, notify_scadenze_dashboard) 
         VALUES (:user_email, :email, :badge, :dashboard)
         ON DUPLICATE KEY UPDATE 
-            notify_scadenze_email = :email,
-            notify_scadenze_badge = :badge,
-            notify_scadenze_dashboard = :dashboard
+            notify_scadenze_email = VALUES(notify_scadenze_email),
+            notify_scadenze_badge = VALUES(notify_scadenze_badge),
+            notify_scadenze_dashboard = VALUES(notify_scadenze_dashboard)
     ");
     
     return $stmt->execute([
