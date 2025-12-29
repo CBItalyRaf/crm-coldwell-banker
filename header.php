@@ -69,7 +69,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <div class="dropdown-menu">
 <a href="agenzie.php" class="dropdown-item">🏢 Agenzie</a>
 <a href="agenti.php" class="dropdown-item">👥 Agenti</a>
-<a href="servizi.php" class="dropdown-item">⚙️ Servizi</a>
 </div>
 </div>
 <div class="nav-item">
