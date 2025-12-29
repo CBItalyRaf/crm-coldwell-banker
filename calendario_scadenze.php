@@ -20,11 +20,11 @@ require_once 'header.php';
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
 
 <style>
-.calendar-header{background:white;padding:1.5rem;margin-bottom:2rem;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
-.calendar-title{font-size:1.5rem;font-weight:600;color:var(--cb-midnight);margin:0}
-.calendar-legend{display:flex;gap:1.5rem;flex-wrap:wrap}
+.calendar-header{background:white;padding:1.5rem;margin-bottom:2rem;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.calendar-title{font-size:1.5rem;font-weight:600;color:var(--cb-midnight);margin:0 0 1rem 0}
+.calendar-legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.75rem}
 .legend-item{display:flex;align-items:center;gap:.5rem;font-size:.85rem}
-.legend-dot{width:12px;height:12px;border-radius:50%}
+.legend-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
 .calendar-container{background:white;padding:1.5rem;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 
 /* FullCalendar custom styling */
@@ -54,8 +54,9 @@ require_once 'header.php';
 <?php else: ?>
 
 <div class="calendar-header">
-    <h1 class="calendar-title">📅 Calendario Scadenze Servizi</h1>
+    <h1 class="calendar-title">📅 Calendario Scadenze & Anniversari</h1>
     <div class="calendar-legend">
+        <div style="margin-bottom:.5rem;width:100%;font-weight:600;color:var(--cb-midnight);font-size:.9rem">Servizi:</div>
         <div class="legend-item">
             <span class="legend-dot" style="background:#EF4444"></span>
             <span>Scade entro 7 giorni</span>
@@ -67,6 +68,30 @@ require_once 'header.php';
         <div class="legend-item">
             <span class="legend-dot" style="background:#F59E0B"></span>
             <span>Scade oltre 14 giorni</span>
+        </div>
+        
+        <div style="margin:.5rem 0 .5rem 0;width:100%;font-weight:600;color:var(--cb-midnight);font-size:.9rem">Contratti:</div>
+        <div class="legend-item">
+            <span class="legend-dot" style="background:#3B82F6"></span>
+            <span>Rinnovo tra 1 anno</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-dot" style="background:#2563EB"></span>
+            <span>Rinnovo tra 6 mesi</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-dot" style="background:#1D4ED8"></span>
+            <span>Rinnovo tra 3 mesi</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-dot" style="background:#1E40AF"></span>
+            <span>Rinnovo tra 1 mese</span>
+        </div>
+        
+        <div style="margin:.5rem 0 .5rem 0;width:100%;font-weight:600;color:var(--cb-midnight);font-size:.9rem">Anniversari:</div>
+        <div class="legend-item">
+            <span class="legend-dot" style="background:#10B981"></span>
+            <span>1° anno e ogni 5 anni</span>
         </div>
     </div>
 </div>
@@ -108,10 +133,21 @@ document.addEventListener('DOMContentLoaded', function() {
         eventDidMount: function(info) {
             // Tooltip con info aggiuntive
             const props = info.event.extendedProps;
-            if (props.days_remaining !== undefined) {
+            let tooltip = '';
+            
+            if (props.type === 'servizio') {
                 const days = props.days_remaining;
-                let tooltip = props.service_name + '\n';
+                tooltip = props.service_name + '\n';
                 tooltip += days > 0 ? `Scade tra ${days} giorni` : 'SCADUTO';
+            } else if (props.type === 'rinnovo_contratto') {
+                tooltip = `Contratto scade il ${props.contract_end}\n`;
+                tooltip += `Rinnovo tra ${props.mesi_rimanenti} ${props.mesi_rimanenti === 1 ? 'mese' : 'mesi'}`;
+            } else if (props.type === 'anniversario') {
+                tooltip = `${props.anni}° anno di collaborazione\n`;
+                tooltip += `Dal ${props.data_inizio}`;
+            }
+            
+            if (tooltip) {
                 info.el.title = tooltip;
             }
         }

@@ -7,7 +7,11 @@ header('Content-Type: application/json');
 
 $pdo = getDB();
 
-// Recupera tutte le scadenze (non solo prossimi 30 giorni)
+$events = [];
+
+// ========================================
+// 1. SCADENZE SERVIZI (Rosso/Arancione/Giallo)
+// ========================================
 $stmt = $pdo->prepare("
     SELECT 
         ags.id,
@@ -41,13 +45,10 @@ $stmt = $pdo->prepare("
 $stmt->execute();
 $scadenze = $stmt->fetchAll();
 
-// Converti in formato FullCalendar
-$events = [];
 foreach ($scadenze as $scad) {
     $urgency = getScadenzaUrgency($scad['days_remaining']);
     
-    // Colori basati su urgenza
-    $color = '#F59E0B'; // Giallo default
+    $color = '#F59E0B'; // Giallo
     if ($urgency === 'critical') {
         $color = '#EF4444'; // Rosso
     } elseif ($urgency === 'warning') {
@@ -55,16 +56,108 @@ foreach ($scadenze as $scad) {
     }
     
     $events[] = [
-        'title' => $scad['display_name'] . ' - ' . $scad['agency_name'],
+        'title' => '⚙️ ' . $scad['display_name'] . ' - ' . $scad['agency_name'],
         'start' => $scad['expiration_date'],
         'color' => $color,
         'url' => '../agenzia_detail.php?code=' . urlencode($scad['agency_code']),
         'extendedProps' => [
+            'type' => 'servizio',
             'agency_code' => $scad['agency_code'],
             'service_name' => $scad['display_name'],
             'days_remaining' => $scad['days_remaining']
         ]
     ];
+}
+
+// ========================================
+// 2. AVVISI RINNOVO CONTRATTI (Blu - 4 eventi per contratto)
+// ========================================
+$stmt = $pdo->prepare("
+    SELECT 
+        ac.id,
+        ac.agency_id,
+        ac.contract_end_date,
+        ac.contract_start_date,
+        a.name as agency_name,
+        a.code as agency_code
+    FROM agency_contracts ac
+    JOIN agencies a ON ac.agency_id = a.id
+    WHERE ac.contract_end_date IS NOT NULL
+    AND ac.status = 'active'
+");
+
+$stmt->execute();
+$contratti = $stmt->fetchAll();
+
+foreach ($contratti as $contratto) {
+    $endDate = new DateTime($contratto['contract_end_date']);
+    
+    // 4 avvisi di rinnovo
+    $avvisi = [
+        ['mesi' => 12, 'label' => '1 anno', 'color' => '#3B82F6'],   // Blu chiaro
+        ['mesi' => 6,  'label' => '6 mesi', 'color' => '#2563EB'],   // Blu medio
+        ['mesi' => 3,  'label' => '3 mesi', 'color' => '#1D4ED8'],   // Blu scuro
+        ['mesi' => 1,  'label' => '1 mese', 'color' => '#1E40AF']    // Blu molto scuro
+    ];
+    
+    foreach ($avvisi as $avviso) {
+        $avvisoDate = clone $endDate;
+        $avvisoDate->modify("-{$avviso['mesi']} months");
+        
+        // Solo se la data avviso è futura o recente (ultimi 3 mesi)
+        $now = new DateTime();
+        $diff = $now->diff($avvisoDate)->days;
+        
+        if ($avvisoDate >= $now->modify('-3 months')) {
+            $events[] = [
+                'title' => '📄 Rinnovo Contratto - ' . $contratto['agency_name'] . ' (tra ' . $avviso['label'] . ')',
+                'start' => $avvisoDate->format('Y-m-d'),
+                'color' => $avviso['color'],
+                'url' => '../agenzia_detail.php?code=' . urlencode($contratto['agency_code']),
+                'extendedProps' => [
+                    'type' => 'rinnovo_contratto',
+                    'agency_code' => $contratto['agency_code'],
+                    'contract_end' => $contratto['contract_end_date'],
+                    'mesi_rimanenti' => $avviso['mesi']
+                ]
+            ];
+        }
+    }
+}
+
+// ========================================
+// 3. ANNIVERSARI CONTRATTI (Verde - 1° anno + ogni 5 anni)
+// ========================================
+foreach ($contratti as $contratto) {
+    if (empty($contratto['contract_start_date'])) continue;
+    
+    $startDate = new DateTime($contratto['contract_start_date']);
+    $now = new DateTime();
+    
+    // Calcola anni trascorsi
+    $anniTrascorsi = $now->diff($startDate)->y;
+    
+    // Genera anniversari fino a +5 anni nel futuro
+    for ($anno = 1; $anno <= $anniTrascorsi + 5; $anno++) {
+        // Solo 1° anno + multipli di 5
+        if ($anno == 1 || $anno % 5 == 0) {
+            $anniversarioDate = clone $startDate;
+            $anniversarioDate->modify("+{$anno} years");
+            
+            $events[] = [
+                'title' => '🎉 ' . $anno . '° Anniversario - ' . $contratto['agency_name'],
+                'start' => $anniversarioDate->format('Y-m-d'),
+                'color' => '#10B981', // Verde
+                'url' => '../agenzia_detail.php?code=' . urlencode($contratto['agency_code']),
+                'extendedProps' => [
+                    'type' => 'anniversario',
+                    'agency_code' => $contratto['agency_code'],
+                    'anni' => $anno,
+                    'data_inizio' => $contratto['contract_start_date']
+                ]
+            ];
+        }
+    }
 }
 
 echo json_encode($events);
