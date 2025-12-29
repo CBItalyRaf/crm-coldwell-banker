@@ -52,7 +52,13 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .hamburger{display:none;background:transparent;border:none;color:white;font-size:1.5rem;cursor:pointer;padding:.5rem}
 @media (max-width:768px){
 .hamburger{display:block}
-.main-nav{display:none}
+.main-nav{display:none;position:absolute;top:100%;left:0;right:0;background:var(--cb-blue);flex-direction:column;padding:0;box-shadow:0 4px 6px rgba(0,0,0,.1);z-index:1000}
+.main-nav.active{display:flex}
+.main-nav .nav-item{border-bottom:1px solid rgba(255,255,255,.1)}
+.main-nav .nav-button{width:100%;text-align:left;padding:1rem 1.5rem}
+.main-nav .dropdown-menu{position:static;box-shadow:none;background:rgba(0,0,0,.1);margin:0}
+.main-nav .dropdown-menu.active{display:block}
+.main-nav .dropdown-item{padding:.75rem 2rem}
 .header-left{gap:1rem}
 }
 </style>
@@ -69,6 +75,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <div class="dropdown-menu">
 <a href="agenzie.php" class="dropdown-item">🏢 Agenzie</a>
 <a href="agenti.php" class="dropdown-item">👥 Agenti</a>
+<a href="servizi.php" class="dropdown-item">⚙️ Servizi</a>
 </div>
 </div>
 <div class="nav-item">
@@ -84,11 +91,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <div class="dropdown-menu">
 <a href="fatture.php" class="dropdown-item">💰 Fatture</a>
 <a href="fornitori.php" class="dropdown-item">🏪 Fornitori</a>
-<?php if($user['crm_role'] === 'admin'): ?>
-<a href="servizi_admin.php" class="dropdown-item">⚙️ Servizi Master</a>
-<a href="onboarding_template.php" class="dropdown-item">⚙️ Template Onboarding</a>
-<a href="log_activity.php" class="dropdown-item">📋 Log Attività</a>
-<?php endif; ?>
 </div>
 </div>
 <a href="sviluppo.php" class="nav-button">SVILUPPO</a>
@@ -114,4 +116,39 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 </div>
 </div>
 </div>
+<script>
+// Menu mobile hamburger
+const hamburger = document.getElementById('hamburger');
+const mainNav = document.querySelector('.main-nav');
+
+if (hamburger && mainNav) {
+    hamburger.addEventListener('click', function() {
+        mainNav.classList.toggle('active');
+        this.textContent = mainNav.classList.contains('active') ? '✕' : '☰';
+    });
+}
+
+// Dropdown menu
+document.querySelectorAll('.nav-button').forEach(button => {
+    button.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const parent = this.parentElement;
+        const dropdown = parent.querySelector('.dropdown-menu');
+        
+        // Chiudi altri dropdown
+        document.querySelectorAll('.dropdown-menu').forEach(d => {
+            if (d !== dropdown) d.classList.remove('active');
+        });
+        
+        if (dropdown) {
+            dropdown.classList.toggle('active');
+        }
+    });
+});
+
+// Chiudi dropdown quando clicchi fuori
+document.addEventListener('click', function() {
+    document.querySelectorAll('.dropdown-menu').forEach(d => d.classList.remove('active'));
+});
+</script>
 <div class="container">
