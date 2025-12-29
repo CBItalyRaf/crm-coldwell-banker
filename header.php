@@ -111,19 +111,25 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 </div>
 
 <?php 
-// Carica preferenze utente e badge scadenze
-require_once __DIR__ . '/helpers/user_preferences.php';
-require_once __DIR__ . '/helpers/scadenze.php';
-
-$userPrefs = getUserPreferences($pdo, $user['id']);
+// Badge scadenze (opzionale - carica solo se i file esistono)
+$userPrefs = null;
 $scadenzeCount = 0;
 
-if($userPrefs['notify_scadenze_badge']) {
-    $scadenzeCount = getScadenzeCount($pdo, 30);
+if (file_exists(__DIR__ . '/helpers/user_preferences.php') && 
+    file_exists(__DIR__ . '/helpers/scadenze.php')) {
+    
+    require_once __DIR__ . '/helpers/user_preferences.php';
+    require_once __DIR__ . '/helpers/scadenze.php';
+    
+    $userPrefs = getUserPreferences($pdo, $user['id']);
+    
+    if($userPrefs['notify_scadenze_badge']) {
+        $scadenzeCount = getScadenzeCount($pdo, 30);
+    }
 }
 ?>
 
-<?php if($userPrefs['notify_scadenze_badge'] && $scadenzeCount > 0): ?>
+<?php if($userPrefs && $userPrefs['notify_scadenze_badge'] && $scadenzeCount > 0): ?>
 <a href="index.php#scadenze" class="nav-button" style="position:relative;margin-right:1rem" title="Scadenze imminenti">
     🔔
     <span style="position:absolute;top:-.25rem;right:-.25rem;background:#EF4444;color:white;font-size:.7rem;padding:.15rem .4rem;border-radius:999px;font-weight:700;min-width:1.25rem;text-align:center"><?= $scadenzeCount ?></span>
