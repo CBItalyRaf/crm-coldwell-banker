@@ -70,27 +70,66 @@ foreach ($scadenze as $scad) {
 }
 
 // ========================================
-// 2. AVVISI RINNOVO CONTRATTI (Blu - 4 eventi per contratto)
+// 2. SCADENZE TECH FEE (Viola)
 // ========================================
 $stmt = $pdo->prepare("
     SELECT 
-        ac.id,
-        ac.agency_id,
-        ac.contract_end_date,
-        ac.contract_start_date,
-        a.name as agency_name,
-        a.code as agency_code
-    FROM agency_contracts ac
-    JOIN agencies a ON ac.agency_id = a.id
-    WHERE ac.contract_end_date IS NOT NULL
-    AND ac.status = 'active'
+        id,
+        name as agency_name,
+        code as agency_code,
+        tech_fee_expiry_date,
+        DATEDIFF(tech_fee_expiry_date, CURDATE()) as days_remaining
+    FROM agencies
+    WHERE tech_fee_expiry_date IS NOT NULL
+    AND status = 'Active'
+");
+
+$stmt->execute();
+$techFees = $stmt->fetchAll();
+
+foreach ($techFees as $tf) {
+    $urgency = getScadenzaUrgency($tf['days_remaining']);
+    
+    $color = '#A855F7'; // Viola default
+    if ($urgency === 'critical') {
+        $color = '#9333EA'; // Viola scuro
+    } elseif ($urgency === 'warning') {
+        $color = '#A855F7'; // Viola medio
+    }
+    
+    $events[] = [
+        'title' => '💰 Tech Fee - ' . $tf['agency_name'],
+        'start' => $tf['tech_fee_expiry_date'],
+        'color' => $color,
+        'url' => '../agenzia_detail.php?code=' . urlencode($tf['agency_code']),
+        'extendedProps' => [
+            'type' => 'tech_fee',
+            'agency_code' => $tf['agency_code'],
+            'days_remaining' => $tf['days_remaining']
+        ]
+    ];
+}
+
+// ========================================
+// 3. AVVISI RINNOVO CONTRATTI (Blu - 4 eventi per contratto)
+// ========================================
+$stmt = $pdo->prepare("
+    SELECT 
+        id,
+        name as agency_name,
+        code as agency_code,
+        contract_expiry,
+        activation_date
+    FROM agencies
+    WHERE contract_expiry IS NOT NULL
+    AND status = 'Active'
 ");
 
 $stmt->execute();
 $contratti = $stmt->fetchAll();
 
 foreach ($contratti as $contratto) {
-    $endDate = new DateTime($contratto['contract_end_date']);
+    $endDate = new DateTime($contratto['contract_expiry']);
     
     // 4 avvisi di rinnovo
     $avvisi = [
@@ -106,7 +145,6 @@ foreach ($contratti as $contratto) {
         
         // Solo se la data avviso è futura o recente (ultimi 3 mesi)
         $now = new DateTime();
-        $diff = $now->diff($avvisoDate)->days;
         
         if ($avvisoDate >= $now->modify('-3 months')) {
             $events[] = [
@@ -117,7 +155,7 @@ foreach ($contratti as $contratto) {
                 'extendedProps' => [
                     'type' => 'rinnovo_contratto',
                     'agency_code' => $contratto['agency_code'],
-                    'contract_end' => $contratto['contract_end_date'],
+                    'contract_end' => $contratto['contract_expiry'],
                     'mesi_rimanenti' => $avviso['mesi']
                 ]
             ];
@@ -126,12 +164,12 @@ foreach ($contratti as $contratto) {
 }
 
 // ========================================
-// 3. ANNIVERSARI CONTRATTI (Verde - 1° anno + ogni 5 anni)
+// 4. ANNIVERSARI CONTRATTI (Verde - 1° anno + ogni 5 anni)
 // ========================================
 foreach ($contratti as $contratto) {
-    if (empty($contratto['contract_start_date'])) continue;
+    if (empty($contratto['activation_date'])) continue;
     
-    $startDate = new DateTime($contratto['contract_start_date']);
+    $startDate = new DateTime($contratto['activation_date']);
     $now = new DateTime();
     
     // Calcola anni trascorsi
@@ -153,7 +191,7 @@ foreach ($contratti as $contratto) {
                     'type' => 'anniversario',
                     'agency_code' => $contratto['agency_code'],
                     'anni' => $anno,
-                    'data_inizio' => $contratto['contract_start_date']
+                    'data_inizio' => $contratto['activation_date']
                 ]
             ];
         }

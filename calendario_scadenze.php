@@ -70,6 +70,16 @@ require_once 'header.php';
             <span>Scade oltre 14 giorni</span>
         </div>
         
+        <div style="margin:.5rem 0 .5rem 0;width:100%;font-weight:600;color:var(--cb-midnight);font-size:.9rem">Tech Fee:</div>
+        <div class="legend-item">
+            <span class="legend-dot" style="background:#9333EA"></span>
+            <span>Scade entro 7 giorni</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-dot" style="background:#A855F7"></span>
+            <span>Scade oltre 7 giorni</span>
+        </div>
+        
         <div style="margin:.5rem 0 .5rem 0;width:100%;font-weight:600;color:var(--cb-midnight);font-size:.9rem">Contratti:</div>
         <div class="legend-item">
             <span class="legend-dot" style="background:#3B82F6"></span>
@@ -138,6 +148,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (props.type === 'servizio') {
                 const days = props.days_remaining;
                 tooltip = props.service_name + '\n';
+                tooltip += days > 0 ? `Scade tra ${days} giorni` : 'SCADUTO';
+            } else if (props.type === 'tech_fee') {
+                const days = props.days_remaining;
+                tooltip = 'Tech Fee\n';
                 tooltip += days > 0 ? `Scade tra ${days} giorni` : 'SCADUTO';
             } else if (props.type === 'rinnovo_contratto') {
                 tooltip = `Contratto scade il ${props.contract_end}\n`;
