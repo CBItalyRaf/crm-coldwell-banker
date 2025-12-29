@@ -44,8 +44,17 @@ if ($search) {
 $stmt->execute();
 $agencies = $stmt->fetchAll();
 
-// Count totale (senza filtri)
-$totalCount = $pdo->query("SELECT COUNT(*) FROM agencies WHERE status != 'Prospect'")->fetchColumn();
+// Count totale con status filter applicato (ma senza search)
+$countSql = "SELECT COUNT(*) FROM agencies WHERE status != 'Prospect'";
+if ($statusFilter !== 'all') {
+    $countSql .= " AND status = :status";
+}
+$countStmt = $pdo->prepare($countSql);
+if ($statusFilter !== 'all') {
+    $countStmt->bindValue(':status', $statusFilter);
+}
+$countStmt->execute();
+$totalCount = $countStmt->fetchColumn();
 
 require_once 'header.php';
 ?>
@@ -154,8 +163,18 @@ require_once 'header.php';
 </div>
 
 <div style="background:white;padding:1rem 1.5rem;margin-bottom:1rem;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);color:var(--cb-gray);font-size:.95rem">
-<?php if($statusFilter !== 'all' || $search): ?>
-Mostrando <strong style="color:var(--cb-midnight)"><?= count($agencies) ?></strong> di <strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenzie
+<?php if($search): ?>
+Trovate <strong style="color:var(--cb-midnight)"><?= count($agencies) ?></strong> agenzie
+<?php 
+$searchTypeLabels = ['all' => 'ovunque', 'city' => 'in città', 'province' => 'in provincia', 'people' => 'in broker'];
+$typeLabel = $searchTypeLabels[$searchType] ?? 'ovunque';
+?>
+per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
+<?php if(count($agencies) < $totalCount): ?>
+<span style="opacity:.7">(<?= $totalCount ?> totali con status <?= $statusFilter ?>)</span>
+<?php endif; ?>
+<?php elseif($statusFilter !== 'all'): ?>
+<strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenzie con status <?= $statusFilter ?>
 <?php else: ?>
 <strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenzie totali
 <?php endif; ?>
