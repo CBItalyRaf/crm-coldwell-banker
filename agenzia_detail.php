@@ -314,6 +314,8 @@ foreach($stmtPrices->fetchAll() as $row) {
 
 // Escludi obbligatori e mappa nomi servizi
 $mandatoryIds = array_column($mandatoryServices, 'service_id');
+$mandatoryNames = array_column($mandatoryServices, 'service_name'); // Nomi dei servizi obbligatori
+
 $serviceNameMap = [
     'cb_suite' => 'CB Suite',
     'canva' => 'Canva Pro',
@@ -326,6 +328,12 @@ $serviceNameMap = [
 $optionalServices = [];
 foreach($agencyServicesRaw as $svc) {
     $mappedName = $serviceNameMap[$svc['service_name']] ?? $svc['service_name'];
+    
+    // SKIP se questo servizio è già negli obbligatori
+    if (in_array($mappedName, $mandatoryNames)) {
+        continue;
+    }
+    
     $svc['service_name'] = $mappedName;
     $svc['default_price'] = $defaultPrices[$mappedName] ?? 0;
     $optionalServices[] = $svc;
