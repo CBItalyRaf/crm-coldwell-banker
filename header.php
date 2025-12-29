@@ -19,7 +19,7 @@ if (!$user) {
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--cb-blue:#012169;--cb-bright-blue:#1F69FF;--cb-midnight:#0A1730;--cb-gray:#6D7180;--bg:#F5F7FA}
 body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--cb-midnight);line-height:1.6}
-.header{background:var(--cb-blue);color:white;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.header{background:var(--cb-blue);color:white;box-shadow:0 2px 8px rgba(0,0,0,.1);position:relative}
 .header-content{max-width:1400px;margin:0 auto;padding:0 1.5rem;display:flex;justify-content:space-between;align-items:center;min-height:70px}
 .header-left{display:flex;align-items:center;gap:3rem}
 .logo{height:32px}
@@ -52,11 +52,11 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .hamburger{display:none;background:transparent;border:none;color:white;font-size:1.5rem;cursor:pointer;padding:.5rem}
 @media (max-width:768px){
 .hamburger{display:block}
-.main-nav{display:none;position:absolute;top:100%;left:0;right:0;background:var(--cb-blue);flex-direction:column;padding:0;box-shadow:0 4px 6px rgba(0,0,0,.1);z-index:1000}
+.main-nav{display:none;position:fixed;top:70px;left:0;right:0;background:var(--cb-blue);flex-direction:column;padding:0;box-shadow:0 4px 6px rgba(0,0,0,.1);z-index:1000;max-height:calc(100vh - 70px);overflow-y:auto}
 .main-nav.active{display:flex}
-.main-nav .nav-item{border-bottom:1px solid rgba(255,255,255,.1)}
-.main-nav .nav-button{width:100%;text-align:left;padding:1rem 1.5rem}
-.main-nav .dropdown-menu{position:static;box-shadow:none;background:rgba(0,0,0,.1);margin:0}
+.main-nav .nav-item{border-bottom:1px solid rgba(255,255,255,.1);width:100%}
+.main-nav .nav-button{width:100%;text-align:left;padding:1rem 1.5rem;justify-content:space-between}
+.main-nav .dropdown-menu{position:static;box-shadow:none;background:rgba(0,0,0,.1);margin:0;opacity:1;visibility:visible;transform:none}
 .main-nav .dropdown-menu.active{display:block}
 .main-nav .dropdown-item{padding:.75rem 2rem}
 .header-left{gap:1rem}
@@ -91,6 +91,11 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <div class="dropdown-menu">
 <a href="fatture.php" class="dropdown-item">💰 Fatture</a>
 <a href="fornitori.php" class="dropdown-item">🏪 Fornitori</a>
+<?php if($user['crm_role'] === 'admin'): ?>
+<a href="servizi_admin.php" class="dropdown-item">⚙️ Servizi Master</a>
+<a href="onboarding_template.php" class="dropdown-item">⚙️ Template Onboarding</a>
+<a href="log_activity.php" class="dropdown-item">📋 Log Attività</a>
+<?php endif; ?>
 </div>
 </div>
 <a href="sviluppo.php" class="nav-button">SVILUPPO</a>
