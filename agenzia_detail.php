@@ -297,67 +297,31 @@ $stmtMandatory = $pdo->prepare("
 $stmtMandatory->execute(['agency_id' => $agency['id']]);
 $mandatoryServices = $stmtMandatory->fetchAll();
 
-// Carica servizi FACOLTATIVI da agency_services (senza JOIN)
+// Carica servizi FACOLTATIVI dal contratto (is_mandatory = 0) + date da agency_services
 $stmtOptional = $pdo->prepare("
-    SELECT * FROM agency_services 
-    WHERE agency_id = :agency_id AND is_active = 1
+    SELECT acs.*, sm.service_name, sm.default_price,
+           ags.activation_date, ags.expiration_date
+    FROM agency_contract_services acs
+    JOIN services_master sm ON acs.service_id = sm.id
+    LEFT JOIN agency_services ags ON ags.agency_id = acs.agency_id 
+        AND ags.service_name = (
+            CASE sm.service_name
+                WHEN 'CB Suite' THEN 'cb_suite'
+                WHEN 'Canva Pro' THEN 'canva'
+                WHEN 'Regold' THEN 'regold'
+                WHEN 'James Edition' THEN 'james_edition'
+                WHEN 'Docudrop' THEN 'docudrop'
+                WHEN 'Unique Estates' THEN 'unique'
+                WHEN 'Casella Mail Agenzia' THEN 'casella_mail_agenzia'
+                WHEN 'EuroMq' THEN 'euromq'
+                WHEN 'Gestim' THEN 'gestim'
+            END
+        )
+    WHERE acs.agency_id = :agency_id AND acs.is_mandatory = 0
+    ORDER BY sm.service_name ASC
 ");
 $stmtOptional->execute(['agency_id' => $agency['id']]);
-$agencyServicesRaw = $stmtOptional->fetchAll();
-
-// Carica prezzi default da services_master
-$stmtPrices = $pdo->query("SELECT service_name, default_price FROM services_master");
-$defaultPrices = [];
-foreach($stmtPrices->fetchAll() as $row) {
-    $defaultPrices[$row['service_name']] = $row['default_price'];
-}
-
-// Mappa nomi servizi (chiave DB => nome visualizzato)
-$serviceNameMap = [
-    'cb_suite' => 'CB Suite',
-    'canva' => 'Canva Pro',
-    'regold' => 'Regold',
-    'james_edition' => 'James Edition',
-    'docudrop' => 'Docudrop',
-    'unique' => 'Unique Estates',
-    'casella_mail_agenzia' => 'Casella Mail Agenzia',
-    'euromq' => 'EuroMq',
-    'gestim' => 'Gestim'
-];
-
-// Crea SET di chiavi DB obbligatorie confrontando con service_name di services_master
-$mandatoryDbKeys = [];
-foreach($mandatoryServices as $ms) {
-    // $ms['service_name'] è il nome da services_master (es: "Canva Pro")
-    // Trova la chiave DB corrispondente
-    $foundKey = array_search($ms['service_name'], $serviceNameMap);
-    if ($foundKey !== false) {
-        $mandatoryDbKeys[] = $foundKey;
-    }
-}
-
-// DEBUG TEMPORANEO
-error_log("MANDATORY SERVICES: " . print_r(array_column($mandatoryServices, 'service_name'), true));
-error_log("MANDATORY DB KEYS: " . print_r($mandatoryDbKeys, true));
-error_log("AGENCY SERVICES RAW: " . print_r(array_column($agencyServicesRaw, 'service_name'), true));
-
-$optionalServices = [];
-foreach($agencyServicesRaw as $svc) {
-    // $svc['service_name'] è la chiave DB (es: "canva")
-    
-    error_log("Checking service: " . $svc['service_name'] . " - in mandatory? " . (in_array($svc['service_name'], $mandatoryDbKeys) ? 'YES' : 'NO'));
-    
-    // SKIP se questa chiave DB è negli obbligatori
-    if (in_array($svc['service_name'], $mandatoryDbKeys)) {
-        continue;
-    }
-    
-    // Mappa il nome per visualizzazione
-    $mappedName = $serviceNameMap[$svc['service_name']] ?? ucwords(str_replace('_', ' ', $svc['service_name']));
-    $svc['service_name'] = $mappedName;
-    $svc['default_price'] = $defaultPrices[$mappedName] ?? 0;
-    $optionalServices[] = $svc;
-}
+$optionalServices = $stmtOptional->fetchAll();
 
 // Carica allegati contrattuali
 $stmtFiles = $pdo->prepare("SELECT * FROM agency_contract_files WHERE agency_id = :agency_id ORDER BY uploaded_at DESC");
