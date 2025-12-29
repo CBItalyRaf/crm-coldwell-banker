@@ -324,11 +324,10 @@ allRows=Array.from(agenciesTable.querySelectorAll('tr'));
 }
 
 if(searchInput && searchResults){
-const searchType = '<?= $searchType ?? "all" ?>';
-
 searchInput.addEventListener('input',function(){
 clearTimeout(searchTimeout);
 const query=this.value.trim().toLowerCase();
+const searchType = document.getElementById('searchType').value; // Usa valore corrente del dropdown
 
 // NON filtrare tabella lato client - usiamo sempre ricerca server-side
 // per gestire correttamente i filtri città/provincia/broker
@@ -344,6 +343,7 @@ return;
 
 // Submit automatico dopo 500ms di pausa
 searchTimeout=setTimeout(()=>{
+    const searchType = document.getElementById('searchType').value; // Usa valore corrente
     const form = document.createElement('form');
     form.method = 'GET';
     form.style.display = 'none';
