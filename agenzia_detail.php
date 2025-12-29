@@ -136,7 +136,9 @@ require_once 'header.php';
 <div class="tabs status-<?= strtolower($agency['status']) ?>">
 <div class="tabs-nav">
 <button class="tab-btn active" onclick="switchTab('info')">📊 Info Agenzia</button>
+<?php if($_SESSION['crm_user']['crm_role'] === 'admin'): ?>
 <button class="tab-btn" onclick="switchTab('contrattuale')">📄 Contrattuale</button>
+<?php endif; ?>
 <button class="tab-btn" onclick="switchTab('servizi')">⚙️ Servizi (<?= count(array_filter($allServicesData, fn($s) => $s['is_active'] == 1)) ?>)</button>
 <button class="tab-btn" onclick="switchTab('agenti')">👥 Agenti (<?= count($activeAgents) ?>)</button>
 </div>
@@ -235,6 +237,7 @@ require_once 'header.php';
 </div>
 </div>
 
+<?php if($_SESSION['crm_user']['crm_role'] === 'admin'): ?>
 <div class="tab-content" id="tab-contrattuale">
 
 <div class="info-section">
@@ -292,6 +295,11 @@ $optionalServices = array_filter($contractServices, fn($s) => $s['is_mandatory']
 $totalOptional = array_reduce($optionalServices, function($sum, $s) {
     return $sum + ($s['custom_price'] ?? $s['default_price']);
 }, 0);
+
+// Carica allegati contrattuali
+$stmtFiles = $pdo->prepare("SELECT * FROM agency_contract_files WHERE agency_id = :agency_id ORDER BY uploaded_at DESC");
+$stmtFiles->execute(['agency_id' => $agency['id']]);
+$contractFiles = $stmtFiles->fetchAll();
 ?>
 
 <?php if(!empty($mandatoryServices)): ?>
@@ -367,7 +375,113 @@ Tech Fee Mensile: €<?= number_format($agency['tech_fee'] ?? 0, 2, ',', '.') ?>
 </div>
 </div>
 
+<div class="info-section">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+<h3 style="margin:0">Zona di Rispetto</h3>
+<a href="contratto_edit.php?code=<?= urlencode($agency['code']) ?>#zona-rispetto" class="edit-btn" style="text-decoration:none;font-size:.9rem;padding:.5rem 1rem">✏️ Modifica</a>
 </div>
+
+<?php
+// Cerca mappa zona rispetto negli allegati
+$territoryMap = array_filter($contractFiles, fn($f) => $f['file_type'] === 'territory_map');
+$territoryMap = !empty($territoryMap) ? reset($territoryMap) : null;
+?>
+
+<?php if($territoryMap): ?>
+<div style="background:var(--bg);padding:1.5rem;border-radius:8px;border-left:4px solid var(--cb-bright-blue)">
+<div style="display:flex;align-items:center;gap:1rem">
+<div style="font-size:2rem">🗺️</div>
+<div style="flex:1">
+<div style="font-weight:600;color:var(--cb-midnight);margin-bottom:.25rem">Mappa Territorio</div>
+<div style="font-size:.9rem;color:var(--cb-gray)"><?= htmlspecialchars($territoryMap['file_name']) ?></div>
+</div>
+<a href="download_file.php?id=<?= $territoryMap['id'] ?>" class="edit-btn" style="text-decoration:none;padding:.5rem 1rem;font-size:.9rem">📥 Scarica</a>
+</div>
+</div>
+<?php elseif($agency['territory_description']): ?>
+<div style="background:#FFF4E6;padding:1.5rem;border-radius:8px;border-left:4px solid #F59E0B">
+<div style="display:flex;align-items:start;gap:1rem">
+<div style="font-size:1.5rem">📝</div>
+<div style="flex:1">
+<div style="font-weight:600;color:#92400E;margin-bottom:.5rem">Descrizione Territorio</div>
+<div style="color:#78350F;white-space:pre-line"><?= nl2br(htmlspecialchars($agency['territory_description'])) ?></div>
+</div>
+</div>
+</div>
+<?php else: ?>
+<div style="text-align:center;padding:2rem;color:var(--cb-gray);background:var(--bg);border-radius:8px">
+<div style="font-size:2rem;margin-bottom:.5rem">🗺️</div>
+<p>Nessuna zona di rispetto configurata</p>
+</div>
+<?php endif; ?>
+</div>
+
+<div class="info-section">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+<h3 style="margin:0">Allegati Contrattuali</h3>
+<a href="contratto_edit.php?code=<?= urlencode($agency['code']) ?>#allegati" class="edit-btn" style="text-decoration:none;font-size:.9rem;padding:.5rem 1rem">📎 Gestisci</a>
+</div>
+
+<?php
+$contracts = array_filter($contractFiles, fn($f) => $f['file_type'] === 'contract');
+$others = array_filter($contractFiles, fn($f) => $f['file_type'] === 'other');
+?>
+
+<?php if(!empty($contracts) || !empty($others)): ?>
+
+<?php if(!empty($contracts)): ?>
+<h4 style="font-size:.9rem;font-weight:600;color:var(--cb-gray);text-transform:uppercase;margin-bottom:1rem">Contratti</h4>
+<div style="display:grid;gap:.75rem;margin-bottom:2rem">
+<?php foreach($contracts as $file): ?>
+<div style="background:var(--bg);padding:1rem;border-radius:8px;display:flex;justify-content:space-between;align-items:center;border-left:3px solid var(--cb-bright-blue)">
+<div style="display:flex;align-items:center;gap:1rem;flex:1">
+<div style="font-size:1.5rem">📄</div>
+<div style="flex:1">
+<div style="font-weight:600;color:var(--cb-midnight)"><?= htmlspecialchars($file['file_name']) ?></div>
+<div style="font-size:.85rem;color:var(--cb-gray);margin-top:.25rem">
+Caricato il <?= date('d/m/Y H:i', strtotime($file['uploaded_at'])) ?>
+<?php if($file['notes']): ?> • <?= htmlspecialchars($file['notes']) ?><?php endif; ?>
+</div>
+</div>
+</div>
+<a href="download_file.php?id=<?= $file['id'] ?>" class="btn-icon" style="padding:.5rem;color:var(--cb-bright-blue);text-decoration:none" title="Scarica">📥</a>
+</div>
+<?php endforeach; ?>
+</div>
+<?php endif; ?>
+
+<?php if(!empty($others)): ?>
+<h4 style="font-size:.9rem;font-weight:600;color:var(--cb-gray);text-transform:uppercase;margin-bottom:1rem">Altri Documenti</h4>
+<div style="display:grid;gap:.75rem">
+<?php foreach($others as $file): ?>
+<div style="background:var(--bg);padding:1rem;border-radius:8px;display:flex;justify-content:space-between;align-items:center">
+<div style="display:flex;align-items:center;gap:1rem;flex:1">
+<div style="font-size:1.5rem">📎</div>
+<div style="flex:1">
+<div style="font-weight:600;color:var(--cb-midnight)"><?= htmlspecialchars($file['file_name']) ?></div>
+<div style="font-size:.85rem;color:var(--cb-gray);margin-top:.25rem">
+Caricato il <?= date('d/m/Y H:i', strtotime($file['uploaded_at'])) ?>
+<?php if($file['notes']): ?> • <?= htmlspecialchars($file['notes']) ?><?php endif; ?>
+</div>
+</div>
+</div>
+<a href="download_file.php?id=<?= $file['id'] ?>" class="btn-icon" style="padding:.5rem;color:var(--cb-bright-blue);text-decoration:none" title="Scarica">📥</a>
+</div>
+<?php endforeach; ?>
+</div>
+<?php endif; ?>
+
+<?php else: ?>
+<div style="text-align:center;padding:2rem;color:var(--cb-gray);background:var(--bg);border-radius:8px">
+<div style="font-size:2rem;margin-bottom:.5rem">📎</div>
+<p>Nessun allegato caricato</p>
+</div>
+<?php endif; ?>
+</div>
+
+</div>
+
+<?php endif; ?>
 
 <div class="tab-content" id="tab-servizi">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
