@@ -33,7 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             agency_id = :agency_id,
             first_name = :first_name,
             last_name = :last_name,
-            full_name = :full_name,
             mobile = :mobile,
             email_corporate = :email_corporate,
             email_personal = :email_personal,
@@ -51,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'agency_id' => $_POST['agency_id'] ?: null,
         'first_name' => $_POST['first_name'] ?: null,
         'last_name' => $_POST['last_name'] ?: null,
-        'full_name' => $_POST['full_name'],
         'mobile' => $_POST['mobile'] ?: null,
         'email_corporate' => $_POST['email_corporate'] ?: null,
         'email_personal' => $_POST['email_personal'] ?: null,
@@ -70,7 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'agency_id' => $_POST['agency_id'] ?: null,
         'first_name' => $_POST['first_name'] ?: null,
         'last_name' => $_POST['last_name'] ?: null,
-        'full_name' => $_POST['full_name'],
         'mobile' => $_POST['mobile'] ?: null,
         'email_corporate' => $_POST['email_corporate'] ?: null,
         'email_personal' => $_POST['email_personal'] ?: null,
@@ -177,10 +174,6 @@ require_once 'header.php';
 <div class="form-field">
 <label>Cognome</label>
 <input type="text" name="last_name" value="<?= htmlspecialchars($agent['last_name'] ?: '') ?>">
-</div>
-<div class="form-field">
-<label>Nome Completo *</label>
-<input type="text" name="full_name" value="<?= htmlspecialchars($agent['full_name']) ?>" required>
 </div>
 <div class="form-field">
 <label>Ruolo</label>
