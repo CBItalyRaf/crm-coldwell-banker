@@ -5,15 +5,20 @@
 require_once 'helpers/scadenze.php';
 require_once 'helpers/user_preferences.php';
 
-$userPrefs = getUserPreferences($pdo, $user['id']);
+$userPrefs = null;
 $scadenze = [];
 
-if ($userPrefs['notify_scadenze_dashboard']) {
-    $scadenze = getScadenzeImminenti($pdo, 30);
+// Controlla che user_email esista prima di procedere
+if (!empty($user['email'])) {
+    $userPrefs = getUserPreferences($pdo, $user['email']);
+    
+    if ($userPrefs['notify_scadenze_dashboard']) {
+        $scadenze = getScadenzeImminenti($pdo, 30);
+    }
 }
 ?>
 
-<?php if($userPrefs['notify_scadenze_dashboard'] && !empty($scadenze)): ?>
+<?php if($userPrefs && $userPrefs['notify_scadenze_dashboard'] && !empty($scadenze)): ?>
 <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1);padding:1.5rem;margin-bottom:2rem;border-left:6px solid #F59E0B">
     <h2 style="font-size:1.25rem;font-weight:600;color:var(--cb-midnight);margin:0 0 1rem 0;display:flex;align-items:center;gap:.5rem">
         ⚠️ Scadenze Imminenti (prossimi 30 giorni)

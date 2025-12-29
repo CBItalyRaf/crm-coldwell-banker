@@ -2,21 +2,31 @@
 // helpers/user_preferences.php
 // Funzioni per gestire preferenze utente
 
-function getUserPreferences($pdo, $user_id) {
-    $stmt = $pdo->prepare("SELECT * FROM user_preferences WHERE user_id = :user_id");
-    $stmt->execute(['user_id' => $user_id]);
+function getUserPreferences($pdo, $user_email) {
+    // Se user_email è null/vuoto, ritorna preferenze default senza salvare
+    if (empty($user_email)) {
+        return [
+            'user_email' => null,
+            'notify_scadenze_email' => 0,
+            'notify_scadenze_badge' => 0,
+            'notify_scadenze_dashboard' => 0
+        ];
+    }
+    
+    $stmt = $pdo->prepare("SELECT * FROM user_preferences WHERE user_email = :email");
+    $stmt->execute(['email' => $user_email]);
     $prefs = $stmt->fetch();
     
     // Se non esistono preferenze, crea record con valori default (tutto 0)
     if (!$prefs) {
         $stmt = $pdo->prepare("
-            INSERT INTO user_preferences (user_id, notify_scadenze_email, notify_scadenze_badge, notify_scadenze_dashboard) 
-            VALUES (:user_id, 0, 0, 0)
+            INSERT INTO user_preferences (user_email, notify_scadenze_email, notify_scadenze_badge, notify_scadenze_dashboard) 
+            VALUES (:email, 0, 0, 0)
         ");
-        $stmt->execute(['user_id' => $user_id]);
+        $stmt->execute(['email' => $user_email]);
         
         return [
-            'user_id' => $user_id,
+            'user_email' => $user_email,
             'notify_scadenze_email' => 0,
             'notify_scadenze_badge' => 0,
             'notify_scadenze_dashboard' => 0
@@ -26,10 +36,14 @@ function getUserPreferences($pdo, $user_id) {
     return $prefs;
 }
 
-function saveUserPreferences($pdo, $user_id, $email, $badge, $dashboard) {
+function saveUserPreferences($pdo, $user_email, $email, $badge, $dashboard) {
+    if (empty($user_email)) {
+        return false;
+    }
+    
     $stmt = $pdo->prepare("
-        INSERT INTO user_preferences (user_id, notify_scadenze_email, notify_scadenze_badge, notify_scadenze_dashboard) 
-        VALUES (:user_id, :email, :badge, :dashboard)
+        INSERT INTO user_preferences (user_email, notify_scadenze_email, notify_scadenze_badge, notify_scadenze_dashboard) 
+        VALUES (:user_email, :email, :badge, :dashboard)
         ON DUPLICATE KEY UPDATE 
             notify_scadenze_email = :email,
             notify_scadenze_badge = :badge,
@@ -37,7 +51,7 @@ function saveUserPreferences($pdo, $user_id, $email, $badge, $dashboard) {
     ");
     
     return $stmt->execute([
-        'user_id' => $user_id,
+        'user_email' => $user_email,
         'email' => $email,
         'badge' => $badge,
         'dashboard' => $dashboard
