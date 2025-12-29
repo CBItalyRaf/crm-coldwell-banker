@@ -34,8 +34,8 @@ if ($search) {
     } elseif ($searchType === 'people') {
         $sql .= " AND broker_manager LIKE :search";
     } else {
-        // all - cerca in tutti i campi
-        $sql .= " AND (name LIKE :search OR code LIKE :search OR city LIKE :search OR province LIKE :search OR broker_manager LIKE :search)";
+        // all - usa placeholder distinti per evitare problemi con PDO
+        $sql .= " AND (name LIKE :search1 OR code LIKE :search2 OR city LIKE :search3 OR province LIKE :search4 OR broker_manager LIKE :search5)";
     }
 }
 
@@ -47,7 +47,16 @@ if ($statusFilter !== 'all') {
     $params[':status'] = $statusFilter;
 }
 if ($search) {
-    $params[':search'] = "%$search%";
+    if ($searchType === 'all') {
+        // Placeholder distinti per 'all'
+        $params[':search1'] = "%$search%";
+        $params[':search2'] = "%$search%";
+        $params[':search3'] = "%$search%";
+        $params[':search4'] = "%$search%";
+        $params[':search5'] = "%$search%";
+    } else {
+        $params[':search'] = "%$search%";
+    }
 }
 
 $stmt = $pdo->prepare($sql);
