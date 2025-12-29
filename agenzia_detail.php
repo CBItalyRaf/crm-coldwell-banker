@@ -667,11 +667,16 @@ $idx = 'standalone_' . $i;
 let currentTab = 'info';
 
 function switchTab(tabName, btn){
+try {
 currentTab = tabName;
 document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
 document.querySelectorAll('.tab-content').forEach(content=>content.classList.remove('active'));
-btn.classList.add('active');
-document.getElementById('tab-'+tabName).classList.add('active');
+if(btn) btn.classList.add('active');
+const targetTab = document.getElementById('tab-'+tabName);
+if(targetTab) targetTab.classList.add('active');
+} catch(e) {
+console.error('switchTab error:', e);
+}
 }
 
 function toggleService(index){
