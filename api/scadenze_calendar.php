@@ -63,6 +63,7 @@ foreach ($scadenze as $scad) {
         'extendedProps' => [
             'type' => 'servizio',
             'agency_code' => $scad['agency_code'],
+            'agency_name' => $scad['agency_name'],
             'service_name' => $scad['display_name'],
             'days_remaining' => $scad['days_remaining']
         ]
@@ -105,6 +106,7 @@ foreach ($techFees as $tf) {
         'extendedProps' => [
             'type' => 'tech_fee',
             'agency_code' => $tf['agency_code'],
+            'agency_name' => $tf['agency_name'],
             'days_remaining' => $tf['days_remaining']
         ]
     ];
@@ -155,6 +157,7 @@ foreach ($contratti as $contratto) {
                 'extendedProps' => [
                     'type' => 'rinnovo_contratto',
                     'agency_code' => $contratto['agency_code'],
+                    'agency_name' => $contratto['agency_name'],
                     'contract_end' => $contratto['contract_expiry'],
                     'mesi_rimanenti' => $avviso['mesi']
                 ]
@@ -190,6 +193,7 @@ foreach ($contratti as $contratto) {
                 'extendedProps' => [
                     'type' => 'anniversario',
                     'agency_code' => $contratto['agency_code'],
+                    'agency_name' => $contratto['agency_name'],
                     'anni' => $anno,
                     'data_inizio' => $contratto['activation_date']
                 ]

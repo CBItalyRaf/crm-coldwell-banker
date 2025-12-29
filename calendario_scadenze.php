@@ -145,19 +145,25 @@ document.addEventListener('DOMContentLoaded', function() {
             const props = info.event.extendedProps;
             let tooltip = '';
             
+            // Aggiungi sempre codice e nome agenzia come intestazione
+            if (props.agency_code && props.agency_name) {
+                tooltip = `${props.agency_code} - ${props.agency_name}\n`;
+                tooltip += '─'.repeat(Math.min(props.agency_name.length + props.agency_code.length + 3, 50)) + '\n';
+            }
+            
             if (props.type === 'servizio') {
                 const days = props.days_remaining;
-                tooltip = props.service_name + '\n';
+                tooltip += props.service_name + '\n';
                 tooltip += days > 0 ? `Scade tra ${days} giorni` : 'SCADUTO';
             } else if (props.type === 'tech_fee') {
                 const days = props.days_remaining;
-                tooltip = 'Tech Fee\n';
+                tooltip += 'Tech Fee\n';
                 tooltip += days > 0 ? `Scade tra ${days} giorni` : 'SCADUTO';
             } else if (props.type === 'rinnovo_contratto') {
-                tooltip = `Contratto scade il ${props.contract_end}\n`;
+                tooltip += `Contratto scade il ${props.contract_end}\n`;
                 tooltip += `Rinnovo tra ${props.mesi_rimanenti} ${props.mesi_rimanenti === 1 ? 'mese' : 'mesi'}`;
             } else if (props.type === 'anniversario') {
-                tooltip = `${props.anni}° anno di collaborazione\n`;
+                tooltip += `${props.anni}° anno di collaborazione\n`;
                 tooltip += `Dal ${props.data_inizio}`;
             }
             
