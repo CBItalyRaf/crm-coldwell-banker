@@ -7,7 +7,7 @@ $pdo = getDB();
 
 $statusFilter = $_GET['status'] ?? 'Active';
 $search = $_GET['search'] ?? '';
-$searchType = $_GET['search_type'] ?? 'all'; // all, city, province, people
+$searchType = $_GET['search_type'] ?? 'all';
 
 $sql = "SELECT code, name, city, province, status, broker_manager, email, phone 
         FROM agencies 
@@ -18,18 +18,15 @@ if ($statusFilter !== 'all') {
 }
 
 if ($search) {
-    switch($searchType) {
-        case 'city':
-            $sql .= " AND city IS NOT NULL AND city LIKE :search1";
-            break;
-        case 'province':
-            $sql .= " AND province IS NOT NULL AND province LIKE :search1";
-            break;
-        case 'people':
-            $sql .= " AND broker_manager IS NOT NULL AND broker_manager LIKE :search1";
-            break;
-        default: // 'all'
-            $sql .= " AND (name LIKE :search1 OR code LIKE :search2 OR city LIKE :search3 OR province LIKE :search4 OR broker_manager LIKE :search5)";
+    if ($searchType === 'city') {
+        $sql .= " AND city LIKE :search";
+    } elseif ($searchType === 'province') {
+        $sql .= " AND province LIKE :search";
+    } elseif ($searchType === 'people') {
+        $sql .= " AND broker_manager LIKE :search";
+    } else {
+        // all
+        $sql .= " AND (name LIKE :search OR code LIKE :search OR city LIKE :search OR province LIKE :search OR broker_manager LIKE :search)";
     }
 }
 
@@ -41,37 +38,11 @@ if ($statusFilter !== 'all') {
     $stmt->bindValue(':status', $statusFilter);
 }
 if ($search) {
-    switch($searchType) {
-        case 'city':
-        case 'province':
-        case 'people':
-            $stmt->bindValue(':search1', "%$search%");
-            // DEBUG
-            if($searchType !== 'all') {
-                error_log("SEARCH DEBUG - Type: $searchType, Value: %$search%, SQL: $sql");
-            }
-            break;
-        default: // 'all'
-            $stmt->bindValue(':search1', "%$search%");
-            $stmt->bindValue(':search2', "%$search%");
-            $stmt->bindValue(':search3', "%$search%");
-            $stmt->bindValue(':search4', "%$search%");
-            $stmt->bindValue(':search5', "%$search%");
-    }
+    $stmt->bindValue(':search', "%$search%");
 }
 
 $stmt->execute();
 $agencies = $stmt->fetchAll();
-
-// DEBUG TEMPORANEO - Rimuovere dopo test
-if($search && $searchType !== 'all') {
-    echo "<!-- DEBUG:
-    Search: $search
-    Type: $searchType
-    Query: $sql
-    Results: " . count($agencies) . "
-    -->";
-}
 
 // Count totale (senza filtri)
 $totalCount = $pdo->query("SELECT COUNT(*) FROM agencies WHERE status != 'Prospect'")->fetchColumn();
@@ -160,19 +131,19 @@ require_once 'header.php';
 <div class="search-box">
 <div style="display:flex;gap:.5rem">
 <select id="searchType" name="search_type" style="padding:.75rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem;background:white;cursor:pointer;min-width:140px">
-<option value="all" <?= $searchType === 'all' ? 'selected' : '' ?>>🌐 Tutto</option>
-<option value="city" <?= $searchType === 'city' ? 'selected' : '' ?>>🏙️ Solo Città</option>
-<option value="province" <?= $searchType === 'province' ? 'selected' : '' ?>>📍 Solo Provincia</option>
-<option value="people" <?= $searchType === 'people' ? 'selected' : '' ?>>👤 Solo Broker</option>
+<option value="all" <?= ($searchType ?? 'all') === 'all' ? 'selected' : '' ?>>🌐 Tutto</option>
+<option value="city" <?= ($searchType ?? '') === 'city' ? 'selected' : '' ?>>🏙️ Solo Città</option>
+<option value="province" <?= ($searchType ?? '') === 'province' ? 'selected' : '' ?>>📍 Solo Provincia</option>
+<option value="people" <?= ($searchType ?? '') === 'people' ? 'selected' : '' ?>>👤 Solo Broker</option>
 </select>
-<input type="text" id="agenciesSearch" placeholder="🔍 Cerca..." autocomplete="off" style="flex:1">
+<input type="text" id="agenciesSearch" value="<?= htmlspecialchars($search) ?>" placeholder="🔍 Cerca..." autocomplete="off" style="flex:1">
 </div>
 <div class="search-results" id="agenciesSearchResults"></div>
 </div>
 <div class="status-filters">
 <form method="GET" id="statusForm">
 <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
-<input type="hidden" name="search_type" value="<?= htmlspecialchars($searchType) ?>">
+<input type="hidden" name="search_type" value="<?= htmlspecialchars($searchType ?? 'all') ?>">
 <button type="submit" name="status" value="all" class="filter-btn <?= $statusFilter === 'all' ? 'active' : '' ?>">Tutte</button>
 <button type="submit" name="status" value="Active" class="filter-btn <?= $statusFilter === 'Active' ? 'active' : '' ?>">Active</button>
 <button type="submit" name="status" value="Opening" class="filter-btn <?= $statusFilter === 'Opening' ? 'active' : '' ?>">Opening</button>
@@ -267,7 +238,7 @@ Mostrando <strong style="color:var(--cb-midnight)"><?= count($agencies) ?></stro
 </div>
 <input type="hidden" name="status_filter" value="<?= htmlspecialchars($statusFilter) ?>">
 <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
-<input type="hidden" name="search_type" value="<?= htmlspecialchars($searchType) ?>">
+<input type="hidden" name="search_type" value="<?= htmlspecialchars($searchType ?? 'all') ?>">
 <div class="modal-actions">
 <button type="button" class="btn-cancel" onclick="closeExportModal()">Annulla</button>
 <button type="submit" class="btn-export">📥 Esporta CSV</button>
@@ -281,7 +252,7 @@ const exportModal=document.getElementById('exportModal');
 
 function openExportModal(){
 const searchValue = document.getElementById('agenciesSearch').value;
-const searchTypeValue = document.getElementById('searchType').value;
+const searchTypeValue = document.getElementById('searchType')?.value || 'all';
 const hiddenSearch = document.querySelector('#exportModal input[name="search"]');
 const hiddenSearchType = document.querySelector('#exportModal input[name="search_type"]');
 if(hiddenSearch) hiddenSearch.value = searchValue;
@@ -293,32 +264,34 @@ function closeExportModal(){
 exportModal.classList.remove('open');
 }
 
-// Gestione cambio tipo ricerca
+// Gestione filtro ricerca
 const searchTypeSelect = document.getElementById('searchType');
 const searchInput=document.getElementById('agenciesSearch');
 
-if(searchTypeSelect && searchInput) {
-    // Aggiorna placeholder in base al tipo
-    function updatePlaceholder() {
-        const placeholders = {
-            'all': '🔍 Cerca nome, codice, città, provincia, broker...',
-            'city': '🏙️ Cerca città...',
-            'province': '📍 Cerca provincia...',
-            'people': '👤 Cerca broker manager...'
-        };
-        searchInput.placeholder = placeholders[searchTypeSelect.value] || '🔍 Cerca...';
-    }
-    
-    updatePlaceholder();
-    
-    // Reload quando cambia tipo ricerca
+if(searchTypeSelect) {
     searchTypeSelect.addEventListener('change', function() {
-        const url = new URLSearchParams(window.location.search);
-        url.set('search_type', this.value);
-        if(searchInput.value) {
-            url.set('search', searchInput.value);
-        }
-        window.location.search = url.toString();
+        // Submit form quando cambia tipo
+        const form = document.createElement('form');
+        form.method = 'GET';
+        form.style.display = 'none';
+        
+        const statusInput = document.createElement('input');
+        statusInput.name = 'status';
+        statusInput.value = '<?= htmlspecialchars($statusFilter) ?>';
+        form.appendChild(statusInput);
+        
+        const searchInput = document.createElement('input');
+        searchInput.name = 'search';
+        searchInput.value = document.getElementById('agenciesSearch').value;
+        form.appendChild(searchInput);
+        
+        const typeInput = document.createElement('input');
+        typeInput.name = 'search_type';
+        typeInput.value = this.value;
+        form.appendChild(typeInput);
+        
+        document.body.appendChild(form);
+        form.submit();
     });
 }
 
