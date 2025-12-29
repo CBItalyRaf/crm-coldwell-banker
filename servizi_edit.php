@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once 'check_auth.php';
 require_once 'config/database.php';
 
@@ -49,58 +53,62 @@ $serviceNameMap = [
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    foreach ($allServices as $service) {
-        $serviceId = $service['id'];
-        $serviceName = $serviceNameMap[$service['service_name']] ?? null;
-        
-        if (!$serviceName) continue;
-        
-        $isActive = isset($_POST['service_' . $serviceId]) ? 1 : 0;
-        $activationDate = $_POST['activation_date_' . $serviceId] ?? null;
-        $deactivationDate = $_POST['deactivation_date_' . $serviceId] ?? null;
-        $customPrice = $_POST['custom_price_' . $serviceId] ?? null;
-        $notes = $_POST['notes_' . $serviceId] ?? null;
-        
-        // Check if service exists for this agency
-        if (isset($agencyServices[$serviceName])) {
-            // Update existing (sempre, anche se disattivato)
-            $stmt = $pdo->prepare("
-                UPDATE agency_services 
-                SET is_active = :is_active,
-                    activation_date = :activation_date,
-                    expiration_date = :expiration_date,
-                    custom_price = :custom_price,
-                    notes = :notes
-                WHERE agency_id = :agency_id AND service_name = :service_name
-            ");
-            $stmt->execute([
-                'is_active' => $isActive,
-                'activation_date' => $activationDate ?: null,
-                'expiration_date' => $deactivationDate ?: null,
-                'custom_price' => $customPrice ?: null,
-                'notes' => $notes ?: null,
-                'agency_id' => $agency['id'],
-                'service_name' => $serviceName
-            ]);
-        } else if ($isActive) {
-            // Insert new only if active
-            $stmt = $pdo->prepare("
-                INSERT INTO agency_services (agency_id, service_name, is_active, activation_date, expiration_date, custom_price, notes)
-                VALUES (:agency_id, :service_name, 1, :activation_date, :expiration_date, :custom_price, :notes)
-            ");
-            $stmt->execute([
-                'agency_id' => $agency['id'],
-                'service_name' => $serviceName,
-                'activation_date' => $activationDate ?: null,
-                'expiration_date' => $deactivationDate ?: null,
-                'custom_price' => $customPrice ?: null,
-                'notes' => $notes ?: null
-            ]);
+    try {
+        foreach ($allServices as $service) {
+            $serviceId = $service['id'];
+            $serviceName = $serviceNameMap[$service['service_name']] ?? null;
+            
+            if (!$serviceName) continue;
+            
+            $isActive = isset($_POST['service_' . $serviceId]) ? 1 : 0;
+            $activationDate = $_POST['activation_date_' . $serviceId] ?? null;
+            $deactivationDate = $_POST['deactivation_date_' . $serviceId] ?? null;
+            $customPrice = $_POST['custom_price_' . $serviceId] ?? null;
+            $notes = $_POST['notes_' . $serviceId] ?? null;
+            
+            // Check if service exists for this agency
+            if (isset($agencyServices[$serviceName])) {
+                // Update existing (sempre, anche se disattivato)
+                $stmt = $pdo->prepare("
+                    UPDATE agency_services 
+                    SET is_active = :is_active,
+                        activation_date = :activation_date,
+                        expiration_date = :expiration_date,
+                        custom_price = :custom_price,
+                        notes = :notes
+                    WHERE agency_id = :agency_id AND service_name = :service_name
+                ");
+                $stmt->execute([
+                    'is_active' => $isActive,
+                    'activation_date' => $activationDate ?: null,
+                    'expiration_date' => $deactivationDate ?: null,
+                    'custom_price' => $customPrice ?: null,
+                    'notes' => $notes ?: null,
+                    'agency_id' => $agency['id'],
+                    'service_name' => $serviceName
+                ]);
+            } else if ($isActive) {
+                // Insert new only if active
+                $stmt = $pdo->prepare("
+                    INSERT INTO agency_services (agency_id, service_name, is_active, activation_date, expiration_date, custom_price, notes)
+                    VALUES (:agency_id, :service_name, 1, :activation_date, :expiration_date, :custom_price, :notes)
+                ");
+                $stmt->execute([
+                    'agency_id' => $agency['id'],
+                    'service_name' => $serviceName,
+                    'activation_date' => $activationDate ?: null,
+                    'expiration_date' => $deactivationDate ?: null,
+                    'custom_price' => $customPrice ?: null,
+                    'notes' => $notes ?: null
+                ]);
+            }
         }
+        
+        header('Location: agenzia_detail.php?code=' . urlencode($code));
+        exit;
+    } catch (Exception $e) {
+        die('ERRORE SALVATAGGIO: ' . $e->getMessage());
     }
-    
-    header('Location: agenzia_detail.php?code=' . urlencode($code));
-    exit;
 }
 
 require_once 'header.php';
