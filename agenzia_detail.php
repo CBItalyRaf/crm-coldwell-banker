@@ -336,9 +336,16 @@ foreach($mandatoryServices as $ms) {
     }
 }
 
+// DEBUG TEMPORANEO
+error_log("MANDATORY SERVICES: " . print_r(array_column($mandatoryServices, 'service_name'), true));
+error_log("MANDATORY DB KEYS: " . print_r($mandatoryDbKeys, true));
+error_log("AGENCY SERVICES RAW: " . print_r(array_column($agencyServicesRaw, 'service_name'), true));
+
 $optionalServices = [];
 foreach($agencyServicesRaw as $svc) {
     // $svc['service_name'] è la chiave DB (es: "canva")
+    
+    error_log("Checking service: " . $svc['service_name'] . " - in mandatory? " . (in_array($svc['service_name'], $mandatoryDbKeys) ? 'YES' : 'NO'));
     
     // SKIP se questa chiave DB è negli obbligatori
     if (in_array($svc['service_name'], $mandatoryDbKeys)) {
