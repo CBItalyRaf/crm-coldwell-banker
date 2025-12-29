@@ -116,7 +116,8 @@ $userPrefs = null;
 $scadenzeCount = 0;
 
 if (file_exists(__DIR__ . '/helpers/user_preferences.php') && 
-    file_exists(__DIR__ . '/helpers/scadenze.php')) {
+    file_exists(__DIR__ . '/helpers/scadenze.php') &&
+    isset($user['id'])) {  // <-- Controllo che user['id'] esista
     
     require_once __DIR__ . '/helpers/user_preferences.php';
     require_once __DIR__ . '/helpers/scadenze.php';
