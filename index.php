@@ -25,6 +25,11 @@ $onboardings = $pdo->query("
 ")->fetchAll();
 
 require_once 'header.php';
+
+// Widget scadenze (se file esiste e utente ha preferenza attiva)
+if (file_exists(__DIR__ . '/widgets/scadenze_dashboard.php')) {
+    include __DIR__ . '/widgets/scadenze_dashboard.php';
+}
 ?>
 
 <style>
