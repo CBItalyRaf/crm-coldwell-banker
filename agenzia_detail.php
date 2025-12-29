@@ -83,7 +83,10 @@ require_once 'header.php';
 <h1 class="agency-title"><?= htmlspecialchars($agency['name']) ?></h1>
 <div class="agency-code"><?= htmlspecialchars($agency['code']) ?></div>
 </div>
+<div style="display:flex;gap:.5rem;align-items:center">
+<span class="status-badge" style="background:#E5E7EB;color:var(--cb-gray)"><?= htmlspecialchars($agency['type']) ?></span>
 <span class="status-badge <?= strtolower($agency['status']) ?>"><?= htmlspecialchars($agency['status']) ?></span>
+</div>
 </div>
 <div style="display:flex;gap:.75rem">
 <?php if($agency['status'] === 'Opening' && in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])): ?>

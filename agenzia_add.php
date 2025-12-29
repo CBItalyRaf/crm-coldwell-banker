@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once 'check_auth.php';
 require_once 'config/database.php';
 require_once 'log_functions.php';
@@ -124,9 +127,10 @@ require_once 'header.php';
 <div class="form-field">
 <label>Tipo Agenzia *</label>
 <select name="type" required>
-<option value="Franchising">Franchising</option>
-<option value="Affiliato">Affiliato</option>
-<option value="Owned">Owned</option>
+<option value="Standard">Standard</option>
+<option value="Satellite">Satellite</option>
+<option value="Master">Master</option>
+<option value="Commercial">Commercial</option>
 </select>
 </div>
 <div class="form-field">
