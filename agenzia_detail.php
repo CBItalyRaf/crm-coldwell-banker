@@ -135,12 +135,12 @@ require_once 'header.php';
 
 <div class="tabs status-<?= strtolower($agency['status']) ?>">
 <div class="tabs-nav">
-<button class="tab-btn active" onclick="switchTab('info', this)">📊 Info Agenzia</button>
+<button class="tab-btn active" onclick="switchTab('info')">📊 Info Agenzia</button>
 <?php if($_SESSION['crm_user']['crm_role'] === 'admin'): ?>
-<button class="tab-btn" onclick="switchTab('contrattuale', this)">📄 Contrattuale</button>
+<button class="tab-btn" onclick="switchTab('contrattuale')">📄 Contrattuale</button>
 <?php endif; ?>
-<button class="tab-btn" onclick="switchTab('servizi', this)">⚙️ Servizi (<?= count(array_filter($allServicesData, fn($s) => $s['is_active'] == 1)) ?>)</button>
-<button class="tab-btn" onclick="switchTab('agenti', this)">👥 Agenti (<?= count($activeAgents) ?>)</button>
+<button class="tab-btn" onclick="switchTab('servizi')">⚙️ Servizi (<?= count(array_filter($allServicesData, fn($s) => $s['is_active'] == 1)) ?>)</button>
+<button class="tab-btn" onclick="switchTab('agenti')">👥 Agenti (<?= count($activeAgents) ?>)</button>
 </div>
 
 <div class="tab-content active" id="tab-info">
@@ -269,58 +269,32 @@ require_once 'header.php';
 <h3>Condizioni Economiche</h3>
 <div class="info-grid">
 <div class="info-field">
-<label>Tech Fee (Forfait Annuale)</label>
+<label>Tech Fee (Forfait)</label>
 <div class="value" style="font-size:1.5rem;font-weight:600;color:var(--cb-bright-blue)">
-<?= $agency['tech_fee'] ? '€ ' . number_format($agency['tech_fee'], 2, ',', '.') : '€ 0,00' ?> <span style="font-size:.8rem;font-weight:400;color:var(--cb-gray)">/anno</span>
+<?= $agency['tech_fee'] ? '€ ' . number_format($agency['tech_fee'], 2, ',', '.') : '€ 0,00' ?>
 </div>
-</div>
-<div class="info-field">
-<label>Data Attivazione</label>
-<div class="value"><?= $agency['tech_fee_activation_date'] ? date('d/m/Y', strtotime($agency['tech_fee_activation_date'])) : '-' ?></div>
-</div>
-<div class="info-field">
-<label>Data Scadenza/Rinnovo</label>
-<div class="value"><?= $agency['tech_fee_expiry_date'] ? date('d/m/Y', strtotime($agency['tech_fee_expiry_date'])) : '-' ?></div>
 </div>
 </div>
 </div>
 
 <?php
-// Carica servizi OBBLIGATORI dal contratto (solo is_mandatory, no prezzi)
-$stmtMandatory = $pdo->prepare("
-    SELECT acs.*, sm.service_name
+// Carica servizi obbligatori e facoltativi dal contratto
+$stmtContract = $pdo->prepare("
+    SELECT acs.*, sm.service_name, sm.default_price 
     FROM agency_contract_services acs
     JOIN services_master sm ON acs.service_id = sm.id
-    WHERE acs.agency_id = :agency_id AND acs.is_mandatory = 1
-    ORDER BY sm.service_name ASC
+    WHERE acs.agency_id = :agency_id
+    ORDER BY acs.is_mandatory DESC, sm.service_name ASC
 ");
-$stmtMandatory->execute(['agency_id' => $agency['id']]);
-$mandatoryServices = $stmtMandatory->fetchAll();
+$stmtContract->execute(['agency_id' => $agency['id']]);
+$contractServices = $stmtContract->fetchAll();
 
-// Carica servizi FACOLTATIVI attivi da agency_services
-$stmtOptional = $pdo->prepare("
-    SELECT ags.*, sm.service_name, sm.default_price
-    FROM agency_services ags
-    JOIN services_master sm ON ags.service_name = (
-        CASE sm.service_name
-            WHEN 'CB Suite' THEN 'cb_suite'
-            WHEN 'Canva Pro' THEN 'canva'
-            WHEN 'Regold' THEN 'regold'
-            WHEN 'James Edition' THEN 'james_edition'
-            WHEN 'Docudrop' THEN 'docudrop'
-            WHEN 'Unique Estates' THEN 'unique'
-        END
-    )
-    WHERE ags.agency_id = :agency_id 
-    AND ags.is_active = 1
-    AND sm.id NOT IN (
-        SELECT service_id FROM agency_contract_services 
-        WHERE agency_id = :agency_id AND is_mandatory = 1
-    )
-    ORDER BY sm.service_name ASC
-");
-$stmtOptional->execute(['agency_id' => $agency['id']]);
-$optionalServices = $stmtOptional->fetchAll();
+$mandatoryServices = array_filter($contractServices, fn($s) => $s['is_mandatory'] == 1);
+$optionalServices = array_filter($contractServices, fn($s) => $s['is_mandatory'] == 0);
+
+$totalOptional = array_reduce($optionalServices, function($sum, $s) {
+    return $sum + ($s['custom_price'] ?? $s['default_price']);
+}, 0);
 
 // Carica allegati contrattuali
 $stmtFiles = $pdo->prepare("SELECT * FROM agency_contract_files WHERE agency_id = :agency_id ORDER BY uploaded_at DESC");
@@ -349,33 +323,28 @@ $contractFiles = $stmtFiles->fetchAll();
 
 <?php if(!empty($optionalServices)): ?>
 <div class="info-section">
-<h3>Servizi Facoltativi Attivi <span style="font-size:.85rem;font-weight:400;color:var(--cb-gray)">(costi aggiuntivi)</span></h3>
+<h3>Servizi Facoltativi Attivati <span style="font-size:.85rem;font-weight:400;color:var(--cb-gray)">(costi aggiuntivi)</span></h3>
 <div style="display:grid;gap:.75rem">
 <?php foreach($optionalServices as $svc): 
 $price = $svc['custom_price'] ?? $svc['default_price'];
 ?>
-<div style="background:#DBEAFE;border-left:4px solid #3B82F6;padding:1.5rem;border-radius:8px">
-<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:1rem">
+<div style="background:#DBEAFE;border-left:4px solid #3B82F6;padding:1rem;border-radius:8px;display:flex;justify-content:space-between;align-items:center">
 <div style="flex:1">
-<div style="font-weight:600;font-size:1.1rem;color:#1E40AF"><?= htmlspecialchars($svc['service_name']) ?></div>
+<div style="font-weight:600;color:#1E40AF"><?= htmlspecialchars($svc['service_name']) ?></div>
 <?php if($svc['notes']): ?>
-<div style="font-size:.85rem;color:#2563EB;margin-top:.5rem"><?= htmlspecialchars($svc['notes']) ?></div>
+<div style="font-size:.85rem;color:#2563EB;margin-top:.25rem"><?= htmlspecialchars($svc['notes']) ?></div>
 <?php endif; ?>
 </div>
-<div style="font-size:1.5rem;font-weight:700;color:#1E40AF">€ <?= number_format($price, 2, ',', '.') ?></div>
-</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;font-size:.9rem;color:#1E40AF">
-<div>
-<div style="font-weight:600;opacity:.7">Attivazione:</div>
-<div><?= $svc['activation_date'] ? date('d/m/Y', strtotime($svc['activation_date'])) : '-' ?></div>
-</div>
-<div>
-<div style="font-weight:600;opacity:.7">Scadenza:</div>
-<div><?= $svc['expiration_date'] ? date('d/m/Y', strtotime($svc['expiration_date'])) : '-' ?></div>
-</div>
-</div>
+<div style="font-size:1.25rem;font-weight:600;color:#1E40AF">€ <?= number_format($price, 2, ',', '.') ?></div>
 </div>
 <?php endforeach; ?>
+</div>
+
+<div style="background:var(--bg);padding:1rem;border-radius:8px;margin-top:1rem">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div style="font-weight:600;color:var(--cb-midnight)">Totale Servizi Facoltativi:</div>
+<div style="font-size:1.5rem;font-weight:600;color:#3B82F6">€ <?= number_format($totalOptional, 2, ',', '.') ?></div>
+</div>
 </div>
 </div>
 <?php endif; ?>
@@ -387,6 +356,24 @@ $price = $svc['custom_price'] ?? $svc['default_price'];
 <a href="contratto_edit.php?code=<?= urlencode($agency['code']) ?>" style="display:inline-block;margin-top:1rem;background:var(--cb-bright-blue);color:white;padding:.75rem 1.5rem;border-radius:8px;text-decoration:none">Configura Contratto</a>
 </div>
 <?php endif; ?>
+
+<div class="info-section" style="background:#F0F9FF;border:2px solid #3B82F6;border-radius:12px;padding:1.5rem">
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+<div>
+<div style="font-size:.875rem;text-transform:uppercase;color:#1E40AF;margin-bottom:.5rem;font-weight:600">Costo Totale Annuo</div>
+<div style="font-size:2rem;font-weight:700;color:#1E40AF">
+€ <?= number_format((($agency['tech_fee'] ?? 0) + $totalOptional) * 12, 2, ',', '.') ?>
+</div>
+<div style="font-size:.85rem;color:#3B82F6;margin-top:.5rem">
+Tech Fee Mensile: €<?= number_format($agency['tech_fee'] ?? 0, 2, ',', '.') ?> 
+<?php if($totalOptional > 0): ?>
++ Facoltativi: €<?= number_format($totalOptional, 2, ',', '.') ?>
+<?php endif; ?>
+= €<?= number_format(($agency['tech_fee'] ?? 0) + $totalOptional, 2, ',', '.') ?>/mese × 12
+</div>
+</div>
+</div>
+</div>
 
 <div class="info-section">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
@@ -666,13 +653,12 @@ $idx = 'standalone_' . $i;
 <script>
 let currentTab = 'info';
 
-function switchTab(tabName, btn){
+function switchTab(tabName){
 currentTab = tabName;
-document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.remove('active'));
 document.querySelectorAll('.tab-content').forEach(content=>content.classList.remove('active'));
-if(btn) btn.classList.add('active');
-const targetTab = document.getElementById('tab-'+tabName);
-if(targetTab) targetTab.classList.add('active');
+event.target.classList.add('active');
+document.getElementById('tab-'+tabName).classList.add('active');
 }
 
 function toggleService(index){
