@@ -58,7 +58,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .main-nav .nav-button{width:100%;text-align:left;padding:1rem 1.5rem;justify-content:space-between}
 .main-nav .dropdown-menu{position:static;box-shadow:none;background:rgba(0,0,0,.1);margin:0;opacity:1;visibility:visible;transform:none}
 .main-nav .dropdown-menu.active{display:block}
-.main-nav .dropdown-item{padding:.75rem 2rem}
+.main-nav .dropdown-item{padding:.75rem 2rem;color:white}
+.main-nav .dropdown-item:hover{background:rgba(255,255,255,.15)}
 .header-left{gap:1rem}
 }
 </style>
