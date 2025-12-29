@@ -51,8 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 3. Inserisci servizi OBBLIGATORI
         if (!empty($_POST['mandatory_services'])) {
             $stmtIns = $pdo->prepare("INSERT INTO agency_contract_services 
-                (agency_id, service_id, is_mandatory, custom_price, notes) 
-                VALUES (:agency_id, :service_id, 1, NULL, :notes)");
+                (agency_id, service_id, is_mandatory, notes) 
+                VALUES (:agency_id, :service_id, 1, :notes)");
             
             foreach ($_POST['mandatory_services'] as $serviceId) {
                 $stmtIns->execute([
