@@ -103,10 +103,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <div class="nav-item">
 <button class="nav-button">TEAM ▼</button>
 <div class="dropdown-menu">
-<?php if($user['crm_role'] === 'admin'): ?>
-<a href="gestione_ferie.php" class="dropdown-item">🌴 Gestione Ferie</a>
-<?php endif; ?>
-<a href="richiedi_ferie.php" class="dropdown-item">📝 Richiedi Ferie</a>
+<a href="gestione_ferie.php" class="dropdown-item">🌴 Ferie</a>
 <a href="team_calendar.php" class="dropdown-item">📅 Calendario</a>
 </div>
 </div>
