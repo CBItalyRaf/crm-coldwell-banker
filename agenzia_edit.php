@@ -147,31 +147,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     
-    // Gestione servizi - prima cancella tutti
-    $stmtDel = $pdo->prepare("DELETE FROM agency_services WHERE agency_id = :agency_id");
-    $stmtDel->execute(['agency_id' => $oldData['id']]);
-    
-    // Poi inserisci/aggiorna quelli dal form
-    $allServices = ['cb_suite', 'canva', 'regold', 'james_edition', 'docudrop', 'unique'];
-    $stmtIns = $pdo->prepare("INSERT INTO agency_services (agency_id, service_name, is_active, activation_date, expiration_date, renewal_required, invoice_reference, notes) 
-                              VALUES (:agency_id, :service, :is_active, :activation_date, :expiration_date, :renewal_required, :invoice_reference, :notes)");
-    
-    foreach ($allServices as $service) {
-        $prefix = str_replace('_', '', $service);
-        $isActive = isset($_POST['service_active_' . $service]) ? 1 : 0;
-        
-        $stmtIns->execute([
-            'agency_id' => $oldData['id'],
-            'service' => $service,
-            'is_active' => $isActive,
-            'activation_date' => $_POST['service_activation_' . $service] ?: null,
-            'expiration_date' => $_POST['service_expiration_' . $service] ?: null,
-            'renewal_required' => $_POST['service_renewal_' . $service] ?: null,
-            'invoice_reference' => $_POST['service_invoice_' . $service] ?: null,
-            'notes' => $_POST['service_notes_' . $service] ?: null
-        ]);
-    }
-    
     // Redirect con flush
     header("Location: agenzia_detail.php?code=" . urlencode($_POST['code']) . "&success=1#tab-" . $returnTab);
     exit();
@@ -190,14 +165,6 @@ $agency = $stmt->fetch();
 if (!$agency) {
     header('Location: agenzie.php');
     exit;
-}
-
-// Carica servizi dell'agenzia con tutti i dettagli
-$stmt = $pdo->prepare("SELECT * FROM agency_services WHERE agency_id = :agency_id ORDER BY service_name");
-$stmt->execute(['agency_id' => $agency['id']]);
-$existingServices = [];
-foreach($stmt->fetchAll() as $svc) {
-    $existingServices[$svc['service_name']] = $svc;
 }
 
 require_once 'header.php';
@@ -353,53 +320,6 @@ require_once 'header.php';
 <input type="text" name="sdi_code" value="<?= htmlspecialchars($agency['sdi_code'] ?: '') ?>">
 </div>
 </div>
-</div>
-
-<div class="form-section">
-<h3>Servizi</h3>
-<?php 
-$serviceNames = [
-    'cb_suite' => 'CB Suite (EuroMg/iRealtors)',
-    'canva' => 'Canva',
-    'regold' => 'Regold',
-    'james_edition' => 'James Edition',
-    'docudrop' => 'Docudrop',
-    'unique' => 'Unique'
-];
-foreach($serviceNames as $serviceKey => $serviceName):
-    $existing = $existingServices[$serviceKey] ?? null;
-?>
-<div style="background:var(--bg);padding:1.5rem;margin-bottom:1.5rem;border-radius:8px;border-left:4px solid var(--cb-bright-blue)">
-<div style="margin-bottom:1rem">
-<label style="display:flex;align-items:center;gap:.5rem;font-size:1.05rem;font-weight:600">
-<input type="checkbox" name="service_active_<?= $serviceKey ?>" value="1" <?= $existing && $existing['is_active'] ? 'checked' : '' ?>>
-<?= $serviceName ?>
-</label>
-</div>
-<div class="form-grid">
-<div class="form-field">
-<label>Data Attivazione</label>
-<input type="date" name="service_activation_<?= $serviceKey ?>" value="<?= $existing['activation_date'] ?? '' ?>">
-</div>
-<div class="form-field">
-<label>Data Scadenza</label>
-<input type="date" name="service_expiration_<?= $serviceKey ?>" value="<?= $existing['expiration_date'] ?? '' ?>">
-</div>
-<div class="form-field">
-<label>Rinnovo Richiesto</label>
-<input type="text" name="service_renewal_<?= $serviceKey ?>" value="<?= htmlspecialchars($existing['renewal_required'] ?? '') ?>" placeholder="es. Annuale, Mensile">
-</div>
-<div class="form-field">
-<label>Riferimento Fattura</label>
-<input type="text" name="service_invoice_<?= $serviceKey ?>" value="<?= htmlspecialchars($existing['invoice_reference'] ?? '') ?>">
-</div>
-<div class="form-field" style="grid-column:1/-1">
-<label>Note</label>
-<textarea name="service_notes_<?= $serviceKey ?>" rows="2" style="padding:.75rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem;font-family:inherit;resize:vertical"><?= htmlspecialchars($existing['notes'] ?? '') ?></textarea>
-</div>
-</div>
-</div>
-<?php endforeach; ?>
 </div>
 
 <div class="form-section">

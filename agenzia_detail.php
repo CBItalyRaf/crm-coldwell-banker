@@ -333,6 +333,29 @@ $stmtOptional = $pdo->prepare("
 $stmtOptional->execute(['agency_id' => $agency['id']]);
 $optionalServices = $stmtOptional->fetchAll();
 
+// Carica servizi FACOLTATIVI DISATTIVATI da agency_services
+$stmtInactive = $pdo->prepare("
+    SELECT ags.*, sm.service_name, sm.default_price
+    FROM agency_services ags
+    JOIN services_master sm ON sm.service_name = (
+        CASE ags.service_name
+            WHEN 'cb_suite' THEN 'CB Suite'
+            WHEN 'canva' THEN 'Canva Pro'
+            WHEN 'regold' THEN 'Regold'
+            WHEN 'james_edition' THEN 'James Edition'
+            WHEN 'docudrop' THEN 'Docudrop'
+            WHEN 'unique' THEN 'Unique Estates'
+            WHEN 'casella_mail_agenzia' THEN 'Casella Mail Agenzia'
+            WHEN 'euromq' THEN 'EuroMq'
+            WHEN 'gestim' THEN 'Gestim'
+        END
+    )
+    WHERE ags.agency_id = :agency_id AND ags.is_active = 0
+    ORDER BY ags.deactivation_date DESC, sm.service_name ASC
+");
+$stmtInactive->execute(['agency_id' => $agency['id']]);
+$inactiveServices = $stmtInactive->fetchAll();
+
 // Carica allegati contrattuali
 $stmtFiles = $pdo->prepare("SELECT * FROM agency_contract_files WHERE agency_id = :agency_id ORDER BY uploaded_at DESC");
 $stmtFiles->execute(['agency_id' => $agency['id']]);
@@ -383,6 +406,43 @@ $price = $svc['custom_price'] ?? $svc['default_price'];
 <div>
 <div style="font-weight:600;opacity:.7">Scadenza:</div>
 <div><?= $svc['expiration_date'] ? date('d/m/Y', strtotime($svc['expiration_date'])) : '-' ?></div>
+</div>
+</div>
+</div>
+<?php endforeach; ?>
+</div>
+</div>
+<?php endif; ?>
+
+<?php if(!empty($inactiveServices)): ?>
+<div class="info-section">
+<h3>Servizi Facoltativi Disattivati <span style="font-size:.85rem;font-weight:400;color:var(--cb-gray)">(storico)</span></h3>
+<div style="display:grid;gap:.75rem">
+<?php foreach($inactiveServices as $svc): 
+$price = $svc['custom_price'] ?? $svc['default_price'];
+?>
+<div style="background:#F3F4F6;border-left:4px solid #6B7280;padding:1.5rem;border-radius:8px;opacity:.7">
+<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:1rem">
+<div style="flex:1">
+<div style="font-weight:600;font-size:1.1rem;color:#374151"><?= htmlspecialchars($svc['service_name']) ?></div>
+<?php if($svc['notes']): ?>
+<div style="font-size:.85rem;color:#6B7280;margin-top:.5rem"><?= htmlspecialchars($svc['notes']) ?></div>
+<?php endif; ?>
+</div>
+<div style="font-size:1.5rem;font-weight:700;color:#6B7280">€ <?= number_format($price, 2, ',', '.') ?></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;font-size:.9rem;color:#374151">
+<div>
+<div style="font-weight:600;opacity:.7">Attivazione:</div>
+<div><?= $svc['activation_date'] ? date('d/m/Y', strtotime($svc['activation_date'])) : '-' ?></div>
+</div>
+<div>
+<div style="font-weight:600;opacity:.7">Scadenza:</div>
+<div><?= $svc['expiration_date'] ? date('d/m/Y', strtotime($svc['expiration_date'])) : '-' ?></div>
+</div>
+<div>
+<div style="font-weight:600;opacity:.7">Disattivazione:</div>
+<div><?= $svc['deactivation_date'] ? '<span style="background:#FEE2E2;color:#991B1B;padding:.25rem .5rem;border-radius:4px;font-weight:600">' . date('d/m/Y', strtotime($svc['deactivation_date'])) . '</span>' : '-' ?></div>
 </div>
 </div>
 </div>

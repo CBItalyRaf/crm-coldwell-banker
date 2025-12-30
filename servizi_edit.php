@@ -38,6 +38,16 @@ foreach ($stmtAgency->fetchAll() as $svc) {
     $agencyServices[$svc['service_name']] = $svc;
 }
 
+// Carica servizi OBBLIGATORI dal contratto (non possono essere disattivati)
+$stmtMandatory = $pdo->prepare("
+    SELECT sm.id, sm.service_name
+    FROM agency_contract_services acs
+    JOIN services_master sm ON sm.id = acs.service_id
+    WHERE acs.agency_id = :agency_id AND acs.is_mandatory = 1
+");
+$stmtMandatory->execute(['agency_id' => $agency['id']]);
+$mandatoryServices = array_column($stmtMandatory->fetchAll(), 'id');
+
 // Mappa service_name da services_master
 $serviceNameMap = [
     'CB Suite' => 'cb_suite',
@@ -73,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     UPDATE agency_services 
                     SET is_active = :is_active,
                         activation_date = :activation_date,
-                        expiration_date = :expiration_date,
+                        deactivation_date = :deactivation_date,
                         custom_price = :custom_price,
                         notes = :notes
                     WHERE agency_id = :agency_id AND service_name = :service_name
@@ -81,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute([
                     'is_active' => $isActive,
                     'activation_date' => $activationDate ?: null,
-                    'expiration_date' => $deactivationDate ?: null,
+                    'deactivation_date' => $deactivationDate ?: null,
                     'custom_price' => $customPrice ?: null,
                     'notes' => $notes ?: null,
                     'agency_id' => $agency['id'],
@@ -90,14 +100,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else if ($isActive) {
                 // Insert new only if active
                 $stmt = $pdo->prepare("
-                    INSERT INTO agency_services (agency_id, service_name, is_active, activation_date, expiration_date, custom_price, notes)
-                    VALUES (:agency_id, :service_name, 1, :activation_date, :expiration_date, :custom_price, :notes)
+                    INSERT INTO agency_services (agency_id, service_name, is_active, activation_date, deactivation_date, custom_price, notes)
+                    VALUES (:agency_id, :service_name, 1, :activation_date, :deactivation_date, :custom_price, :notes)
                 ");
                 $stmt->execute([
                     'agency_id' => $agency['id'],
                     'service_name' => $serviceName,
                     'activation_date' => $activationDate ?: null,
-                    'expiration_date' => $deactivationDate ?: null,
+                    'deactivation_date' => $deactivationDate ?: null,
                     'custom_price' => $customPrice ?: null,
                     'notes' => $notes ?: null
                 ]);
@@ -117,6 +127,7 @@ require_once 'header.php';
 <style>
 .service-card{background:white;padding:1.5rem;border-radius:8px;margin-bottom:1rem;border:2px solid #E5E7EB;transition:all .2s}
 .service-card.active{border-color:var(--cb-bright-blue);background:#F0F9FF}
+.service-card.mandatory{border-color:#10B981;background:#D1FAE5}
 .service-header{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
 .service-toggle{width:60px;height:32px;background:#E5E7EB;border-radius:16px;position:relative;cursor:pointer;transition:background .2s}
 .service-toggle.active{background:var(--cb-bright-blue)}
@@ -145,32 +156,48 @@ require_once 'header.php';
 $serviceName = $serviceNameMap[$service['service_name']] ?? null;
 $agencyService = $serviceName ? ($agencyServices[$serviceName] ?? null) : null;
 $isActive = $agencyService ? $agencyService['is_active'] : 0;
+$isMandatory = in_array($service['id'], $mandatoryServices);
 ?>
-<div class="service-card <?= $isActive ? 'active' : '' ?>" data-service="<?= $service['id'] ?>">
+<div class="service-card <?= $isActive ? 'active' : '' ?> <?= $isMandatory ? 'mandatory' : '' ?>" data-service="<?= $service['id'] ?>">
 <div class="service-header">
+<?php if ($isMandatory): ?>
+<label class="service-toggle active" style="opacity:0.5;cursor:not-allowed" title="Servizio obbligatorio incluso nella Tech Fee">
+<input type="checkbox" name="service_<?= $service['id'] ?>" checked disabled style="display:none">
+<input type="hidden" name="service_<?= $service['id'] ?>" value="1">
+</label>
+<?php else: ?>
 <label class="service-toggle <?= $isActive ? 'active' : '' ?>" onclick="toggleService(<?= $service['id'] ?>)">
 <input type="checkbox" name="service_<?= $service['id'] ?>" <?= $isActive ? 'checked' : '' ?> style="display:none">
 </label>
-<div class="service-name"><?= htmlspecialchars($service['service_name']) ?></div>
+<?php endif; ?>
+<div class="service-name">
+<?= htmlspecialchars($service['service_name']) ?>
+<?php if ($isMandatory): ?><span style="background:#D1FAE5;color:#065F46;padding:.25rem .5rem;border-radius:4px;font-size:.75rem;font-weight:600;margin-left:.5rem">OBBLIGATORIO</span><?php endif; ?>
+</div>
 </div>
 
-<div class="service-dates" id="dates-<?= $service['id'] ?>" style="display:<?= $isActive ? 'grid' : 'none' ?>">
+<div class="service-dates" id="dates-<?= $service['id'] ?>" style="display:<?= ($isActive || $isMandatory) ? 'grid' : 'none' ?>">
 <div class="form-group">
 <label>Data Attivazione</label>
-<input type="date" name="activation_date_<?= $service['id'] ?>" value="<?= $agencyService['activation_date'] ?? '' ?>">
+<input type="date" name="activation_date_<?= $service['id'] ?>" value="<?= $agencyService['activation_date'] ?? '' ?>" <?= $isMandatory ? 'readonly style="background:#F3F4F6"' : '' ?>>
 </div>
 <div class="form-group">
-<label>Data Scadenza</label>
-<input type="date" name="deactivation_date_<?= $service['id'] ?>" value="<?= $agencyService['expiration_date'] ?? '' ?>">
+<label>Data Disattivazione</label>
+<input type="date" name="deactivation_date_<?= $service['id'] ?>" value="<?= $agencyService['deactivation_date'] ?? '' ?>" <?= $isMandatory ? 'readonly style="background:#F3F4F6"' : '' ?>>
 </div>
 <div class="form-group">
 <label>Prezzo Custom (€)</label>
-<input type="number" step="0.01" name="custom_price_<?= $service['id'] ?>" value="<?= $agencyService['custom_price'] ?? '' ?>" placeholder="Default: <?= number_format($service['default_price'] ?? 0, 2, ',', '.') ?>" style="width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:4px">
+<input type="number" step="0.01" name="custom_price_<?= $service['id'] ?>" value="<?= $agencyService['custom_price'] ?? '' ?>" placeholder="Default: <?= number_format($service['default_price'] ?? 0, 2, ',', '.') ?>" style="width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:4px" <?= $isMandatory ? 'readonly style="background:#F3F4F6"' : '' ?>>
 </div>
 <div class="form-group" style="grid-column:1/-1">
 <label>Note</label>
-<textarea name="notes_<?= $service['id'] ?>" rows="2" style="width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:4px;font-family:inherit"><?= htmlspecialchars($agencyService['notes'] ?? '') ?></textarea>
+<textarea name="notes_<?= $service['id'] ?>" rows="2" style="width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:4px;font-family:inherit" <?= $isMandatory ? 'readonly style="background:#F3F4F6"' : '' ?>><?= htmlspecialchars($agencyService['notes'] ?? '') ?></textarea>
 </div>
+<?php if ($isMandatory): ?>
+<div style="grid-column:1/-1;background:#FEF3C7;border-left:4px solid #F59E0B;padding:.75rem;border-radius:4px;font-size:.85rem">
+💡 <strong>Servizio obbligatorio</strong> - Incluso nella Tech Fee. Per modificarlo vai in <a href="contratto_edit.php?code=<?= urlencode($code) ?>" style="color:var(--cb-bright-blue);font-weight:600">Modifica Contratto</a>
+</div>
+<?php endif; ?>
 </div>
 </div>
 <?php endforeach; ?>
