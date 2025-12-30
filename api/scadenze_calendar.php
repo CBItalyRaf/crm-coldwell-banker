@@ -113,7 +113,57 @@ foreach ($techFees as $tf) {
 }
 
 // ========================================
-// 3. AVVISI RINNOVO CONTRATTI (Blu - 4 eventi per contratto)
+// 3. SCADENZE ENTRY FEE RATE (Arancione scuro)
+// ========================================
+$stmt = $pdo->prepare("
+    SELECT 
+        efi.id,
+        efi.agency_id,
+        efi.installment_number,
+        efi.amount,
+        efi.due_date,
+        a.name as agency_name,
+        a.code as agency_code,
+        DATEDIFF(efi.due_date, CURDATE()) as days_remaining
+    FROM entry_fee_installments efi
+    JOIN agencies a ON efi.agency_id = a.id
+    WHERE efi.payment_date IS NULL
+    AND efi.due_date IS NOT NULL
+    AND a.status = 'Active'
+    ORDER BY efi.due_date ASC
+");
+
+$stmt->execute();
+$entryFeeRates = $stmt->fetchAll();
+
+foreach ($entryFeeRates as $rate) {
+    $urgency = getScadenzaUrgency($rate['days_remaining']);
+    
+    $color = '#EA580C'; // Arancione scuro default
+    if ($urgency === 'critical') {
+        $color = '#DC2626'; // Rosso scuro
+    } elseif ($urgency === 'warning') {
+        $color = '#EA580C'; // Arancione scuro
+    }
+    
+    $events[] = [
+        'title' => '💵 Entry Fee Rata ' . $rate['installment_number'] . ' - ' . $rate['agency_name'],
+        'start' => $rate['due_date'],
+        'color' => $color,
+        'url' => '../agenzia_detail.php?code=' . urlencode($rate['agency_code']) . '#tab-contrattuale',
+        'extendedProps' => [
+            'type' => 'entry_fee_rate',
+            'agency_code' => $rate['agency_code'],
+            'agency_name' => $rate['agency_name'],
+            'installment_number' => $rate['installment_number'],
+            'amount' => $rate['amount'],
+            'days_remaining' => $rate['days_remaining']
+        ]
+    ];
+}
+
+// ========================================
+// 4. AVVISI RINNOVO CONTRATTI (Lilla - 4 eventi per contratto)
 // ========================================
 $stmt = $pdo->prepare("
     SELECT 
@@ -135,10 +185,10 @@ foreach ($contratti as $contratto) {
     
     // 4 avvisi di rinnovo
     $avvisi = [
-        ['mesi' => 12, 'label' => '1 anno', 'color' => '#3B82F6'],   // Blu chiaro
-        ['mesi' => 6,  'label' => '6 mesi', 'color' => '#2563EB'],   // Blu medio
-        ['mesi' => 3,  'label' => '3 mesi', 'color' => '#1D4ED8'],   // Blu scuro
-        ['mesi' => 1,  'label' => '1 mese', 'color' => '#1E40AF']    // Blu molto scuro
+        ['mesi' => 12, 'label' => '1 anno', 'color' => '#D8B4FE'],   // Lilla chiaro
+        ['mesi' => 6,  'label' => '6 mesi', 'color' => '#C084FC'],   // Lilla medio
+        ['mesi' => 3,  'label' => '3 mesi', 'color' => '#A855F7'],   // Lilla scuro
+        ['mesi' => 1,  'label' => '1 mese', 'color' => '#9333EA']    // Lilla molto scuro
     ];
     
     foreach ($avvisi as $avviso) {

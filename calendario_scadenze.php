@@ -80,21 +80,31 @@ require_once 'header.php';
             <span>Scade oltre 7 giorni</span>
         </div>
         
+        <div style="margin:.5rem 0 .5rem 0;width:100%;font-weight:600;color:var(--cb-midnight);font-size:.9rem">Entry Fee Rate:</div>
+        <div class="legend-item">
+            <span class="legend-dot" style="background:#DC2626"></span>
+            <span>Scade entro 7 giorni</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-dot" style="background:#EA580C"></span>
+            <span>Scade oltre 7 giorni</span>
+        </div>
+        
         <div style="margin:.5rem 0 .5rem 0;width:100%;font-weight:600;color:var(--cb-midnight);font-size:.9rem">Contratti:</div>
         <div class="legend-item">
-            <span class="legend-dot" style="background:#3B82F6"></span>
+            <span class="legend-dot" style="background:#D8B4FE"></span>
             <span>Rinnovo tra 1 anno</span>
         </div>
         <div class="legend-item">
-            <span class="legend-dot" style="background:#2563EB"></span>
+            <span class="legend-dot" style="background:#C084FC"></span>
             <span>Rinnovo tra 6 mesi</span>
         </div>
         <div class="legend-item">
-            <span class="legend-dot" style="background:#1D4ED8"></span>
+            <span class="legend-dot" style="background:#A855F7"></span>
             <span>Rinnovo tra 3 mesi</span>
         </div>
         <div class="legend-item">
-            <span class="legend-dot" style="background:#1E40AF"></span>
+            <span class="legend-dot" style="background:#9333EA"></span>
             <span>Rinnovo tra 1 mese</span>
         </div>
         
@@ -158,6 +168,11 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (props.type === 'tech_fee') {
                 const days = props.days_remaining;
                 tooltip += 'Tech Fee\n';
+                tooltip += days > 0 ? `Scade tra ${days} giorni` : 'SCADUTO';
+            } else if (props.type === 'entry_fee_rate') {
+                const days = props.days_remaining;
+                tooltip += `Entry Fee - Rata ${props.installment_number}\n`;
+                tooltip += `Importo: € ${parseFloat(props.amount).toLocaleString('it-IT', {minimumFractionDigits: 2})}\n`;
                 tooltip += days > 0 ? `Scade tra ${days} giorni` : 'SCADUTO';
             } else if (props.type === 'rinnovo_contratto') {
                 tooltip += `Contratto scade il ${props.contract_end}\n`;
