@@ -112,6 +112,12 @@ require_once 'header.php';
 .status-badge{padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:600;text-transform:uppercase}
 .status-badge.active{background:#D1FAE5;color:#065F46}
 .status-badge.inactive{background:#FEE2E2;color:#991B1B}
+.status-badge.opening{background:#FEF3C7;color:#92400E}
+.status-badge.closing{background:#FEE2E2;color:#991B1B}
+.status-badge.in-offboarding{background:#FEE2E2;color:#7F1D1D;animation:pulse-red 2s infinite}
+.status-badge.closed{background:#F3F4F6;color:#6B7280}
+.status-badge.suspended{background:#FED7AA;color:#9A3412}
+@keyframes pulse-red{0%,100%{opacity:1}50%{opacity:.7}}
 .service-box{background:var(--bg);border-left:4px solid var(--cb-bright-blue);padding:1rem 1.5rem;margin-bottom:1rem;border-radius:8px;display:flex;justify-content:space-between;align-items:center}
 .service-name{font-weight:600;color:var(--cb-midnight)}
 .service-badge{padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:600;text-transform:uppercase}
@@ -137,6 +143,21 @@ require_once 'header.php';
 <?php endif; ?>
 <?php if($agency['status'] === 'In Onboarding'): ?>
 <a href="onboarding_detail.php?agency_id=<?= $agency['id'] ?>" class="edit-btn" style="background:#10B981;text-decoration:none">📋 Vedi Onboarding</a>
+<?php endif; ?>
+<?php if($agency['status'] === 'Closing' && in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])): ?>
+<?php
+$stmt = $pdo->prepare("SELECT id FROM offboardings WHERE agency_id = :agency_id AND status = 'active'");
+$stmt->execute(['agency_id' => $agency['id']]);
+$hasActiveOffboarding = $stmt->fetch();
+?>
+<?php if(!$hasActiveOffboarding): ?>
+<a href="offboarding_start.php?agency_id=<?= $agency['id'] ?>" class="edit-btn" style="background:#EF4444;text-decoration:none">📤 Avvia Offboarding</a>
+<?php else: ?>
+<a href="offboarding_detail.php?agency_id=<?= $agency['id'] ?>" class="edit-btn" style="background:#EF4444;text-decoration:none">📊 Vedi Offboarding</a>
+<?php endif; ?>
+<?php endif; ?>
+<?php if($agency['status'] === 'In Offboarding'): ?>
+<a href="offboarding_detail.php?agency_id=<?= $agency['id'] ?>" class="edit-btn" style="background:#EF4444;text-decoration:none">📊 Vedi Offboarding</a>
 <?php endif; ?>
 <?php if(in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])): ?>
 <button class="edit-btn" id="editBtn">🔓 Modifica</button>

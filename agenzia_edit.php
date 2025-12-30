@@ -231,10 +231,13 @@ require_once 'header.php';
 <div class="form-field">
 <label>Status</label>
 <select name="status">
-<option value="Active" <?= $agency['status'] === 'Active' ? 'selected' : '' ?>>Active</option>
-<option value="Opening" <?= $agency['status'] === 'Opening' ? 'selected' : '' ?>>Opening</option>
-<option value="Closed" <?= $agency['status'] === 'Closed' ? 'selected' : '' ?>>Closed</option>
-<option value="Prospect" <?= $agency['status'] === 'Prospect' ? 'selected' : '' ?>>Prospect</option>
+<option value="Opening" <?= $agency['status'] === 'Opening' ? 'selected' : '' ?>>🚀 Opening - In apertura</option>
+<option value="In Onboarding" <?= $agency['status'] === 'In Onboarding' ? 'selected' : '' ?>>⏳ In Onboarding</option>
+<option value="Active" <?= $agency['status'] === 'Active' ? 'selected' : '' ?>>✅ Active - Operativa</option>
+<option value="Closing" <?= $agency['status'] === 'Closing' ? 'selected' : '' ?>>⚠️ Closing - In chiusura</option>
+<option value="In Offboarding" <?= $agency['status'] === 'In Offboarding' ? 'selected' : '' ?>>📤 In Offboarding</option>
+<option value="Closed" <?= $agency['status'] === 'Closed' ? 'selected' : '' ?>>❌ Closed - Chiusa</option>
+<option value="Suspended" <?= $agency['status'] === 'Suspended' ? 'selected' : '' ?>>⏸️ Suspended - Sospesa</option>
 </select>
 </div>
 <div class="form-field">
