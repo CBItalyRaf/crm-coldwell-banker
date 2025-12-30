@@ -65,6 +65,12 @@ require_once 'header.php';
 .onboarding-progress-bar{height:100%;background:#10B981;transition:width .3s}
 .onboarding-progress-bar.off{background:#EF4444}
 .onboarding-meta{font-size:.85rem;color:var(--cb-gray);margin-top:.25rem}
+.calendar-event{padding:.75rem 1rem;border-left:4px solid;cursor:pointer;transition:all .2s;margin-bottom:.5rem;border-radius:4px}
+.calendar-event:hover{background:var(--bg);transform:translateX(4px)}
+.calendar-event-title{font-weight:600;font-size:.9rem;margin-bottom:.25rem;color:var(--cb-midnight)}
+.calendar-event-date{font-size:.8rem;color:var(--cb-gray);display:flex;align-items:center;gap:.5rem}
+.calendar-event-agency{font-size:.85rem;color:var(--cb-bright-blue);margin-top:.25rem}
+.no-events{text-align:center;padding:2rem;color:var(--cb-gray)}
 @media (max-width:768px){
 .stats-grid,.widgets-grid{grid-template-columns:1fr}
 }
@@ -110,10 +116,13 @@ if (file_exists(__DIR__ . '/widgets/scadenze_dashboard.php')) {
 <div class="widget-header">
 <span class="widget-icon">📅</span>
 <h3 class="widget-title">Prossimi 7 Giorni</h3>
+<a href="team_calendar.php" style="margin-left:auto;font-size:.85rem;color:var(--cb-bright-blue);text-decoration:none;font-weight:600">Vedi tutto →</a>
 </div>
+<div id="calendarWidget" style="padding:0">
 <div class="widget-placeholder">
-<div class="widget-placeholder-icon">🚧</div>
-<p>Calendario eventi<br><small>Disponibile in Fase 2</small></p>
+<div class="widget-placeholder-icon">⏳</div>
+<p>Caricamento eventi...</p>
+</div>
 </div>
 </div>
 
@@ -209,6 +218,108 @@ if(!e.target.closest('.search-container')){
 searchResults.classList.remove('active');
 }
 });
+}
+
+// Carica eventi calendario widget
+function loadCalendarWidget() {
+    fetch('api/team_calendar.php')
+        .then(r => r.json())
+        .then(events => {
+            const container = document.getElementById('calendarWidget');
+            if (!container) return;
+            
+            // Filtra solo prossimi 7 giorni
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+            const sevenDays = new Date(now);
+            sevenDays.setDate(sevenDays.getDate() + 7);
+            
+            const upcomingEvents = events.filter(e => {
+                const eventDate = new Date(e.start);
+                return eventDate >= now && eventDate <= sevenDays;
+            }).sort((a, b) => new Date(a.start) - new Date(b.start));
+            
+            if (upcomingEvents.length === 0) {
+                container.innerHTML = `
+                    <div class="no-events">
+                        <div style="font-size:2rem;margin-bottom:.5rem">✅</div>
+                        <p>Nessun evento nei prossimi 7 giorni</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Prendi solo primi 5 eventi
+            const displayEvents = upcomingEvents.slice(0, 5);
+            
+            container.innerHTML = displayEvents.map(event => {
+                const eventDate = new Date(event.start);
+                const daysUntil = Math.ceil((eventDate - now) / (1000 * 60 * 60 * 24));
+                const dateStr = eventDate.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' });
+                
+                let daysText = '';
+                if (daysUntil === 0) daysText = 'Oggi';
+                else if (daysUntil === 1) daysText = 'Domani';
+                else daysText = \`tra \${daysUntil} giorni\`;
+                
+                // Determina icona in base al tipo
+                let icon = '📅';
+                let subtitle = '';
+                
+                if (event.extendedProps.type === 'leave') {
+                    const leaveIcons = {
+                        'ferie': '🏖️',
+                        'malattia': '🤒',
+                        'permesso': '📋',
+                        'smartworking': '🏠',
+                        'altro': '📅'
+                    };
+                    icon = leaveIcons[event.extendedProps.leave_type] || '📅';
+                    subtitle = event.extendedProps.leave_type.charAt(0).toUpperCase() + event.extendedProps.leave_type.slice(1);
+                } else if (event.extendedProps.type === 'event') {
+                    icon = '📆';
+                    subtitle = event.extendedProps.location || 'Evento';
+                }
+                
+                return \`
+                    <div class="calendar-event" style="border-left-color:\${event.color}">
+                        <div class="calendar-event-title">\${icon} \${event.title}</div>
+                        <div class="calendar-event-date">
+                            📅 \${dateStr} • \${daysText}
+                        </div>
+                        \${subtitle ? \`<div class="calendar-event-agency">\${subtitle}</div>\` : ''}
+                    </div>
+                \`;
+            }).join('');
+            
+            // Se ci sono più eventi, aggiungi link
+            if (upcomingEvents.length > 5) {
+                container.innerHTML += \`
+                    <div style="text-align:center;padding:1rem;border-top:1px solid #E5E7EB">
+                        <a href="team_calendar.php" style="color:var(--cb-bright-blue);text-decoration:none;font-weight:600;font-size:.9rem">
+                            Altri \${upcomingEvents.length - 5} eventi →
+                        </a>
+                    </div>
+                \`;
+            }
+        })
+        .catch(err => {
+            console.error('Errore caricamento calendario:', err);
+            const container = document.getElementById('calendarWidget');
+            if (container) {
+                container.innerHTML = \`
+                    <div class="no-events">
+                        <div style="font-size:2rem;margin-bottom:.5rem;color:#EF4444">⚠️</div>
+                        <p>Errore nel caricamento</p>
+                    </div>
+                \`;
+            }
+        });
+}
+
+// Carica al load
+if (document.getElementById('calendarWidget')) {
+    loadCalendarWidget();
 }
 </script>
 
