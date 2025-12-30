@@ -119,8 +119,12 @@ require_once 'header.php';
 .agency-name{font-weight:600;color:var(--cb-midnight)}
 .status-badge{padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:600;text-transform:uppercase}
 .status-badge.active{background:#D1FAE5;color:#065F46}
-.status-badge.closed{background:#FEE2E2;color:#991B1B}
 .status-badge.opening{background:#FEF3C7;color:#92400E}
+.status-badge.in-onboarding{background:#DBEAFE;color:#1E40AF}
+.status-badge.closing{background:#FEE2E2;color:#991B1B}
+.status-badge.in-offboarding{background:#FEE2E2;color:#7F1D1D}
+.status-badge.closed{background:#F3F4F6;color:#6B7280}
+.status-badge.suspended{background:#FED7AA;color:#9A3412}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:1000}
 .modal.open{display:flex}
 .modal-content{background:white;border-radius:12px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto}
@@ -173,9 +177,13 @@ require_once 'header.php';
 <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
 <input type="hidden" name="search_type" value="<?= htmlspecialchars($searchType ?? 'all') ?>">
 <button type="submit" name="status" value="all" class="filter-btn <?= $statusFilter === 'all' ? 'active' : '' ?>">Tutte</button>
-<button type="submit" name="status" value="Active" class="filter-btn <?= $statusFilter === 'Active' ? 'active' : '' ?>">Active</button>
-<button type="submit" name="status" value="Opening" class="filter-btn <?= $statusFilter === 'Opening' ? 'active' : '' ?>">Opening</button>
-<button type="submit" name="status" value="Closed" class="filter-btn <?= $statusFilter === 'Closed' ? 'active' : '' ?>">Closed</button>
+<button type="submit" name="status" value="Opening" class="filter-btn <?= $statusFilter === 'Opening' ? 'active' : '' ?>">🚀 Opening</button>
+<button type="submit" name="status" value="In Onboarding" class="filter-btn <?= $statusFilter === 'In Onboarding' ? 'active' : '' ?>">⏳ In Onboarding</button>
+<button type="submit" name="status" value="Active" class="filter-btn <?= $statusFilter === 'Active' ? 'active' : '' ?>">✅ Active</button>
+<button type="submit" name="status" value="Closing" class="filter-btn <?= $statusFilter === 'Closing' ? 'active' : '' ?>">⚠️ Closing</button>
+<button type="submit" name="status" value="In Offboarding" class="filter-btn <?= $statusFilter === 'In Offboarding' ? 'active' : '' ?>">📤 In Offboarding</button>
+<button type="submit" name="status" value="Closed" class="filter-btn <?= $statusFilter === 'Closed' ? 'active' : '' ?>">❌ Closed</button>
+<button type="submit" name="status" value="Suspended" class="filter-btn <?= $statusFilter === 'Suspended' ? 'active' : '' ?>">⏸️ Suspended</button>
 </form>
 </div>
 </div>
@@ -224,9 +232,9 @@ per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <tr onclick="window.location.href='agenzia_detail.php?code=<?= urlencode($agency['code']) ?>'">
 <td><?= htmlspecialchars($agency['code']) ?></td>
 <td class="agency-name"><?= htmlspecialchars($agency['name']) ?></td>
-<td><?= htmlspecialchars($agency['city']) ?><?= $agency['province'] ? ', ' . htmlspecialchars($agency['province']) : '' ?></td>
+<td><?= htmlspecialchars($agency['city'] ?: '-') ?><?= $agency['province'] ? ', ' . htmlspecialchars($agency['province']) : '' ?></td>
 <td><?= htmlspecialchars($agency['broker_manager'] ?: 'Non assegnato') ?></td>
-<td><span class="status-badge <?= strtolower($agency['status']) ?>"><?= htmlspecialchars($agency['status']) ?></span></td>
+<td><span class="status-badge <?= str_replace(' ', '-', strtolower($agency['status'])) ?>"><?= htmlspecialchars($agency['status']) ?></span></td>
 <td><?= htmlspecialchars($agency['email'] ?: '-') ?></td>
 <td><?= htmlspecialchars($agency['phone'] ?: '-') ?></td>
 </tr>
