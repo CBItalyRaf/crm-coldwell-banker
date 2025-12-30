@@ -179,23 +179,23 @@ $isMandatory = in_array($service['id'], $mandatoryServices);
 <div class="service-dates" id="dates-<?= $service['id'] ?>" style="display:<?= ($isActive || $isMandatory) ? 'grid' : 'none' ?>">
 <div class="form-group">
 <label>Data Attivazione</label>
-<input type="date" name="activation_date_<?= $service['id'] ?>" value="<?= $agencyService['activation_date'] ?? '' ?>" <?= $isMandatory ? 'readonly style="background:#F3F4F6"' : '' ?>>
+<input type="date" name="activation_date_<?= $service['id'] ?>" value="<?= $agencyService['activation_date'] ?? '' ?>">
 </div>
 <div class="form-group">
 <label>Data Disattivazione</label>
-<input type="date" name="deactivation_date_<?= $service['id'] ?>" value="<?= $agencyService['deactivation_date'] ?? '' ?>" <?= $isMandatory ? 'readonly style="background:#F3F4F6"' : '' ?>>
+<input type="date" name="deactivation_date_<?= $service['id'] ?>" value="<?= $agencyService['deactivation_date'] ?? '' ?>">
 </div>
 <div class="form-group">
 <label>Prezzo Custom (€)</label>
-<input type="number" step="0.01" name="custom_price_<?= $service['id'] ?>" value="<?= $agencyService['custom_price'] ?? '' ?>" placeholder="Default: <?= number_format($service['default_price'] ?? 0, 2, ',', '.') ?>" style="width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:4px" <?= $isMandatory ? 'readonly style="background:#F3F4F6"' : '' ?>>
+<input type="number" step="0.01" name="custom_price_<?= $service['id'] ?>" value="<?= $agencyService['custom_price'] ?? '' ?>" placeholder="Default: <?= number_format($service['default_price'] ?? 0, 2, ',', '.') ?>" style="width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:4px">
 </div>
 <div class="form-group" style="grid-column:1/-1">
 <label>Note</label>
-<textarea name="notes_<?= $service['id'] ?>" rows="2" style="width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:4px;font-family:inherit" <?= $isMandatory ? 'readonly style="background:#F3F4F6"' : '' ?>><?= htmlspecialchars($agencyService['notes'] ?? '') ?></textarea>
+<textarea name="notes_<?= $service['id'] ?>" rows="2" style="width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:4px;font-family:inherit"><?= htmlspecialchars($agencyService['notes'] ?? '') ?></textarea>
 </div>
 <?php if ($isMandatory): ?>
 <div style="grid-column:1/-1;background:#FEF3C7;border-left:4px solid #F59E0B;padding:.75rem;border-radius:4px;font-size:.85rem">
-💡 <strong>Servizio obbligatorio</strong> - Incluso nella Tech Fee. Per modificarlo vai in <a href="contratto_edit.php?code=<?= urlencode($code) ?>" style="color:var(--cb-bright-blue);font-weight:600">Modifica Contratto</a>
+💡 <strong>Servizio obbligatorio</strong> - Non può essere disattivato. Incluso nella Tech Fee. Per rimuoverlo dal contratto vai in <a href="contratto_edit.php?code=<?= urlencode($code) ?>" style="color:var(--cb-bright-blue);font-weight:600">Modifica Contratto</a>
 </div>
 <?php endif; ?>
 </div>

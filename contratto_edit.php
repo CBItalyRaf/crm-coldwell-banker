@@ -38,9 +38,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->beginTransaction();
         
         // 1. Aggiorna Tech Fee in agencies
-        $stmt = $pdo->prepare("UPDATE agencies SET tech_fee = :tech_fee WHERE id = :id");
+        $stmt = $pdo->prepare("UPDATE agencies SET 
+            tech_fee = :tech_fee,
+            tech_fee_activation_date = :activation_date,
+            tech_fee_expiry_date = :expiry_date
+            WHERE id = :id");
         $stmt->execute([
             'tech_fee' => $_POST['tech_fee'] ?: 0,
+            'activation_date' => $_POST['tech_fee_activation_date'] ?: null,
+            'expiry_date' => $_POST['tech_fee_expiry_date'] ?: null,
             'id' => $agency['id']
         ]);
         
@@ -183,6 +189,16 @@ require_once 'header.php';
 <label>Tech Fee (€)</label>
 <input type="number" name="tech_fee" step="0.01" min="0" value="<?= $agency['tech_fee'] ?? 0 ?>" required>
 <div class="help-text">💡 Importo forfettario che copre tutti i servizi obbligatori</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+<div class="form-field">
+<label>Data Attivazione</label>
+<input type="date" name="tech_fee_activation_date" value="<?= $agency['tech_fee_activation_date'] ?? '' ?>">
+</div>
+<div class="form-field">
+<label>Data Scadenza/Rinnovo</label>
+<input type="date" name="tech_fee_expiry_date" value="<?= $agency['tech_fee_expiry_date'] ?? '' ?>">
+</div>
 </div>
 </div>
 
