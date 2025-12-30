@@ -194,6 +194,9 @@ function closeEventModal() {
     document.getElementById('eventForm').reset();
 }
 
+// Inizializza event listeners per i modal quando il DOM è pronto
+window.addEventListener('DOMContentLoaded', function() {
+    
 document.getElementById('eventForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
@@ -217,7 +220,12 @@ document.getElementById('eventForm').addEventListener('submit', function(e) {
     .then(result => {
         if (result.success) {
             closeEventModal();
-            calendar.refetchEvents();
+            const calendarEl = document.getElementById('calendar');
+            if (calendarEl && calendarEl._calendar) {
+                calendarEl._calendar.refetchEvents();
+            } else {
+                location.reload();
+            }
             alert("✅ Evento creato con successo!");
         } else {
             alert("❌ Errore: " + result.error);
@@ -233,6 +241,9 @@ document.getElementById('eventForm').addEventListener('submit', function(e) {
 document.getElementById('eventModal').addEventListener('click', function(e) {
     if (e.target === this) closeEventModal();
 });
+
+}); // Fine DOMContentLoaded
+
 </script>
 
 <!-- Modal Nuovo Evento -->
@@ -375,6 +386,9 @@ function closeLeaveModal() {
     document.getElementById('leaveForm').reset();
 }
 
+// Inizializza event listeners per modal ferie quando il DOM è pronto
+window.addEventListener('DOMContentLoaded', function() {
+    
 document.getElementById('leaveForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
@@ -410,6 +424,9 @@ document.getElementById('leaveForm').addEventListener('submit', function(e) {
 document.getElementById('leaveModal').addEventListener('click', function(e) {
     if (e.target === this) closeLeaveModal();
 });
+
+}); // Fine DOMContentLoaded
+
 </script>
 
 <?php require_once 'footer.php'; ?>
