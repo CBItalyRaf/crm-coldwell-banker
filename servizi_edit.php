@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $isActive = isset($_POST['service_' . $serviceId]) ? 1 : 0;
             $activationDate = $_POST['activation_date_' . $serviceId] ?? null;
-            $deactivationDate = $_POST['deactivation_date_' . $serviceId] ?? null;
+            $expirationDate = $_POST['expiration_date_' . $serviceId] ?? null;
             $customPrice = $_POST['custom_price_' . $serviceId] ?? null;
             $notes = $_POST['notes_' . $serviceId] ?? null;
             
@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     UPDATE agency_services 
                     SET is_active = :is_active,
                         activation_date = :activation_date,
-                        deactivation_date = :deactivation_date,
+                        expiration_date = :expiration_date,
                         custom_price = :custom_price,
                         notes = :notes
                     WHERE agency_id = :agency_id AND service_name = :service_name
@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute([
                     'is_active' => $isActive,
                     'activation_date' => $activationDate ?: null,
-                    'deactivation_date' => $deactivationDate ?: null,
+                    'expiration_date' => $expirationDate ?: null,
                     'custom_price' => $customPrice ?: null,
                     'notes' => $notes ?: null,
                     'agency_id' => $agency['id'],
@@ -100,14 +100,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else if ($isActive) {
                 // Insert new only if active
                 $stmt = $pdo->prepare("
-                    INSERT INTO agency_services (agency_id, service_name, is_active, activation_date, deactivation_date, custom_price, notes)
-                    VALUES (:agency_id, :service_name, 1, :activation_date, :deactivation_date, :custom_price, :notes)
+                    INSERT INTO agency_services (agency_id, service_name, is_active, activation_date, expiration_date, custom_price, notes)
+                    VALUES (:agency_id, :service_name, 1, :activation_date, :expiration_date, :custom_price, :notes)
                 ");
                 $stmt->execute([
                     'agency_id' => $agency['id'],
                     'service_name' => $serviceName,
                     'activation_date' => $activationDate ?: null,
-                    'deactivation_date' => $deactivationDate ?: null,
+                    'expiration_date' => $expirationDate ?: null,
                     'custom_price' => $customPrice ?: null,
                     'notes' => $notes ?: null
                 ]);
@@ -182,8 +182,8 @@ $isMandatory = in_array($service['id'], $mandatoryServices);
 <input type="date" name="activation_date_<?= $service['id'] ?>" value="<?= $agencyService['activation_date'] ?? '' ?>">
 </div>
 <div class="form-group">
-<label>Data Disattivazione</label>
-<input type="date" name="deactivation_date_<?= $service['id'] ?>" value="<?= $agencyService['deactivation_date'] ?? '' ?>">
+<label>Data Scadenza</label>
+<input type="date" name="expiration_date_<?= $service['id'] ?>" value="<?= $agencyService['expiration_date'] ?? '' ?>">
 </div>
 <div class="form-group">
 <label>Prezzo Custom (€)</label>

@@ -417,7 +417,12 @@ $stmtOptional = $pdo->prepare("
             WHEN 'gestim' THEN 'Gestim'
         END
     )
-    WHERE ags.agency_id = :agency_id AND ags.is_active = 1
+    LEFT JOIN agency_contract_services acs ON acs.agency_id = ags.agency_id 
+        AND acs.service_id = sm.id 
+        AND acs.is_mandatory = 1
+    WHERE ags.agency_id = :agency_id 
+        AND ags.is_active = 1
+        AND acs.id IS NULL
     ORDER BY sm.service_name ASC
 ");
 $stmtOptional->execute(['agency_id' => $agency['id']]);
@@ -440,7 +445,12 @@ $stmtInactive = $pdo->prepare("
             WHEN 'gestim' THEN 'Gestim'
         END
     )
-    WHERE ags.agency_id = :agency_id AND ags.is_active = 0
+    LEFT JOIN agency_contract_services acs ON acs.agency_id = ags.agency_id 
+        AND acs.service_id = sm.id 
+        AND acs.is_mandatory = 1
+    WHERE ags.agency_id = :agency_id 
+        AND ags.is_active = 0
+        AND acs.id IS NULL
     ORDER BY ags.deactivation_date DESC, sm.service_name ASC
 ");
 $stmtInactive->execute(['agency_id' => $agency['id']]);
