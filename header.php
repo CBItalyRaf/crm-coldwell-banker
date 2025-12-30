@@ -105,7 +105,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <button class="nav-button">TEAM ▼</button>
 <div class="dropdown-menu">
 <a href="ferie.php" class="dropdown-item">🌴 Ferie</a>
-<a href="calendario.php" class="dropdown-item">📅 Calendario</a>
+<a href="team_calendar.php" class="dropdown-item">📅 Calendario</a>
 </div>
 </div>
 </nav>
