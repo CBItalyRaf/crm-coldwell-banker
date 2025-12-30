@@ -178,10 +178,8 @@ require_once 'header.php';
 <input type="hidden" name="search_type" value="<?= htmlspecialchars($searchType ?? 'all') ?>">
 <button type="submit" name="status" value="all" class="filter-btn <?= $statusFilter === 'all' ? 'active' : '' ?>">Tutte</button>
 <button type="submit" name="status" value="Opening" class="filter-btn <?= $statusFilter === 'Opening' ? 'active' : '' ?>">🚀 Opening</button>
-<button type="submit" name="status" value="In Onboarding" class="filter-btn <?= $statusFilter === 'In Onboarding' ? 'active' : '' ?>">⏳ In Onboarding</button>
 <button type="submit" name="status" value="Active" class="filter-btn <?= $statusFilter === 'Active' ? 'active' : '' ?>">✅ Active</button>
 <button type="submit" name="status" value="Closing" class="filter-btn <?= $statusFilter === 'Closing' ? 'active' : '' ?>">⚠️ Closing</button>
-<button type="submit" name="status" value="In Offboarding" class="filter-btn <?= $statusFilter === 'In Offboarding' ? 'active' : '' ?>">📤 In Offboarding</button>
 <button type="submit" name="status" value="Closed" class="filter-btn <?= $statusFilter === 'Closed' ? 'active' : '' ?>">❌ Closed</button>
 <button type="submit" name="status" value="Suspended" class="filter-btn <?= $statusFilter === 'Suspended' ? 'active' : '' ?>">⏸️ Suspended</button>
 </form>
