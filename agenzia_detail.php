@@ -298,6 +298,91 @@ require_once 'header.php';
 </div>
 </div>
 
+<div class="info-section">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+<h3 style="margin:0">Entry Fee</h3>
+<a href="entry_fee_edit.php?code=<?= urlencode($agency['code']) ?>" class="edit-btn" style="text-decoration:none;font-size:.9rem;padding:.5rem 1rem">✏️ Modifica</a>
+</div>
+
+<?php if($agency['entry_fee'] > 0 || !empty($entryFeeInstallments)): ?>
+<div style="background:linear-gradient(135deg,var(--cb-blue) 0%,var(--cb-bright-blue) 100%);color:white;padding:1.5rem;border-radius:8px;margin-bottom:1.5rem">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div>
+<div style="font-size:.9rem;opacity:.9">Importo Totale Entry Fee</div>
+<div style="font-size:2.5rem;font-weight:700">€ <?= number_format($agency['entry_fee'] ?? 0, 2, ',', '.') ?></div>
+</div>
+<?php if(!empty($entryFeeInstallments)): 
+$totalInstallments = array_sum(array_column($entryFeeInstallments, 'amount'));
+$paidInstallments = array_filter($entryFeeInstallments, fn($i) => !empty($i['payment_date']));
+$totalPaid = array_sum(array_column($paidInstallments, 'amount'));
+?>
+<div style="text-align:right">
+<div style="font-size:.9rem;opacity:.9">Incassato</div>
+<div style="font-size:2rem;font-weight:700">€ <?= number_format($totalPaid, 2, ',', '.') ?></div>
+<div style="font-size:.85rem;opacity:.8;margin-top:.25rem"><?= count($paidInstallments) ?>/<?= count($entryFeeInstallments) ?> rate pagate</div>
+</div>
+<?php endif; ?>
+</div>
+</div>
+
+<?php if(!empty($entryFeeInstallments)): ?>
+<div style="display:grid;gap:.75rem">
+<?php foreach($entryFeeInstallments as $inst): 
+$isPaid = !empty($inst['payment_date']);
+$isOverdue = !$isPaid && $inst['due_date'] && strtotime($inst['due_date']) < time();
+?>
+<div style="background:<?= $isPaid ? '#D1FAE5' : ($isOverdue ? '#FEE2E2' : '#F3F4F6') ?>;border-left:4px solid <?= $isPaid ? '#10B981' : ($isOverdue ? '#EF4444' : '#6B7280') ?>;padding:1.5rem;border-radius:8px">
+<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:1rem">
+<div style="flex:1">
+<div style="font-weight:600;font-size:1.1rem;color:<?= $isPaid ? '#065F46' : ($isOverdue ? '#991B1B' : '#374151') ?>">
+Rata <?= $inst['installment_number'] ?>
+<?php if($isPaid): ?>
+<span style="background:#10B981;color:white;padding:.25rem .5rem;border-radius:4px;font-size:.75rem;margin-left:.5rem">✓ PAGATA</span>
+<?php elseif($isOverdue): ?>
+<span style="background:#EF4444;color:white;padding:.25rem .5rem;border-radius:4px;font-size:.75rem;margin-left:.5rem">⚠️ SCADUTA</span>
+<?php endif; ?>
+</div>
+<?php if($inst['notes']): ?>
+<div style="font-size:.85rem;color:<?= $isPaid ? '#059669' : ($isOverdue ? '#DC2626' : '#6B7280') ?>;margin-top:.5rem"><?= htmlspecialchars($inst['notes']) ?></div>
+<?php endif; ?>
+</div>
+<div style="font-size:1.8rem;font-weight:700;color:<?= $isPaid ? '#065F46' : ($isOverdue ? '#991B1B' : '#374151') ?>">€ <?= number_format($inst['amount'], 2, ',', '.') ?></div>
+</div>
+<div style="display:grid;grid-template-columns:<?= $isPaid ? '1fr 1fr 1fr' : '1fr 1fr' ?>;gap:1rem;font-size:.9rem;color:<?= $isPaid ? '#065F46' : ($isOverdue ? '#991B1B' : '#374151') ?>">
+<div>
+<div style="font-weight:600;opacity:.7">Scadenza:</div>
+<div><?= $inst['due_date'] ? date('d/m/Y', strtotime($inst['due_date'])) : '-' ?></div>
+</div>
+<?php if($isPaid): ?>
+<div>
+<div style="font-weight:600;opacity:.7">Data Pagamento:</div>
+<div style="font-weight:600"><?= date('d/m/Y', strtotime($inst['payment_date'])) ?></div>
+</div>
+<?php endif; ?>
+<div>
+<div style="font-weight:600;opacity:.7">Stato:</div>
+<div style="font-weight:600"><?= $isPaid ? '✓ Pagata' : ($isOverdue ? '⚠️ Scaduta' : '📅 Da incassare') ?></div>
+</div>
+</div>
+</div>
+<?php endforeach; ?>
+</div>
+<?php else: ?>
+<div style="text-align:center;padding:2rem;color:var(--cb-gray);background:var(--bg);border-radius:8px">
+<div style="font-size:2rem;margin-bottom:.5rem">📝</div>
+<p>Nessuna rata configurata</p>
+</div>
+<?php endif; ?>
+
+<?php else: ?>
+<div style="text-align:center;padding:2rem;color:var(--cb-gray);background:var(--bg);border-radius:8px">
+<div style="font-size:2rem;margin-bottom:.5rem">💰</div>
+<p>Entry Fee non configurata</p>
+<a href="entry_fee_edit.php?code=<?= urlencode($agency['code']) ?>" style="display:inline-block;margin-top:1rem;background:var(--cb-bright-blue);color:white;padding:.75rem 1.5rem;border-radius:8px;text-decoration:none">Configura Entry Fee</a>
+</div>
+<?php endif; ?>
+</div>
+
 <?php
 // Carica servizi OBBLIGATORI dal contratto (solo is_mandatory, no prezzi)
 $stmtMandatory = $pdo->prepare("
@@ -309,6 +394,11 @@ $stmtMandatory = $pdo->prepare("
 ");
 $stmtMandatory->execute(['agency_id' => $agency['id']]);
 $mandatoryServices = $stmtMandatory->fetchAll();
+
+// Carica rate Entry Fee
+$stmtEntryFee = $pdo->prepare("SELECT * FROM entry_fee_installments WHERE agency_id = :agency_id ORDER BY installment_number ASC");
+$stmtEntryFee->execute(['agency_id' => $agency['id']]);
+$entryFeeInstallments = $stmtEntryFee->fetchAll();
 
 // Carica servizi FACOLTATIVI attivi da agency_services
 $stmtOptional = $pdo->prepare("
