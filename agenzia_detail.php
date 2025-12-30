@@ -384,11 +384,25 @@ Rata <?= $inst['installment_number'] ?>
 </div>
 
 <?php
-// Carica servizi OBBLIGATORI dal contratto (solo is_mandatory, no prezzi)
+// Carica servizi OBBLIGATORI dal contratto con date da agency_services
 $stmtMandatory = $pdo->prepare("
-    SELECT acs.*, sm.service_name
+    SELECT acs.*, sm.service_name, ags.activation_date, ags.expiration_date
     FROM agency_contract_services acs
     JOIN services_master sm ON acs.service_id = sm.id
+    LEFT JOIN agency_services ags ON ags.agency_id = acs.agency_id 
+        AND ags.service_name = (
+            CASE sm.service_name
+                WHEN 'CB Suite' THEN 'cb_suite'
+                WHEN 'Canva Pro' THEN 'canva'
+                WHEN 'Regold' THEN 'regold'
+                WHEN 'James Edition' THEN 'james_edition'
+                WHEN 'Docudrop' THEN 'docudrop'
+                WHEN 'Unique Estates' THEN 'unique'
+                WHEN 'Casella Mail Agenzia' THEN 'casella_mail_agenzia'
+                WHEN 'EuroMq' THEN 'euromq'
+                WHEN 'Gestim' THEN 'gestim'
+            END
+        )
     WHERE acs.agency_id = :agency_id AND acs.is_mandatory = 1
     ORDER BY sm.service_name ASC
 ");
@@ -467,14 +481,28 @@ $contractFiles = $stmtFiles->fetchAll();
 <h3>Servizi Obbligatori <span style="font-size:.85rem;font-weight:400;color:var(--cb-gray)">(coperti dalla Tech Fee)</span></h3>
 <div style="display:grid;gap:.75rem">
 <?php foreach($mandatoryServices as $svc): ?>
-<div style="background:#D1FAE5;border-left:4px solid #10B981;padding:1rem;border-radius:8px;display:flex;justify-content:space-between;align-items:center">
-<div>
-<div style="font-weight:600;color:#065F46"><?= htmlspecialchars($svc['service_name']) ?></div>
+<div style="background:#D1FAE5;border-left:4px solid #10B981;padding:1.5rem;border-radius:8px">
+<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:1rem">
+<div style="flex:1">
+<div style="font-weight:600;font-size:1.1rem;color:#065F46"><?= htmlspecialchars($svc['service_name']) ?></div>
 <?php if($svc['notes']): ?>
-<div style="font-size:.85rem;color:#059669;margin-top:.25rem"><?= htmlspecialchars($svc['notes']) ?></div>
+<div style="font-size:.85rem;color:#059669;margin-top:.5rem"><?= htmlspecialchars($svc['notes']) ?></div>
 <?php endif; ?>
 </div>
-<div style="background:#10B981;color:white;padding:.25rem .75rem;border-radius:6px;font-size:.85rem;font-weight:600">OBBLIGATORIO</div>
+<div style="background:#10B981;color:white;padding:.35rem .75rem;border-radius:6px;font-size:.85rem;font-weight:600">OBBLIGATORIO</div>
+</div>
+<?php if($svc['activation_date'] || $svc['expiration_date']): ?>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;font-size:.9rem;color:#065F46">
+<div>
+<div style="font-weight:600;opacity:.7">Attivazione:</div>
+<div><?= $svc['activation_date'] ? date('d/m/Y', strtotime($svc['activation_date'])) : '-' ?></div>
+</div>
+<div>
+<div style="font-weight:600;opacity:.7">Scadenza:</div>
+<div><?= $svc['expiration_date'] ? date('d/m/Y', strtotime($svc['expiration_date'])) : '-' ?></div>
+</div>
+</div>
+<?php endif; ?>
 </div>
 <?php endforeach; ?>
 </div>

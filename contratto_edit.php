@@ -54,18 +54,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("DELETE FROM agency_contract_services WHERE agency_id = :agency_id");
         $stmt->execute(['agency_id' => $agency['id']]);
         
-        // 3. Inserisci servizi OBBLIGATORI
+        // 3. Inserisci servizi OBBLIGATORI in agency_contract_services e gestisci agency_services
         if (!empty($_POST['mandatory_services'])) {
+            // Mapping service_name per ogni servizio
+            $serviceNameMap = [
+                'CB Suite' => 'cb_suite',
+                'Canva Pro' => 'canva',
+                'Regold' => 'regold',
+                'James Edition' => 'james_edition',
+                'Docudrop' => 'docudrop',
+                'Unique Estates' => 'unique',
+                'Casella Mail Agenzia' => 'casella_mail_agenzia',
+                'EuroMq' => 'euromq',
+                'Gestim' => 'gestim'
+            ];
+            
+            // Carica tutti i servizi master per mappare id -> service_name
+            $stmtServices = $pdo->query("SELECT id, service_name FROM services_master");
+            $servicesMap = [];
+            foreach ($stmtServices->fetchAll() as $svc) {
+                $servicesMap[$svc['id']] = $serviceNameMap[$svc['service_name']] ?? null;
+            }
+            
             $stmtIns = $pdo->prepare("INSERT INTO agency_contract_services 
                 (agency_id, service_id, is_mandatory, custom_price, notes) 
                 VALUES (:agency_id, :service_id, 1, NULL, :notes)");
             
+            $stmtCheckAgency = $pdo->prepare("SELECT id FROM agency_services WHERE agency_id = :agency_id AND service_name = :service_name");
+            $stmtInsAgency = $pdo->prepare("INSERT INTO agency_services 
+                (agency_id, service_name, is_active, activation_date, expiration_date, notes) 
+                VALUES (:agency_id, :service_name, 1, :activation_date, :expiration_date, :notes)");
+            $stmtUpdAgency = $pdo->prepare("UPDATE agency_services 
+                SET is_active = 1, activation_date = :activation_date, expiration_date = :expiration_date, notes = :notes 
+                WHERE agency_id = :agency_id AND service_name = :service_name");
+            
             foreach ($_POST['mandatory_services'] as $serviceId) {
+                // Inserisci in agency_contract_services
                 $stmtIns->execute([
                     'agency_id' => $agency['id'],
                     'service_id' => $serviceId,
                     'notes' => $_POST['mandatory_notes_' . $serviceId] ?? null
                 ]);
+                
+                // Gestisci agency_services
+                $serviceName = $servicesMap[$serviceId] ?? null;
+                if ($serviceName) {
+                    $activationDate = $_POST['mandatory_activation_' . $serviceId] ?? null;
+                    $expirationDate = $_POST['mandatory_expiration_' . $serviceId] ?? null;
+                    $notes = $_POST['mandatory_notes_' . $serviceId] ?? null;
+                    
+                    // Check se esiste già
+                    $stmtCheckAgency->execute([
+                        'agency_id' => $agency['id'],
+                        'service_name' => $serviceName
+                    ]);
+                    
+                    if ($stmtCheckAgency->fetch()) {
+                        // UPDATE
+                        $stmtUpdAgency->execute([
+                            'activation_date' => $activationDate ?: null,
+                            'expiration_date' => $expirationDate ?: null,
+                            'notes' => $notes ?: null,
+                            'agency_id' => $agency['id'],
+                            'service_name' => $serviceName
+                        ]);
+                    } else {
+                        // INSERT
+                        $stmtInsAgency->execute([
+                            'agency_id' => $agency['id'],
+                            'service_name' => $serviceName,
+                            'activation_date' => $activationDate ?: null,
+                            'expiration_date' => $expirationDate ?: null,
+                            'notes' => $notes ?: null
+                        ]);
+                    }
+                }
             }
         }
         
@@ -138,6 +201,31 @@ $stmt = $pdo->prepare("
 $stmt->execute(['agency_id' => $agency['id']]);
 $activeServicesIds = array_column($stmt->fetchAll(), 'id');
 
+// Carica dati da agency_services per pre-popolare date servizi obbligatori
+$stmt = $pdo->prepare("
+    SELECT sm.id, ags.activation_date, ags.expiration_date, ags.notes
+    FROM agency_services ags
+    JOIN services_master sm ON sm.service_name = (
+        CASE ags.service_name
+            WHEN 'cb_suite' THEN 'CB Suite'
+            WHEN 'canva' THEN 'Canva Pro'
+            WHEN 'regold' THEN 'Regold'
+            WHEN 'james_edition' THEN 'James Edition'
+            WHEN 'docudrop' THEN 'Docudrop'
+            WHEN 'unique' THEN 'Unique Estates'
+            WHEN 'casella_mail_agenzia' THEN 'Casella Mail Agenzia'
+            WHEN 'euromq' THEN 'EuroMq'
+            WHEN 'gestim' THEN 'Gestim'
+        END
+    )
+    WHERE ags.agency_id = :agency_id
+");
+$stmt->execute(['agency_id' => $agency['id']]);
+$agencyServicesData = [];
+foreach ($stmt->fetchAll() as $row) {
+    $agencyServicesData[$row['id']] = $row;
+}
+
 require_once 'header.php';
 ?>
 
@@ -162,7 +250,7 @@ require_once 'header.php';
 .service-header input[type="checkbox"]{width:20px;height:20px;cursor:pointer}
 .service-name{font-weight:600;color:var(--cb-midnight);flex:1}
 .service-price{font-weight:600;color:var(--cb-bright-blue);margin-left:auto}
-.service-fields{display:grid;grid-template-columns:200px 1fr;gap:1rem;margin-top:.75rem;padding-top:.75rem;border-top:1px solid rgba(0,0,0,.1)}
+.service-fields{display:grid;grid-template-columns:200px 200px 1fr;gap:1rem;margin-top:.75rem;padding-top:.75rem;border-top:1px solid rgba(0,0,0,.1)}
 .service-fields input{padding:.5rem;font-size:.9rem}
 .form-actions{display:flex;gap:1rem;justify-content:flex-end;margin-top:2rem;padding-top:2rem;border-top:2px solid #F3F4F6}
 .btn-cancel{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;text-decoration:none;transition:all .2s}
@@ -208,6 +296,7 @@ require_once 'header.php';
 
 <?php foreach ($allServices as $service): 
 $isChecked = isset($existingContract[$service['id']]) && $existingContract[$service['id']]['is_mandatory'] == 1;
+$serviceData = $agencyServicesData[$service['id']] ?? null;
 ?>
 <div class="service-item <?= $isChecked ? 'mandatory' : '' ?>" id="mandatory-item-<?= $service['id'] ?>">
 <div class="service-header">
@@ -218,10 +307,25 @@ $isChecked = isset($existingContract[$service['id']]) && $existingContract[$serv
 <div class="service-price">€ <?= number_format($service['default_price'], 2, ',', '.') ?></div>
 </div>
 <div class="service-fields">
-<label style="font-size:.85rem;font-weight:600;color:var(--cb-gray)">Note</label>
+<div>
+<label style="font-size:.85rem;font-weight:600;color:var(--cb-gray);display:block;margin-bottom:.5rem">Data Attivazione</label>
+<input type="date" name="mandatory_activation_<?= $service['id'] ?>" 
+    value="<?= $serviceData['activation_date'] ?? '' ?>"
+    style="width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:8px">
+</div>
+<div>
+<label style="font-size:.85rem;font-weight:600;color:var(--cb-gray);display:block;margin-bottom:.5rem">Data Scadenza</label>
+<input type="date" name="mandatory_expiration_<?= $service['id'] ?>" 
+    value="<?= $serviceData['expiration_date'] ?? '' ?>"
+    style="width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:8px">
+</div>
+<div>
+<label style="font-size:.85rem;font-weight:600;color:var(--cb-gray);display:block;margin-bottom:.5rem">Note</label>
 <input type="text" name="mandatory_notes_<?= $service['id'] ?>" 
     placeholder="Note aggiuntive..." 
-    value="<?= isset($existingContract[$service['id']]) ? htmlspecialchars($existingContract[$service['id']]['notes']) : '' ?>">
+    value="<?= isset($existingContract[$service['id']]) ? htmlspecialchars($existingContract[$service['id']]['notes']) : ($serviceData['notes'] ?? '') ?>"
+    style="width:100%;padding:.5rem;border:1px solid #E5E7EB;border-radius:8px">
+</div>
 </div>
 </div>
 <?php endforeach; ?>
