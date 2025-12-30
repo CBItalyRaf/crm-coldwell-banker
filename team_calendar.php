@@ -28,10 +28,37 @@ require_once 'header.php';
 .fc-event:hover{opacity:.8}
 .fc-daygrid-day-number{color:var(--cb-midnight);font-weight:500}
 .fc-col-header-cell-cushion{color:var(--cb-gray);font-weight:600;text-transform:uppercase;font-size:.75rem}
+
+.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center}
+.modal.active{display:flex}
+.modal-content{background:white;border-radius:12px;max-width:600px;width:90%;max-height:90vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,.2)}
+.modal-header{padding:1.5rem;border-bottom:2px solid #F3F4F6;display:flex;justify-content:space-between;align-items:center}
+.modal-title{font-size:1.25rem;font-weight:600;color:var(--cb-midnight)}
+.modal-close{background:transparent;border:none;font-size:1.5rem;cursor:pointer;color:var(--cb-gray);padding:.25rem}
+.modal-close:hover{color:var(--cb-midnight)}
+.modal-body{padding:1.5rem}
+.form-group{margin-bottom:1.5rem}
+.form-group label{display:block;font-weight:600;color:var(--cb-midnight);margin-bottom:.5rem;font-size:.9rem}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:.75rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem;font-family:inherit}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--cb-bright-blue)}
+.form-group textarea{resize:vertical;min-height:100px}
+.modal-footer{padding:1.5rem;border-top:2px solid #F3F4F6;display:flex;gap:1rem;justify-content:flex-end}
+.btn-cancel{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;font-weight:600}
+.btn-cancel:hover{border-color:var(--cb-gray)}
+.btn-submit{background:var(--cb-bright-blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;font-weight:600}
+.btn-submit:hover{background:var(--cb-blue)}
 </style>
 
 <div class="calendar-header">
     <h1 class="calendar-title">📅 Calendario Team - Eventi & Ferie</h1>
+    <div style="display:flex;gap:1rem;margin-bottom:1rem">
+        <button onclick="openEventModal()" style="background:var(--cb-bright-blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:.5rem">
+            ➕ Nuovo Evento
+        </button>
+        <button onclick="openLeaveModal()" style="background:#10B981;color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:.5rem">
+            🌴 Richiedi Ferie
+        </button>
+    </div>
     <div class="calendar-legend">
         <div style="margin-bottom:.5rem;width:100%;font-weight:600;color:var(--cb-midnight);font-size:.9rem">Ferie & Assenze:</div>
         <div class="legend-item">
@@ -118,6 +145,232 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     calendar.render();
+});
+
+function openEventModal() {
+    document.getElementById('eventModal').classList.add('active');
+}
+
+function closeEventModal() {
+    document.getElementById('eventModal').classList.remove('active');
+    document.getElementById('eventForm').reset();
+}
+
+document.getElementById('eventForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = {
+        title: formData.get('title'),
+        description: formData.get('description'),
+        start_datetime: formData.get('start_date') + ' ' + formData.get('start_time') + ':00',
+        end_datetime: formData.get('end_date') + ' ' + formData.get('end_time') + ':00',
+        location: formData.get('location'),
+        event_type: formData.get('event_type'),
+        color: formData.get('color')
+    };
+    
+    fetch('api/calendar_events.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(r => r.json())
+    .then(result => {
+        if (result.success) {
+            closeEventModal();
+            calendar.refetchEvents();
+            alert('✅ Evento creato con successo!');
+        } else {
+            alert('❌ Errore: ' + result.error);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('❌ Errore durante il salvataggio');
+    });
+});
+
+// Chiudi modal cliccando fuori
+document.getElementById('eventModal').addEventListener('click', function(e) {
+    if (e.target === this) closeEventModal();
+});
+</script>
+
+<!-- Modal Nuovo Evento -->
+<div id="eventModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">➕ Nuovo Evento</h3>
+            <button class="modal-close" onclick="closeEventModal()">✕</button>
+        </div>
+        <form id="eventForm">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Titolo *</label>
+                    <input type="text" name="title" required placeholder="Es: Meeting con cliente">
+                </div>
+                
+                <div class="form-group">
+                    <label>Descrizione</label>
+                    <textarea name="description" placeholder="Dettagli evento..."></textarea>
+                </div>
+                
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                    <div class="form-group">
+                        <label>Data Inizio *</label>
+                        <input type="date" name="start_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ora Inizio *</label>
+                        <input type="time" name="start_time" required value="10:00">
+                    </div>
+                </div>
+                
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                    <div class="form-group">
+                        <label>Data Fine *</label>
+                        <input type="date" name="end_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ora Fine *</label>
+                        <input type="time" name="end_time" required value="12:00">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Luogo</label>
+                    <input type="text" name="location" placeholder="Es: Sede Milano, Webinar, etc.">
+                </div>
+                
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                    <div class="form-group">
+                        <label>Tipo Evento</label>
+                        <select name="event_type">
+                            <option value="generic">Generico</option>
+                            <option value="meeting">Meeting</option>
+                            <option value="training">Formazione</option>
+                            <option value="webinar">Webinar</option>
+                            <option value="conference">Conferenza</option>
+                            <option value="deadline">Scadenza</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Colore</label>
+                        <select name="color">
+                            <option value="#012169">🔵 Blu CB</option>
+                            <option value="#1F69FF">💙 Azzurro</option>
+                            <option value="#10B981">🟢 Verde</option>
+                            <option value="#F59E0B">🟡 Giallo</option>
+                            <option value="#EF4444">🔴 Rosso</option>
+                            <option value="#8B5CF6">🟣 Viola</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="closeEventModal()">Annulla</button>
+                <button type="submit" class="btn-submit">💾 Salva Evento</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Richiesta Ferie -->
+<div id="leaveModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">🌴 Richiedi Ferie</h3>
+            <button class="modal-close" onclick="closeLeaveModal()">✕</button>
+        </div>
+        <form id="leaveForm">
+            <div class="modal-body">
+                <div style="background:#FEF3C7;border-left:4px solid #F59E0B;padding:1rem;border-radius:8px;margin-bottom:1.5rem">
+                    <p style="margin:0;font-size:.9rem;color:#92400E">
+                        💡 La richiesta sarà inviata per approvazione. Riceverai una notifica quando sarà gestita.
+                    </p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tipo Assenza *</label>
+                    <select name="leave_type" required>
+                        <option value="ferie">🏖️ Ferie</option>
+                        <option value="permesso">📋 Permesso</option>
+                        <option value="malattia">🤒 Malattia</option>
+                        <option value="smartworking">🏠 Smart Working</option>
+                        <option value="altro">📅 Altro</option>
+                    </select>
+                </div>
+                
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                    <div class="form-group">
+                        <label>Data Inizio *</label>
+                        <input type="date" name="start_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Data Fine *</label>
+                        <input type="date" name="end_date" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Note</label>
+                    <textarea name="notes" placeholder="Eventuali dettagli o note..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="closeLeaveModal()">Annulla</button>
+                <button type="submit" class="btn-submit">📤 Invia Richiesta</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Modal Ferie
+function openLeaveModal() {
+    document.getElementById('leaveModal').classList.add('active');
+}
+
+function closeLeaveModal() {
+    document.getElementById('leaveModal').classList.remove('active');
+    document.getElementById('leaveForm').reset();
+}
+
+document.getElementById('leaveForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = {
+        leave_type: formData.get('leave_type'),
+        start_date: formData.get('start_date'),
+        end_date: formData.get('end_date'),
+        notes: formData.get('notes')
+    };
+    
+    fetch('api/request_leave.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(r => r.json())
+    .then(result => {
+        if (result.success) {
+            closeLeaveModal();
+            alert('✅ Richiesta inviata! Attendi approvazione.');
+        } else {
+            alert('❌ Errore: ' + result.error);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('❌ Errore durante l\'invio della richiesta');
+    });
+});
+
+// Chiudi modal cliccando fuori
+document.getElementById('leaveModal').addEventListener('click', function(e) {
+    if (e.target === this) closeLeaveModal();
 });
 </script>
 
