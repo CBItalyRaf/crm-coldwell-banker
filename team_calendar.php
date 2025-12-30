@@ -141,6 +141,44 @@ document.addEventListener('DOMContentLoaded', function() {
             if (tooltip) {
                 info.el.title = tooltip;
             }
+        },
+        eventClick: function(info) {
+            const event = info.event;
+            const props = event.extendedProps;
+            
+            // Solo eventi (non ferie) possono essere cancellati da qui
+            if (props.type !== 'event') return;
+            
+            // BLOCCA eventi da Booking - nessuno può cancellarli
+            if (props.created_by === 'Booking API') {
+                alert('ℹ️ Gli eventi da Booking non possono essere cancellati dal calendario.\nContatta Raf per modifiche.');
+                return;
+            }
+            
+            // Eventi creati da utenti → TUTTI possono cancellare
+            const eventId = event.id.replace('event_', '');
+            const confirmMsg = `Cancellare questo evento?\n\n${event.title}\n${event.start.toLocaleDateString('it-IT')}`;
+            
+            if (confirm(confirmMsg)) {
+                fetch('api/delete_event.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({event_id: eventId})
+                })
+                .then(r => r.json())
+                .then(result => {
+                    if (result.success) {
+                        event.remove();
+                        alert('✅ Evento cancellato');
+                    } else {
+                        alert('❌ Errore: ' + result.error);
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('❌ Errore durante la cancellazione');
+                });
+            }
         }
     });
     
@@ -364,7 +402,7 @@ document.getElementById('leaveForm').addEventListener('submit', function(e) {
     })
     .catch(err => {
         console.error(err);
-        alert('❌ Errore durante l\'invio della richiesta');
+        alert("❌ Errore durante l'invio della richiesta");
     });
 });
 

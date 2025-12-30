@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canApproveLeaves) {
         $stmt = $pdo->prepare("UPDATE team_leaves SET status = :status WHERE id = :id");
         $stmt->execute(['status' => $status, 'id' => $leave_id]);
         
-        header('Location: ferie.php?success=1');
+        header('Location: gestione_ferie.php?success=1');
         exit;
     }
 }
@@ -86,6 +86,8 @@ require_once 'header.php';
 .btn-approve:hover{background:#059669}
 .btn-reject{background:#EF4444;color:white;border:none;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font-weight:600;font-size:.85rem}
 .btn-reject:hover{background:#DC2626}
+.btn-delete{background:#6B7280;color:white;border:none;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font-weight:600;font-size:.85rem}
+.btn-delete:hover{background:#4B5563}
 .status-badge{display:inline-block;padding:.25rem .75rem;border-radius:6px;font-size:.8rem;font-weight:600}
 .status-badge.approved{background:#D1FAE5;color:#065F46}
 .status-badge.rejected{background:#FEE2E2;color:#991B1B}
@@ -153,6 +155,8 @@ require_once 'header.php';
                         <input type="hidden" name="action" value="reject">
                         <button type="submit" class="btn-reject">✕ Rifiuta</button>
                     </form>
+                    
+                    <button class="btn-delete" onclick="deleteLeave(<?= $leave['id'] ?>)">🗑️ Elimina</button>
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>
@@ -192,9 +196,11 @@ require_once 'header.php';
                         📅 Dal <?= date('d/m/Y', strtotime($leave['start_date'])) ?> al <?= date('d/m/Y', strtotime($leave['end_date'])) ?>
                     </div>
                     
-                    <div style="font-size:.8rem;color:var(--cb-gray)">
+                    <div style="font-size:.8rem;color:var(--cb-gray);margin-bottom:1rem">
                         Gestita il <?= date('d/m/Y H:i', strtotime($leave['updated_at'])) ?>
                     </div>
+                    
+                    <button class="btn-delete" onclick="deleteLeave(<?= $leave['id'] ?>)">🗑️ Elimina</button>
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>
@@ -251,5 +257,32 @@ require_once 'header.php';
     </div>
 
 <?php endif; ?>
+
+<script>
+function deleteLeave(leaveId) {
+    if (!confirm('Eliminare definitivamente questa richiesta di ferie?')) {
+        return;
+    }
+    
+    fetch('api/delete_leave.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({leave_id: leaveId})
+    })
+    .then(r => r.json())
+    .then(result => {
+        if (result.success) {
+            alert('✅ Richiesta eliminata');
+            location.reload();
+        } else {
+            alert('❌ Errore: ' + result.error);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert("❌ Errore durante l'eliminazione");
+    });
+}
+</script>
 
 <?php require_once 'footer.php'; ?>
