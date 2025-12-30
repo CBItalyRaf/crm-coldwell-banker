@@ -260,22 +260,22 @@ require_once 'header.php';
 
 <script>
 function deleteLeave(leaveId) {
-    if (!confirm('Eliminare definitivamente questa richiesta di ferie?')) {
+    if (!confirm("Eliminare definitivamente questa richiesta di ferie?")) {
         return;
     }
     
-    fetch('api/delete_leave.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+    fetch("api/delete_leave.php", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify({leave_id: leaveId})
     })
     .then(r => r.json())
     .then(result => {
         if (result.success) {
-            alert('✅ Richiesta eliminata');
+            alert("✅ Richiesta eliminata");
             location.reload();
         } else {
-            alert('❌ Errore: ' + result.error);
+            alert("❌ Errore: " + result.error);
         }
     })
     .catch(err => {

@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // BLOCCA eventi da Booking - nessuno può cancellarli
             if (props.created_by === 'Booking API') {
-                alert('ℹ️ Gli eventi da Booking non possono essere cancellati dal calendario.\nContatta Raf per modifiche.');
+                alert("ℹ️ Gli eventi da Booking non possono essere cancellati dal calendario.\nContatta Raf per modifiche.");
                 return;
             }
             
@@ -160,23 +160,23 @@ document.addEventListener('DOMContentLoaded', function() {
             const confirmMsg = `Cancellare questo evento?\n\n${event.title}\n${event.start.toLocaleDateString('it-IT')}`;
             
             if (confirm(confirmMsg)) {
-                fetch('api/delete_event.php', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                fetch("api/delete_event.php", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({event_id: eventId})
                 })
                 .then(r => r.json())
                 .then(result => {
                     if (result.success) {
                         event.remove();
-                        alert('✅ Evento cancellato');
+                        alert("✅ Evento cancellato");
                     } else {
-                        alert('❌ Errore: ' + result.error);
+                        alert("❌ Errore: " + result.error);
                     }
                 })
                 .catch(err => {
                     console.error(err);
-                    alert('❌ Errore durante la cancellazione');
+                    alert("❌ Errore durante la cancellazione");
                 });
             }
         }
@@ -208,9 +208,9 @@ document.getElementById('eventForm').addEventListener('submit', function(e) {
         color: formData.get('color')
     };
     
-    fetch('api/calendar_events.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+    fetch("api/calendar_events.php", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data)
     })
     .then(r => r.json())
@@ -218,14 +218,14 @@ document.getElementById('eventForm').addEventListener('submit', function(e) {
         if (result.success) {
             closeEventModal();
             calendar.refetchEvents();
-            alert('✅ Evento creato con successo!');
+            alert("✅ Evento creato con successo!");
         } else {
-            alert('❌ Errore: ' + result.error);
+            alert("❌ Errore: " + result.error);
         }
     })
     .catch(err => {
         console.error(err);
-        alert('❌ Errore durante il salvataggio');
+        alert("❌ Errore durante il salvataggio");
     });
 });
 
@@ -386,18 +386,18 @@ document.getElementById('leaveForm').addEventListener('submit', function(e) {
         notes: formData.get('notes')
     };
     
-    fetch('api/request_leave.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+    fetch("api/request_leave.php", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data)
     })
     .then(r => r.json())
     .then(result => {
         if (result.success) {
             closeLeaveModal();
-            alert('✅ Richiesta inviata! Attendi approvazione.');
+            alert("✅ Richiesta inviata! Attendi approvazione.");
         } else {
-            alert('❌ Errore: ' + result.error);
+            alert("❌ Errore: " + result.error);
         }
     })
     .catch(err => {
