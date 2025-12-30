@@ -6,11 +6,14 @@ $pdo = getDB();
 $user = $_SESSION['crm_user'];
 $pageTitle = "Gestione Ferie - CRM Coldwell Banker";
 
-// Solo admin possono gestire
-$isAdmin = in_array($user['crm_role'], ['admin', 'editor']);
+// Solo Raf e Sara possono approvare ferie
+$canApproveLeaves = in_array($user['email'], [
+    'raffaella.pace@cbitaly.it',
+    'sara.mazoni@cbitaly.it'
+]);
 
 // Gestione approvazione/rifiuto
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canApproveLeaves) {
     $leave_id = $_POST['leave_id'] ?? null;
     $action = $_POST['action'] ?? null; // 'approve' o 'reject'
     
@@ -26,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin) {
 }
 
 // Carica richieste
-if ($isAdmin) {
+if ($canApproveLeaves) {
     // Admin vede tutte le richieste pending
     $stmt = $pdo->prepare("
         SELECT * FROM team_leaves 
@@ -95,7 +98,7 @@ require_once 'header.php';
     <h1 class="page-title">🌴 Gestione Ferie & Assenze</h1>
 </div>
 
-<?php if ($isAdmin): ?>
+<?php if ($canApproveLeaves): ?>
     
     <!-- Richieste in Attesa -->
     <div class="section">
