@@ -3,9 +3,11 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require_once 'check_auth.php';
+require_once 'config/database.php';
 require_once 'helpers/news_api.php';
 
 $pageTitle = "News CB Italia - CRM Coldwell Banker";
+$pdo = getDB();
 
 $search = $_GET['search'] ?? '';
 $category = $_GET['category'] ?? '';

@@ -1,7 +1,9 @@
 <?php
 require_once 'check_auth.php';
+require_once 'config/database.php';
 require_once 'helpers/news_api.php';
 
+$pdo = getDB();
 $id = $_GET['id'] ?? '';
 
 if(!$id) {
@@ -17,6 +19,7 @@ if(!$article) {
     exit;
 }
 
+$isInternal = ($article['visibility'] ?? 'public') === 'internal';
 $pageTitle = htmlspecialchars($article['title']) . " - News CB Italia";
 
 require_once 'header.php';
@@ -27,12 +30,12 @@ require_once 'header.php';
 .back-btn{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.5rem 1rem;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;font-size:.9rem;transition:all .2s}
 .back-btn:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue)}
 .article-container{background:white;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1);overflow:hidden;max-width:900px;margin:0 auto}
+.article-container.internal{background:#EFF6FF;border:3px solid #3B82F6}
 .article-header{padding:2rem}
-.article-category{display:inline-block;padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:600;text-transform:uppercase;margin-bottom:1rem}
-.category-formazione{background:#DBEAFE;color:#1E40AF}
-.category-eventi{background:#FEF3C7;color:#92400E}
-.category-network{background:#D1FAE5;color:#065F46}
-.category-mercato{background:#FEE2E2;color:#991B1B}
+.article-badges{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
+.article-badge{display:inline-block;padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:600;text-transform:uppercase}
+.badge-internal{background:#3B82F6;color:white}
+.badge-category{background:#E5E7EB;color:#6B7280}
 .article-title{font-size:2rem;font-weight:700;color:var(--cb-midnight);line-height:1.3;margin-bottom:1rem}
 .article-meta{display:flex;gap:2rem;color:var(--cb-gray);font-size:.9rem;padding-bottom:1.5rem;border-bottom:2px solid #F3F4F6;flex-wrap:wrap}
 .meta-item{display:flex;align-items:center;gap:.5rem}
@@ -46,6 +49,7 @@ require_once 'header.php';
 .article-content blockquote{border-left:4px solid var(--cb-bright-blue);padding-left:1.5rem;margin:1.5rem 0;font-style:italic;color:var(--cb-gray)}
 .article-content img{max-width:100%;height:auto;border-radius:8px;margin:1.5rem 0}
 .article-footer{padding:2rem;background:var(--bg);border-top:2px solid #E5E7EB}
+.article-footer.internal{background:#DBEAFE}
 .share-section{text-align:center}
 .share-title{font-size:1.1rem;font-weight:600;margin-bottom:1rem}
 .share-buttons{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
@@ -65,16 +69,16 @@ require_once 'header.php';
 <a href="news.php" class="back-btn">← Tutte le news</a>
 </div>
 
-<div class="article-container">
+<div class="article-container <?= $isInternal ? 'internal' : '' ?>">
 <div class="article-header">
-<?php if(!empty($article['category'])): ?>
-<?php 
-$catSlug = strtolower(str_replace(' ', '-', $article['category']['name'] ?? ''));
-?>
-<span class="article-category category-<?= $catSlug ?>">
-<?= htmlspecialchars($article['category']['name']) ?>
-</span>
+<div class="article-badges">
+<?php if($isInternal): ?>
+<span class="article-badge badge-internal">🔒 Solo CB - Comunicazione Interna</span>
 <?php endif; ?>
+<?php if(!empty($article['category'])): ?>
+<span class="article-badge badge-category"><?= htmlspecialchars($article['category']['name']) ?></span>
+<?php endif; ?>
+</div>
 
 <h1 class="article-title"><?= htmlspecialchars($article['title']) ?></h1>
 
@@ -109,7 +113,7 @@ $catSlug = strtolower(str_replace(' ', '-', $article['category']['name'] ?? ''))
 <?php endif; ?>
 </div>
 
-<div class="article-footer">
+<div class="article-footer <?= $isInternal ? 'internal' : '' ?>">
 <div class="share-section">
 <div class="share-title">Condividi questa news</div>
 <div class="share-buttons">

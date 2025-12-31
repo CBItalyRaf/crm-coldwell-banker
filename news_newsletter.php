@@ -1,5 +1,6 @@
 <?php
 require_once 'check_auth.php';
+require_once 'config/database.php';
 require_once 'helpers/news_api.php';
 
 // Solo admin può accedere
@@ -9,6 +10,7 @@ if($user['crm_role'] !== 'admin') {
 }
 
 $pageTitle = "Newsletter News CB - CRM Coldwell Banker";
+$pdo = getDB();
 
 $search = $_GET['search'] ?? '';
 $category = $_GET['category'] ?? '';
