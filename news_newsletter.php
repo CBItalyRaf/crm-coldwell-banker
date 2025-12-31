@@ -118,7 +118,7 @@ require_once 'header.php';
 
 <?php if(empty($articles)): ?>
 <div class="empty-state">
-<div style="font-size:4rem;margin-bottom:1rem;opacity:.3">📰</div>
+<div style="font-size:4rem;margin-bottom:1rem;opacity:.3">📋</div>
 <h3>Nessuna news trovata</h3>
 <p>Prova a modificare i filtri di ricerca</p>
 </div>

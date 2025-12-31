@@ -9,8 +9,15 @@ $category = $_GET['category'] ?? '';
 $visibility = $_GET['visibility'] ?? '';
 $limit = 12;
 
-$newsData = getNewsArticles($limit, $search ?: null, $category ?: null, $visibility ?: null);
-$categories = getNewsCategories();
+// Carica news con error handling
+try {
+    $newsData = getNewsArticles($limit, $search ?: null, $category ?: null, $visibility ?: null);
+    $categories = getNewsCategories();
+} catch (Exception $e) {
+    error_log("Errore caricamento news: " . $e->getMessage());
+    $newsData = null;
+    $categories = null;
+}
 
 $articles = $newsData['data'] ?? [];
 $total = $newsData['total'] ?? 0;
@@ -55,7 +62,7 @@ require_once 'header.php';
 
 <div class="page-header">
 <div>
-<h1 class="page-title">📰 News CB Italia</h1>
+<h1 class="page-title">News CB Italia</h1>
 <p class="page-subtitle">Ultime notizie e comunicazioni dal network Coldwell Banker</p>
 </div>
 <?php if($user['crm_role'] === 'admin'): ?>
@@ -108,7 +115,7 @@ per "<strong><?= htmlspecialchars($search) ?></strong>"
 
 <?php if(empty($articles)): ?>
 <div class="empty-state">
-<div class="empty-icon">📰</div>
+<div class="empty-icon">📋</div>
 <h3>Nessuna news trovata</h3>
 <p>Prova a modificare i filtri di ricerca</p>
 </div>
