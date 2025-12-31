@@ -39,10 +39,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     $senderName = trim($_POST['sender_name'] ?? '');
     
-    // DEBUG ESPLICITO
+    // DEBUG LOG
     error_log("=== SMTP SAVE DEBUG ===");
-    error_log("User object: " . print_r($user, true));
-    error_log("User email field: " . ($user['email'] ?? 'NOT SET'));
+    error_log("User email: " . $user['email']);
     error_log("Account type: $accountType");
     error_log("Email to save: $email");
     error_log("Sender name: $senderName");
@@ -55,14 +54,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "Solo gli admin possono configurare l'account generico";
         } else {
             // Usa email utente invece di ID
-            $userEmail = ($accountType === 'generic') ? NULL : ($user['email'] ?? NULL);
+            $userEmail = ($accountType === 'generic') ? NULL : $user['email'];
             
             error_log("User email to save in DB: " . ($userEmail ?? 'NULL'));
-            
-            if(!$userEmail && $accountType === 'personal') {
-                $error = "ERRORE: Email utente non trovata. Debug: \$user['email'] = " . ($user['email'] ?? 'NOT SET');
-                error_log("ERROR: User email is empty for personal account!");
-            } else {
             
             if(empty($password)) {
                 // Verifica se account esiste già
@@ -113,7 +107,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 if($stmt->execute([$userEmail, $accountType, $email, $encryptedPassword, $senderName])) {
                     $success = "Account configurato con successo!";
-                    error_log("SMTP Save - INSERT/UPDATE SUCCESS");
+                    error_log("SMTP Save - INSERT/UPDATE SUCCESS with user_email: " . $userEmail);
                 } else {
                     $error = "Errore durante il salvataggio: " . print_r($stmt->errorInfo(), true);
                     error_log("SMTP Save - INSERT ERROR: " . print_r($stmt->errorInfo(), true));
@@ -121,7 +115,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-}
 }
 
 // Carica account esistenti
@@ -152,13 +145,6 @@ foreach($allAccounts as $acc) {
 
 require_once 'header.php';
 ?>
-
-<!-- DEBUG TEMPORANEO - RIMUOVERE DOPO -->
-<div style="background:#FEF3C7;border:2px solid #F59E0B;padding:1.5rem;margin:2rem;border-radius:8px">
-<h3 style="color:#92400E;margin-bottom:1rem">🔍 DEBUG: Oggetto $user</h3>
-<pre style="background:white;padding:1rem;border-radius:4px;overflow:auto"><?php print_r($user); ?></pre>
-</div>
-<!-- FINE DEBUG -->
 
 <style>
 .settings-container{max-width:800px;margin:0 auto}
