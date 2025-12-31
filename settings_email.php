@@ -53,6 +53,17 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         if($accountType === 'generic' && $user['crm_role'] !== 'admin') {
             $error = "Solo gli admin possono configurare l'account generico";
         } else {
+            // DEBUG: Cosa c'è in $user?
+            echo "<div style='background:#FEE2E2;border:2px solid #EF4444;padding:2rem;margin:2rem;border-radius:8px'>";
+            echo "<h3>🔍 DEBUG \$user PRIMA DI SALVARE</h3>";
+            echo "<pre>";
+            echo "\$user array completo:\n";
+            print_r($user);
+            echo "\n\$user['email'] = " . var_export($user['email'] ?? 'NOT SET', true);
+            echo "\naccount_type = " . var_export($accountType, true);
+            echo "</pre>";
+            echo "</div>";
+            
             // Usa email utente invece di ID
             $userEmail = ($accountType === 'generic') ? NULL : $user['email'];
             
