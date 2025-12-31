@@ -173,6 +173,24 @@ require_once 'header.php';
 </div>
 
 <div class="form-group">
+<label class="form-label">Invia da: *</label>
+<select name="sender_account" class="form-input" required>
+<?php 
+require_once 'config/smtp_accounts.php';
+$availableAccounts = getAvailableAccounts($user['email']);
+foreach($availableAccounts as $account): 
+?>
+<option value="<?= htmlspecialchars($account['id']) ?>">
+<?= $account['is_personal'] ? '👤' : '📧' ?> <?= htmlspecialchars($account['label']) ?>
+</option>
+<?php endforeach; ?>
+</select>
+<small style="color:var(--cb-gray);font-size:.85rem">
+<?= count($availableAccounts) > 1 ? 'Scegli tra account generico o il tuo account personale' : 'Account generico disponibile per tutti' ?>
+</small>
+</div>
+
+<div class="form-group">
 <label class="form-label">Oggetto Email *</label>
 <input type="text" name="subject" class="form-input" placeholder="Newsletter CB Italia - Dicembre 2025" required>
 </div>
