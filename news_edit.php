@@ -79,13 +79,15 @@ require_once 'header.php';
 #editor-container{min-height:400px;background:white}
 .ql-toolbar{border:1px solid #E5E7EB!important;border-radius:8px 8px 0 0!important;background:var(--bg)!important}
 .ql-container{border:1px solid #E5E7EB!important;border-top:none!important;border-radius:0 0 8px 8px!important;font-size:1rem!important;font-family:inherit!important}
-.ql-editor{min-height:400px;line-height:1.6}
-.ql-editor p{margin-bottom:0.5rem!important}
-.ql-editor h2{font-size:1.5rem;font-weight:700;margin:1.5rem 0 0.75rem!important}
-.ql-editor h3{font-size:1.25rem;font-weight:600;margin:1.25rem 0 0.5rem!important}
-.ql-editor ul, .ql-editor ol{margin:0.5rem 0!important;padding-left:1.5rem!important}
-.ql-editor li{margin-bottom:0.25rem!important}
-.ql-editor blockquote{border-left:4px solid var(--cb-bright-blue);padding-left:1rem;margin:1rem 0!important;font-style:italic;color:#6B7280}
+.ql-editor{min-height:400px;line-height:1.5}
+.ql-editor p{margin:0 0 0.15rem 0!important;padding:0!important}
+.ql-editor h2{font-size:1.5rem;font-weight:700;margin:1rem 0 0.5rem!important}
+.ql-editor h3{font-size:1.25rem;font-weight:600;margin:0.75rem 0 0.35rem!important}
+.ql-editor ul, .ql-editor ol{margin:0.35rem 0!important;padding-left:1.5rem!important}
+.ql-editor li{margin-bottom:0.15rem!important}
+.ql-editor blockquote{border-left:4px solid var(--cb-bright-blue);padding-left:1rem;margin:0.75rem 0!important;font-style:italic;color:#6B7280}
+.ql-editor br{display:block;margin:0.15rem 0;content:""}
+.ql-editor p+p{margin-top:0.15rem!important}
 @media(max-width:768px){
 .edit-form{padding:1.5rem}
 .form-actions{flex-direction:column}
