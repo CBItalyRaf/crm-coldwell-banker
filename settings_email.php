@@ -5,6 +5,30 @@ require_once 'config/database.php';
 $pdo = getDB();
 $pageTitle = "Impostazioni Email - CRM Coldwell Banker";
 
+// Verifica tabella smtp_accounts esiste
+try {
+    $pdo->query("SELECT 1 FROM smtp_accounts LIMIT 1");
+} catch(PDOException $e) {
+    die('
+    <div style="padding:2rem;max-width:800px;margin:2rem auto;background:#FEE2E2;border:2px solid #EF4444;border-radius:12px">
+        <h2 style="color:#991B1B;margin-bottom:1rem">⚠️ Tabella Database Mancante</h2>
+        <p style="margin-bottom:1rem">La tabella <code>smtp_accounts</code> non esiste nel database.</p>
+        <p style="margin-bottom:1rem"><strong>SOLUZIONE:</strong></p>
+        <ol style="margin-left:1.5rem;line-height:1.8">
+            <li>Apri <strong>phpMyAdmin</strong></li>
+            <li>Seleziona il database del CRM</li>
+            <li>Click tab <strong>"SQL"</strong></li>
+            <li>Copia e incolla il contenuto del file <code>smtp_accounts.sql</code></li>
+            <li>Click <strong>"Esegui"</strong></li>
+            <li>Ricarica questa pagina</li>
+        </ol>
+        <p style="margin-top:1.5rem">
+            <a href="index.php" style="background:#3B82F6;color:white;padding:.75rem 1.5rem;border-radius:8px;text-decoration:none;display:inline-block">← Torna alla Dashboard</a>
+        </p>
+    </div>
+    ');
+}
+
 // Chiave criptazione (IMPORTANTE: cambiala in produzione!)
 $encryption_key = 'CB_SMTP_2025_SECRET_KEY_CHANGE_ME';
 
@@ -15,34 +39,73 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     $senderName = trim($_POST['sender_name'] ?? '');
     
-    if(empty($email) || empty($password) || empty($senderName)) {
-        $error = "Compila tutti i campi obbligatori";
+    // DEBUG
+    error_log("SMTP Save - Type: $accountType, Email: $email, Name: $senderName, User ID: {$user['id']}");
+    
+    if(empty($email) || empty($senderName)) {
+        $error = "Compila email e nome mittente (la password è opzionale se già configurato)";
     } else {
         // Verifica permessi
         if($accountType === 'generic' && $user['crm_role'] !== 'admin') {
             $error = "Solo gli admin possono configurare l'account generico";
         } else {
-            // Cripta password
-            $encryptedPassword = base64_encode(openssl_encrypt($password, 'AES-128-ECB', $encryption_key));
-            
-            // Salva in DB
+            // Se password vuota, cerca se esiste già
             $userId = ($accountType === 'generic') ? NULL : $user['id'];
             
-            $stmt = $pdo->prepare("
-                INSERT INTO smtp_accounts (user_id, account_type, email, password, sender_name, is_active)
-                VALUES (?, ?, ?, ?, ?, 1)
-                ON DUPLICATE KEY UPDATE
-                    email = VALUES(email),
-                    password = VALUES(password),
-                    sender_name = VALUES(sender_name),
-                    is_active = 1,
-                    updated_at = CURRENT_TIMESTAMP
-            ");
-            
-            if($stmt->execute([$userId, $accountType, $email, $encryptedPassword, $senderName])) {
-                $success = "Account configurato con successo!";
+            if(empty($password)) {
+                // Verifica se account esiste già
+                $checkStmt = $pdo->prepare("SELECT id FROM smtp_accounts WHERE " . 
+                    ($userId ? "user_id = ?" : "user_id IS NULL") . 
+                    " AND account_type = ?");
+                $checkParams = $userId ? [$userId, $accountType] : [$accountType];
+                $checkStmt->execute($checkParams);
+                
+                if(!$checkStmt->fetch()) {
+                    $error = "Password obbligatoria per la prima configurazione";
+                } else {
+                    // Update senza password
+                    $stmt = $pdo->prepare("
+                        UPDATE smtp_accounts 
+                        SET email = ?, sender_name = ?, updated_at = CURRENT_TIMESTAMP
+                        WHERE " . ($userId ? "user_id = ?" : "user_id IS NULL") . "
+                        AND account_type = ?
+                    ");
+                    
+                    $params = $userId ? [$email, $senderName, $userId, $accountType] : [$email, $senderName, $accountType];
+                    
+                    if($stmt->execute($params)) {
+                        $success = "Account aggiornato con successo!";
+                        error_log("SMTP Save - UPDATE SUCCESS");
+                    } else {
+                        $error = "Errore durante il salvataggio: " . print_r($stmt->errorInfo(), true);
+                        error_log("SMTP Save - UPDATE ERROR: " . print_r($stmt->errorInfo(), true));
+                    }
+                }
             } else {
-                $error = "Errore durante il salvataggio";
+                // Cripta password
+                $encryptedPassword = base64_encode(openssl_encrypt($password, 'AES-128-ECB', $encryption_key));
+                
+                error_log("SMTP Save - Encrypted password length: " . strlen($encryptedPassword));
+                
+                // Salva in DB
+                $stmt = $pdo->prepare("
+                    INSERT INTO smtp_accounts (user_id, account_type, email, password, sender_name, is_active)
+                    VALUES (?, ?, ?, ?, ?, 1)
+                    ON DUPLICATE KEY UPDATE
+                        email = VALUES(email),
+                        password = VALUES(password),
+                        sender_name = VALUES(sender_name),
+                        is_active = 1,
+                        updated_at = CURRENT_TIMESTAMP
+                ");
+                
+                if($stmt->execute([$userId, $accountType, $email, $encryptedPassword, $senderName])) {
+                    $success = "Account configurato con successo!";
+                    error_log("SMTP Save - INSERT/UPDATE SUCCESS");
+                } else {
+                    $error = "Errore durante il salvataggio: " . print_r($stmt->errorInfo(), true);
+                    error_log("SMTP Save - INSERT ERROR: " . print_r($stmt->errorInfo(), true));
+                }
             }
         }
     }
@@ -57,12 +120,22 @@ if($user['crm_role'] === 'admin') {
     $stmt = $pdo->prepare("SELECT * FROM smtp_accounts WHERE account_type = 'generic' AND is_active = 1 LIMIT 1");
     $stmt->execute();
     $genericAccount = $stmt->fetch();
+    error_log("SMTP Load - Generic account: " . ($genericAccount ? "FOUND (ID: {$genericAccount['id']})" : "NOT FOUND"));
 }
 
 // Account personale
 $stmt = $pdo->prepare("SELECT * FROM smtp_accounts WHERE user_id = ? AND account_type = 'personal' AND is_active = 1 LIMIT 1");
 $stmt->execute([$user['id']]);
 $personalAccount = $stmt->fetch();
+error_log("SMTP Load - Personal account for user {$user['id']}: " . ($personalAccount ? "FOUND (ID: {$personalAccount['id']})" : "NOT FOUND"));
+
+// DEBUG: Mostra tutti gli account nel DB
+$allAccountsStmt = $pdo->query("SELECT id, user_id, account_type, email, sender_name, is_active FROM smtp_accounts");
+$allAccounts = $allAccountsStmt->fetchAll();
+error_log("SMTP Load - Total accounts in DB: " . count($allAccounts));
+foreach($allAccounts as $acc) {
+    error_log("  - ID: {$acc['id']}, User: {$acc['user_id']}, Type: {$acc['account_type']}, Email: {$acc['email']}, Active: {$acc['is_active']}");
+}
 
 require_once 'header.php';
 ?>
