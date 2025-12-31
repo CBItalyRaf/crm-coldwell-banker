@@ -43,7 +43,8 @@ require_once 'header.php';
 .stat-subtitle{font-size:.85rem;color:var(--cb-gray);margin-top:.5rem}
 .btn-csv{position:absolute;top:1rem;right:1rem;background:var(--cb-bright-blue);color:white;border:none;padding:.5rem 1rem;border-radius:6px;font-size:.8rem;cursor:pointer;transition:background .2s;text-decoration:none;display:inline-block}
 .btn-csv:hover{background:var(--cb-blue)}
-.widgets-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem;margin-bottom:2rem}
+.widgets-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:2rem}
+.widget-news-full{background:white;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:2rem}
 .widget{background:white;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .widget-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid #E5E7EB}
 .widget-icon{font-size:1.5rem}
@@ -144,42 +145,6 @@ if (file_exists(__DIR__ . '/widgets/scadenze_dashboard.php')) {
 
 <div class="widget">
 <div class="widget-header">
-<span class="widget-icon">📰</span>
-<h3 class="widget-title">News Recenti</h3>
-<a href="news.php" style="margin-left:auto;font-size:.85rem;color:var(--cb-bright-blue);text-decoration:none;font-weight:600">Vedi tutte →</a>
-</div>
-<div class="widget-content" style="padding:0">
-<?php if(empty($newsArticles)): ?>
-<div class="widget-placeholder">
-<div class="widget-placeholder-icon">📰</div>
-<p>Nessuna news disponibile</p>
-</div>
-<?php else: ?>
-<?php foreach(array_slice($newsArticles, 0, 5) as $article): 
-$isInternal = ($article['visibility'] ?? 'public') === 'internal';
-?>
-<div class="recent-item" onclick="window.location.href='news_detail.php?id=<?= $article['id'] ?>'" style="cursor:pointer;<?= $isInternal ? 'background:#EFF6FF;' : '' ?>">
-<div class="recent-item-name" style="display:flex;align-items:center;gap:.5rem">
-<?= $isInternal ? '🔒' : '📰' ?>
-<?= htmlspecialchars(substr($article['title'], 0, 60)) ?><?= strlen($article['title']) > 60 ? '...' : '' ?>
-</div>
-<div class="recent-item-meta">
-📅 <?= date('d/m/Y', strtotime($article['published_at'] ?? $article['created_at'])) ?>
-<?php if(!empty($article['category'])): ?>
-• 🏷️ <?= htmlspecialchars($article['category']['name']) ?>
-<?php endif; ?>
-<?php if($isInternal): ?>
-• <span style="color:#3B82F6;font-weight:600">Solo CB</span>
-<?php endif; ?>
-</div>
-</div>
-<?php endforeach; ?>
-<?php endif; ?>
-</div>
-</div>
-
-<div class="widget">
-<div class="widget-header">
 <span class="widget-icon">🔄</span>
 <h3 class="widget-title">Onboarding & Offboarding</h3>
 </div>
@@ -208,6 +173,49 @@ $progress = $onb['total_tasks'] > 0 ? round(($onb['completed_tasks'] / $onb['tot
 <?php endif; ?>
 </div>
 </div>
+</div>
+
+<!-- Widget News Full Width -->
+<div class="widget-news-full">
+<div class="widget-header" style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid #E5E7EB">
+<span class="widget-icon" style="font-size:1.5rem">📰</span>
+<h3 class="widget-title" style="font-size:1.125rem;font-weight:600;flex:1">News Recenti CB Italia</h3>
+<a href="news.php" style="font-size:.85rem;color:var(--cb-bright-blue);text-decoration:none;font-weight:600">Vedi tutte →</a>
+</div>
+
+<?php if(empty($newsArticles)): ?>
+<div class="widget-placeholder">
+<div class="widget-placeholder-icon">📰</div>
+<p>Nessuna news disponibile</p>
+</div>
+<?php else: ?>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem">
+<?php foreach(array_slice($newsArticles, 0, 6) as $article): 
+$isInternal = ($article['visibility'] ?? 'public') === 'internal';
+?>
+<div onclick="window.location.href='news_detail.php?id=<?= $article['id'] ?>'" style="cursor:pointer;padding:1rem;border:1px solid #E5E7EB;border-radius:8px;transition:all .2s;<?= $isInternal ? 'background:#EFF6FF;border-color:#3B82F6;' : 'background:white;' ?>" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='none'">
+<div style="display:flex;align-items:center;gap:.5rem;font-weight:600;margin-bottom:.5rem;font-size:.95rem">
+<?= $isInternal ? '🔒' : '📰' ?>
+<span style="flex:1"><?= htmlspecialchars(substr($article['title'], 0, 70)) ?><?= strlen($article['title']) > 70 ? '...' : '' ?></span>
+</div>
+<?php if(!empty($article['excerpt'])): ?>
+<p style="font-size:.85rem;color:var(--cb-gray);line-height:1.6;margin-bottom:.75rem">
+<?= htmlspecialchars(substr($article['excerpt'], 0, 120)) ?>...
+</p>
+<?php endif; ?>
+<div style="font-size:.8rem;color:var(--cb-gray);display:flex;gap:.75rem;flex-wrap:wrap">
+<span>📅 <?= date('d/m', strtotime($article['published_at'] ?? $article['created_at'])) ?></span>
+<?php if(!empty($article['category'])): ?>
+<span>🏷️ <?= htmlspecialchars($article['category']['name']) ?></span>
+<?php endif; ?>
+<?php if($isInternal): ?>
+<span style="color:#3B82F6;font-weight:600">Solo CB</span>
+<?php endif; ?>
+</div>
+</div>
+<?php endforeach; ?>
+</div>
+<?php endif; ?>
 </div>
 
 <script>
