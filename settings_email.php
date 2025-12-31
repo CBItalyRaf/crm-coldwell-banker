@@ -5,6 +5,11 @@ require_once 'config/database.php';
 // FIX: check_auth.php usa $_SESSION['crm_user'], non $user
 $user = $_SESSION['crm_user'] ?? [];
 
+// Force opcache reset (rimuovi dopo primo test)
+if (function_exists('opcache_reset')) {
+    opcache_reset();
+}
+
 $pdo = getDB();
 $pageTitle = "Impostazioni Email - CRM Coldwell Banker";
 
@@ -128,7 +133,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Carica account esistenti
 $genericAccount = null;
-$personalAccount = null;
 
 // Account generico (solo admin vede)
 if($user['crm_role'] === 'admin') {
@@ -136,18 +140,6 @@ if($user['crm_role'] === 'admin') {
     $stmt->execute();
     $genericAccount = $stmt->fetch();
     error_log("SMTP Load - Generic account: " . ($genericAccount ? "FOUND (ID: {$genericAccount['id']})" : "NOT FOUND"));
-}
-
-// Account personale (usa email - FIX SSO: usa quello che c'è disponibile)
-$userEmailForLoad = $user['email'] ?? $_SESSION['user']['email'] ?? null;
-if($userEmailForLoad) {
-    $stmt = $pdo->prepare("SELECT * FROM smtp_accounts WHERE user_email = ? AND account_type = 'personal' AND is_active = 1 LIMIT 1");
-    $stmt->execute([$userEmailForLoad]);
-    $personalAccount = $stmt->fetch();
-    error_log("SMTP Load - Personal account for {$userEmailForLoad}: " . ($personalAccount ? "FOUND (ID: {$personalAccount['id']})" : "NOT FOUND"));
-} else {
-    $personalAccount = null;
-    error_log("SMTP Load - Cannot load personal account: user email not available");
 }
 
 require_once 'header.php';
@@ -207,10 +199,10 @@ require_once 'header.php';
 <div class="info-box">
 <h3>ℹ️ Come funziona</h3>
 <ul>
-<li><strong>Account Generico:</strong> Tutti possono usarlo per inviare newsletter (solo admin può configurarlo)</li>
-<li><strong>Account Personale:</strong> Solo tu puoi usarlo, le email partono dal tuo indirizzo Office365</li>
+<li><strong>Account Generico Aziendale:</strong> Usato da tutti per inviare newsletter (solo admin può configurarlo)</li>
 <li>Le password sono criptate e salvate in modo sicuro nel database</li>
-<li>Quando invii newsletter, scegli quale account usare dal dropdown "Invia da:"</li>
+<li>Chiedi all'admin IT di creare un account Office365 dedicato (es: newsletter@cbitaly.it) <strong>senza autenticazione 2FA</strong></li>
+<li>Quando invii newsletter, le email partono sempre dall'account aziendale configurato</li>
 </ul>
 </div>
 
@@ -277,86 +269,19 @@ Se Office365 ha autenticazione a 2 fattori, serve una "password app" generata da
 </details>
 <?php endif; ?>
 </div>
-<?php endif; ?>
-
-<!-- Account Personale (tutti) -->
-<div class="account-card">
-<div class="account-header">
-<span class="account-icon">👤</span>
-<h2 class="account-title">Il Mio Account Personale</h2>
-</div>
-
-<?php if($personalAccount): ?>
-<div class="status-indicator configured">
-✅ Account configurato e attivo
-</div>
-<p style="margin:1rem 0;color:var(--cb-gray);font-size:.9rem">
-Email: <strong><?= htmlspecialchars($personalAccount['email']) ?></strong><br>
-Nome mittente: <strong><?= htmlspecialchars($personalAccount['sender_name']) ?></strong><br>
-Ultimo aggiornamento: <?= date('d/m/Y H:i', strtotime($personalAccount['updated_at'])) ?>
-</p>
-<details>
-<summary style="cursor:pointer;color:var(--cb-bright-blue);font-weight:600;margin-bottom:1rem">🔄 Modifica configurazione</summary>
 <?php else: ?>
-<div class="status-indicator not-configured">
-⚠️ Account non ancora configurato
+<div class="alert alert-error">
+❌ Solo gli amministratori possono configurare l'account email per le newsletter.
 </div>
-<p style="margin:1rem 0;color:var(--cb-gray)">
-Configura il tuo account personale Office365 per poter inviare newsletter dal tuo indirizzo email.
-</p>
 <?php endif; ?>
-
-<form method="POST">
-<input type="hidden" name="account_type" value="personal">
-<input type="hidden" name="current_user_email" value="<?= htmlspecialchars($user['email'] ?? '') ?>">
-
-<div class="form-group">
-<label class="form-label" for="personal_email">Email Office365 *</label>
-<input type="email" id="personal_email" name="email" class="form-input" 
-       value="<?= htmlspecialchars($personalAccount['email'] ?? $user['email']) ?>" 
-       placeholder="<?= htmlspecialchars($user['email']) ?>" required>
-<div class="form-hint">Il tuo indirizzo email Office365 personale</div>
-</div>
-
-<div class="form-group">
-<label class="form-label" for="personal_password">Password Office365 *</label>
-<input type="password" id="personal_password" name="password" class="form-input" 
-       placeholder="<?= $personalAccount ? '••••••••••••• (lascia vuoto per non modificare)' : 'Password tuo account Office365' ?>" 
-       <?= $personalAccount ? '' : 'required' ?>>
-<div class="form-hint">
-<?php if($personalAccount): ?>
-Password attuale salvata. Compila solo se vuoi cambiarla.
-<?php else: ?>
-Se hai autenticazione a 2 fattori, genera una "password app" da Microsoft.
-<?php endif; ?>
-</div>
-</div>
-
-<div class="form-group">
-<label class="form-label" for="personal_name">Nome Mittente *</label>
-<input type="text" id="personal_name" name="sender_name" class="form-input" 
-       value="<?= htmlspecialchars($personalAccount['sender_name'] ?? $user['name']) ?>" 
-       placeholder="<?= htmlspecialchars($user['name']) ?>" required>
-<div class="form-hint">Nome visualizzato come mittente nelle email</div>
-</div>
-
-<button type="submit" class="btn-save">💾 Salva Mio Account</button>
-</form>
-
-<?php if($personalAccount): ?>
-</details>
-<?php endif; ?>
-</div>
 
 <div class="alert alert-info">
-<strong>💡 Suggerimento:</strong> Se Office365 ha autenticazione a 2 fattori (2FA), devi generare una "password app" specifica:
-<ol style="margin:.75rem 0 0 1.5rem;line-height:1.8">
-<li>Vai su <a href="https://account.microsoft.com/security" target="_blank" style="color:var(--cb-bright-blue)">account.microsoft.com/security</a></li>
-<li>Clicca "Opzioni di verifica aggiuntive"</li>
-<li>Seleziona "Crea password app"</li>
-<li>Inserisci nome: "CRM Newsletter"</li>
-<li>Copia la password generata e usala qui</li>
-</ol>
+<strong>📧 Configurazione Account Aziendale:</strong><br>
+Chiedi all'amministratore IT di creare un account Office365 dedicato alle newsletter (es: <code>newsletter@cbitaly.it</code>)<br><br>
+<strong>IMPORTANTE:</strong> L'account deve avere:<br>
+• SMTP AUTH abilitato<br>
+• Autenticazione 2FA <strong>disabilitata</strong> (per evitare problemi di autenticazione)<br>
+• Licenza Office365 attiva
 </div>
 </div>
 

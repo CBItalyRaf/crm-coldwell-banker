@@ -24,15 +24,18 @@ if(empty($newsIds) || empty($recipients) || empty($subject)) {
     die('Dati mancanti: assicurati di compilare tutti i campi obbligatori');
 }
 
-// SICUREZZA: Verifica permessi account mittente (usa EMAIL)
-if(!canUseSMTPAccount($senderAccount, $user['email'])) {
-    die('❌ ERRORE SICUREZZA: Non sei autorizzato a usare questo account mittente.<br><br>Puoi usare solo l\'account generico o il tuo account personale.');
+// SICUREZZA: Verifica permessi account mittente (solo generico)
+if(!canUseSMTPAccount($senderAccount)) {
+    die('❌ ERRORE SICUREZZA: Account mittente non valido.<br><br>Puoi usare solo l\'account aziendale configurato dall\'amministratore.');
 }
 
-// Ottieni credenziali SMTP dal database (usa EMAIL)
-$smtpCreds = getSMTPCredentials($senderAccount, $user['email']);
+// Ottieni credenziali SMTP dal database
+$smtpCreds = getSMTPCredentials($senderAccount);
 if(!$smtpCreds) {
-    die('❌ ERRORE: Account mittente non valido o non configurato.<br><br><a href="settings_email.php">Vai alle Impostazioni Email →</a>');
+    die('❌ ERRORE: Account mittente non configurato.<br><br>' . 
+        ($user['crm_role'] === 'admin' ? 
+        '<a href="settings_email.php">Vai alle Impostazioni Email per configurare l\'account →</a>' :
+        'Chiedi all\'amministratore di configurare l\'account email aziendale.'));
 }
 
 // Parse recipients

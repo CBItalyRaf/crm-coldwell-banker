@@ -179,14 +179,18 @@ require_once 'header.php';
 <label class="form-label">Invia da: *</label>
 <?php 
 require_once 'helpers/smtp_helper.php';
-$smtpAccounts = getAvailableSMTPAccounts($user['email']);
+$smtpAccounts = getAvailableSMTPAccounts();
 
 if(empty($smtpAccounts)): ?>
 <div style="background:#FEE2E2;border:1px solid #EF4444;color:#991B1B;padding:1rem;border-radius:8px;margin-bottom:1rem">
 <strong>⚠️ Nessun account email configurato!</strong><br>
+<?php if($user['crm_role'] === 'admin'): ?>
 <a href="settings_email.php" style="color:#991B1B;text-decoration:underline;font-weight:600">
-Vai alle Impostazioni Email →
+→ Vai alle Impostazioni Email per configurare l'account aziendale
 </a>
+<?php else: ?>
+Chiedi all'amministratore di configurare l'account email aziendale nelle Impostazioni Email.
+<?php endif; ?>
 </div>
 <?php else: ?>
 <select name="sender_account" class="form-input" required>
@@ -197,7 +201,7 @@ Vai alle Impostazioni Email →
 <?php endforeach; ?>
 </select>
 <small style="color:var(--cb-gray);font-size:.85rem">
-<?= count($smtpAccounts) > 1 ? 'Scegli tra account generico o il tuo account personale' : 'Account disponibile per invio' ?>
+Account aziendale configurato dall'amministratore
 </small>
 <?php endif; ?>
 </div>
