@@ -40,7 +40,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     $senderName = trim($_POST['sender_name'] ?? '');
     
     // DEBUG
-    error_log("SMTP Save - Type: $accountType, Email: $email, Name: $senderName, User ID: {$user['id']}");
+    error_log("SMTP Save - Type: $accountType, Email: $email, Name: $senderName, User Email: {$user['email']}");
     
     if(empty($email) || empty($senderName)) {
         $error = "Compila email e nome mittente (la password è opzionale se già configurato)";
@@ -49,15 +49,15 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         if($accountType === 'generic' && $user['crm_role'] !== 'admin') {
             $error = "Solo gli admin possono configurare l'account generico";
         } else {
-            // Se password vuota, cerca se esiste già
-            $userId = ($accountType === 'generic') ? NULL : $user['id'];
+            // Usa email utente invece di ID
+            $userEmail = ($accountType === 'generic') ? NULL : $user['email'];
             
             if(empty($password)) {
                 // Verifica se account esiste già
                 $checkStmt = $pdo->prepare("SELECT id FROM smtp_accounts WHERE " . 
-                    ($userId ? "user_id = ?" : "user_id IS NULL") . 
+                    ($userEmail ? "user_email = ?" : "user_email IS NULL") . 
                     " AND account_type = ?");
-                $checkParams = $userId ? [$userId, $accountType] : [$accountType];
+                $checkParams = $userEmail ? [$userEmail, $accountType] : [$accountType];
                 $checkStmt->execute($checkParams);
                 
                 if(!$checkStmt->fetch()) {
@@ -67,11 +67,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt = $pdo->prepare("
                         UPDATE smtp_accounts 
                         SET email = ?, sender_name = ?, updated_at = CURRENT_TIMESTAMP
-                        WHERE " . ($userId ? "user_id = ?" : "user_id IS NULL") . "
+                        WHERE " . ($userEmail ? "user_email = ?" : "user_email IS NULL") . "
                         AND account_type = ?
                     ");
                     
-                    $params = $userId ? [$email, $senderName, $userId, $accountType] : [$email, $senderName, $accountType];
+                    $params = $userEmail ? [$email, $senderName, $userEmail, $accountType] : [$email, $senderName, $accountType];
                     
                     if($stmt->execute($params)) {
                         $success = "Account aggiornato con successo!";
@@ -89,7 +89,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 // Salva in DB
                 $stmt = $pdo->prepare("
-                    INSERT INTO smtp_accounts (user_id, account_type, email, password, sender_name, is_active)
+                    INSERT INTO smtp_accounts (user_email, account_type, email, password, sender_name, is_active)
                     VALUES (?, ?, ?, ?, ?, 1)
                     ON DUPLICATE KEY UPDATE
                         email = VALUES(email),
@@ -99,7 +99,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                         updated_at = CURRENT_TIMESTAMP
                 ");
                 
-                if($stmt->execute([$userId, $accountType, $email, $encryptedPassword, $senderName])) {
+                if($stmt->execute([$userEmail, $accountType, $email, $encryptedPassword, $senderName])) {
                     $success = "Account configurato con successo!";
                     error_log("SMTP Save - INSERT/UPDATE SUCCESS");
                 } else {
@@ -123,18 +123,18 @@ if($user['crm_role'] === 'admin') {
     error_log("SMTP Load - Generic account: " . ($genericAccount ? "FOUND (ID: {$genericAccount['id']})" : "NOT FOUND"));
 }
 
-// Account personale
-$stmt = $pdo->prepare("SELECT * FROM smtp_accounts WHERE user_id = ? AND account_type = 'personal' AND is_active = 1 LIMIT 1");
-$stmt->execute([$user['id']]);
+// Account personale (usa email invece di ID)
+$stmt = $pdo->prepare("SELECT * FROM smtp_accounts WHERE user_email = ? AND account_type = 'personal' AND is_active = 1 LIMIT 1");
+$stmt->execute([$user['email']]);
 $personalAccount = $stmt->fetch();
-error_log("SMTP Load - Personal account for user {$user['id']}: " . ($personalAccount ? "FOUND (ID: {$personalAccount['id']})" : "NOT FOUND"));
+error_log("SMTP Load - Personal account for {$user['email']}: " . ($personalAccount ? "FOUND (ID: {$personalAccount['id']})" : "NOT FOUND"));
 
 // DEBUG: Mostra tutti gli account nel DB
-$allAccountsStmt = $pdo->query("SELECT id, user_id, account_type, email, sender_name, is_active FROM smtp_accounts");
+$allAccountsStmt = $pdo->query("SELECT id, user_email, account_type, email, sender_name, is_active FROM smtp_accounts");
 $allAccounts = $allAccountsStmt->fetchAll();
 error_log("SMTP Load - Total accounts in DB: " . count($allAccounts));
 foreach($allAccounts as $acc) {
-    error_log("  - ID: {$acc['id']}, User: {$acc['user_id']}, Type: {$acc['account_type']}, Email: {$acc['email']}, Active: {$acc['is_active']}");
+    error_log("  - ID: {$acc['id']}, User: {$acc['user_email']}, Type: {$acc['account_type']}, Email: {$acc['email']}, Active: {$acc['is_active']}");
 }
 
 require_once 'header.php';

@@ -176,7 +176,7 @@ require_once 'header.php';
 <label class="form-label">Invia da: *</label>
 <?php 
 require_once 'helpers/smtp_helper.php';
-$smtpAccounts = getAvailableSMTPAccounts($user['id']);
+$smtpAccounts = getAvailableSMTPAccounts($user['email']);
 
 if(empty($smtpAccounts)): ?>
 <div style="background:#FEE2E2;border:1px solid #EF4444;color:#991B1B;padding:1rem;border-radius:8px;margin-bottom:1rem">

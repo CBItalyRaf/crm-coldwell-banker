@@ -21,13 +21,13 @@ if(empty($newsIds) || empty($recipients) || empty($subject)) {
     die('Dati mancanti: assicurati di compilare tutti i campi obbligatori');
 }
 
-// SICUREZZA: Verifica permessi account mittente
-if(!canUseSMTPAccount($senderAccount, $user['id'])) {
+// SICUREZZA: Verifica permessi account mittente (usa EMAIL)
+if(!canUseSMTPAccount($senderAccount, $user['email'])) {
     die('❌ ERRORE SICUREZZA: Non sei autorizzato a usare questo account mittente.<br><br>Puoi usare solo l\'account generico o il tuo account personale.');
 }
 
-// Ottieni credenziali SMTP dal database
-$smtpCreds = getSMTPCredentials($senderAccount, $user['id']);
+// Ottieni credenziali SMTP dal database (usa EMAIL)
+$smtpCreds = getSMTPCredentials($senderAccount, $user['email']);
 if(!$smtpCreds) {
     die('❌ ERRORE: Account mittente non valido o non configurato.<br><br><a href="settings_email.php">Vai alle Impostazioni Email →</a>');
 }

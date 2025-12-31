@@ -7,9 +7,9 @@
 define('SMTP_ENCRYPTION_KEY', 'CB_SMTP_2025_SECRET_KEY_CHANGE_ME');
 
 /**
- * Ottieni account SMTP disponibili per l'utente
+ * Ottieni account SMTP disponibili per l'utente (usa EMAIL invece di ID)
  */
-function getAvailableSMTPAccounts($userId) {
+function getAvailableSMTPAccounts($userEmail) {
     $pdo = getDB();
     $available = [];
     
@@ -29,8 +29,8 @@ function getAvailableSMTPAccounts($userId) {
     }
     
     // Account personale - solo se configurato dall'utente
-    $stmt = $pdo->prepare("SELECT * FROM smtp_accounts WHERE user_id = ? AND account_type = 'personal' AND is_active = 1 LIMIT 1");
-    $stmt->execute([$userId]);
+    $stmt = $pdo->prepare("SELECT * FROM smtp_accounts WHERE user_email = ? AND account_type = 'personal' AND is_active = 1 LIMIT 1");
+    $stmt->execute([$userEmail]);
     $personal = $stmt->fetch();
     
     if($personal) {
@@ -47,9 +47,9 @@ function getAvailableSMTPAccounts($userId) {
 }
 
 /**
- * Ottieni credenziali SMTP per ID account
+ * Ottieni credenziali SMTP per ID account (usa EMAIL per verifica permessi)
  */
-function getSMTPCredentials($accountId, $userId) {
+function getSMTPCredentials($accountId, $userEmail) {
     if(!$accountId) return null;
     
     // Estrai DB ID da account ID (formato: smtp_123)
@@ -65,8 +65,8 @@ function getSMTPCredentials($accountId, $userId) {
     
     if(!$account) return null;
     
-    // Verifica permessi
-    if($account['account_type'] === 'personal' && $account['user_id'] != $userId) {
+    // Verifica permessi (usa EMAIL)
+    if($account['account_type'] === 'personal' && $account['user_email'] !== $userEmail) {
         return null; // Non puoi usare account personale di altri
     }
     
@@ -98,9 +98,9 @@ function getSMTPCredentials($accountId, $userId) {
 }
 
 /**
- * Verifica se utente può usare account
+ * Verifica se utente può usare account (usa EMAIL)
  */
-function canUseSMTPAccount($accountId, $userId) {
+function canUseSMTPAccount($accountId, $userEmail) {
     if(!$accountId) return false;
     
     $dbId = (int)str_replace('smtp_', '', $accountId);
@@ -117,8 +117,8 @@ function canUseSMTPAccount($accountId, $userId) {
     // Generico: tutti possono usare
     if($account['account_type'] === 'generic') return true;
     
-    // Personale: solo proprietario
-    return ($account['user_id'] == $userId);
+    // Personale: solo proprietario (verifica via EMAIL)
+    return ($account['user_email'] === $userEmail);
 }
 
 /**
