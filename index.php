@@ -1,6 +1,7 @@
 <?php
 require_once 'check_auth.php';
 require_once 'config/database.php';
+require_once 'helpers/news_api.php';
 
 $pageTitle = "Dashboard - CRM Coldwell Banker";
 $pdo = getDB();
@@ -23,6 +24,10 @@ $onboardings = $pdo->query("
     ORDER BY o.started_at DESC
     LIMIT 5
 ")->fetchAll();
+
+// Ultime 5 news
+$latestNews = getNewsArticles(5);
+$newsArticles = $latestNews['data'] ?? [];
 
 require_once 'header.php';
 ?>
@@ -141,10 +146,35 @@ if (file_exists(__DIR__ . '/widgets/scadenze_dashboard.php')) {
 <div class="widget-header">
 <span class="widget-icon">📰</span>
 <h3 class="widget-title">News Recenti</h3>
+<a href="news.php" style="margin-left:auto;font-size:.85rem;color:var(--cb-bright-blue);text-decoration:none;font-weight:600">Vedi tutte →</a>
 </div>
+<div class="widget-content" style="padding:0">
+<?php if(empty($newsArticles)): ?>
 <div class="widget-placeholder">
-<div class="widget-placeholder-icon">🚧</div>
-<p>Integrazione News API<br><small>Disponibile in Fase 2</small></p>
+<div class="widget-placeholder-icon">📰</div>
+<p>Nessuna news disponibile</p>
+</div>
+<?php else: ?>
+<?php foreach(array_slice($newsArticles, 0, 5) as $article): 
+$isInternal = ($article['visibility'] ?? 'public') === 'internal';
+?>
+<div class="recent-item" onclick="window.location.href='news_detail.php?id=<?= $article['id'] ?>'" style="cursor:pointer;<?= $isInternal ? 'background:#EFF6FF;' : '' ?>">
+<div class="recent-item-name" style="display:flex;align-items:center;gap:.5rem">
+<?= $isInternal ? '🔒' : '📰' ?>
+<?= htmlspecialchars(substr($article['title'], 0, 60)) ?><?= strlen($article['title']) > 60 ? '...' : '' ?>
+</div>
+<div class="recent-item-meta">
+📅 <?= date('d/m/Y', strtotime($article['published_at'] ?? $article['created_at'])) ?>
+<?php if(!empty($article['category'])): ?>
+• 🏷️ <?= htmlspecialchars($article['category']['name']) ?>
+<?php endif; ?>
+<?php if($isInternal): ?>
+• <span style="color:#3B82F6;font-weight:600">Solo CB</span>
+<?php endif; ?>
+</div>
+</div>
+<?php endforeach; ?>
+<?php endif; ?>
 </div>
 </div>
 

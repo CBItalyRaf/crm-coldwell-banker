@@ -19,7 +19,7 @@ require_once 'header.php';
 ?>
 
 <style>
-.page-header{background:white;padding:1.5rem;margin-bottom:2rem;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.page-header{background:white;padding:1.5rem;margin-bottom:2rem;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
 .page-title{font-size:1.75rem;font-weight:600;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem}
 .page-subtitle{color:var(--cb-gray);font-size:.95rem}
 .filters-bar{background:white;padding:1.5rem;margin-bottom:2rem;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
@@ -54,8 +54,15 @@ require_once 'header.php';
 </style>
 
 <div class="page-header">
+<div>
 <h1 class="page-title">📰 News CB Italia</h1>
 <p class="page-subtitle">Ultime notizie e comunicazioni dal network Coldwell Banker</p>
+</div>
+<?php if($user['crm_role'] === 'admin'): ?>
+<a href="news_newsletter.php" class="btn-primary" style="background:var(--cb-bright-blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem">
+📧 Crea Newsletter
+</a>
+<?php endif; ?>
 </div>
 
 <div class="filters-bar">

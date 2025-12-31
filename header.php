@@ -101,6 +101,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 </div>
 </div>
 <a href="sviluppo.php" class="nav-button">SVILUPPO</a>
+<a href="news.php" class="nav-button">📰 NEWS</a>
 <div class="nav-item">
 <button class="nav-button">TEAM ▼</button>
 <div class="dropdown-menu">
