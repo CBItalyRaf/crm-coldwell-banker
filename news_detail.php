@@ -73,7 +73,10 @@ require_once 'header.php';
 </style>
 
 <div class="back-section">
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
 <a href="news.php" class="back-btn">← Torna alle news</a>
+<a href="news_edit.php?id=<?= $article['id'] ?>" class="back-btn" style="background:var(--cb-bright-blue);color:white;border-color:var(--cb-bright-blue)">✏️ Modifica News</a>
+</div>
 </div>
 
 <article class="article-container <?= $isInternal ? 'internal' : '' ?>">

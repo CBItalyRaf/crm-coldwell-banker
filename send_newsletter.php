@@ -31,14 +31,18 @@ if(empty($recipientsList)) {
 // Carica dettagli news
 $newsDetails = [];
 foreach($newsIds as $id) {
-    $articleData = getNewsArticle(trim($id));
-    if($articleData && isset($articleData['data'])) {
-        $newsDetails[] = $articleData['data'];
+    $id = trim($id);
+    if(empty($id)) continue;
+    
+    $article = getNewsArticle($id);
+    // L'API ritorna l'articolo direttamente, non in ['data']
+    if($article && isset($article['id'])) {
+        $newsDetails[] = $article;
     }
 }
 
 if(empty($newsDetails)) {
-    die('Nessuna news valida selezionata');
+    die('Nessuna news valida selezionata. Debug: IDs ricevuti = ' . implode(', ', $newsIds));
 }
 
 // Crea HTML newsletter
