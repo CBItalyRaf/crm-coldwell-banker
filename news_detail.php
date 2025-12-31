@@ -1,7 +1,4 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 require_once 'check_auth.php';
 require_once 'config/database.php';
 require_once 'helpers/news_api.php';
@@ -10,19 +7,15 @@ $pdo = getDB();
 $id = $_GET['id'] ?? '';
 
 if(!$id) {
-    die("Errore: ID news mancante. <a href='news.php'>Torna alle news</a>");
+    header('Location: news.php');
+    exit;
 }
 
-$articleData = getNewsArticle($id);
+$article = getNewsArticle($id);
 
-if(!$articleData) {
-    die("Errore: API non risponde. ID: $id <a href='news.php'>Torna alle news</a>");
-}
-
-$article = $articleData['data'] ?? null;
-
-if(!$article) {
-    die("Errore: News non trovata. ID: $id. Response: " . print_r($articleData, true) . " <a href='news.php'>Torna alle news</a>");
+if(!$article || !isset($article['title'])) {
+    header('Location: news.php');
+    exit;
 }
 
 $isInternal = ($article['visibility'] ?? 'public') === 'internal';
@@ -32,59 +25,69 @@ require_once 'header.php';
 ?>
 
 <style>
-.detail-header{background:white;padding:1.5rem;margin-bottom:2rem;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;justify-content:space-between;align-items:center}
-.back-btn{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.5rem 1rem;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;font-size:.9rem;transition:all .2s}
-.back-btn:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue)}
-.article-container{background:white;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1);overflow:hidden;max-width:900px;margin:0 auto}
-.article-container.internal{background:#EFF6FF;border:3px solid #3B82F6}
-.article-header{padding:2rem}
-.article-badges{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
-.article-badge{display:inline-block;padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:600;text-transform:uppercase}
-.badge-internal{background:#3B82F6;color:white}
-.badge-category{background:#E5E7EB;color:#6B7280}
-.article-title{font-size:2rem;font-weight:700;color:var(--cb-midnight);line-height:1.3;margin-bottom:1rem}
-.article-meta{display:flex;gap:2rem;color:var(--cb-gray);font-size:.9rem;padding-bottom:1.5rem;border-bottom:2px solid #F3F4F6;flex-wrap:wrap}
-.meta-item{display:flex;align-items:center;gap:.5rem}
+.back-section{margin-bottom:2rem}
+.back-btn{background:white;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.75rem 1.5rem;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;font-weight:500;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.back-btn:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue);transform:translateX(-4px)}
+.article-container{background:white;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.08);overflow:hidden;max-width:900px;margin:0 auto 2rem}
+.article-container.internal{background:linear-gradient(to bottom,#EFF6FF 0%,white 200px);border:3px solid #3B82F6}
+.article-header{padding:3rem 3rem 2rem}
+.article-badges{display:flex;gap:.75rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.article-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:20px;font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.badge-internal{background:#3B82F6;color:white;box-shadow:0 2px 8px rgba(59,130,246,.3)}
+.badge-category{background:#F3F4F6;color:#6B7280}
+.article-title{font-size:2.5rem;font-weight:700;color:var(--cb-midnight);line-height:1.2;margin-bottom:1.5rem;letter-spacing:-.02em}
+.article-meta{display:flex;gap:2rem;padding:1.5rem 0;border-top:2px solid #F3F4F6;border-bottom:2px solid #F3F4F6;flex-wrap:wrap;font-size:.95rem;color:var(--cb-gray)}
+.meta-item{display:flex;align-items:center;gap:.5rem;font-weight:500}
 .article-image{width:100%;max-height:500px;object-fit:cover}
-.article-content{padding:2rem;font-size:1.05rem;line-height:1.8;color:#374151}
-.article-content p{margin-bottom:1.5rem}
-.article-content h2{font-size:1.5rem;font-weight:600;color:var(--cb-midnight);margin:2rem 0 1rem}
-.article-content h3{font-size:1.25rem;font-weight:600;color:var(--cb-midnight);margin:1.5rem 0 1rem}
-.article-content ul,.article-content ol{margin:1rem 0 1.5rem 2rem}
-.article-content li{margin-bottom:.5rem}
-.article-content blockquote{border-left:4px solid var(--cb-bright-blue);padding-left:1.5rem;margin:1.5rem 0;font-style:italic;color:var(--cb-gray)}
-.article-content img{max-width:100%;height:auto;border-radius:8px;margin:1.5rem 0}
-.article-footer{padding:2rem;background:var(--bg);border-top:2px solid #E5E7EB}
+.article-body{padding:3rem;font-size:1.1rem;line-height:1.9;color:#374151}
+.article-body p{margin-bottom:1.75rem}
+.article-body h2{font-size:1.75rem;font-weight:700;color:var(--cb-midnight);margin:2.5rem 0 1.25rem;letter-spacing:-.01em}
+.article-body h3{font-size:1.4rem;font-weight:600;color:var(--cb-midnight);margin:2rem 0 1rem}
+.article-body h4{font-size:1.2rem;font-weight:600;color:var(--cb-midnight);margin:1.5rem 0 .75rem}
+.article-body ul,.article-body ol{margin:1.5rem 0 1.75rem 2rem;line-height:1.8}
+.article-body li{margin-bottom:.75rem}
+.article-body blockquote{border-left:5px solid var(--cb-bright-blue);padding:1.5rem 2rem;margin:2rem 0;font-style:italic;background:var(--bg);border-radius:0 8px 8px 0;color:#4B5563}
+.article-body img{max-width:100%;height:auto;border-radius:12px;margin:2rem 0;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.article-body a{color:var(--cb-bright-blue);text-decoration:none;border-bottom:2px solid transparent;transition:border-color .2s}
+.article-body a:hover{border-bottom-color:var(--cb-bright-blue)}
+.article-body strong{font-weight:700;color:var(--cb-midnight)}
+.article-body code{background:#F3F4F6;padding:.25rem .5rem;border-radius:4px;font-size:.95em;font-family:monospace}
+.article-body pre{background:#1F2937;color:#F9FAFB;padding:1.5rem;border-radius:8px;overflow-x:auto;margin:2rem 0}
+.article-body pre code{background:transparent;padding:0;color:inherit}
+.article-footer{padding:2.5rem 3rem;background:var(--bg);border-top:2px solid #E5E7EB}
 .article-footer.internal{background:#DBEAFE}
 .share-section{text-align:center}
-.share-title{font-size:1.1rem;font-weight:600;margin-bottom:1rem}
+.share-title{font-size:1.1rem;font-weight:600;margin-bottom:1.25rem;color:var(--cb-midnight)}
 .share-buttons{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
-.share-btn{padding:.75rem 1.5rem;border-radius:8px;text-decoration:none;color:white;font-weight:600;transition:opacity .2s}
-.share-btn:hover{opacity:.8}
+.share-btn{padding:.875rem 1.75rem;border-radius:10px;text-decoration:none;color:white;font-weight:600;transition:all .2s;display:inline-flex;align-items:center;gap:.75rem;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.share-btn:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.25)}
 .share-email{background:#6B7280}
 .share-linkedin{background:#0A66C2}
 .share-whatsapp{background:#25D366}
 @media(max-width:768px){
-.article-title{font-size:1.5rem}
-.article-content{padding:1.5rem;font-size:1rem}
-.article-meta{gap:1rem}
+.article-title{font-size:1.75rem}
+.article-header,.article-body,.article-footer{padding:2rem 1.5rem}
+.article-body{font-size:1rem}
+.article-meta{gap:1rem;font-size:.875rem}
 }
 </style>
 
-<div class="detail-header">
-<a href="news.php" class="back-btn">← Tutte le news</a>
+<div class="back-section">
+<a href="news.php" class="back-btn">← Torna alle news</a>
 </div>
 
-<div class="article-container <?= $isInternal ? 'internal' : '' ?>">
-<div class="article-header">
+<article class="article-container <?= $isInternal ? 'internal' : '' ?>">
+<header class="article-header">
+<?php if($isInternal || !empty($article['category'])): ?>
 <div class="article-badges">
 <?php if($isInternal): ?>
 <span class="article-badge badge-internal">🔒 Solo CB - Comunicazione Interna</span>
 <?php endif; ?>
-<?php if(!empty($article['category'])): ?>
-<span class="article-badge badge-category"><?= htmlspecialchars($article['category']['name']) ?></span>
+<?php if(!empty($article['category']['name'])): ?>
+<span class="article-badge badge-category">🏷️ <?= htmlspecialchars($article['category']['name']) ?></span>
 <?php endif; ?>
 </div>
+<?php endif; ?>
 
 <h1 class="article-title"><?= htmlspecialchars($article['title']) ?></h1>
 
@@ -99,42 +102,45 @@ require_once 'header.php';
 <?php endif; ?>
 <?php if(!empty($article['read_time'])): ?>
 <span class="meta-item">
-⏱️ <?= htmlspecialchars($article['read_time']) ?> min
+⏱️ <?= htmlspecialchars($article['read_time']) ?> min di lettura
 </span>
 <?php endif; ?>
 </div>
-</div>
+</header>
 
 <?php if(!empty($article['image_url'])): ?>
 <img src="<?= htmlspecialchars($article['image_url']) ?>" alt="<?= htmlspecialchars($article['title']) ?>" class="article-image">
 <?php endif; ?>
 
-<div class="article-content">
-<?php if(!empty($article['content'])): ?>
-<?= $article['content'] ?>
-<?php elseif(!empty($article['body'])): ?>
-<?= $article['body'] ?>
-<?php else: ?>
-<p><?= htmlspecialchars($article['excerpt'] ?? 'Contenuto non disponibile.') ?></p>
-<?php endif; ?>
+<div class="article-body">
+<?php 
+$content = $article['content'] ?? $article['body'] ?? '';
+if($content) {
+    echo $content;
+} elseif(!empty($article['excerpt'])) {
+    echo '<p>' . nl2br(htmlspecialchars($article['excerpt'])) . '</p>';
+} else {
+    echo '<p>Contenuto non disponibile.</p>';
+}
+?>
 </div>
 
-<div class="article-footer <?= $isInternal ? 'internal' : '' ?>">
+<footer class="article-footer <?= $isInternal ? 'internal' : '' ?>">
 <div class="share-section">
-<div class="share-title">Condividi questa news</div>
+<h3 class="share-title">Condividi questa news</h3>
 <div class="share-buttons">
-<a href="mailto:?subject=<?= urlencode($article['title']) ?>&body=<?= urlencode($article['title'] . ' - ' . $_SERVER['REQUEST_URI']) ?>" class="share-btn share-email">
+<a href="mailto:?subject=<?= urlencode($article['title']) ?>&body=<?= urlencode($article['title'] . ' - ' . 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) ?>" class="share-btn share-email">
 📧 Email
 </a>
-<a href="https://www.linkedin.com/sharing/share-offsite/?url=<?= urlencode($_SERVER['REQUEST_URI']) ?>" target="_blank" class="share-btn share-linkedin">
+<a href="https://www.linkedin.com/sharing/share-offsite/?url=<?= urlencode('https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) ?>" target="_blank" class="share-btn share-linkedin">
 🔗 LinkedIn
 </a>
-<a href="https://wa.me/?text=<?= urlencode($article['title'] . ' - ' . $_SERVER['REQUEST_URI']) ?>" target="_blank" class="share-btn share-whatsapp">
+<a href="https://wa.me/?text=<?= urlencode($article['title'] . ' - ' . 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) ?>" target="_blank" class="share-btn share-whatsapp">
 💬 WhatsApp
 </a>
 </div>
 </div>
-</div>
-</div>
+</footer>
+</article>
 
 <?php require_once 'footer.php'; ?>
