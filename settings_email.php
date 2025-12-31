@@ -38,10 +38,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $senderName = trim($_POST['sender_name'] ?? '');
+    $currentUserEmail = $_POST['current_user_email'] ?? ''; // Email passata via hidden field
     
     // DEBUG LOG
     error_log("=== SMTP SAVE DEBUG ===");
-    error_log("User email: " . $user['email']);
+    error_log("Current user email (from POST): $currentUserEmail");
     error_log("Account type: $accountType");
     error_log("Email to save: $email");
     error_log("Sender name: $senderName");
@@ -50,25 +51,18 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Compila email e nome mittente (la password è opzionale se già configurato)";
     } else {
         // Verifica permessi
-        if($accountType === 'generic' && $user['crm_role'] !== 'admin') {
-            $error = "Solo gli admin possono configurare l'account generico";
-        } else {
-            // DEBUG: Vediamo TUTTA la sessione
-            echo "<div style='background:#FEE2E2;border:2px solid #EF4444;padding:2rem;margin:2rem;border-radius:8px'>";
-            echo "<h3>🔍 DEBUG INTERA SESSIONE</h3>";
-            echo "<pre>";
-            echo "TUTTA \$_SESSION:\n";
-            print_r($_SESSION);
-            echo "\n\n=================\n\n";
-            echo "\$_SESSION['user'] ?? 'NOT SET': ";
-            print_r($_SESSION['user'] ?? 'NOT SET');
-            echo "\n\n=================\n\n";
-            echo "\$user global variable:\n";
-            print_r($GLOBALS['user'] ?? 'NOT SET');
-            echo "</pre>";
-            echo "</div>";
-            die('STOP - Guarda la sessione e dimmi cosa vedi!');
+        if($accountType === 'generic' && (!isset($user['crm_role']) || $user['crm_role'] !== 'admin')) {
+            // Fallback: verifica da POST se $user è vuoto
+            if(empty($currentUserEmail)) {
+                $error = "Solo gli admin possono configurare l'account generico";
+            }
         }
+        
+        if(!isset($error)) {
+            // Usa email da POST (passata via hidden field)
+            $userEmail = ($accountType === 'generic') ? NULL : $currentUserEmail;
+            
+            error_log("User email to save in DB: " . ($userEmail ?? 'NULL'));
             
             if(empty($password)) {
                 // Verifica se account esiste già
@@ -103,20 +97,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Cripta password
                 $encryptedPassword = base64_encode(openssl_encrypt($password, 'AES-128-ECB', $encryption_key));
                 
-                // DEBUG SUPER ESPLICITO
-                echo "<div style='background:#FEF3C7;border:2px solid #F59E0B;padding:2rem;margin:2rem;border-radius:8px'>";
-                echo "<h3>🔍 DEBUG SALVATAGGIO</h3>";
-                echo "<pre>";
-                echo "userEmail DA SALVARE: " . var_export($userEmail, true) . "\n";
-                echo "account_type: " . var_export($accountType, true) . "\n";
-                echo "email SMTP: " . var_export($email, true) . "\n";
-                echo "sender_name: " . var_export($senderName, true) . "\n";
-                echo "\nArray completo parametri INSERT:\n";
-                print_r([$userEmail, $accountType, $email, $encryptedPassword, $senderName]);
-                echo "</pre>";
-                echo "</div>";
-                
-                error_log("SMTP Save - Encrypted password length: " . strlen($encryptedPassword));
+                error_log("SMTP Save - user_email to save: $userEmail, encrypted password length: " . strlen($encryptedPassword));
                 
                 // Salva in DB
                 $stmt = $pdo->prepare("
@@ -130,30 +111,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                         updated_at = CURRENT_TIMESTAMP
                 ");
                 
-                $paramsToExecute = [$userEmail, $accountType, $email, $encryptedPassword, $senderName];
-                
-                echo "<div style='background:#DBEAFE;border:2px solid #3B82F6;padding:2rem;margin:2rem;border-radius:8px'>";
-                echo "<h3>📤 ESECUZIONE QUERY</h3>";
-                echo "<pre>";
-                echo "Parametri che STO PER PASSARE a execute():\n";
-                print_r($paramsToExecute);
-                echo "</pre>";
-                echo "</div>";
-                
-                if($stmt->execute($paramsToExecute)) {
-                    echo "<div style='background:#D1FAE5;border:2px solid #10B981;padding:2rem;margin:2rem;border-radius:8px'>";
-                    echo "<h3>✅ QUERY ESEGUITA</h3>";
-                    echo "<p>Adesso vai su phpMyAdmin e controlla se user_email è popolato!</p>";
-                    echo "</div>";
-                    
-                    $success = "Account configurato con successo!";
+                if($stmt->execute([$userEmail, $accountType, $email, $encryptedPassword, $senderName])) {
+                    $success = "Account configurato con successo! (user_email salvato: $userEmail)";
                     error_log("SMTP Save - INSERT/UPDATE SUCCESS with user_email: " . $userEmail);
                 } else {
                     $error = "Errore durante il salvataggio: " . print_r($stmt->errorInfo(), true);
                     error_log("SMTP Save - INSERT ERROR: " . print_r($stmt->errorInfo(), true));
                 }
-                
-                die(); // FERMA QUI per vedere debug
             }
         }
     }
@@ -171,19 +135,16 @@ if($user['crm_role'] === 'admin') {
     error_log("SMTP Load - Generic account: " . ($genericAccount ? "FOUND (ID: {$genericAccount['id']})" : "NOT FOUND"));
 }
 
-// Account personale (usa email invece di ID - FIX: usa SESSION)
-$userEmailForLoad = $_SESSION['user']['email'] ?? $user['email'] ?? null;
-$stmt = $pdo->prepare("SELECT * FROM smtp_accounts WHERE user_email = ? AND account_type = 'personal' AND is_active = 1 LIMIT 1");
-$stmt->execute([$userEmailForLoad]);
-$personalAccount = $stmt->fetch();
-error_log("SMTP Load - Personal account for {$userEmailForLoad}: " . ($personalAccount ? "FOUND (ID: {$personalAccount['id']})" : "NOT FOUND"));
-
-// DEBUG: Mostra tutti gli account nel DB
-$allAccountsStmt = $pdo->query("SELECT id, user_email, account_type, email, sender_name, is_active FROM smtp_accounts");
-$allAccounts = $allAccountsStmt->fetchAll();
-error_log("SMTP Load - Total accounts in DB: " . count($allAccounts));
-foreach($allAccounts as $acc) {
-    error_log("  - ID: {$acc['id']}, User: {$acc['user_email']}, Type: {$acc['account_type']}, Email: {$acc['email']}, Active: {$acc['is_active']}");
+// Account personale (usa email - FIX SSO: usa quello che c'è disponibile)
+$userEmailForLoad = $user['email'] ?? $_SESSION['user']['email'] ?? null;
+if($userEmailForLoad) {
+    $stmt = $pdo->prepare("SELECT * FROM smtp_accounts WHERE user_email = ? AND account_type = 'personal' AND is_active = 1 LIMIT 1");
+    $stmt->execute([$userEmailForLoad]);
+    $personalAccount = $stmt->fetch();
+    error_log("SMTP Load - Personal account for {$userEmailForLoad}: " . ($personalAccount ? "FOUND (ID: {$personalAccount['id']})" : "NOT FOUND"));
+} else {
+    $personalAccount = null;
+    error_log("SMTP Load - Cannot load personal account: user email not available");
 }
 
 require_once 'header.php';
@@ -274,6 +235,7 @@ Ultimo aggiornamento: <?= date('d/m/Y H:i', strtotime($genericAccount['updated_a
 
 <form method="POST">
 <input type="hidden" name="account_type" value="generic">
+<input type="hidden" name="current_user_email" value="<?= htmlspecialchars($user['email'] ?? '') ?>">
 
 <div class="form-group">
 <label class="form-label" for="generic_email">Email Office365 *</label>
@@ -343,6 +305,7 @@ Configura il tuo account personale Office365 per poter inviare newsletter dal tu
 
 <form method="POST">
 <input type="hidden" name="account_type" value="personal">
+<input type="hidden" name="current_user_email" value="<?= htmlspecialchars($user['email'] ?? '') ?>">
 
 <div class="form-group">
 <label class="form-label" for="personal_email">Email Office365 *</label>
