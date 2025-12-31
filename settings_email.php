@@ -39,8 +39,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     $senderName = trim($_POST['sender_name'] ?? '');
     
-    // DEBUG
-    error_log("SMTP Save - Type: $accountType, Email: $email, Name: $senderName, User Email: {$user['email']}");
+    // DEBUG ESPLICITO
+    error_log("=== SMTP SAVE DEBUG ===");
+    error_log("User object: " . print_r($user, true));
+    error_log("User email field: " . ($user['email'] ?? 'NOT SET'));
+    error_log("Account type: $accountType");
+    error_log("Email to save: $email");
+    error_log("Sender name: $senderName");
     
     if(empty($email) || empty($senderName)) {
         $error = "Compila email e nome mittente (la password è opzionale se già configurato)";
@@ -50,7 +55,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "Solo gli admin possono configurare l'account generico";
         } else {
             // Usa email utente invece di ID
-            $userEmail = ($accountType === 'generic') ? NULL : $user['email'];
+            $userEmail = ($accountType === 'generic') ? NULL : ($user['email'] ?? NULL);
+            
+            error_log("User email to save in DB: " . ($userEmail ?? 'NULL'));
+            
+            if(!$userEmail && $accountType === 'personal') {
+                $error = "ERRORE: Email utente non trovata. Debug: \$user['email'] = " . ($user['email'] ?? 'NOT SET');
+                error_log("ERROR: User email is empty for personal account!");
+            } else {
             
             if(empty($password)) {
                 // Verifica se account esiste già
@@ -139,6 +151,13 @@ foreach($allAccounts as $acc) {
 
 require_once 'header.php';
 ?>
+
+<!-- DEBUG TEMPORANEO - RIMUOVERE DOPO -->
+<div style="background:#FEF3C7;border:2px solid #F59E0B;padding:1.5rem;margin:2rem;border-radius:8px">
+<h3 style="color:#92400E;margin-bottom:1rem">🔍 DEBUG: Oggetto $user</h3>
+<pre style="background:white;padding:1rem;border-radius:4px;overflow:auto"><?php print_r($user); ?></pre>
+</div>
+<!-- FINE DEBUG -->
 
 <style>
 .settings-container{max-width:800px;margin:0 auto}
