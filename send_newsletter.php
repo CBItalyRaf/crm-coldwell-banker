@@ -2,7 +2,7 @@
 require_once 'check_auth.php';
 require_once 'config/database.php';
 require_once 'helpers/news_api.php';
-require_once 'config/smtp_accounts.php';
+require_once 'helpers/smtp_helper.php';
 
 if($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: news_newsletter.php');
@@ -14,7 +14,7 @@ $recipients = $_POST['recipients'] ?? '';
 $subject = $_POST['subject'] ?? '';
 $introMessage = $_POST['intro_message'] ?? '';
 $sendTest = isset($_POST['send_test']);
-$senderAccount = $_POST['sender_account'] ?? 'generic';
+$senderAccount = $_POST['sender_account'] ?? '';
 
 // Validazioni base
 if(empty($newsIds) || empty($recipients) || empty($subject)) {
@@ -22,19 +22,14 @@ if(empty($newsIds) || empty($recipients) || empty($subject)) {
 }
 
 // SICUREZZA: Verifica permessi account mittente
-if(!canUseAccount($senderAccount, $user['email'])) {
+if(!canUseSMTPAccount($senderAccount, $user['id'])) {
     die('❌ ERRORE SICUREZZA: Non sei autorizzato a usare questo account mittente.<br><br>Puoi usare solo l\'account generico o il tuo account personale.');
 }
 
-// Ottieni credenziali SMTP
-$smtpCreds = getSmtpCredentials($senderAccount, $user['email']);
+// Ottieni credenziali SMTP dal database
+$smtpCreds = getSMTPCredentials($senderAccount, $user['id']);
 if(!$smtpCreds) {
-    die('❌ ERRORE: Account mittente non valido o credenziali mancanti.<br><br>Verifica configurazione in config/smtp_accounts.php');
-}
-
-// Verifica password configurata
-if(strpos($smtpCreds['password'], 'PASSWORD_') !== false) {
-    die('⚠️ CONFIGURAZIONE MANCANTE<br><br>Le credenziali SMTP non sono state configurate.<br><br>Apri <code>config/smtp_accounts.php</code> e sostituisci i placeholder PASSWORD_XXX con le password reali di Office365.');
+    die('❌ ERRORE: Account mittente non valido o non configurato.<br><br><a href="settings_email.php">Vai alle Impostazioni Email →</a>');
 }
 
 // Parse recipients

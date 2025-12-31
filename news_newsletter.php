@@ -174,20 +174,29 @@ require_once 'header.php';
 
 <div class="form-group">
 <label class="form-label">Invia da: *</label>
-<select name="sender_account" class="form-input" required>
 <?php 
-require_once 'config/smtp_accounts.php';
-$availableAccounts = getAvailableAccounts($user['email']);
-foreach($availableAccounts as $account): 
-?>
+require_once 'helpers/smtp_helper.php';
+$smtpAccounts = getAvailableSMTPAccounts($user['id']);
+
+if(empty($smtpAccounts)): ?>
+<div style="background:#FEE2E2;border:1px solid #EF4444;color:#991B1B;padding:1rem;border-radius:8px;margin-bottom:1rem">
+<strong>⚠️ Nessun account email configurato!</strong><br>
+<a href="settings_email.php" style="color:#991B1B;text-decoration:underline;font-weight:600">
+Vai alle Impostazioni Email →
+</a>
+</div>
+<?php else: ?>
+<select name="sender_account" class="form-input" required>
+<?php foreach($smtpAccounts as $account): ?>
 <option value="<?= htmlspecialchars($account['id']) ?>">
-<?= $account['is_personal'] ? '👤' : '📧' ?> <?= htmlspecialchars($account['label']) ?>
+<?= htmlspecialchars($account['label']) ?>
 </option>
 <?php endforeach; ?>
 </select>
 <small style="color:var(--cb-gray);font-size:.85rem">
-<?= count($availableAccounts) > 1 ? 'Scegli tra account generico o il tuo account personale' : 'Account generico disponibile per tutti' ?>
+<?= count($smtpAccounts) > 1 ? 'Scegli tra account generico o il tuo account personale' : 'Account disponibile per invio' ?>
 </small>
+<?php endif; ?>
 </div>
 
 <div class="form-group">

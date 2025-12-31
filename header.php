@@ -147,6 +147,7 @@ if (file_exists(__DIR__ . '/helpers/user_preferences.php') &&
 </button>
 <div class="dropdown-menu" style="right:0;left:auto">
 <a href="user_settings.php" class="dropdown-item">⚙️ Impostazioni</a>
+<a href="settings_email.php" class="dropdown-item">📧 Impostazioni Email</a>
 <a href="https://coldwellbankeritaly.tech/repository/dashboard/" class="dropdown-item">🏠 Dashboard CB Italia</a>
 <a href="logout.php" class="dropdown-item">🚪 Logout</a>
 </div>
