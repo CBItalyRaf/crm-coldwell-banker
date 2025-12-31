@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once 'check_auth.php';
 require_once 'config/database.php';
 require_once 'helpers/news_api.php';
@@ -7,16 +10,19 @@ $pdo = getDB();
 $id = $_GET['id'] ?? '';
 
 if(!$id) {
-    header('Location: news.php');
-    exit;
+    die("Errore: ID news mancante. <a href='news.php'>Torna alle news</a>");
 }
 
 $articleData = getNewsArticle($id);
+
+if(!$articleData) {
+    die("Errore: API non risponde. ID: $id <a href='news.php'>Torna alle news</a>");
+}
+
 $article = $articleData['data'] ?? null;
 
 if(!$article) {
-    header('Location: news.php');
-    exit;
+    die("Errore: News non trovata. ID: $id. Response: " . print_r($articleData, true) . " <a href='news.php'>Torna alle news</a>");
 }
 
 $isInternal = ($article['visibility'] ?? 'public') === 'internal';

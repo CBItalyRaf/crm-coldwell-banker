@@ -3,10 +3,9 @@ require_once 'check_auth.php';
 require_once 'config/database.php';
 require_once 'helpers/news_api.php';
 
-// Solo admin può accedere
+// Debug ruolo
 if($user['crm_role'] !== 'admin') {
-    header('Location: index.php');
-    exit;
+    die("Accesso negato. Solo admin può accedere a questa pagina.<br><br>Il tuo ruolo: " . htmlspecialchars($user['crm_role']) . "<br><br><a href='index.php'>Torna alla dashboard</a>");
 }
 
 $pageTitle = "Newsletter News CB - CRM Coldwell Banker";
