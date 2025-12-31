@@ -170,9 +170,12 @@ if($sendTest) {
 // Invia newsletter a tutti i destinatari
 $successCount = 0;
 $failedEmails = [];
+$debugInfo = [];
 
 foreach($recipientsList as $email) {
     $sent = mail($email, $subject, $html, $headers);
+    
+    $debugInfo[] = "Email: $email - Result: " . ($sent ? 'SUCCESS' : 'FAILED');
     
     if($sent) {
         $successCount++;
@@ -180,6 +183,9 @@ foreach($recipientsList as $email) {
         $failedEmails[] = $email;
     }
 }
+
+// Log debug
+error_log("Newsletter Debug: " . print_r($debugInfo, true));
 
 // Feedback
 if($successCount > 0) {
@@ -189,6 +195,12 @@ if($successCount > 0) {
     }
     echo "<script>alert('$message'); window.location.href='news_newsletter.php';</script>";
 } else {
-    echo "<script>alert('Errore: nessuna email inviata'); window.history.back();</script>";
+    $errorDetails = "ERRORE: nessuna email inviata\\n\\n";
+    $errorDetails .= "Possibili cause:\\n";
+    $errorDetails .= "1. Funzione mail() non configurata sul server\\n";
+    $errorDetails .= "2. SPF/DKIM non configurato per noreply@mycb.it\\n";
+    $errorDetails .= "3. Server mail non raggiungibile\\n\\n";
+    $errorDetails .= "Destinatari tentati: " . implode(', ', $recipientsList);
+    echo "<script>alert('$errorDetails'); window.history.back();</script>";
 }
 ?>
