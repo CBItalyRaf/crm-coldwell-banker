@@ -2,11 +2,6 @@
 require_once 'check_auth.php';
 require_once 'helpers/news_api.php';
 
-// Solo admin
-if($user['crm_role'] !== 'admin') {
-    die('Accesso negato');
-}
-
 if($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: news_newsletter.php');
     exit;
@@ -117,6 +112,13 @@ foreach($newsDetails as $news) {
     
     if(!empty($news['image_url'])) {
         $html .= '<img src="' . htmlspecialchars($news['image_url']) . '" alt="' . htmlspecialchars($news['title']) . '" class="news-image">';
+    } else {
+        // Placeholder immagine
+        $placeholderBg = $isInternal ? 'linear-gradient(135deg, #DBEAFE 0%, #93C5FD 100%)' : 'linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%)';
+        $placeholderText = $isInternal ? '🔒 Solo CB' : '📰 CB News';
+        $placeholderColor = $isInternal ? '#3B82F6' : '#9CA3AF';
+        
+        $html .= '<div class="news-image" style="background:' . $placeholderBg . ';height:200px;display:flex;align-items:center;justify-content:center;color:' . $placeholderColor . ';font-weight:600;opacity:0.7">' . $placeholderText . '</div>';
     }
     
     if(!empty($news['excerpt'])) {
