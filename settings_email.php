@@ -2,6 +2,9 @@
 require_once 'check_auth.php';
 require_once 'config/database.php';
 
+// FIX: check_auth.php usa $_SESSION['crm_user'], non $user
+$user = $_SESSION['crm_user'] ?? [];
+
 $pdo = getDB();
 $pageTitle = "Impostazioni Email - CRM Coldwell Banker";
 
