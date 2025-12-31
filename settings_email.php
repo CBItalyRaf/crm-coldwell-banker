@@ -53,22 +53,22 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         if($accountType === 'generic' && $user['crm_role'] !== 'admin') {
             $error = "Solo gli admin possono configurare l'account generico";
         } else {
-            // Fix: usa $_SESSION direttamente perché $user è vuoto durante POST
-            $sessionEmail = $_SESSION['user']['email'] ?? null;
-            
+            // DEBUG: Vediamo TUTTA la sessione
             echo "<div style='background:#FEE2E2;border:2px solid #EF4444;padding:2rem;margin:2rem;border-radius:8px'>";
-            echo "<h3>🔍 DEBUG SESSION EMAIL</h3>";
+            echo "<h3>🔍 DEBUG INTERA SESSIONE</h3>";
             echo "<pre>";
-            echo "\$_SESSION['user']:\n";
-            print_r($_SESSION['user'] ?? 'SESSION NOT SET');
-            echo "\n\nEmail da usare: " . var_export($sessionEmail, true);
+            echo "TUTTA \$_SESSION:\n";
+            print_r($_SESSION);
+            echo "\n\n=================\n\n";
+            echo "\$_SESSION['user'] ?? 'NOT SET': ";
+            print_r($_SESSION['user'] ?? 'NOT SET');
+            echo "\n\n=================\n\n";
+            echo "\$user global variable:\n";
+            print_r($GLOBALS['user'] ?? 'NOT SET');
             echo "</pre>";
             echo "</div>";
-            
-            // Usa email dalla sessione invece di $user
-            $userEmail = ($accountType === 'generic') ? NULL : $sessionEmail;
-            
-            error_log("User email to save in DB: " . ($userEmail ?? 'NULL'));
+            die('STOP - Guarda la sessione e dimmi cosa vedi!');
+        }
             
             if(empty($password)) {
                 // Verifica se account esiste già
