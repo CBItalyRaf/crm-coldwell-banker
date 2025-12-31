@@ -91,6 +91,19 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Cripta password
                 $encryptedPassword = base64_encode(openssl_encrypt($password, 'AES-128-ECB', $encryption_key));
                 
+                // DEBUG SUPER ESPLICITO
+                echo "<div style='background:#FEF3C7;border:2px solid #F59E0B;padding:2rem;margin:2rem;border-radius:8px'>";
+                echo "<h3>🔍 DEBUG SALVATAGGIO</h3>";
+                echo "<pre>";
+                echo "userEmail DA SALVARE: " . var_export($userEmail, true) . "\n";
+                echo "account_type: " . var_export($accountType, true) . "\n";
+                echo "email SMTP: " . var_export($email, true) . "\n";
+                echo "sender_name: " . var_export($senderName, true) . "\n";
+                echo "\nArray completo parametri INSERT:\n";
+                print_r([$userEmail, $accountType, $email, $encryptedPassword, $senderName]);
+                echo "</pre>";
+                echo "</div>";
+                
                 error_log("SMTP Save - Encrypted password length: " . strlen($encryptedPassword));
                 
                 // Salva in DB
@@ -105,13 +118,30 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                         updated_at = CURRENT_TIMESTAMP
                 ");
                 
-                if($stmt->execute([$userEmail, $accountType, $email, $encryptedPassword, $senderName])) {
+                $paramsToExecute = [$userEmail, $accountType, $email, $encryptedPassword, $senderName];
+                
+                echo "<div style='background:#DBEAFE;border:2px solid #3B82F6;padding:2rem;margin:2rem;border-radius:8px'>";
+                echo "<h3>📤 ESECUZIONE QUERY</h3>";
+                echo "<pre>";
+                echo "Parametri che STO PER PASSARE a execute():\n";
+                print_r($paramsToExecute);
+                echo "</pre>";
+                echo "</div>";
+                
+                if($stmt->execute($paramsToExecute)) {
+                    echo "<div style='background:#D1FAE5;border:2px solid #10B981;padding:2rem;margin:2rem;border-radius:8px'>";
+                    echo "<h3>✅ QUERY ESEGUITA</h3>";
+                    echo "<p>Adesso vai su phpMyAdmin e controlla se user_email è popolato!</p>";
+                    echo "</div>";
+                    
                     $success = "Account configurato con successo!";
                     error_log("SMTP Save - INSERT/UPDATE SUCCESS with user_email: " . $userEmail);
                 } else {
                     $error = "Errore durante il salvataggio: " . print_r($stmt->errorInfo(), true);
                     error_log("SMTP Save - INSERT ERROR: " . print_r($stmt->errorInfo(), true));
                 }
+                
+                die(); // FERMA QUI per vedere debug
             }
         }
     }
