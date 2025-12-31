@@ -1,6 +1,6 @@
 <?php
 function callNewsAPI($endpoint, $params = []) {
-    $baseUrl = 'https://coldwellbankeritaly.tech/repository/cb-news/api/v1';
+    $baseUrl = 'https://coldwellbankeritaly.tech/repository/cb-news/public/api/v1';
     $token = '27|O8cC2pZInPq1n3CgX5pYrNnLngsBbuqWgETqICLT2d5c5131';
     
     $url = $baseUrl . $endpoint;
