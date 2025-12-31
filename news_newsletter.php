@@ -3,6 +3,9 @@ require_once 'check_auth.php';
 require_once 'config/database.php';
 require_once 'helpers/news_api.php';
 
+// FIX: check_auth.php usa $_SESSION['crm_user'], non $user
+$user = $_SESSION['crm_user'] ?? [];
+
 $pageTitle = "Newsletter News CB - CRM Coldwell Banker";
 $pdo = getDB();
 

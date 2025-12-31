@@ -4,6 +4,9 @@ require_once 'config/database.php';
 require_once 'helpers/news_api.php';
 require_once 'helpers/smtp_helper.php';
 
+// FIX: check_auth.php usa $_SESSION['crm_user'], non $user
+$user = $_SESSION['crm_user'] ?? [];
+
 if($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: news_newsletter.php');
     exit;
