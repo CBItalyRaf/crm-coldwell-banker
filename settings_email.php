@@ -53,19 +53,20 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         if($accountType === 'generic' && $user['crm_role'] !== 'admin') {
             $error = "Solo gli admin possono configurare l'account generico";
         } else {
-            // DEBUG: Cosa c'è in $user?
+            // Fix: usa $_SESSION direttamente perché $user è vuoto durante POST
+            $sessionEmail = $_SESSION['user']['email'] ?? null;
+            
             echo "<div style='background:#FEE2E2;border:2px solid #EF4444;padding:2rem;margin:2rem;border-radius:8px'>";
-            echo "<h3>🔍 DEBUG \$user PRIMA DI SALVARE</h3>";
+            echo "<h3>🔍 DEBUG SESSION EMAIL</h3>";
             echo "<pre>";
-            echo "\$user array completo:\n";
-            print_r($user);
-            echo "\n\$user['email'] = " . var_export($user['email'] ?? 'NOT SET', true);
-            echo "\naccount_type = " . var_export($accountType, true);
+            echo "\$_SESSION['user']:\n";
+            print_r($_SESSION['user'] ?? 'SESSION NOT SET');
+            echo "\n\nEmail da usare: " . var_export($sessionEmail, true);
             echo "</pre>";
             echo "</div>";
             
-            // Usa email utente invece di ID
-            $userEmail = ($accountType === 'generic') ? NULL : $user['email'];
+            // Usa email dalla sessione invece di $user
+            $userEmail = ($accountType === 'generic') ? NULL : $sessionEmail;
             
             error_log("User email to save in DB: " . ($userEmail ?? 'NULL'));
             
@@ -170,11 +171,12 @@ if($user['crm_role'] === 'admin') {
     error_log("SMTP Load - Generic account: " . ($genericAccount ? "FOUND (ID: {$genericAccount['id']})" : "NOT FOUND"));
 }
 
-// Account personale (usa email invece di ID)
+// Account personale (usa email invece di ID - FIX: usa SESSION)
+$userEmailForLoad = $_SESSION['user']['email'] ?? $user['email'] ?? null;
 $stmt = $pdo->prepare("SELECT * FROM smtp_accounts WHERE user_email = ? AND account_type = 'personal' AND is_active = 1 LIMIT 1");
-$stmt->execute([$user['email']]);
+$stmt->execute([$userEmailForLoad]);
 $personalAccount = $stmt->fetch();
-error_log("SMTP Load - Personal account for {$user['email']}: " . ($personalAccount ? "FOUND (ID: {$personalAccount['id']})" : "NOT FOUND"));
+error_log("SMTP Load - Personal account for {$userEmailForLoad}: " . ($personalAccount ? "FOUND (ID: {$personalAccount['id']})" : "NOT FOUND"));
 
 // DEBUG: Mostra tutti gli account nel DB
 $allAccountsStmt = $pdo->query("SELECT id, user_email, account_type, email, sender_name, is_active FROM smtp_accounts");
