@@ -57,15 +57,38 @@ $pageTitle = htmlspecialchars($news['title']) . " - Coldwell Banker Italy";
         .header {
             background: var(--cb-blue);
             color: white;
-            padding: 2rem 1.5rem;
-            text-align: center;
+            padding: 1.5rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        .header h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin: 0;
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .header-link {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .header-link:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
         }
         
         .container {
@@ -125,6 +148,15 @@ $pageTitle = htmlspecialchars($news['title']) . " - Coldwell Banker Italy";
             color: var(--cb-midnight);
             margin-bottom: 1.5rem;
             line-height: 1.3;
+        }
+        
+        .news-image {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
         .news-content {
@@ -201,11 +233,21 @@ $pageTitle = htmlspecialchars($news['title']) . " - Coldwell Banker Italy";
         
         @media (max-width: 768px) {
             .header {
-                padding: 1.5rem 1rem;
+                padding: 1rem;
             }
             
-            .header h1 {
-                font-size: 1.25rem;
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header-logo {
+                font-size: 0.9rem;
+            }
+            
+            .header-link {
+                width: 100%;
+                text-align: center;
             }
             
             .container {
@@ -228,7 +270,14 @@ $pageTitle = htmlspecialchars($news['title']) . " - Coldwell Banker Italy";
 </head>
 <body>
     <div class="header">
-        <h1>🏠 COLDWELL BANKER ITALY</h1>
+        <div class="header-container">
+            <div class="header-logo">
+                <span style="font-size:2rem">🏠</span>
+                <span style="font-weight:700;font-size:1.25rem">COLDWELL BANKER</span>
+                <span style="font-weight:400;font-size:1.25rem">ITALY</span>
+            </div>
+            <a href="news_index.php" class="header-link">← Tutte le News</a>
+        </div>
     </div>
     
     <div class="container">
@@ -246,6 +295,10 @@ $pageTitle = htmlspecialchars($news['title']) . " - Coldwell Banker Italy";
             </div>
             
             <h1 class="news-title"><?= htmlspecialchars($news['title']) ?></h1>
+            
+            <?php if(!empty($news['image_url'])): ?>
+            <img src="<?= htmlspecialchars($news['image_url']) ?>" alt="<?= htmlspecialchars($news['title']) ?>" class="news-image">
+            <?php endif; ?>
             
             <div class="news-content">
                 <?= $news['content'] ?>
