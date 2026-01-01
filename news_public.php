@@ -14,16 +14,15 @@ if(!$newsId) {
 }
 
 // Carica news da API
-$apiResponse = getNewsArticle($newsId);
+$news = getNewsArticle($newsId);
 
-if(!$apiResponse || !isset($apiResponse['data'])) {
+if(!$news || !isset($news['id'])) {
     die('News non trovata');
 }
 
-$news = $apiResponse['data'];
-
-// Formatta data
-$dataItaliana = date('d/m/Y', strtotime($news['published_at']));
+// Formatta data (usa published_at o created_at come fallback)
+$dataArticolo = $news['published_at'] ?: $news['created_at'];
+$dataItaliana = date('d/m/Y', strtotime($dataArticolo));
 
 $pageTitle = htmlspecialchars($news['title']) . " - Coldwell Banker Italy";
 ?>
@@ -237,11 +236,11 @@ $pageTitle = htmlspecialchars($news['title']) . " - Coldwell Banker Italy";
             <div class="news-meta">
                 <span class="news-date">📅 <?= $dataItaliana ?></span>
                 
-                <?php if($news['category']): ?>
-                <span class="news-category"><?= htmlspecialchars($news['category']) ?></span>
+                <?php if(isset($news['category']['name'])): ?>
+                <span class="news-category"><?= htmlspecialchars($news['category']['name']) ?></span>
                 <?php endif; ?>
                 
-                <?php if(isset($news['visibility']) && $news['visibility'] === 'only_cb'): ?>
+                <?php if(isset($news['visibility']) && $news['visibility'] === 'internal'): ?>
                 <span class="badge-solo-cb">🔒 Solo CB</span>
                 <?php endif; ?>
             </div>
