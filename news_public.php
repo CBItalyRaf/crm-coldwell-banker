@@ -4,10 +4,7 @@
  * Link da newsletter per lettura articoli completi
  */
 
-require_once 'config/database.php';
 require_once 'helpers/news_api.php';
-
-$pdo = getDB();
 
 // Ottieni ID news
 $newsId = (int)($_GET['id'] ?? 0);
@@ -16,12 +13,14 @@ if(!$newsId) {
     die('News non trovata');
 }
 
-// Carica news
-$news = getNewsById($pdo, $newsId);
+// Carica news da API
+$apiResponse = getNewsArticle($newsId);
 
-if(!$news) {
+if(!$apiResponse || !isset($apiResponse['data'])) {
     die('News non trovata');
 }
+
+$news = $apiResponse['data'];
 
 // Formatta data
 $dataItaliana = date('d/m/Y', strtotime($news['published_at']));
@@ -242,7 +241,7 @@ $pageTitle = htmlspecialchars($news['title']) . " - Coldwell Banker Italy";
                 <span class="news-category"><?= htmlspecialchars($news['category']) ?></span>
                 <?php endif; ?>
                 
-                <?php if($news['only_cb']): ?>
+                <?php if(isset($news['visibility']) && $news['visibility'] === 'only_cb'): ?>
                 <span class="badge-solo-cb">🔒 Solo CB</span>
                 <?php endif; ?>
             </div>
