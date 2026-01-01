@@ -9,7 +9,7 @@ require_once 'helpers/news_api.php';
 $search = $_GET['search'] ?? '';
 $category = $_GET['category'] ?? '';
 $page = (int)($_GET['page'] ?? 1);
-$limit = 100; // Mostra tutte le news
+$limit = 1000; // Tutte le news
 
 // Carica news da API
 $params = ['limit' => $limit];
@@ -17,7 +17,8 @@ if($search) $params['search'] = $search;
 if($category) $params['category'] = $category;
 
 $newsArticles = getNewsArticles($limit, $search, $category, null);
-$articles = $newsArticles ?? [];
+$articles = $newsArticles['data'] ?? [];
+$total = $newsArticles['total'] ?? 0;
 
 // Carica categorie
 $categoriesData = getNewsCategories();
@@ -158,101 +159,84 @@ $pageTitle = "News Coldwell Banker Italy";
             border-color: var(--cb-bright-blue);
         }
         
-        .news-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-        
-        .news-card {
+        .news-list {
             background: white;
             border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
             overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
+        }
+        
+        .news-item {
             display: flex;
-            flex-direction: column;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid #F3F4F6;
+            transition: background 0.2s;
+            cursor: pointer;
         }
         
-        .news-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-        }
-        
-        .news-card-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
+        .news-item:hover {
             background: var(--bg);
         }
         
-        .news-card-content {
-            padding: 1.5rem;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
+        .news-item.internal {
+            background: #EFF6FF;
         }
         
-        .news-card-meta {
+        .news-item:last-child {
+            border-bottom: none;
+        }
+        
+        .news-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .news-item-header {
             display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
             flex-wrap: wrap;
         }
         
-        .news-card-date {
-            color: var(--cb-gray);
-            font-size: 0.85rem;
-        }
-        
-        .news-card-category {
-            padding: 0.25rem 0.75rem;
-            background: var(--cb-bright-blue);
-            color: white;
-            border-radius: 12px;
+        .news-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
             font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
         }
         
-        .badge-solo-cb {
-            padding: 0.25rem 0.75rem;
-            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+        .badge-internal {
+            background: #3B82F6;
             color: white;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
         }
         
-        .news-card-title {
-            font-size: 1.25rem;
+        .badge-category {
+            background: #E5E7EB;
+            color: #6B7280;
+        }
+        
+        .news-item-title {
+            font-size: 1.05rem;
             font-weight: 600;
             color: var(--cb-midnight);
-            margin-bottom: 0.75rem;
-            line-height: 1.3;
+            margin-bottom: 0.5rem;
         }
         
-        .news-card-summary {
-            color: var(--cb-gray);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 1rem;
-            flex: 1;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        
-        .news-card-read {
-            color: var(--cb-bright-blue);
-            font-weight: 600;
+        .news-item-excerpt {
             font-size: 0.9rem;
+            color: var(--cb-gray);
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+        
+        .news-item-meta {
+            font-size: 0.85rem;
+            color: var(--cb-gray);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
         
         .empty-state {
@@ -351,37 +335,32 @@ $pageTitle = "News Coldwell Banker Italy";
             <p>Prova a modificare i filtri di ricerca</p>
         </div>
         <?php else: ?>
-        <div class="news-grid">
+        <div class="news-list">
             <?php foreach($articles as $article): ?>
-            <a href="news_public.php?id=<?= $article['id'] ?>" class="news-card">
-                <?php if(!empty($article['image_url'])): ?>
-                <img src="<?= htmlspecialchars($article['image_url']) ?>" alt="<?= htmlspecialchars($article['title']) ?>" class="news-card-image">
-                <?php endif; ?>
-                
-                <div class="news-card-content">
-                    <div class="news-card-meta">
-                        <span class="news-card-date">
-                            📅 <?= date('d/m/Y', strtotime($article['published_at'] ?: $article['created_at'])) ?>
-                        </span>
-                        
-                        <?php if(isset($article['category']['name'])): ?>
-                        <span class="news-card-category"><?= htmlspecialchars($article['category']['name']) ?></span>
+            <?php $isInternal = ($article['visibility'] ?? 'public') === 'internal'; ?>
+            <div class="news-item <?= $isInternal ? 'internal' : '' ?>" onclick="window.location.href='news_public.php?id=<?= $article['id'] ?>'">
+                <div class="news-content">
+                    <div class="news-item-header">
+                        <?php if($isInternal): ?>
+                        <span class="news-badge badge-internal">🔒 Solo CB</span>
                         <?php endif; ?>
-                        
-                        <?php if(isset($article['visibility']) && $article['visibility'] === 'internal'): ?>
-                        <span class="badge-solo-cb">🔒 Solo CB</span>
+                        <?php if(!empty($article['category'])): ?>
+                        <span class="news-badge badge-category"><?= htmlspecialchars($article['category']['name']) ?></span>
                         <?php endif; ?>
                     </div>
-                    
-                    <h2 class="news-card-title"><?= htmlspecialchars($article['title']) ?></h2>
-                    
-                    <?php if(!empty($article['summary'])): ?>
-                    <p class="news-card-summary"><?= htmlspecialchars($article['summary']) ?></p>
+                    <h3 class="news-item-title"><?= htmlspecialchars($article['title']) ?></h3>
+                    <?php if(!empty($article['summary']) || !empty($article['excerpt'])): ?>
+                    <p class="news-item-excerpt"><?= htmlspecialchars(substr($article['summary'] ?? $article['excerpt'], 0, 200)) ?>...</p>
                     <?php endif; ?>
-                    
-                    <span class="news-card-read">Leggi tutto →</span>
+                    <div class="news-item-meta">
+                        <span>📅 <?= date('d/m/Y', strtotime($article['published_at'] ?? $article['created_at'])) ?></span>
+                        <?php if(!empty($article['author'])): ?>
+                        <span>✍️ <?= htmlspecialchars($article['author']) ?></span>
+                        <?php endif; ?>
+                        <span style="color:var(--cb-bright-blue);font-weight:600">Leggi tutto →</span>
+                    </div>
                 </div>
-            </a>
+            </div>
             <?php endforeach; ?>
         </div>
         <?php endif; ?>
