@@ -182,6 +182,15 @@ $pageTitle = "News Coldwell Banker Italy";
             border-bottom: none;
         }
         
+        .news-thumbnail {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+            background: var(--bg);
+        }
+        
         .news-content {
             flex: 1;
             min-width: 0;
@@ -275,9 +284,13 @@ $pageTitle = "News Coldwell Banker Italy";
                 padding: 1.5rem 1rem;
             }
             
-            .news-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
+            .news-item {
+                padding: 1rem;
+            }
+            
+            .news-thumbnail {
+                width: 80px;
+                height: 80px;
             }
             
             .search-bar {
@@ -334,6 +347,12 @@ $pageTitle = "News Coldwell Banker Italy";
             <?php foreach($articles as $article): ?>
             <?php $isInternal = ($article['visibility'] ?? 'public') === 'internal'; ?>
             <div class="news-item <?= $isInternal ? 'internal' : '' ?>" onclick="window.location.href='news_public.php?id=<?= $article['id'] ?>'">
+                <?php 
+                $imageUrl = getFullImageUrl($article['image_url'] ?? null);
+                if($imageUrl): 
+                ?>
+                <img src="<?= htmlspecialchars($imageUrl) ?>" alt="<?= htmlspecialchars($article['title']) ?>" class="news-thumbnail">
+                <?php endif; ?>
                 <div class="news-content">
                     <div class="news-item-header">
                         <?php if($isInternal): ?>

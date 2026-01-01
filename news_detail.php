@@ -111,8 +111,11 @@ require_once 'header.php';
 </div>
 </header>
 
-<?php if(!empty($article['image_url'])): ?>
-<img src="<?= htmlspecialchars($article['image_url']) ?>" alt="<?= htmlspecialchars($article['title']) ?>" class="article-image">
+<?php 
+$imageUrl = getFullImageUrl($article['image_url'] ?? null);
+if($imageUrl): 
+?>
+<img src="<?= htmlspecialchars($imageUrl) ?>" alt="<?= htmlspecialchars($article['title']) ?>" class="article-image">
 <?php endif; ?>
 
 <div class="article-body">
