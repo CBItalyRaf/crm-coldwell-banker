@@ -252,9 +252,12 @@ foreach($categoriesList as $cat):
 <div class="form-group">
 <label class="form-label">Immagine Articolo</label>
 
-<?php if(!empty($article['image_url'])): ?>
+<?php 
+$imageUrl = getFullImageUrl($article['image_url'] ?? null);
+if($imageUrl): 
+?>
 <div class="image-preview-container">
-<img src="<?= htmlspecialchars($article['image_url']) ?>" alt="Immagine attuale" class="image-preview" id="currentImage">
+<img src="<?= htmlspecialchars($imageUrl) ?>" alt="Immagine attuale" class="image-preview" id="currentImage">
 <div class="image-actions">
 <button type="button" class="btn-remove-image" onclick="removeImage()">🗑️ Rimuovi Immagine</button>
 </div>

@@ -294,8 +294,11 @@ $pageTitle = htmlspecialchars($news['title']) . " - Coldwell Banker Italy";
             
             <h1 class="news-title"><?= htmlspecialchars($news['title']) ?></h1>
             
-            <?php if(!empty($news['image_url'])): ?>
-            <img src="<?= htmlspecialchars($news['image_url']) ?>" alt="<?= htmlspecialchars($news['title']) ?>" class="news-image">
+            <?php 
+            $imageUrl = getFullImageUrl($news['image_url'] ?? null);
+            if($imageUrl): 
+            ?>
+            <img src="<?= htmlspecialchars($imageUrl) ?>" alt="<?= htmlspecialchars($news['title']) ?>" class="news-image">
             <?php endif; ?>
             
             <div class="news-content">

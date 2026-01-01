@@ -83,8 +83,9 @@ foreach($newsDetails as $news) {
     if(!empty($news['author'])) $html .= ' • ✍️ ' . htmlspecialchars($news['author']);
     $html .= '</div>';
     
-    if(!empty($news['image_url'])) {
-        $html .= '<img src="' . htmlspecialchars($news['image_url']) . '" alt="' . htmlspecialchars($news['title']) . '" class="news-image">';
+    $imageUrl = getFullImageUrl($news['image_url'] ?? null);
+    if($imageUrl) {
+        $html .= '<img src="' . htmlspecialchars($imageUrl) . '" alt="' . htmlspecialchars($news['title']) . '" class="news-image">';
     } else {
         $placeholderBg = $isInternal ? 'linear-gradient(135deg, #DBEAFE 0%, #93C5FD 100%)' : 'linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%)';
         $placeholderText = $isInternal ? '🔒 Solo CB' : '📰 CB News';

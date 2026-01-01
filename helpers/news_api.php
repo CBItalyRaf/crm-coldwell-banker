@@ -40,6 +40,29 @@ function callNewsAPI($endpoint, $params = [], $method = 'GET', $body = null) {
     return $data;
 }
 
+/**
+ * Costruisci URL completo per immagine
+ * Gestisce sia URL assoluti che path relativi
+ */
+function getFullImageUrl($imageUrl) {
+    if(empty($imageUrl)) {
+        return null;
+    }
+    
+    // Se già URL completo, usa così com'è
+    if(strpos($imageUrl, 'http://') === 0 || strpos($imageUrl, 'https://') === 0) {
+        return $imageUrl;
+    }
+    
+    // Se path relativo, aggiungi dominio
+    if(strpos($imageUrl, '/') === 0) {
+        return 'https://coldwellbankeritaly.tech' . $imageUrl;
+    }
+    
+    // Altrimenti ritorna così com'è
+    return $imageUrl;
+}
+
 function getNewsArticles($limit = 10, $search = null, $category = null, $visibility = null, $status = null) {
     $params = ['limit' => $limit];
     
