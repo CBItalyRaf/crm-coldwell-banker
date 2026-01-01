@@ -129,16 +129,28 @@ foreach($recipientsList as $email) {
         // Configurazione SMTP
         $mail->isSMTP();
         $mail->Host = $smtpCreds['server']['host'];
-        $mail->SMTPAuth = $smtpCreds['server']['auth'];
+        $mail->SMTPAuth = true;
         $mail->Username = $smtpCreds['email'];
         $mail->Password = $smtpCreds['password'];
-        $mail->SMTPSecure = $smtpCreds['server']['encryption'];
-        $mail->Port = $smtpCreds['server']['port'];
-        $mail->Timeout = $smtpCreds['server']['timeout'];
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // STARTTLS esplicito
+        $mail->Port = 587;
+        $mail->Timeout = 30;
         $mail->CharSet = 'UTF-8';
         
-        // Debug mode (commenta in produzione)
-        // $mail->SMTPDebug = 2;
+        // Office365 specifico
+        $mail->SMTPOptions = [
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            ]
+        ];
+        
+        // Debug mode ATTIVO (per vedere errori)
+        $mail->SMTPDebug = 2;
+        $mail->Debugoutput = function($str, $level) {
+            error_log("PHPMailer DEBUG [$level]: $str");
+        };
         
         // Mittente
         $mail->setFrom($smtpCreds['email'], $smtpCreds['name']);
@@ -158,8 +170,12 @@ foreach($recipientsList as $email) {
         $debugLog[] = "✅ $email - SUCCESS";
         
     } catch (Exception $e) {
-        $failedEmails[] = $email;
-        $debugLog[] = "❌ $email - ERROR: {$mail->ErrorInfo}";
+        $failedEmails[] = [
+            'email' => $email,
+            'error' => $mail->ErrorInfo,
+            'exception' => $e->getMessage()
+        ];
+        $debugLog[] = "❌ $email - ERROR: {$mail->ErrorInfo} | Exception: {$e->getMessage()}";
     }
 }
 
@@ -172,7 +188,14 @@ if($successCount > 0) {
     $message .= "\\n\\nMittente: {$smtpCreds['name']} ({$smtpCreds['email']})";
     
     if(!empty($failedEmails)) {
-        $message .= "\\n\\n⚠️ Invio fallito per " . count($failedEmails) . " destinatari:\\n" . implode("\\n", array_slice($failedEmails, 0, 10));
+        $failedList = array_map(function($f) {
+            if(is_array($f)) {
+                return $f['email'] . " - " . ($f['error'] ?: $f['exception']);
+            }
+            return $f;
+        }, array_slice($failedEmails, 0, 10));
+        
+        $message .= "\\n\\n⚠️ Invio fallito per " . count($failedEmails) . " destinatari:\\n" . implode("\\n", $failedList);
         if(count($failedEmails) > 10) {
             $message .= "\\n... e altri " . (count($failedEmails) - 10);
         }
@@ -191,7 +214,14 @@ if($successCount > 0) {
     $errorMsg .= "From: {$smtpCreds['email']}\\n\\n";
     
     if(!empty($failedEmails)) {
-        $errorMsg .= "Destinatari falliti:\\n" . implode("\\n", array_slice($failedEmails, 0, 5));
+        $failedList = array_map(function($f) {
+            if(is_array($f)) {
+                return $f['email'] . ": " . ($f['error'] ?: $f['exception']);
+            }
+            return $f;
+        }, array_slice($failedEmails, 0, 5));
+        
+        $errorMsg .= "Destinatari falliti:\\n" . implode("\\n", $failedList);
     }
     
     $errorMsg .= "\\n\\nControlla:\\n";
