@@ -107,24 +107,62 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 error_log("SMTP Save - user_email to save: $userEmail, encrypted password length: " . strlen($encryptedPassword));
                 
-                // Salva in DB
-                $stmt = $pdo->prepare("
-                    INSERT INTO smtp_accounts (user_email, account_type, email, password, sender_name, is_active)
-                    VALUES (?, ?, ?, ?, ?, 1)
-                    ON DUPLICATE KEY UPDATE
-                        email = VALUES(email),
-                        password = VALUES(password),
-                        sender_name = VALUES(sender_name),
-                        is_active = 1,
-                        updated_at = CURRENT_TIMESTAMP
-                ");
-                
-                if($stmt->execute([$userEmail, $accountType, $email, $encryptedPassword, $senderName])) {
-                    $success = "Account configurato con successo! (user_email salvato: $userEmail)";
-                    error_log("SMTP Save - INSERT/UPDATE SUCCESS with user_email: " . $userEmail);
+                // Per account generico, verifica se esiste già
+                if($accountType === 'generic') {
+                    $checkStmt = $pdo->prepare("SELECT id FROM smtp_accounts WHERE account_type = 'generic' LIMIT 1");
+                    $checkStmt->execute();
+                    $existingGeneric = $checkStmt->fetch();
+                    
+                    if($existingGeneric) {
+                        // UPDATE esistente
+                        $stmt = $pdo->prepare("
+                            UPDATE smtp_accounts 
+                            SET email = ?, password = ?, sender_name = ?, is_active = 1, updated_at = CURRENT_TIMESTAMP
+                            WHERE account_type = 'generic'
+                        ");
+                        
+                        if($stmt->execute([$email, $encryptedPassword, $senderName])) {
+                            $success = "Account configurato con successo! (aggiornato ID: {$existingGeneric['id']})";
+                            error_log("SMTP Save - UPDATE SUCCESS for generic account");
+                        } else {
+                            $error = "Errore durante il salvataggio: " . print_r($stmt->errorInfo(), true);
+                            error_log("SMTP Save - UPDATE ERROR: " . print_r($stmt->errorInfo(), true));
+                        }
+                    } else {
+                        // INSERT nuovo
+                        $stmt = $pdo->prepare("
+                            INSERT INTO smtp_accounts (user_email, account_type, email, password, sender_name, is_active)
+                            VALUES (NULL, 'generic', ?, ?, ?, 1)
+                        ");
+                        
+                        if($stmt->execute([$email, $encryptedPassword, $senderName])) {
+                            $success = "Account configurato con successo! (nuovo ID: {$pdo->lastInsertId()})";
+                            error_log("SMTP Save - INSERT SUCCESS for generic account");
+                        } else {
+                            $error = "Errore durante il salvataggio: " . print_r($stmt->errorInfo(), true);
+                            error_log("SMTP Save - INSERT ERROR: " . print_r($stmt->errorInfo(), true));
+                        }
+                    }
                 } else {
-                    $error = "Errore durante il salvataggio: " . print_r($stmt->errorInfo(), true);
-                    error_log("SMTP Save - INSERT ERROR: " . print_r($stmt->errorInfo(), true));
+                    // Account personale (non più usato ma lascio il codice)
+                    $stmt = $pdo->prepare("
+                        INSERT INTO smtp_accounts (user_email, account_type, email, password, sender_name, is_active)
+                        VALUES (?, ?, ?, ?, ?, 1)
+                        ON DUPLICATE KEY UPDATE
+                            email = VALUES(email),
+                            password = VALUES(password),
+                            sender_name = VALUES(sender_name),
+                            is_active = 1,
+                            updated_at = CURRENT_TIMESTAMP
+                    ");
+                    
+                    if($stmt->execute([$userEmail, $accountType, $email, $encryptedPassword, $senderName])) {
+                        $success = "Account configurato con successo!";
+                        error_log("SMTP Save - INSERT/UPDATE SUCCESS");
+                    } else {
+                        $error = "Errore durante il salvataggio: " . print_r($stmt->errorInfo(), true);
+                        error_log("SMTP Save - INSERT ERROR: " . print_r($stmt->errorInfo(), true));
+                    }
                 }
             }
         }
