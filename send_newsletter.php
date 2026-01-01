@@ -132,25 +132,9 @@ foreach($recipientsList as $email) {
         $mail->SMTPAuth = true;
         $mail->Username = $smtpCreds['email'];
         $mail->Password = $smtpCreds['password'];
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // STARTTLS esplicito
-        $mail->Port = 587;
-        $mail->Timeout = 30;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = $smtpCreds['server']['port'];
         $mail->CharSet = 'UTF-8';
-        
-        // Office365 specifico
-        $mail->SMTPOptions = [
-            'ssl' => [
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-                'allow_self_signed' => true
-            ]
-        ];
-        
-        // Debug mode ATTIVO (per vedere errori)
-        $mail->SMTPDebug = 2;
-        $mail->Debugoutput = function($str, $level) {
-            error_log("PHPMailer DEBUG [$level]: $str");
-        };
         
         // Mittente
         $mail->setFrom($smtpCreds['email'], $smtpCreds['name']);
