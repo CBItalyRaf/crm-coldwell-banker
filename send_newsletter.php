@@ -93,7 +93,7 @@ foreach($newsDetails as $news) {
     }
     
     if(!empty($news['excerpt'])) $html .= '<p class="news-excerpt">' . nl2br(htmlspecialchars($news['excerpt'])) . '</p>';
-    $html .= '<a href="https://admin.mycb.it/news_detail.php?id=' . $news['id'] . '" class="read-more">Leggi articolo completo →</a></div>';
+    $html .= '<a href="https://admin.mycb.it/news_public.php?id=' . $news['id'] . '" class="read-more">Leggi articolo completo →</a></div>';
 }
 
 $html .= '<div class="footer"><p>Newsletter inviata da <strong>' . htmlspecialchars($smtpCreds['name']) . '</strong></p><p style="margin-top:1rem"><a href="https://admin.mycb.it/news.php">Visualizza tutte le news</a> • <a href="https://coldwellbankeritaly.tech">coldwellbankeritaly.tech</a></p></div></div></body></html>';
