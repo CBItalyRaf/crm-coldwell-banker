@@ -40,7 +40,7 @@ function callNewsAPI($endpoint, $params = [], $method = 'GET', $body = null) {
     return $data;
 }
 
-function getNewsArticles($limit = 10, $search = null, $category = null, $visibility = null) {
+function getNewsArticles($limit = 10, $search = null, $category = null, $visibility = null, $status = null) {
     $params = ['limit' => $limit];
     
     if ($search) {
@@ -53,6 +53,10 @@ function getNewsArticles($limit = 10, $search = null, $category = null, $visibil
     
     if ($visibility) {
         $params['visibility'] = $visibility;
+    }
+    
+    if ($status) {
+        $params['status'] = $status;
     }
     
     return callNewsAPI('/articles', $params);

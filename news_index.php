@@ -11,12 +11,7 @@ $category = $_GET['category'] ?? '';
 $page = (int)($_GET['page'] ?? 1);
 $limit = 1000; // Tutte le news
 
-// Carica news da API
-$params = ['limit' => $limit];
-if($search) $params['search'] = $search;
-if($category) $params['category'] = $category;
-
-$newsArticles = getNewsArticles($limit, $search, $category, null);
+$newsArticles = getNewsArticles($limit, $search, $category, null, 'published');
 $articles = $newsArticles['data'] ?? [];
 $total = $newsArticles['total'] ?? 0;
 

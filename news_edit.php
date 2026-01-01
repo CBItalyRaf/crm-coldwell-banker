@@ -79,7 +79,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         $updateData = [
             'title' => $_POST['title'] ?? '',
             'slug' => $_POST['slug'] ?? '',
-            'excerpt' => $_POST['excerpt'] ?? '',
+            'summary' => $_POST['summary'] ?? '',
             'content' => $_POST['content'] ?? '',
             'category_id' => !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null,
             'visibility' => $_POST['visibility'] ?? 'public',
@@ -193,8 +193,8 @@ require_once 'header.php';
 </div>
 
 <div class="form-group">
-<label class="form-label" for="excerpt">Estratto / Anteprima</label>
-<textarea id="excerpt" name="excerpt" class="form-textarea"><?= htmlspecialchars($article['excerpt'] ?? '') ?></textarea>
+<label class="form-label" for="summary">Estratto / Anteprima</label>
+<textarea id="summary" name="summary" class="form-textarea"><?= htmlspecialchars($article['summary'] ?? '') ?></textarea>
 <div class="form-hint">Breve descrizione che appare nelle anteprime (max 200 caratteri consigliati)</div>
 </div>
 </div>
