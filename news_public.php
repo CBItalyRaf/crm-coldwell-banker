@@ -272,9 +272,7 @@ $pageTitle = htmlspecialchars($news['title']) . " - Coldwell Banker Italy";
     <div class="header">
         <div class="header-container">
             <div class="header-logo">
-                <span style="font-size:2rem">🏠</span>
-                <span style="font-weight:700;font-size:1.25rem">COLDWELL BANKER</span>
-                <span style="font-weight:400;font-size:1.25rem">ITALY</span>
+                <img src="https://coldwellbankeritaly.tech/repository/dashboard/logo-white.png" alt="Coldwell Banker Italy" style="height:40px">
             </div>
             <a href="news_index.php" class="header-link">← Tutte le News</a>
         </div>

@@ -94,7 +94,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: news_detail.php?id=' . $id . '&updated=1');
             exit;
         } else {
-            $error = "Errore durante l'aggiornamento. Verifica che l'API supporti l'editing.";
+            $error = "Errore durante l'aggiornamento. Verifica che l'API supporti l'editing (PUT /articles/{id}).";
         }
     }
 }
@@ -120,7 +120,6 @@ require_once 'header.php';
 .form-input,.form-textarea,.form-select{width:100%;padding:.875rem 1rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem;font-family:inherit;transition:border-color .2s}
 .form-input:focus,.form-textarea:focus,.form-select:focus{outline:none;border-color:var(--cb-bright-blue);box-shadow:0 0 0 3px rgba(31,105,255,.1)}
 .form-textarea{min-height:150px;resize:vertical;font-family:inherit;line-height:1.6}
-.form-textarea.large{min-height:400px}
 .form-hint{font-size:.85rem;color:var(--cb-gray);margin-top:.5rem}
 .radio-group{display:flex;gap:1.5rem;margin-top:.75rem}
 .radio-label{display:flex;align-items:center;gap:.5rem;cursor:pointer;font-weight:500}
@@ -138,12 +137,28 @@ require_once 'header.php';
 .btn-remove-image{background:#EF4444;color:white;border:none;padding:.5rem 1rem;border-radius:6px;font-size:.85rem;cursor:pointer;transition:background .2s}
 .btn-remove-image:hover{background:#DC2626}
 .upload-hint{background:var(--bg);padding:1rem;border-radius:8px;margin-top:.5rem;font-size:.85rem;color:var(--cb-gray)}
+/* Quill Editor Styling */
+#editor-container{min-height:400px;background:white}
+.ql-toolbar{border:1px solid #E5E7EB!important;border-radius:8px 8px 0 0!important;background:var(--bg)!important}
+.ql-container{border:1px solid #E5E7EB!important;border-top:none!important;border-radius:0 0 8px 8px!important;font-size:1rem!important;font-family:inherit!important}
+.ql-editor{min-height:400px;line-height:1.5}
+.ql-editor p{margin:0 0 0.15rem 0!important;padding:0!important}
+.ql-editor h2{font-size:1.5rem;font-weight:700;margin:1rem 0 0.5rem!important}
+.ql-editor h3{font-size:1.25rem;font-weight:600;margin:0.75rem 0 0.35rem!important}
+.ql-editor ul, .ql-editor ol{margin:0.35rem 0!important;padding-left:1.5rem!important}
+.ql-editor li{margin-bottom:0.15rem!important}
+.ql-editor blockquote{border-left:4px solid var(--cb-bright-blue);padding-left:1rem;margin:0.75rem 0!important;font-style:italic;color:#6B7280}
+.ql-editor br{display:block;margin:0.15rem 0;content:""}
+.ql-editor p+p{margin-top:0.15rem!important}
 @media(max-width:768px){
 .edit-form{padding:1.5rem}
 .form-actions{flex-direction:column}
 .btn-submit,.btn-cancel{width:100%;justify-content:center}
 }
 </style>
+
+<!-- Quill CSS -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
 <div class="edit-container">
 <div class="edit-header">
@@ -161,7 +176,7 @@ require_once 'header.php';
 ℹ️ <strong>Nota:</strong> Le modifiche verranno salvate nell'API esterna. Assicurati che i dati siano corretti prima di salvare.
 </div>
 
-<form method="POST" enctype="multipart/form-data" class="edit-form">
+<form method="POST" enctype="multipart/form-data" class="edit-form" id="editForm">
 <!-- Informazioni Base -->
 <div class="form-section">
 <h2 class="section-title">📝 Informazioni Base</h2>
@@ -174,26 +189,25 @@ require_once 'header.php';
 <div class="form-group">
 <label class="form-label" for="slug">Slug URL</label>
 <input type="text" id="slug" name="slug" class="form-input" value="<?= htmlspecialchars($article['slug'] ?? '') ?>">
-<div class="form-hint">URL-friendly (es: conformita-catastale-2025)</div>
+<div class="form-hint">URL-friendly (es: conformita-catastale-2025) - si genera automaticamente dal titolo</div>
 </div>
 
 <div class="form-group">
 <label class="form-label" for="excerpt">Estratto / Anteprima</label>
 <textarea id="excerpt" name="excerpt" class="form-textarea"><?= htmlspecialchars($article['excerpt'] ?? '') ?></textarea>
-<div class="form-hint">Breve descrizione che appare nelle anteprime</div>
+<div class="form-hint">Breve descrizione che appare nelle anteprime (max 200 caratteri consigliati)</div>
 </div>
 </div>
 
 <!-- Contenuto -->
 <div class="form-section">
-<h2 class="section-title">📄 Contenuto</h2>
+<h2 class="section-title">📄 Contenuto Articolo</h2>
 
 <div class="form-group">
-<label class="form-label" for="content">Contenuto Articolo *</label>
-<textarea id="content" name="content" class="form-textarea large" required><?= htmlspecialchars($article['content'] ?? $article['body'] ?? '') ?></textarea>
-<div class="form-hint">
-Editor visuale - scrivi come in Word, il sistema genera automaticamente l'HTML
-</div>
+<label class="form-label">Contenuto *</label>
+<div id="editor-container"></div>
+<textarea name="content" id="content" style="display:none"></textarea>
+<div class="form-hint">Usa l'editor visuale - grassetto, titoli, liste, link... il sistema genera automaticamente l'HTML</div>
 </div>
 </div>
 
@@ -309,46 +323,35 @@ function removeImage() {
 </form>
 </div>
 
-<!-- TinyMCE Editor -->
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<!-- Quill JS -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script>
-tinymce.init({
-    selector: '#content',
-    height: 500,
-    menubar: false,
-    language: 'it',
-    plugins: [
-        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-        'insertdatetime', 'media', 'table', 'help', 'wordcount'
-    ],
-    toolbar: 'undo redo | blocks | bold italic underline strikethrough | ' +
-             'alignleft aligncenter alignright alignjustify | ' +
-             'bullist numlist outdent indent | link image | ' +
-             'removeformat code | help',
-    content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; }',
-    
-    // Configurazione immagini
-    images_upload_url: false, // Disabilita upload, usa solo URL
-    automatic_uploads: false,
-    
-    // Pulizia HTML
-    paste_as_text: false,
-    paste_word_valid_elements: 'p,b,strong,i,em,h1,h2,h3,h4,ul,ol,li,a,img',
-    
-    // Stili personalizzati
-    style_formats: [
-        { title: 'Paragrafo', block: 'p' },
-        { title: 'Titolo 2', block: 'h2' },
-        { title: 'Titolo 3', block: 'h3' },
-        { title: 'Citazione', block: 'blockquote' }
-    ],
-    
-    setup: function(editor) {
-        editor.on('init', function() {
-            console.log('TinyMCE caricato con successo');
-        });
+// Inizializza Quill editor
+var quill = new Quill('#editor-container', {
+    theme: 'snow',
+    placeholder: 'Scrivi il contenuto dell\'articolo...',
+    modules: {
+        toolbar: [
+            [{ 'header': [2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'align': [] }],
+            ['link', 'blockquote', 'code-block'],
+            ['clean']
+        ]
     }
+});
+
+// Carica contenuto esistente
+var existingContent = <?= json_encode($article['content'] ?? $article['body'] ?? '') ?>;
+if(existingContent) {
+    quill.root.innerHTML = existingContent;
+}
+
+// Sincronizza con textarea hidden prima del submit
+document.getElementById('editForm').addEventListener('submit', function() {
+    var html = quill.root.innerHTML;
+    document.getElementById('content').value = html;
 });
 
 // Auto-genera slug da titolo

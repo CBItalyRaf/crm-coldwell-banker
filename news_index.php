@@ -9,7 +9,7 @@ require_once 'helpers/news_api.php';
 $search = $_GET['search'] ?? '';
 $category = $_GET['category'] ?? '';
 $page = (int)($_GET['page'] ?? 1);
-$limit = 12;
+$limit = 100; // Mostra tutte le news
 
 // Carica news da API
 $params = ['limit' => $limit];
@@ -58,6 +58,7 @@ $pageTitle = "News Coldwell Banker Italy";
             color: white;
             padding: 2rem 1.5rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
         }
         
         .header-container {
@@ -67,20 +68,14 @@ $pageTitle = "News Coldwell Banker Italy";
         
         .header-logo {
             display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
+            justify-content: center;
+            margin-bottom: 1rem;
         }
         
         .header h1 {
-            font-size: 2rem;
-            font-weight: 700;
+            font-size: 1.75rem;
+            font-weight: 600;
             margin: 0;
-        }
-        
-        .header p {
-            color: rgba(255,255,255,0.9);
-            margin-top: 0.5rem;
         }
         
         .container {
@@ -324,12 +319,9 @@ $pageTitle = "News Coldwell Banker Italy";
     <div class="header">
         <div class="header-container">
             <div class="header-logo">
-                <span style="font-size:2.5rem">🏠</span>
-                <div>
-                    <h1>COLDWELL BANKER ITALY</h1>
-                    <p>News e Aggiornamenti</p>
-                </div>
+                <img src="https://coldwellbankeritaly.tech/repository/dashboard/logo-white.png" alt="Coldwell Banker Italy" style="height:50px;margin-bottom:0.5rem">
             </div>
+            <h1>News e Aggiornamenti</h1>
         </div>
     </div>
     
