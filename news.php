@@ -1,8 +1,13 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once 'check_auth.php';
+require_once 'config/database.php';
 require_once 'helpers/news_api.php';
 
 $pageTitle = "News CB Italia - CRM Coldwell Banker";
+$pdo = getDB();
 
 $search = $_GET['search'] ?? '';
 $category = $_GET['category'] ?? '';
@@ -65,11 +70,9 @@ require_once 'header.php';
 <h1 class="page-title">News CB Italia</h1>
 <p class="page-subtitle">Ultime notizie e comunicazioni dal network Coldwell Banker</p>
 </div>
-<?php if($user['crm_role'] === 'admin'): ?>
 <a href="news_newsletter.php" class="btn-primary" style="background:var(--cb-bright-blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem">
 📧 Crea Newsletter
 </a>
-<?php endif; ?>
 </div>
 
 <div class="filters-bar">
@@ -130,8 +133,10 @@ if($imageUrl):
 ?>
 <img src="<?= htmlspecialchars($imageUrl) ?>" alt="<?= htmlspecialchars($article['title']) ?>" class="news-image">
 <?php else: ?>
-<div class="news-image" style="display:flex;align-items:center;justify-content:center;font-size:3rem;color:#D1D5DB">
-<?= $isInternal ? '🔒' : '📰' ?>
+<div class="news-image news-image-placeholder" style="background:linear-gradient(135deg,<?= $isInternal ? '#DBEAFE 0%, #93C5FD 100%' : '#F3F4F6 0%, #E5E7EB 100%' ?>);display:flex;align-items:center;justify-content:center;position:relative">
+<div style="text-align:center;color:<?= $isInternal ? '#3B82F6' : '#9CA3AF' ?>;font-size:1rem;font-weight:600;opacity:.7">
+<?= $isInternal ? '🔒 Solo CB' : '📰 CB News' ?>
+</div>
 </div>
 <?php endif; ?>
 <div class="news-content">
@@ -144,8 +149,8 @@ if($imageUrl):
 <?php endif; ?>
 </div>
 <h3 class="news-title"><?= htmlspecialchars($article['title']) ?></h3>
-<?php if(!empty($article['excerpt'])): ?>
-<p class="news-excerpt"><?= htmlspecialchars(substr($article['excerpt'], 0, 150)) ?>...</p>
+<?php if(!empty($article['summary']) || !empty($article['excerpt'])): ?>
+<p class="news-excerpt"><?= htmlspecialchars(substr($article['summary'] ?? $article['excerpt'], 0, 150)) ?>...</p>
 <?php endif; ?>
 <div class="news-meta">
 <span class="news-date">
