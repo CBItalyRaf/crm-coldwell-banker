@@ -1,9 +1,9 @@
 <?php
 /**
  * News Index - Tutte le news con ricerca e filtri
+ * Accessibile pubblicamente
  */
 
-require_once 'check_auth.php';
 require_once 'helpers/news_api.php';
 
 // Parametri ricerca
