@@ -1,7 +1,7 @@
 <?php
 /**
  * News Index - Tutte le news con ricerca e filtri
- * Accessibile pubblicamente
+ * Accessibile pubblicamente con header stile admin
  */
 
 require_once 'helpers/news_api.php';
@@ -20,26 +20,104 @@ $total = $newsArticles['total'] ?? 0;
 $categoriesData = getNewsCategories();
 $categories = $categoriesData ?? [];
 
-$pageTitle = "News di Rete - CRM Coldwell Banker";
-require_once 'header.php';
+$pageTitle = "News di Rete - Coldwell Banker Italy";
 ?>
-
-<style>
-    .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $pageTitle ?></title>
     
-    .page-title {
-        font-size: 1.75rem;
-        font-weight: 600;
-    }
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    .filters {
+    <style>
+        :root {
+            --cb-blue: #003F87;
+            --cb-bright-blue: #0051A5;
+            --cb-midnight: #001F3F;
+            --cb-gray: #6B7280;
+            --bg: #F9FAFB;
+            --white: #FFFFFF;
+            --border: #E5E7EB;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--cb-midnight);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* HEADER STILE ADMIN */
+        .public-header {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .header-logo {
+            height: 40px;
+        }
+        
+        .header-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--cb-midnight);
+        }
+        
+        /* CONTAINER */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            flex: 1;
+        }
+        /* CONTAINER */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            flex: 1;
+        }
+        
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+        
+        .filters {
         background: white;
         padding: 1.5rem;
         border-radius: 12px;
@@ -214,35 +292,24 @@ require_once 'header.php';
         opacity: 0.5;
     }
     
-    @media (max-width: 768px) {
-        .news-item {
-            padding: 1rem;
         }
-        
-        .news-thumbnail {
-            width: 80px;
-            height: 80px;
-        }
-        
-        .search-bar {
-            flex-direction: column;
-        }
-        
-        .search-input {
-            width: 100%;
-        }
-        
-        .search-btn {
-            width: 100%;
-        }
-    }
-</style>
-
-<div class="page-header">
-    <h1 class="page-title">📰 News di Rete</h1>
-</div>
-
-<div class="filters">
+    </style>
+</head>
+<body>
+    <!-- HEADER PUBBLICO STILE ADMIN -->
+    <header class="public-header">
+        <div class="header-container">
+            <div class="header-left">
+                <img src="https://mycb.it/assets/img/logo-blue.png" 
+                     alt="Coldwell Banker Italy" 
+                     class="header-logo">
+                <h1 class="header-title">📰 News di Rete</h1>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="page-header">
     <form method="GET" class="search-bar">
         <input type="text" name="search" class="search-input" placeholder="🔍 Cerca news..." value="<?= htmlspecialchars($search) ?>">
         <input type="hidden" name="category" value="<?= htmlspecialchars($category) ?>">
@@ -303,4 +370,17 @@ require_once 'header.php';
 </div>
 <?php endif; ?>
 
-<?php require_once 'footer.php'; ?>
+    </div> <!-- chiude container -->
+    
+    <!-- FOOTER SEMPLICE -->
+    <footer style="background: var(--cb-midnight); color: white; padding: 2rem 1.5rem; margin-top: auto; text-align: center;">
+        <div style="max-width: 1400px; margin: 0 auto;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 0.5rem;">
+                <img src="https://mycb.it/assets/img/logo-white.png" alt="Coldwell Banker Italy" style="height: 24px;">
+                <span style="font-size: 0.9rem;">Powered by <strong>Coldwell Banker Italy</strong></span>
+            </div>
+            <p style="font-size: 0.85rem; opacity: 0.7; margin: 0;">&copy; <?= date('Y') ?> Coldwell Banker Real Estate LLC</p>
+        </div>
+    </footer>
+</body>
+</html>
