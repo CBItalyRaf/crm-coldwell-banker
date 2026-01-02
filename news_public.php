@@ -33,6 +33,30 @@ $pageTitle = htmlspecialchars($news['title']) . " - Coldwell Banker Italy";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $pageTitle ?></title>
+    
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="<?= htmlspecialchars($news['title']) ?>">
+    <meta property="og:description" content="<?= htmlspecialchars(strip_tags($news['summary'] ?? $news['excerpt'] ?? substr($news['content'], 0, 200))) ?>">
+    <meta property="og:url" content="https://admin.mycb.it/news_public.php?id=<?= $news['id'] ?>">
+    <?php 
+    $ogImage = getFullImageUrl($news['image_url'] ?? null);
+    if($ogImage): 
+    ?>
+    <meta property="og:image" content="<?= htmlspecialchars($ogImage) ?>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <?php endif; ?>
+    <meta property="og:site_name" content="Coldwell Banker Italy">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?= htmlspecialchars($news['title']) ?>">
+    <meta name="twitter:description" content="<?= htmlspecialchars(strip_tags($news['summary'] ?? $news['excerpt'] ?? substr($news['content'], 0, 200))) ?>">
+    <?php if($ogImage): ?>
+    <meta name="twitter:image" content="<?= htmlspecialchars($ogImage) ?>">
+    <?php endif; ?>
+    
     <style>
         :root {
             --cb-midnight: #0A1730;
