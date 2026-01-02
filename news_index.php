@@ -11,9 +11,8 @@ $search = $_GET['search'] ?? '';
 $category = $_GET['category'] ?? '';
 $page = max(1, (int)($_GET['page'] ?? 1));
 $limit = 20; // Articoli per pagina
-$offset = ($page - 1) * $limit;
 
-$newsArticles = getNewsArticles($limit, $search, $category, $offset, 'published');
+$newsArticles = getNewsArticles($limit, $search, $category, null, 'published', $page);
 $articles = $newsArticles['data'] ?? [];
 $total = $newsArticles['total'] ?? 0;
 $totalPages = ceil($total / $limit);

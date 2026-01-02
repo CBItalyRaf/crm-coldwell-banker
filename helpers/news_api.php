@@ -63,7 +63,7 @@ function getFullImageUrl($imageUrl) {
     return $imageUrl;
 }
 
-function getNewsArticles($limit = 10, $search = null, $category = null, $visibility = null, $status = null) {
+function getNewsArticles($limit = 10, $search = null, $category = null, $visibility = null, $status = null, $page = null) {
     $params = ['limit' => $limit];
     
     if ($search) {
@@ -80,6 +80,10 @@ function getNewsArticles($limit = 10, $search = null, $category = null, $visibil
     
     if ($status) {
         $params['status'] = $status;
+    }
+    
+    if ($page) {
+        $params['page'] = $page;
     }
     
     return callNewsAPI('/articles', $params);
