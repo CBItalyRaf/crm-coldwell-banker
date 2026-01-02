@@ -9,12 +9,14 @@ require_once 'helpers/news_api.php';
 // Parametri ricerca
 $search = $_GET['search'] ?? '';
 $category = $_GET['category'] ?? '';
-$page = (int)($_GET['page'] ?? 1);
-$limit = 1000; // Tutte le news
+$page = max(1, (int)($_GET['page'] ?? 1));
+$limit = 20; // Articoli per pagina
+$offset = ($page - 1) * $limit;
 
-$newsArticles = getNewsArticles($limit, $search, $category, null, 'published');
+$newsArticles = getNewsArticles($limit, $search, $category, $offset, 'published');
 $articles = $newsArticles['data'] ?? [];
 $total = $newsArticles['total'] ?? 0;
+$totalPages = ceil($total / $limit);
 
 // Carica categorie
 $categoriesData = getNewsCategories();
@@ -84,7 +86,7 @@ $pageTitle = "News di Rete - Coldwell Banker Italy";
         }
         
         .header-logo {
-            height: 40px;
+            height: 30px;
         }
         
         .header-title {
@@ -292,6 +294,50 @@ $pageTitle = "News di Rete - Coldwell Banker Italy";
         opacity: 0.5;
     }
     
+    /* PAGINAZIONE */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .pagination-btn {
+        padding: 0.5rem 1rem;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--cb-midnight);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+    
+    .pagination-btn:hover:not(.disabled) {
+        border-color: var(--cb-bright-blue);
+        color: var(--cb-bright-blue);
+    }
+    
+    .pagination-btn.active {
+        background: var(--cb-bright-blue);
+        color: white;
+        border-color: var(--cb-bright-blue);
+    }
+    
+    .pagination-btn.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    .pagination-info {
+        color: var(--cb-gray);
+        font-size: 0.85rem;
+        padding: 0 1rem;
+    }
+    
         }
     </style>
 </head>
@@ -367,6 +413,64 @@ $pageTitle = "News di Rete - Coldwell Banker Italy";
         </div>
     </div>
     <?php endforeach; ?>
+</div>
+<?php endif; ?>
+
+<?php if($totalPages > 1): ?>
+<!-- PAGINAZIONE -->
+<div class="pagination">
+    <?php 
+    // URL base con parametri
+    $baseUrl = '?';
+    if($search) $baseUrl .= 'search=' . urlencode($search) . '&';
+    if($category) $baseUrl .= 'category=' . urlencode($category) . '&';
+    
+    // Bottone Precedente
+    if($page > 1): ?>
+        <a href="<?= $baseUrl ?>page=<?= $page - 1 ?>" class="pagination-btn">← Precedente</a>
+    <?php else: ?>
+        <span class="pagination-btn disabled">← Precedente</span>
+    <?php endif; ?>
+    
+    <?php
+    // Mostra max 7 numeri di pagina
+    $start = max(1, $page - 3);
+    $end = min($totalPages, $page + 3);
+    
+    // Prima pagina
+    if($start > 1): ?>
+        <a href="<?= $baseUrl ?>page=1" class="pagination-btn">1</a>
+        <?php if($start > 2): ?>
+            <span class="pagination-info">...</span>
+        <?php endif; ?>
+    <?php endif; ?>
+    
+    <!-- Pagine centrali -->
+    <?php for($i = $start; $i <= $end; $i++): ?>
+        <a href="<?= $baseUrl ?>page=<?= $i ?>" 
+           class="pagination-btn <?= $i === $page ? 'active' : '' ?>">
+            <?= $i ?>
+        </a>
+    <?php endfor; ?>
+    
+    <!-- Ultima pagina -->
+    <?php if($end < $totalPages): ?>
+        <?php if($end < $totalPages - 1): ?>
+            <span class="pagination-info">...</span>
+        <?php endif; ?>
+        <a href="<?= $baseUrl ?>page=<?= $totalPages ?>" class="pagination-btn"><?= $totalPages ?></a>
+    <?php endif; ?>
+    
+    <!-- Bottone Successivo -->
+    <?php if($page < $totalPages): ?>
+        <a href="<?= $baseUrl ?>page=<?= $page + 1 ?>" class="pagination-btn">Successivo →</a>
+    <?php else: ?>
+        <span class="pagination-btn disabled">Successivo →</span>
+    <?php endif; ?>
+</div>
+
+<div class="pagination-info" style="text-align: center; margin-top: 1rem;">
+    Pagina <?= $page ?> di <?= $totalPages ?> • <?= $total ?> news totali
 </div>
 <?php endif; ?>
 
