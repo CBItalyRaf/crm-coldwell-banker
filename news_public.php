@@ -35,6 +35,7 @@ $pageTitle = htmlspecialchars($news['title']) . " - Coldwell Banker Italy";
     <title><?= $pageTitle ?></title>
     
     <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="fb:app_id" content="0">
     <meta property="og:type" content="article">
     <meta property="og:title" content="<?= htmlspecialchars($news['title']) ?>">
     <meta property="og:description" content="<?= htmlspecialchars(strip_tags($news['summary'] ?? $news['excerpt'] ?? substr($news['content'], 0, 200))) ?>">
@@ -44,8 +45,11 @@ $pageTitle = htmlspecialchars($news['title']) . " - Coldwell Banker Italy";
     if($ogImage): 
     ?>
     <meta property="og:image" content="<?= htmlspecialchars($ogImage) ?>">
+    <meta property="og:image:secure_url" content="<?= htmlspecialchars($ogImage) ?>">
+    <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="<?= htmlspecialchars($news['title']) ?>">
     <?php endif; ?>
     <meta property="og:site_name" content="Coldwell Banker Italy">
     
