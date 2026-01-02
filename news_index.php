@@ -82,7 +82,6 @@ $pageTitle = "News di Rete - Coldwell Banker Italy";
         .header-left {
             display: flex;
             align-items: center;
-            gap: 1.5rem;
         }
         
         .header-logo {
@@ -349,8 +348,8 @@ $pageTitle = "News di Rete - Coldwell Banker Italy";
                 <img src="https://mycb.it/assets/img/logo-blue.png" 
                      alt="Coldwell Banker Italy" 
                      class="header-logo">
-                <h1 class="header-title">📰 News di Rete</h1>
             </div>
+            <h1 class="header-title">📰 News</h1>
         </div>
     </header>
     
@@ -371,6 +370,30 @@ $pageTitle = "News di Rete - Coldwell Banker Italy";
         </a>
         <?php endforeach; ?>
     </div>
+</div>
+
+<!-- CONTATORE NEWS -->
+<div style="background:white;padding:1rem 1.5rem;margin-bottom:1rem;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);color:var(--cb-gray);font-size:.95rem">
+    <?php if($search || $category): ?>
+        Trovate <strong style="color:var(--cb-midnight)"><?= $total ?></strong> news
+        <?php if($search): ?>
+            per "<strong><?= htmlspecialchars($search) ?></strong>"
+        <?php endif; ?>
+        <?php if($category): ?>
+            <?php 
+            $catName = '';
+            foreach($categories as $cat) {
+                if($cat['slug'] === $category) {
+                    $catName = $cat['name'];
+                    break;
+                }
+            }
+            ?>
+            in <strong><?= htmlspecialchars($catName) ?></strong>
+        <?php endif; ?>
+    <?php else: ?>
+        <strong style="color:var(--cb-midnight)"><?= $total ?></strong> news totali disponibili
+    <?php endif; ?>
 </div>
 
 <?php if(empty($articles)): ?>
