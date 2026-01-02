@@ -134,15 +134,22 @@ if($content) {
 <footer class="article-footer <?= $isInternal ? 'internal' : '' ?>">
 <div class="share-section">
 <h3 class="share-title">Condividi questa news</h3>
+<?php 
+// URL pubblico per condivisione (senza autenticazione)
+$publicUrl = 'https://admin.mycb.it/news_public.php?id=' . $article['id'] . '&share=1';
+?>
 <div class="share-buttons">
-<a href="mailto:?subject=<?= urlencode($article['title']) ?>&body=<?= urlencode($article['title'] . ' - ' . 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) ?>" class="share-btn share-email">
+<a href="mailto:?subject=<?= urlencode($article['title']) ?>&body=<?= urlencode($article['title'] . ' - ' . $publicUrl) ?>" class="share-btn share-email">
 📧 Email
 </a>
-<a href="https://www.linkedin.com/sharing/share-offsite/?url=<?= urlencode('https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) ?>" target="_blank" class="share-btn share-linkedin">
+<a href="https://www.linkedin.com/sharing/share-offsite/?url=<?= urlencode($publicUrl) ?>" target="_blank" class="share-btn share-linkedin">
 🔗 LinkedIn
 </a>
-<a href="https://wa.me/?text=<?= urlencode($article['title'] . ' - ' . 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) ?>" target="_blank" class="share-btn share-whatsapp">
+<a href="https://wa.me/?text=<?= urlencode($article['title'] . ' - ' . $publicUrl) ?>" target="_blank" class="share-btn share-whatsapp">
 💬 WhatsApp
+</a>
+<a href="https://t.me/share/url?url=<?= urlencode($publicUrl) ?>&text=<?= urlencode($article['title']) ?>" target="_blank" class="share-btn share-telegram" style="background:#0088cc">
+✈️ Telegram
 </a>
 </div>
 </div>

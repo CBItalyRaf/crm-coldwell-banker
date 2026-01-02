@@ -8,6 +8,7 @@ require_once 'helpers/news_api.php';
 
 // Ottieni ID news
 $newsId = (int)($_GET['id'] ?? 0);
+$isShared = isset($_GET['share']); // Se arriva da condivisione esterna
 
 if(!$newsId) {
     die('News non trovata');
@@ -231,6 +232,62 @@ $pageTitle = htmlspecialchars($news['title']) . " - Coldwell Banker Italy";
             margin-bottom: 0.5rem;
         }
         
+        .share-section {
+            background: var(--bg);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-top: 3rem;
+            text-align: center;
+        }
+        
+        .share-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--cb-midnight);
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .share-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+        
+        .share-email {
+            background: #6B7280;
+        }
+        
+        .share-linkedin {
+            background: #0A66C2;
+        }
+        
+        .share-whatsapp {
+            background: #25D366;
+        }
+        
+        .share-telegram {
+            background: #0088cc;
+        }
+        
         @media (max-width: 768px) {
             .header {
                 padding: 1rem;
@@ -265,6 +322,19 @@ $pageTitle = htmlspecialchars($news['title']) . " - Coldwell Banker Italy";
             .news-content {
                 font-size: 1rem;
             }
+            
+            .share-section {
+                padding: 1.5rem;
+            }
+            
+            .share-buttons {
+                flex-direction: column;
+            }
+            
+            .share-btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -274,7 +344,9 @@ $pageTitle = htmlspecialchars($news['title']) . " - Coldwell Banker Italy";
             <div class="header-logo">
                 <img src="https://coldwellbankeritaly.tech/repository/dashboard/logo-white.png" alt="Coldwell Banker Italy" style="height:40px">
             </div>
+            <?php if(!$isShared): ?>
             <a href="news_index.php" class="header-link">← Tutte le News</a>
+            <?php endif; ?>
         </div>
     </div>
     
@@ -303,6 +375,28 @@ $pageTitle = htmlspecialchars($news['title']) . " - Coldwell Banker Italy";
             
             <div class="news-content">
                 <?= $news['content'] ?>
+            </div>
+            
+            <div class="share-section">
+                <h3 class="share-title">Condividi questa news</h3>
+                <?php 
+                // URL corrente per condivisione
+                $shareUrl = 'https://admin.mycb.it/news_public.php?id=' . $news['id'] . '&share=1';
+                ?>
+                <div class="share-buttons">
+                    <a href="mailto:?subject=<?= urlencode($news['title']) ?>&body=<?= urlencode($news['title'] . ' - ' . $shareUrl) ?>" class="share-btn share-email">
+                        📧 Email
+                    </a>
+                    <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?= urlencode($shareUrl) ?>" target="_blank" class="share-btn share-linkedin">
+                        🔗 LinkedIn
+                    </a>
+                    <a href="https://wa.me/?text=<?= urlencode($news['title'] . ' - ' . $shareUrl) ?>" target="_blank" class="share-btn share-whatsapp">
+                        💬 WhatsApp
+                    </a>
+                    <a href="https://t.me/share/url?url=<?= urlencode($shareUrl) ?>&text=<?= urlencode($news['title']) ?>" target="_blank" class="share-btn share-telegram">
+                        ✈️ Telegram
+                    </a>
+                </div>
             </div>
         </div>
     </div>
