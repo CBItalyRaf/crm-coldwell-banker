@@ -194,14 +194,20 @@ $progress = $onb['total_tasks'] > 0 ? round(($onb['completed_tasks'] / $onb['tot
 $isInternal = ($article['visibility'] ?? 'public') === 'internal';
 ?>
 <div onclick="window.location.href='news_detail.php?id=<?= $article['id'] ?>'" style="cursor:pointer;padding:1.25rem;border:1px solid #E5E7EB;border-radius:8px;transition:all .2s;<?= $isInternal ? 'background:#EFF6FF;border-color:#3B82F6;' : 'background:white;' ?>;display:flex;gap:1rem;align-items:start" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,.1)';this.style.transform='translateX(4px)'" onmouseout="this.style.boxShadow='none';this.style.transform='translateX(0)'">
+<?php 
+$imageUrl = getFullImageUrl($article['image_url'] ?? null);
+if($imageUrl): 
+?>
+<img src="<?= htmlspecialchars($imageUrl) ?>" alt="<?= htmlspecialchars($article['title']) ?>" style="width:80px;height:80px;object-fit:cover;border-radius:6px;flex-shrink:0">
+<?php endif; ?>
 <div style="flex:1">
 <div style="display:flex;align-items:center;gap:.5rem;font-weight:600;margin-bottom:.5rem;font-size:1rem">
 <?= $isInternal ? '🔒' : '📰' ?>
 <span style="flex:1"><?= htmlspecialchars($article['title']) ?></span>
 </div>
-<?php if(!empty($article['excerpt'])): ?>
+<?php if(!empty($article['summary']) || !empty($article['excerpt'])): ?>
 <p style="font-size:.9rem;color:var(--cb-gray);line-height:1.6;margin-bottom:.75rem">
-<?= htmlspecialchars(substr($article['excerpt'], 0, 200)) ?>...
+<?= htmlspecialchars(substr($article['summary'] ?? $article['excerpt'], 0, 200)) ?>...
 </p>
 <?php endif; ?>
 <div style="font-size:.85rem;color:var(--cb-gray);display:flex;gap:1rem;flex-wrap:wrap">
