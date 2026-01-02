@@ -12,11 +12,12 @@ $pdo = getDB();
 $search = $_GET['search'] ?? '';
 $category = $_GET['category'] ?? '';
 $visibility = $_GET['visibility'] ?? '';
-$limit = 12;
+$page = max(1, (int)($_GET['page'] ?? 1));
+$limit = 20; // Articoli per pagina
 
 // Carica news con error handling
 try {
-    $newsData = getNewsArticles($limit, $search ?: null, $category ?: null, $visibility ?: null);
+    $newsData = getNewsArticles($limit, $search ?: null, $category ?: null, $visibility ?: null, null, $page);
     $categories = getNewsCategories();
 } catch (Exception $e) {
     error_log("Errore caricamento news: " . $e->getMessage());
@@ -25,7 +26,8 @@ try {
 }
 
 $articles = $newsData['data'] ?? [];
-$total = $newsData['total'] ?? 0;
+$total = $newsData['meta']['total'] ?? 0;
+$totalPages = $newsData['meta']['last_page'] ?? 1;
 
 require_once 'header.php';
 ?>
@@ -114,6 +116,10 @@ per "<strong><?= htmlspecialchars($search) ?></strong>"
 (<?= $total ?> totali)
 <?php endif; ?>
 </div>
+<?php else: ?>
+<div class="results-count">
+<strong style="color:var(--cb-midnight)"><?= $total ?></strong> news totali disponibili
+</div>
 <?php endif; ?>
 
 <?php if(empty($articles)): ?>
@@ -163,6 +169,65 @@ if($imageUrl):
 </div>
 </div>
 <?php endforeach; ?>
+</div>
+<?php endif; ?>
+
+<?php if($totalPages > 1): ?>
+<!-- PAGINAZIONE -->
+<div style="display:flex;justify-content:center;align-items:center;gap:.5rem;margin-top:2rem;flex-wrap:wrap">
+    <?php 
+    // URL base con parametri
+    $baseUrl = '?';
+    if($search) $baseUrl .= 'search=' . urlencode($search) . '&';
+    if($category) $baseUrl .= 'category=' . urlencode($category) . '&';
+    if($visibility) $baseUrl .= 'visibility=' . urlencode($visibility) . '&';
+    
+    // Bottone Precedente
+    if($page > 1): ?>
+        <a href="<?= $baseUrl ?>page=<?= $page - 1 ?>" style="padding:.5rem 1rem;background:white;border:1px solid #E5E7EB;border-radius:8px;color:var(--cb-midnight);text-decoration:none;font-size:.9rem">← Precedente</a>
+    <?php else: ?>
+        <span style="padding:.5rem 1rem;background:white;border:1px solid #E5E7EB;border-radius:8px;color:var(--cb-midnight);font-size:.9rem;opacity:.5">← Precedente</span>
+    <?php endif; ?>
+    
+    <?php
+    // Mostra max 7 numeri di pagina
+    $start = max(1, $page - 3);
+    $end = min($totalPages, $page + 3);
+    
+    // Prima pagina
+    if($start > 1): ?>
+        <a href="<?= $baseUrl ?>page=1" style="padding:.5rem 1rem;background:white;border:1px solid #E5E7EB;border-radius:8px;color:var(--cb-midnight);text-decoration:none;font-size:.9rem">1</a>
+        <?php if($start > 2): ?>
+            <span style="color:var(--cb-gray);font-size:.85rem;padding:0 1rem">...</span>
+        <?php endif; ?>
+    <?php endif; ?>
+    
+    <!-- Pagine centrali -->
+    <?php for($i = $start; $i <= $end; $i++): ?>
+        <a href="<?= $baseUrl ?>page=<?= $i ?>" 
+           style="padding:.5rem 1rem;background:<?= $i === $page ? 'var(--cb-bright-blue)' : 'white' ?>;border:1px solid <?= $i === $page ? 'var(--cb-bright-blue)' : '#E5E7EB' ?>;border-radius:8px;color:<?= $i === $page ? 'white' : 'var(--cb-midnight)' ?>;text-decoration:none;font-size:.9rem">
+            <?= $i ?>
+        </a>
+    <?php endfor; ?>
+    
+    <!-- Ultima pagina -->
+    <?php if($end < $totalPages): ?>
+        <?php if($end < $totalPages - 1): ?>
+            <span style="color:var(--cb-gray);font-size:.85rem;padding:0 1rem">...</span>
+        <?php endif; ?>
+        <a href="<?= $baseUrl ?>page=<?= $totalPages ?>" style="padding:.5rem 1rem;background:white;border:1px solid #E5E7EB;border-radius:8px;color:var(--cb-midnight);text-decoration:none;font-size:.9rem"><?= $totalPages ?></a>
+    <?php endif; ?>
+    
+    <!-- Bottone Successivo -->
+    <?php if($page < $totalPages): ?>
+        <a href="<?= $baseUrl ?>page=<?= $page + 1 ?>" style="padding:.5rem 1rem;background:white;border:1px solid #E5E7EB;border-radius:8px;color:var(--cb-midnight);text-decoration:none;font-size:.9rem">Successivo →</a>
+    <?php else: ?>
+        <span style="padding:.5rem 1rem;background:white;border:1px solid #E5E7EB;border-radius:8px;color:var(--cb-midnight);font-size:.9rem;opacity:.5">Successivo →</span>
+    <?php endif; ?>
+</div>
+
+<div style="text-align:center;margin-top:1rem;color:var(--cb-gray);font-size:.85rem">
+    Pagina <?= $page ?> di <?= $totalPages ?> • <?= $total ?> news totali
 </div>
 <?php endif; ?>
 
