@@ -51,8 +51,12 @@ if ($agencyFilter !== 'all') {
 }
 
 if ($folderFilter !== '') {
+    // Dentro una cartella: mostra SOLO file in questa cartella specifica
     $sql .= " AND d.folder_path = :folder";
     $params[':folder'] = $folderFilter;
+} else {
+    // ROOT: mostra SOLO file senza cartella (folder_path NULL o vuoto)
+    $sql .= " AND (d.folder_path IS NULL OR d.folder_path = '')";
 }
 
 if ($search) {
@@ -69,12 +73,14 @@ $documents = $stmt->fetchAll();
 // Recupera sottocartelle dalla tabella folders
 $folderSql = "SELECT folder_path FROM folders WHERE 1=1";
 if ($folderFilter) {
+    // Se sono dentro una cartella, mostro le sottocartelle dirette
     $folderSql .= " AND folder_path LIKE :folder_pattern AND folder_path != :current_folder";
     $folderParams = [
         ':folder_pattern' => $folderFilter . '%',
         ':current_folder' => $folderFilter
     ];
 } else {
+    // ROOT: mostro solo cartelle di primo livello (senza /)
     $folderSql .= " AND folder_path NOT LIKE '%/%/%'";
     $folderParams = [];
 }
@@ -90,15 +96,15 @@ foreach ($allFolders as $folder) {
     if (empty($folder)) continue;
     
     if ($folderFilter) {
-        // Rimuovi il prefisso della cartella corrente
+        // Dentro una cartella - mostra sottocartelle
+        if (substr($folder, 0, strlen($folderFilter)) !== $folderFilter) continue;
         $relativePath = substr($folder, strlen($folderFilter));
-        // Prendi solo la prima parte (sottocartella diretta)
         $parts = explode('/', trim($relativePath, '/'));
         if (!empty($parts[0]) && !isset($subfolders[$parts[0]])) {
             $subfolders[$parts[0]] = $folderFilter . $parts[0] . '/';
         }
     } else {
-        // Root - prendi solo prima parte
+        // ROOT - mostra solo primo livello
         $parts = explode('/', trim($folder, '/'));
         if (!empty($parts[0]) && !isset($subfolders[$parts[0]])) {
             $subfolders[$parts[0]] = $parts[0] . '/';
@@ -110,7 +116,7 @@ require_once 'header.php';
 ?>
 
 <?php if ($folderFilter): ?>
-<div style="background:white;padding:1rem 1.5rem;margin-bottom:1rem;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;align-items:center;gap:.5rem">
+<div style="background:white;padding:.85rem 1.25rem;margin-bottom:1rem;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;align-items:center;gap:.5rem;font-size:.85rem">
 <a href="?<?= http_build_query(array_merge($_GET, ['folder' => ''])) ?>" style="color:var(--cb-bright-blue);text-decoration:none">📁 Root</a>
 <span style="color:var(--cb-gray)">/</span>
 <?php
@@ -131,35 +137,35 @@ foreach ($parts as $i => $part):
 <style>
 :root{--success:#10B981;--warning:#F59E0B;--danger:#EF4444;--info:#3B82F6}
 .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
-.page-title{font-size:1.75rem;font-weight:600}
+.page-title{font-size:1.5rem;font-weight:600}
 .header-actions{display:flex;gap:1rem}
-.btn-primary{background:var(--cb-bright-blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;font-size:.95rem;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;gap:.5rem;font-weight:500;text-decoration:none}
+.btn-primary{background:var(--cb-bright-blue);color:white;border:none;padding:.65rem 1.25rem;border-radius:8px;font-size:.85rem;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;gap:.5rem;font-weight:500;text-decoration:none}
 .btn-primary:hover{background:var(--cb-blue)}
-.btn-success{background:var(--success);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;font-size:.95rem;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;gap:.5rem;font-weight:500}
+.btn-success{background:var(--success);color:white;border:none;padding:.65rem 1.25rem;border-radius:8px;font-size:.85rem;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;gap:.5rem;font-weight:500}
 .btn-success:hover{background:#059669}
-.btn-secondary{background:white;color:var(--cb-midnight);border:1px solid #E5E7EB;padding:.75rem 1.5rem;border-radius:8px;font-size:.95rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.5rem;font-weight:500}
+.btn-secondary{background:white;color:var(--cb-midnight);border:1px solid #E5E7EB;padding:.65rem 1.25rem;border-radius:8px;font-size:.85rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.5rem;font-weight:500}
 .btn-secondary:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue)}
 .filters-bar{background:white;padding:1.5rem;margin-bottom:2rem;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .filters-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1rem}
 .filter-group{display:flex;flex-direction:column;gap:.5rem}
-.filter-label{font-size:.85rem;font-weight:600;color:var(--cb-gray);text-transform:uppercase;letter-spacing:.05em}
-.filter-select{padding:.75rem 1rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem;background:white;cursor:pointer}
+.filter-label{font-size:.8rem;font-weight:600;color:var(--cb-gray);text-transform:uppercase;letter-spacing:.05em}
+.filter-select{padding:.65rem .85rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.85rem;background:white;cursor:pointer}
 .filter-select:focus{outline:none;border-color:var(--cb-bright-blue)}
 .search-box{position:relative}
-.search-box input{width:100%;padding:.75rem 1rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem}
+.search-box input{width:100%;padding:.65rem .85rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.85rem}
 .search-box input:focus{outline:none;border-color:var(--cb-bright-blue)}
 .documents-grid{display:grid;gap:1.5rem}
-.document-card{background:white;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.08);transition:all .2s}
+.document-card{background:white;border-radius:12px;padding:1.25rem;box-shadow:0 1px 3px rgba(0,0,0,.08);transition:all .2s}
 .document-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.12);transform:translateY(-2px)}
 .document-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:1rem}
 .document-info{flex:1}
-.document-title{font-size:1.1rem;font-weight:600;color:var(--cb-midnight);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
-.document-meta{display:flex;gap:1rem;font-size:.85rem;color:var(--cb-gray);flex-wrap:wrap}
+.document-title{font-size:.95rem;font-weight:600;color:var(--cb-midnight);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+.document-meta{display:flex;gap:.75rem;font-size:.75rem;color:var(--cb-gray);flex-wrap:wrap}
 .document-actions{display:flex;gap:.5rem}
 .btn-icon{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.5rem;border-radius:6px;cursor:pointer;transition:all .2s;font-size:1rem;width:36px;height:36px;display:flex;align-items:center;justify-content:center}
 .btn-icon:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue)}
 .btn-icon.danger:hover{border-color:var(--danger);color:var(--danger)}
-.badge{padding:.25rem .75rem;border-radius:12px;font-size:.75rem;font-weight:600;text-transform:uppercase}
+.badge{padding:.2rem .6rem;border-radius:10px;font-size:.7rem;font-weight:600;text-transform:uppercase}
 .badge.common{background:#DBEAFE;color:#1E40AF}
 .badge.group{background:#FEF3C7;color:#92400E}
 .badge.single{background:#E5E7EB;color:#6B7280}
@@ -176,13 +182,13 @@ foreach ($parts as $i => $part):
 .modal.open{display:flex}
 .modal-content{background:white;border-radius:12px;max-width:800px;width:100%;max-height:90vh;overflow-y:auto}
 .modal-header{padding:1.5rem;border-bottom:1px solid #E5E7EB;display:flex;justify-content:space-between;align-items:center}
-.modal-title{font-size:1.25rem;font-weight:600}
+.modal-title{font-size:1.1rem;font-weight:600}
 .modal-close{background:transparent;border:none;font-size:1.5rem;cursor:pointer;color:var(--cb-gray)}
 .modal-close:hover{color:var(--cb-midnight)}
 .modal-body{padding:1.5rem}
 .form-group{margin-bottom:1.5rem}
-.form-label{display:block;font-size:.9rem;font-weight:600;color:var(--cb-midnight);margin-bottom:.5rem}
-.form-input,.form-select,.form-textarea{width:100%;padding:.75rem 1rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem}
+.form-label{display:block;font-size:.85rem;font-weight:600;color:var(--cb-midnight);margin-bottom:.5rem}
+.form-input,.form-select,.form-textarea{width:100%;padding:.65rem .85rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.85rem}
 .form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--cb-bright-blue)}
 .form-textarea{resize:vertical;min-height:80px}
 .radio-group{display:flex;gap:1.5rem;flex-wrap:wrap}
@@ -192,7 +198,7 @@ foreach ($parts as $i => $part):
 .agency-checkbox{display:flex;align-items:center;gap:.75rem;padding:.75rem;border-radius:6px;cursor:pointer;transition:background .2s}
 .agency-checkbox:hover{background:var(--bg)}
 .agency-checkbox input{cursor:pointer}
-.agency-checkbox label{cursor:pointer;flex:1;font-size:.9rem}
+.agency-checkbox label{cursor:pointer;flex:1;font-size:.85rem}
 .filter-agencies{margin-bottom:1rem}
 .filter-agencies input{width:100%;padding:.75rem;border:1px solid #E5E7EB;border-radius:6px}
 .select-all-btn{background:var(--bg);border:1px solid #E5E7EB;padding:.5rem 1rem;border-radius:6px;font-size:.85rem;cursor:pointer;margin-bottom:.5rem}
@@ -267,7 +273,7 @@ foreach ($parts as $i => $part):
 </div>
 
 <!-- Contatore -->
-<div style="background:white;padding:1rem 1.5rem;margin-bottom:1rem;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);color:var(--cb-gray);font-size:.95rem">
+<div style="background:white;padding:1rem 1.5rem;margin-bottom:1rem;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);color:var(--cb-gray);font-size:.85rem">
 <?php 
 $totalItems = count($documents) + count($subfolders);
 if (count($subfolders) > 0) {
