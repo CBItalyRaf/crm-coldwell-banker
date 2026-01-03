@@ -46,15 +46,15 @@ $ipAddress = $_SERVER['REMOTE_ADDR'] ?? null;
 try {
     $stmt = $pdo->prepare("
         INSERT INTO portal_sso_tokens 
-        (token, agency_code, admin_user_id, admin_role, expires_at, ip_address) 
+        (token, agency_code, admin_email, admin_role, expires_at, ip_address) 
         VALUES 
-        (:token, :agency_code, :admin_user_id, :admin_role, :expires_at, :ip_address)
+        (:token, :agency_code, :admin_email, :admin_role, :expires_at, :ip_address)
     ");
     
     $stmt->execute([
         ':token' => $token,
         ':agency_code' => $agencyCode,
-        ':admin_user_id' => $_SESSION['crm_user']['id'],
+        ':admin_email' => $_SESSION['crm_user']['email'],
         ':admin_role' => $_SESSION['crm_user']['crm_role'],
         ':expires_at' => $expiresAt,
         ':ip_address' => $ipAddress
@@ -66,7 +66,7 @@ try {
 } catch (PDOException $e) {
     error_log("Errore creazione token SSO: " . $e->getMessage());
     http_response_code(500);
-    die('Errore SQL: ' . $e->getMessage()); // DEBUG: mostra errore completo
+    die('Errore durante la generazione del token di accesso.');
 }
 
 // Redirect al portale con token
