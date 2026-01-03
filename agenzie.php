@@ -238,7 +238,7 @@ per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <td><?= htmlspecialchars($agency['email'] ?: '-') ?></td>
 <td><?= htmlspecialchars($agency['phone'] ?: '-') ?></td>
 <td onclick="event.stopPropagation()">
-<?php if($agency['status'] === 'Active' && in_array($_SESSION['role'], ['admin', 'editor'])): ?>
+<?php if($agency['status'] === 'Active' && in_array($_SESSION['role'] ?? '', ['admin', 'editor'])): ?>
     <button onclick="window.open('generate_portal_token.php?agency=<?= urlencode($agency['code']) ?>', '_blank');" class="btn-portal" title="Accedi al portale agenzia">🌐 Portale</button>
 <?php else: ?>
     <span style="color:#9CA3AF;font-size:0.85rem">—</span>
