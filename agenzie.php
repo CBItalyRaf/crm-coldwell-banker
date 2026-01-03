@@ -3,6 +3,10 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require_once 'check_auth.php';
+
+// DEBUG TEMPORANEO
+error_log("DEBUG agenzie.php - SESSION role: " . print_r($_SESSION['role'] ?? 'NOT SET', true));
+error_log("DEBUG agenzie.php - Full SESSION: " . print_r($_SESSION, true));
 require_once 'config/database.php';
 
 $pageTitle = "Gestione Agenzie - CRM Coldwell Banker";
