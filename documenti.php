@@ -66,8 +66,8 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $documents = $stmt->fetchAll();
 
-// Recupera cartelle nella directory corrente
-$folderSql = "SELECT DISTINCT folder_path FROM documents WHERE folder_path IS NOT NULL";
+// Recupera sottocartelle dalla tabella folders
+$folderSql = "SELECT folder_path FROM folders WHERE 1=1";
 if ($folderFilter) {
     $folderSql .= " AND folder_path LIKE :folder_pattern AND folder_path != :current_folder";
     $folderParams = [
@@ -75,16 +75,18 @@ if ($folderFilter) {
         ':current_folder' => $folderFilter
     ];
 } else {
-    $folderSql .= " AND folder_path NOT LIKE '%/%' OR folder_path IS NULL";
+    $folderSql .= " AND folder_path NOT LIKE '%/%/%'";
     $folderParams = [];
 }
+$folderSql .= " ORDER BY folder_path ASC";
+
 $folderStmt = $pdo->prepare($folderSql);
 $folderStmt->execute($folderParams);
-$folders = $folderStmt->fetchAll(PDO::FETCH_COLUMN);
+$allFolders = $folderStmt->fetchAll(PDO::FETCH_COLUMN);
 
 // Filtra per mostrare solo sottocartelle dirette
 $subfolders = [];
-foreach ($folders as $folder) {
+foreach ($allFolders as $folder) {
     if (empty($folder)) continue;
     
     if ($folderFilter) {
@@ -92,18 +94,17 @@ foreach ($folders as $folder) {
         $relativePath = substr($folder, strlen($folderFilter));
         // Prendi solo la prima parte (sottocartella diretta)
         $parts = explode('/', trim($relativePath, '/'));
-        if (!empty($parts[0])) {
+        if (!empty($parts[0]) && !isset($subfolders[$parts[0]])) {
             $subfolders[$parts[0]] = $folderFilter . $parts[0] . '/';
         }
     } else {
         // Root - prendi solo prima parte
         $parts = explode('/', trim($folder, '/'));
-        if (!empty($parts[0])) {
+        if (!empty($parts[0]) && !isset($subfolders[$parts[0]])) {
             $subfolders[$parts[0]] = $parts[0] . '/';
         }
     }
 }
-$subfolders = array_unique($subfolders);
 
 require_once 'header.php';
 ?>
@@ -478,7 +479,11 @@ Seleziona tutte (filtrate)
 <select name="folder_path" id="folderSelect" class="form-select">
 <option value="">/ (radice)</option>
 <?php
-$foldersStmt = $pdo->query("SELECT DISTINCT folder_path FROM documents WHERE folder_path IS NOT NULL ORDER BY folder_path ASC");
+$foldersStmt = $pdo->query("
+    SELECT DISTINCT folder_path 
+    FROM folders 
+    ORDER BY folder_path ASC
+");
 $folders = $foldersStmt->fetchAll(PDO::FETCH_COLUMN);
 foreach($folders as $folder):
 ?>
@@ -507,16 +512,11 @@ Oppure crea una nuova cartella usando il pulsante "📁 Nuova Cartella"
 
 <!-- File -->
 <div class="form-group">
-<label class="form-label">File *</label>
-<div style="display:flex;gap:.5rem;margin-bottom:.5rem">
-<button type="button" class="btn-secondary" style="flex:1" onclick="selectFiles()">📄 Seleziona File</button>
-<button type="button" class="btn-secondary" style="flex:1" onclick="selectFolder()">📁 Seleziona Cartella</button>
-</div>
+<label class="form-label">File * (supporta selezione multipla)</label>
 <div class="file-upload" id="fileUpload">
-<p>📁 Trascina file o cartelle qui</p>
-<p style="font-size:.85rem;margin-top:.5rem;color:var(--cb-gray)">Supporta selezione multipla e cartelle intere</p>
+<p>📁 Trascina file qui o click per selezionare</p>
+<p style="font-size:.85rem;margin-top:.5rem;color:var(--cb-gray)">Puoi selezionare più file insieme (Ctrl+Click o Cmd+Click)</p>
 <input type="file" name="files[]" id="fileInput" style="display:none" multiple onchange="showFileInfo()">
-<input type="file" name="folder[]" id="folderInput" style="display:none" webkitdirectory directory onchange="showFileInfo()">
 </div>
 <div class="file-info" id="fileInfo"></div>
 </div>
@@ -596,15 +596,6 @@ function closeFolderModal() {
     document.getElementById('folderModal').classList.remove('open');
 }
 
-// Selezione file
-function selectFiles() {
-    document.getElementById('fileInput').click();
-}
-
-function selectFolder() {
-    document.getElementById('folderInput').click();
-}
-
 // Gestione tipo documento
 function updateAgencySelector() {
     const type = document.querySelector('input[name="type"]:checked').value;
@@ -634,9 +625,8 @@ function updateAgencySelector() {
 // File upload drag&drop
 const fileUpload = document.getElementById('fileUpload');
 const fileInput = document.getElementById('fileInput');
-const folderInput = document.getElementById('folderInput');
 
-fileUpload.addEventListener('click', () => selectFiles());
+fileUpload.addEventListener('click', () => fileInput.click());
 fileUpload.addEventListener('dragover', (e) => {
     e.preventDefault();
     fileUpload.classList.add('dragover');
@@ -648,21 +638,6 @@ fileUpload.addEventListener('drop', (e) => {
     e.preventDefault();
     fileUpload.classList.remove('dragover');
     
-    const items = e.dataTransfer.items;
-    const files = [];
-    
-    if (items) {
-        for (let i = 0; i < items.length; i++) {
-            const item = items[i].webkitGetAsEntry();
-            if (item) {
-                if (item.isDirectory) {
-                    alert('Per caricare cartelle usa il pulsante "📁 Seleziona Cartella"');
-                    return;
-                }
-            }
-        }
-    }
-    
     if (e.dataTransfer.files.length) {
         fileInput.files = e.dataTransfer.files;
         showFileInfo();
@@ -670,9 +645,7 @@ fileUpload.addEventListener('drop', (e) => {
 });
 
 function showFileInfo() {
-    const fileFiles = fileInput.files;
-    const folderFiles = folderInput.files;
-    const files = fileFiles.length > 0 ? fileFiles : folderFiles;
+    const files = fileInput.files;
     
     if (files.length === 0) return;
     
@@ -681,8 +654,7 @@ function showFileInfo() {
     
     for (let i = 0; i < Math.min(files.length, 10); i++) {
         totalSize += files[i].size;
-        const fileName = files[i].webkitRelativePath || files[i].name;
-        fileList += `📄 ${fileName}<br>`;
+        fileList += `📄 ${files[i].name}<br>`;
     }
     
     if (files.length > 10) {

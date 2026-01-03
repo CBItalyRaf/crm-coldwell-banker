@@ -15,7 +15,7 @@ $user = $_SESSION['crm_user'];
 
 try {
     // Validazione
-    $filesUploaded = $_FILES['files'] ?? $_FILES['folder'] ?? null;
+    $filesUploaded = $_FILES['files'] ?? null;
     
     if (!$filesUploaded || empty($filesUploaded['name'][0])) {
         throw new Exception('Nessun file caricato.');
@@ -73,6 +73,19 @@ try {
         if (!mkdir($destDir, 0755, true)) {
             throw new Exception('Impossibile creare la directory di destinazione.');
         }
+    }
+    
+    // Inserisci cartella nella tabella folders se specificata
+    if ($folder_path) {
+        $insertFolder = $pdo->prepare("
+            INSERT IGNORE INTO folders (folder_path, type, created_by) 
+            VALUES (?, ?, ?)
+        ");
+        $insertFolder->execute([
+            $folder_path,
+            $type === 'common' ? 'common' : 'agency',
+            $user['name']
+        ]);
     }
     
     $pdo->beginTransaction();

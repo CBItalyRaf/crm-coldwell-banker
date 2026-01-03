@@ -45,6 +45,18 @@ try {
         }
     }
     
+    // Inserisci nella tabella folders
+    $insertFolder = $pdo->prepare("
+        INSERT IGNORE INTO folders (folder_path, type, agency_code, created_by) 
+        VALUES (?, ?, ?, ?)
+    ");
+    $insertFolder->execute([
+        $folder_name,
+        $type,
+        $type === 'agency' ? $agency_code : null,
+        $user['name']
+    ]);
+    
     // Log
     error_log("Folder created: {$folder_name} by {$user['name']}");
     
