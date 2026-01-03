@@ -223,7 +223,6 @@ foreach ($parts as $i => $part):
 <div class="page-header">
 <h1 class="page-title">📄 Gestione Documenti</h1>
 <div class="header-actions">
-<button class="btn-secondary" onclick="openFolderModal()">📁 Nuova Cartella</button>
 <button class="btn-success" onclick="openUploadModal()">➕ Carica Documento/i</button>
 <button class="btn-secondary" onclick="openCategoriesModal()">🏷️ Gestisci Categorie</button>
 </div>
@@ -482,22 +481,10 @@ Seleziona tutte (filtrate)
 <!-- Cartella (opzionale) -->
 <div class="form-group">
 <label class="form-label">Cartella (opzionale)</label>
-<select name="folder_path" id="folderSelect" class="form-select">
-<option value="">/ (radice)</option>
-<?php
-$foldersStmt = $pdo->query("
-    SELECT DISTINCT folder_path 
-    FROM folders 
-    ORDER BY folder_path ASC
-");
-$folders = $foldersStmt->fetchAll(PDO::FETCH_COLUMN);
-foreach($folders as $folder):
-?>
-<option value="<?= htmlspecialchars($folder) ?>">📁 <?= htmlspecialchars($folder) ?></option>
-<?php endforeach; ?>
-</select>
+<input type="text" name="folder_path" class="form-input" placeholder="Es: Modulistica/Affitti oppure Loghi/Bodini">
 <p style="font-size:.85rem;color:var(--cb-gray);margin-top:.5rem">
-Oppure crea una nuova cartella usando il pulsante "📁 Nuova Cartella"
+💡 Lascia vuoto per root, oppure scrivi nome cartella (usa "/" per sottocartelle).<br>
+La cartella sarà creata automaticamente come: <strong id="folderTypeHint">Comune</strong>
 </p>
 </div>
 
@@ -541,43 +528,6 @@ Oppure crea una nuova cartella usando il pulsante "📁 Nuova Cartella"
 </div>
 </div>
 
-<!-- Modal Nuova Cartella -->
-<div class="modal" id="folderModal">
-<div class="modal-content" style="max-width:500px">
-<div class="modal-header">
-<h2 class="modal-title">📁 Crea Nuova Cartella</h2>
-<button class="modal-close" onclick="closeFolderModal()">✕</button>
-</div>
-<form method="POST" action="documenti_create_folder.php">
-<div class="modal-body">
-<div class="form-group">
-<label class="form-label">Nome Cartella *</label>
-<input type="text" name="folder_name" class="form-input" placeholder="Es: Modulistica/Affitti" required>
-<p style="font-size:.85rem;color:var(--cb-gray);margin-top:.5rem">
-💡 Usa "/" per creare sottocartelle. Es: "Video/Tutorial"
-</p>
-</div>
-<div class="form-group">
-<label class="form-label">Tipo</label>
-<div class="radio-group">
-<label class="radio-label">
-<input type="radio" name="type" value="common" checked>
-📢 Comune (tutte le agenzie)
-</label>
-<label class="radio-label">
-<input type="radio" name="type" value="agency">
-🏢 Specifica agenzia
-</label>
-</div>
-</div>
-</div>
-<div class="modal-footer">
-<button type="button" class="btn-secondary" onclick="closeFolderModal()">Annulla</button>
-<button type="submit" class="btn-success">📁 Crea Cartella</button>
-</div>
-</form>
-</div>
-</div>
 
 <script>
 // Modal upload
@@ -593,15 +543,6 @@ function closeUploadModal() {
     updateAgencySelector();
 }
 
-// Modal cartella
-function openFolderModal() {
-    document.getElementById('folderModal').classList.add('open');
-}
-
-function closeFolderModal() {
-    document.getElementById('folderModal').classList.remove('open');
-}
-
 // Gestione tipo documento
 function updateAgencySelector() {
     const type = document.querySelector('input[name="type"]:checked').value;
@@ -609,6 +550,18 @@ function updateAgencySelector() {
     const label = document.getElementById('agencySelectorLabel');
     const singleSelect = document.getElementById('singleAgencySelect');
     const multipleSelect = document.getElementById('multipleAgencySelect');
+    const folderHint = document.getElementById('folderTypeHint');
+    
+    // Aggiorna hint tipo cartella
+    if (folderHint) {
+        if (type === 'common') {
+            folderHint.textContent = 'Comune (visibile a tutte le agenzie)';
+        } else if (type === 'group') {
+            folderHint.textContent = 'Gruppo (visibile solo alle agenzie selezionate)';
+        } else {
+            folderHint.textContent = 'Singola agenzia (visibile solo a quell\'agenzia)';
+        }
+    }
     
     if (type === 'common') {
         selector.style.display = 'none';
@@ -722,13 +675,9 @@ function deleteDocument(id) {
 // Chiudi modal click fuori
 window.addEventListener('click', (e) => {
     const uploadModal = document.getElementById('uploadModal');
-    const folderModal = document.getElementById('folderModal');
     
     if (e.target === uploadModal) {
         closeUploadModal();
-    }
-    if (e.target === folderModal) {
-        closeFolderModal();
     }
 });
 </script>

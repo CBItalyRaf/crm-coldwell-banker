@@ -77,13 +77,29 @@ try {
     
     // Inserisci cartella nella tabella folders se specificata
     if ($folder_path) {
+        // Determina tipo cartella basato su tipo documento
+        $folderType = 'common'; // Default per common e group
+        $folderAgencyCode = null;
+        
+        if ($type === 'single' && !empty($agencies)) {
+            // Cartella singola agenzia
+            $folderType = 'agency';
+            $folderAgencyCode = $agencies[0];
+        }
+        
+        // Sanitize folder path
+        $folder_path = preg_replace('/[<>:"|?*\\\\]/', '', $folder_path);
+        $folder_path = str_replace('..', '', $folder_path);
+        $folder_path = trim($folder_path, '/') . '/';
+        
         $insertFolder = $pdo->prepare("
-            INSERT IGNORE INTO folders (folder_path, type, created_by) 
-            VALUES (?, ?, ?)
+            INSERT IGNORE INTO folders (folder_path, type, agency_code, created_by) 
+            VALUES (?, ?, ?, ?)
         ");
         $insertFolder->execute([
             $folder_path,
-            $type === 'common' ? 'common' : 'agency',
+            $folderType,
+            $folderAgencyCode,
             $user['name']
         ]);
     }
