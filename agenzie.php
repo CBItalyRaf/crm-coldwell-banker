@@ -232,13 +232,13 @@ per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <tr onclick="window.location.href='agenzia_detail.php?code=<?= urlencode($agency['code']) ?>'">
 <td><?= htmlspecialchars($agency['code']) ?></td>
 <td class="agency-name"><?= htmlspecialchars($agency['name']) ?></td>
-<td><?= htmlspecialchars($agency['city'] ?: '-') ?><?= $agency['province'] ? ', ' . htmlspecialchars($agency['province']) : '' ?></td>
-<td><?= htmlspecialchars($agency['broker_manager'] ?: 'Non assegnato') ?></td>
-<td><span class="status-badge <?= str_replace(' ', '-', strtolower($agency['status'])) ?>"><?= htmlspecialchars($agency['status']) ?></span></td>
-<td><?= htmlspecialchars($agency['email'] ?: '-') ?></td>
-<td><?= htmlspecialchars($agency['phone'] ?: '-') ?></td>
+<td><?= htmlspecialchars($agency['city'] ?? '-') ?><?= !empty($agency['province']) ? ', ' . htmlspecialchars($agency['province']) : '' ?></td>
+<td><?= htmlspecialchars($agency['broker_manager'] ?? 'Non assegnato') ?></td>
+<td><span class="status-badge <?= str_replace(' ', '-', strtolower($agency['status'] ?? '')) ?>"><?= htmlspecialchars($agency['status'] ?? '') ?></span></td>
+<td><?= htmlspecialchars($agency['email'] ?? '-') ?></td>
+<td><?= htmlspecialchars($agency['phone'] ?? '-') ?></td>
 <td>
-<?php if($agency['status'] === 'Active' && in_array($_SESSION['role'], ['admin', 'editor'])): ?>
+<?php if(($agency['status'] ?? '') === 'Active' && in_array(($_SESSION['role'] ?? ''), ['admin', 'editor'])): ?>
     <button onclick="event.stopPropagation(); window.open('generate_portal_token.php?agency=<?= urlencode($agency['code']) ?>', '_blank');" 
             class="btn-portal" 
             title="Accedi al portale agenzia">
