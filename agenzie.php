@@ -7,8 +7,8 @@ require_once 'check_auth.php';
 // DEBUG VISIBILE - RIMUOVERE DOPO
 echo '<div style="position:fixed;top:10px;right:10px;background:yellow;padding:20px;z-index:9999;border:3px solid red;max-width:400px;">';
 echo '<strong>DEBUG SESSION:</strong><br>';
-echo 'role: ' . ($_SESSION['role'] ?? 'NOT SET') . '<br>';
-echo 'user_id: ' . ($_SESSION['user_id'] ?? 'NOT SET') . '<br>';
+echo 'role: ' . ($_SESSION['crm_user']['crm_role'] ?? 'NOT SET') . '<br>';
+echo 'user_id: ' . ($_SESSION['crm_user']['id'] ?? 'NOT SET') . '<br>';
 echo 'email: ' . ($_SESSION['email'] ?? 'NOT SET') . '<br>';
 echo '</div>';
 
@@ -247,7 +247,7 @@ per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <td><?= htmlspecialchars($agency['email'] ?: '-') ?></td>
 <td><?= htmlspecialchars($agency['phone'] ?: '-') ?></td>
 <td onclick="event.stopPropagation()">
-<?php if($agency['status'] === 'Active' && in_array($_SESSION['role'] ?? '', ['admin', 'editor'])): ?>
+<?php if($agency['status'] === 'Active' && in_array($_SESSION['crm_user']['crm_role'] ?? '', ['admin', 'editor'])): ?>
     <button onclick="window.open('generate_portal_token.php?agency=<?= urlencode($agency['code']) ?>', '_blank');" class="btn-portal" title="Accedi al portale agenzia">🌐 Portale</button>
 <?php else: ?>
     <span style="color:#9CA3AF;font-size:0.85rem">—</span>
