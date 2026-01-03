@@ -5,10 +5,6 @@ ini_set('display_errors', 1);
 require_once 'check_auth.php';
 require_once 'config/database.php';
 
-// DEBUG TEMPORANEO - RIMUOVERE DOPO
-error_log("DEBUG SESSION ROLE: " . print_r($_SESSION['role'] ?? 'NOT SET', true));
-error_log("DEBUG SESSION COMPLETA: " . print_r($_SESSION, true));
-
 $pageTitle = "Gestione Agenzie - CRM Coldwell Banker";
 $pdo = getDB();
 
@@ -236,13 +232,13 @@ per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <tr onclick="window.location.href='agenzia_detail.php?code=<?= urlencode($agency['code']) ?>'">
 <td><?= htmlspecialchars($agency['code']) ?></td>
 <td class="agency-name"><?= htmlspecialchars($agency['name']) ?></td>
-<td><?= htmlspecialchars($agency['city'] ?? '-') ?><?= !empty($agency['province']) ? ', ' . htmlspecialchars($agency['province']) : '' ?></td>
-<td><?= htmlspecialchars($agency['broker_manager'] ?? 'Non assegnato') ?></td>
-<td><span class="status-badge <?= str_replace(' ', '-', strtolower($agency['status'] ?? '')) ?>"><?= htmlspecialchars($agency['status'] ?? '') ?></span></td>
-<td><?= htmlspecialchars($agency['email'] ?? '-') ?></td>
-<td><?= htmlspecialchars($agency['phone'] ?? '-') ?></td>
+<td><?= htmlspecialchars($agency['city'] ?: '-') ?><?= $agency['province'] ? ', ' . htmlspecialchars($agency['province']) : '' ?></td>
+<td><?= htmlspecialchars($agency['broker_manager'] ?: 'Non assegnato') ?></td>
+<td><span class="status-badge <?= str_replace(' ', '-', strtolower($agency['status'])) ?>"><?= htmlspecialchars($agency['status']) ?></span></td>
+<td><?= htmlspecialchars($agency['email'] ?: '-') ?></td>
+<td><?= htmlspecialchars($agency['phone'] ?: '-') ?></td>
 <td onclick="event.stopPropagation()">
-<?php if(($agency['status'] ?? '') === 'Active' && in_array(($_SESSION['role'] ?? ''), ['admin', 'editor'])): ?>
+<?php if($agency['status'] === 'Active' && in_array($_SESSION['role'], ['admin', 'editor'])): ?>
     <button onclick="window.open('generate_portal_token.php?agency=<?= urlencode($agency['code']) ?>', '_blank');" 
             class="btn-portal" 
             title="Accedi al portale agenzia">
