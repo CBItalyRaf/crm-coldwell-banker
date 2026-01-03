@@ -8,7 +8,7 @@ require_once 'check_auth.php';
 require_once 'config/database.php';
 
 // Verifica permessi (solo admin e editor)
-if (!in_array($_SESSION['role'], ['admin', 'editor'])) {
+if (!in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])) {
     http_response_code(403);
     die('Accesso negato. Solo admin e editor possono accedere ai portali.');
 }
@@ -54,8 +54,8 @@ try {
     $stmt->execute([
         ':token' => $token,
         ':agency_code' => $agencyCode,
-        ':admin_user_id' => $_SESSION['user_id'],
-        ':admin_role' => $_SESSION['role'],
+        ':admin_user_id' => $_SESSION['crm_user']['id'],
+        ':admin_role' => $_SESSION['crm_user']['crm_role'],
         ':expires_at' => $expiresAt,
         ':ip_address' => $ipAddress
     ]);

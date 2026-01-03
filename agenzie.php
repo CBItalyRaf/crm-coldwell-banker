@@ -4,13 +4,6 @@ ini_set('display_errors', 1);
 
 require_once 'check_auth.php';
 
-// DEBUG VISIBILE - RIMUOVERE DOPO
-echo '<div style="position:fixed;top:10px;right:10px;background:yellow;padding:20px;z-index:9999;border:3px solid red;max-width:400px;">';
-echo '<strong>DEBUG SESSION:</strong><br>';
-echo 'role: ' . ($_SESSION['crm_user']['crm_role'] ?? 'NOT SET') . '<br>';
-echo 'user_id: ' . ($_SESSION['crm_user']['id'] ?? 'NOT SET') . '<br>';
-echo 'email: ' . ($_SESSION['email'] ?? 'NOT SET') . '<br>';
-echo '</div>';
 
 require_once 'config/database.php';
 
