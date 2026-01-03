@@ -21,8 +21,9 @@ try {
         throw new Exception('Nome cartella obbligatorio.');
     }
     
-    // Sanitize folder name
-    $folder_name = preg_replace('/[^a-zA-Z0-9\/_-]/', '_', $folder_name);
+    // Sanitize: rimuovi solo caratteri pericolosi, mantieni spazi e accentate
+    $folder_name = preg_replace('/[<>:"|?*\\\\]/', '', $folder_name);
+    $folder_name = str_replace('..', '', $folder_name); // Previeni path traversal
     $folder_name = trim($folder_name, '/') . '/';
     
     // Crea directory fisica
