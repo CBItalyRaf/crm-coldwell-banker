@@ -71,5 +71,12 @@ try {
 
 // Redirect al portale con token
 $portalUrl = "https://mycb.it/sso_login.php?token=" . urlencode($token);
-header("Location: " . $portalUrl);
+
+echo "<!-- DEBUG: Redirect to $portalUrl -->";
+echo "<h1>Reindirizzamento al portale...</h1>";
+echo "<p>Token: " . htmlspecialchars($token) . "</p>";
+echo "<p>URL: <a href='$portalUrl'>$portalUrl</a></p>";
+echo "<script>setTimeout(function(){ window.location.href = '$portalUrl'; }, 2000);</script>";
+
+// header("Location: " . $portalUrl);
 exit;
