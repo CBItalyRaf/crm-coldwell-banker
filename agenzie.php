@@ -224,7 +224,7 @@ per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <th>STATUS</th>
 <th>EMAIL</th>
 <th>TELEFONO</th>
-<th>AZIONI</th>
+<th>PORTALE</th>
 </tr>
 </thead>
 <tbody>
