@@ -110,9 +110,9 @@ require_once 'header.php';
 .agencies-table th.sortable:hover{background:#E5E7EB}
 .agencies-table th.sortable .sort-arrow{font-size:.7em;opacity:.3;margin-left:.25rem}
 .agencies-table th.sortable.asc .sort-arrow{opacity:1}
-.agencies-table th.sortable.asc .sort-arrow::after{content:'↑'}
+.agencies-table th.sortable.asc .sort-arrow::after{content:'â†‘'}
 .agencies-table th.sortable.desc .sort-arrow{opacity:1}
-.agencies-table th.sortable.desc .sort-arrow::after{content:'↓'}
+.agencies-table th.sortable.desc .sort-arrow::after{content:'â†“'}
 .agencies-table td{padding:1rem 1.5rem;border-bottom:1px solid #F3F4F6}
 .agencies-table tbody tr{cursor:pointer;transition:background .2s}
 .agencies-table tbody tr:hover{background:var(--bg)}
@@ -141,6 +141,8 @@ require_once 'header.php';
 .btn-cancel:hover{border-color:var(--cb-gray)}
 .empty-state{text-align:center;padding:4rem 2rem;color:var(--cb-gray)}
 .empty-state-icon{font-size:4rem;margin-bottom:1rem;opacity:.5}
+.btn-portal{background:var(--cb-bright-blue);color:white;border:none;padding:.5rem 1rem;border-radius:6px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.25rem}
+.btn-portal:hover{background:var(--cb-blue);transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,81,165,.3)}
 @media(max-width:768px){
 .filters-grid{grid-template-columns:1fr}
 .checkbox-grid{grid-template-columns:1fr}
@@ -151,10 +153,10 @@ require_once 'header.php';
 </style>
 
 <div class="page-header">
-<h1 class="page-title">🏢 Gestione Agenzie</h1>
+<h1 class="page-title">ðŸ¢ Gestione Agenzie</h1>
 <div class="header-actions">
-<button class="btn-export" onclick="openExportModal()">📥 Esporta CSV</button>
-<a href="agenzia_add.php" class="btn-add">➕ Nuova Agenzia</a>
+<button class="btn-export" onclick="openExportModal()">ðŸ“¥ Esporta CSV</button>
+<a href="agenzia_add.php" class="btn-add">âž• Nuova Agenzia</a>
 </div>
 </div>
 
@@ -163,12 +165,12 @@ require_once 'header.php';
 <div class="search-box">
 <div style="display:flex;gap:.5rem">
 <select id="searchType" name="search_type" style="padding:.75rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem;background:white;cursor:pointer;min-width:140px">
-<option value="all" <?= ($searchType ?? 'all') === 'all' ? 'selected' : '' ?>>🌐 Tutto</option>
-<option value="city" <?= ($searchType ?? '') === 'city' ? 'selected' : '' ?>>🏙️ Solo Città</option>
-<option value="province" <?= ($searchType ?? '') === 'province' ? 'selected' : '' ?>>📍 Solo Provincia</option>
-<option value="people" <?= ($searchType ?? '') === 'people' ? 'selected' : '' ?>>👤 Solo Broker</option>
+<option value="all" <?= ($searchType ?? 'all') === 'all' ? 'selected' : '' ?>>ðŸŒ Tutto</option>
+<option value="city" <?= ($searchType ?? '') === 'city' ? 'selected' : '' ?>>ðŸ™ï¸ Solo CittÃ </option>
+<option value="province" <?= ($searchType ?? '') === 'province' ? 'selected' : '' ?>>ðŸ“ Solo Provincia</option>
+<option value="people" <?= ($searchType ?? '') === 'people' ? 'selected' : '' ?>>ðŸ‘¤ Solo Broker</option>
 </select>
-<input type="text" id="agenciesSearch" value="<?= htmlspecialchars($search) ?>" placeholder="🔍 Cerca..." autocomplete="off" style="flex:1">
+<input type="text" id="agenciesSearch" value="<?= htmlspecialchars($search) ?>" placeholder="ðŸ” Cerca..." autocomplete="off" style="flex:1">
 </div>
 <div class="search-results" id="agenciesSearchResults"></div>
 </div>
@@ -190,7 +192,7 @@ require_once 'header.php';
 <?php if($search): ?>
 Trovate <strong style="color:var(--cb-midnight)"><?= count($agencies) ?></strong> agenzie
 <?php 
-$searchTypeLabels = ['all' => 'ovunque', 'city' => 'in città', 'province' => 'in provincia', 'people' => 'in broker'];
+$searchTypeLabels = ['all' => 'ovunque', 'city' => 'in cittÃ ', 'province' => 'in provincia', 'people' => 'in broker'];
 $typeLabel = $searchTypeLabels[$searchType] ?? 'ovunque';
 ?>
 per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
@@ -206,7 +208,7 @@ per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 
 <?php if (empty($agencies)): ?>
 <div class="empty-state">
-<div class="empty-state-icon">🏢</div>
+<div class="empty-state-icon">ðŸ¢</div>
 <h3>Nessuna agenzia trovata</h3>
 <p>Prova a modificare i filtri o aggiungi una nuova agenzia</p>
 </div>
@@ -215,13 +217,14 @@ per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <table class="agencies-table">
 <thead>
 <tr>
-<th class="sortable" data-sort="code"><span style="color:var(--cb-bright-blue)">CBI</span> <span class="sort-arrow">⇅</span></th>
-<th class="sortable" data-sort="name"><span style="color:var(--cb-bright-blue)">NOME</span> <span class="sort-arrow">⇅</span></th>
-<th class="sortable" data-sort="city"><span style="color:var(--cb-bright-blue)">CITTÀ</span> <span class="sort-arrow">⇅</span></th>
+<th class="sortable" data-sort="code"><span style="color:var(--cb-bright-blue)">CBI</span> <span class="sort-arrow">â‡…</span></th>
+<th class="sortable" data-sort="name"><span style="color:var(--cb-bright-blue)">NOME</span> <span class="sort-arrow">â‡…</span></th>
+<th class="sortable" data-sort="city"><span style="color:var(--cb-bright-blue)">CITTÃ€</span> <span class="sort-arrow">â‡…</span></th>
 <th>BROKER MANAGER</th>
 <th>STATUS</th>
 <th>EMAIL</th>
 <th>TELEFONO</th>
+<th>AZIONI</th>
 </tr>
 </thead>
 <tbody>
@@ -234,6 +237,17 @@ per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <td><span class="status-badge <?= str_replace(' ', '-', strtolower($agency['status'])) ?>"><?= htmlspecialchars($agency['status']) ?></span></td>
 <td><?= htmlspecialchars($agency['email'] ?: '-') ?></td>
 <td><?= htmlspecialchars($agency['phone'] ?: '-') ?></td>
+<td>
+<?php if($agency['status'] === 'Active' && in_array($_SESSION['role'], ['admin', 'editor'])): ?>
+    <button onclick="event.stopPropagation(); window.open('generate_portal_token.php?agency=<?= urlencode($agency['code']) ?>', '_blank');" 
+            class="btn-portal" 
+            title="Accedi al portale agenzia">
+        🌐 Portale
+    </button>
+<?php else: ?>
+    <span style="color:#9CA3AF;font-size:0.85rem">—</span>
+<?php endif; ?>
+</td>
 </tr>
 <?php endforeach; ?>
 </tbody>
@@ -244,8 +258,8 @@ per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <div class="modal" id="exportModal">
 <div class="modal-content">
 <div class="modal-header">
-<h2 class="modal-title">📥 Esporta Agenzie</h2>
-<button class="modal-close" onclick="closeExportModal()">✕</button>
+<h2 class="modal-title">ðŸ“¥ Esporta Agenzie</h2>
+<button class="modal-close" onclick="closeExportModal()">âœ•</button>
 </div>
 <form method="POST" action="agenzie_export.php">
 <div class="checkbox-group">
@@ -253,7 +267,7 @@ per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <div class="checkbox-grid">
 <label class="checkbox-label"><input type="checkbox" name="export[]" value="code" checked> Codice</label>
 <label class="checkbox-label"><input type="checkbox" name="export[]" value="name" checked> Nome</label>
-<label class="checkbox-label"><input type="checkbox" name="export[]" value="city" checked> Città</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="city" checked> CittÃ </label>
 <label class="checkbox-label"><input type="checkbox" name="export[]" value="province"> Provincia</label>
 <label class="checkbox-label"><input type="checkbox" name="export[]" value="email"> Email</label>
 <label class="checkbox-label"><input type="checkbox" name="export[]" value="phone"> Telefono</label>
@@ -284,7 +298,7 @@ per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <input type="hidden" name="search_type" value="<?= htmlspecialchars($searchType ?? 'all') ?>">
 <div class="modal-actions">
 <button type="button" class="btn-cancel" onclick="closeExportModal()">Annulla</button>
-<button type="submit" class="btn-export">📥 Esporta CSV</button>
+<button type="submit" class="btn-export">ðŸ“¥ Esporta CSV</button>
 </div>
 </form>
 </div>
@@ -350,12 +364,12 @@ allRows=Array.from(agenciesTable.querySelectorAll('tr'));
 if(searchInput && searchResults){
 searchInput.addEventListener('input',function(){
 clearTimeout(searchTimeout);
-const query=this.value.trim(); // NON toLowerCase - LIKE è già case-insensitive
+const query=this.value.trim(); // NON toLowerCase - LIKE Ã¨ giÃ  case-insensitive
 const searchTypeElem = document.getElementById('searchType');
 const searchType = searchTypeElem ? searchTypeElem.value : 'all'; // Fallback a 'all' se non esiste
 
 // NON filtrare tabella lato client - usiamo sempre ricerca server-side
-// per gestire correttamente i filtri città/provincia/broker
+// per gestire correttamente i filtri cittÃ /provincia/broker
 
 if(query.length<2){
 searchResults.classList.remove('active');
