@@ -154,30 +154,31 @@ foreach ($parts as $i => $part):
 .search-box{position:relative}
 .search-box input{width:100%;padding:.65rem .85rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.85rem}
 .search-box input:focus{outline:none;border-color:var(--cb-bright-blue)}
-.documents-grid{display:grid;gap:1.5rem}
-.document-card{background:white;border-radius:12px;padding:1.25rem;box-shadow:0 1px 3px rgba(0,0,0,.08);transition:all .2s}
-.document-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.12);transform:translateY(-2px)}
-.document-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:1rem}
-.document-info{flex:1}
-.document-title{font-size:.95rem;font-weight:600;color:var(--cb-midnight);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
-.document-meta{display:flex;gap:.75rem;font-size:.75rem;color:var(--cb-gray);flex-wrap:wrap}
-.document-actions{display:flex;gap:.5rem}
-.btn-icon{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.5rem;border-radius:6px;cursor:pointer;transition:all .2s;font-size:1rem;width:36px;height:36px;display:flex;align-items:center;justify-content:center}
-.btn-icon:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue)}
-.btn-icon.danger:hover{border-color:var(--danger);color:var(--danger)}
-.badge{padding:.2rem .6rem;border-radius:10px;font-size:.7rem;font-weight:600;text-transform:uppercase}
-.badge.common{background:#DBEAFE;color:#1E40AF}
-.badge.group{background:#FEF3C7;color:#92400E}
-.badge.single{background:#E5E7EB;color:#6B7280}
-.badge.public{background:#D1FAE5;color:#065F46}
-.badge.broker{background:#FED7AA;color:#9A3412}
-.agencies-list{margin-top:1rem;padding-top:1rem;border-top:1px solid #F3F4F6}
-.agencies-toggle{background:transparent;border:none;color:var(--cb-bright-blue);font-size:.85rem;cursor:pointer;padding:.5rem 0;font-weight:500}
-.agencies-toggle:hover{text-decoration:underline}
-.agencies-items{display:none;margin-top:.5rem;padding:.75rem;background:var(--bg);border-radius:6px}
-.agencies-items.active{display:block}
-.agency-item{padding:.5rem 0;font-size:.85rem;color:var(--cb-midnight);border-bottom:1px solid #E5E7EB}
-.agency-item:last-child{border-bottom:none}
+
+/* Finder View */
+.finder-container{background:white;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.finder-table{width:100%;border-collapse:collapse}
+.finder-table thead{background:#F9FAFB;border-bottom:2px solid #E5E7EB}
+.finder-table th{text-align:left;padding:12px 16px;font-size:.75rem;font-weight:600;color:var(--cb-gray);text-transform:uppercase;letter-spacing:.05em}
+.finder-row{border-bottom:1px solid #F3F4F6;transition:background .15s;cursor:pointer}
+.finder-row:hover{background:#F9FAFB}
+.finder-row:last-child{border-bottom:none}
+.finder-row td{padding:10px 16px;font-size:.85rem}
+.finder-name{display:flex;align-items:center;gap:.75rem}
+.finder-icon{font-size:1.25rem;flex-shrink:0}
+.finder-label{color:var(--cb-midnight);font-weight:500;flex:1}
+.finder-meta{color:var(--cb-gray);font-size:.8rem}
+.finder-actions{text-align:right;display:flex;justify-content:flex-end;gap:.5rem;align-items:center}
+.finder-arrow{color:var(--cb-gray);font-size:1.25rem;opacity:.5}
+.folder-row:hover .finder-arrow{opacity:1;color:var(--cb-bright-blue)}
+.action-btn{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.35rem .5rem;border-radius:6px;cursor:pointer;transition:all .2s;font-size:.95rem;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;min-width:32px}
+.action-btn:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue);background:#EFF6FF}
+.action-delete:hover{border-color:var(--danger);color:var(--danger);background:#FEE2E2}
+.type-badge{padding:.2rem .6rem;border-radius:10px;font-size:.65rem;font-weight:600;text-transform:uppercase;margin-left:.5rem}
+.badge-common{background:#DBEAFE;color:#1E40AF}
+.badge-group{background:#FEF3C7;color:#92400E}
+.badge-single{background:#E5E7EB;color:#6B7280}
+
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:1000;padding:1rem}
 .modal.open{display:flex}
 .modal-content{background:white;border-radius:12px;max-width:800px;width:100%;max-height:90vh;overflow-y:auto}
@@ -215,8 +216,16 @@ foreach ($parts as $i => $part):
 .filters-grid{grid-template-columns:1fr}
 .header-actions{width:100%;flex-direction:column}
 .btn-primary,.btn-success,.btn-secondary{width:100%;justify-content:center}
-.document-header{flex-direction:column;gap:1rem}
-.document-actions{width:100%}
+.finder-table th:nth-child(3),.finder-table td:nth-child(3),
+.finder-table th:nth-child(4),.finder-table td:nth-child(4){display:none}
+.finder-table th:nth-child(1),.finder-table td:nth-child(1){width:50%}
+.finder-table th:nth-child(2),.finder-table td:nth-child(2){width:25%}
+.finder-table th:nth-child(5),.finder-table td:nth-child(5){width:25%}
+.finder-name{gap:.5rem}
+.finder-icon{font-size:1.1rem}
+.finder-label{font-size:.8rem}
+.type-badge{display:none}
+.action-btn{min-width:28px;padding:.25rem .35rem;font-size:.85rem}
 }
 </style>
 
@@ -290,116 +299,64 @@ if (count($subfolders) > 0) {
 <p>Carica il primo documento o modifica i filtri</p>
 </div>
 <?php else: ?>
-<div class="documents-grid">
+<div class="finder-container">
+<table class="finder-table">
+<thead>
+<tr>
+<th style="width:45%">Nome</th>
+<th style="width:12%">Tipo</th>
+<th style="width:10%">Dimensione</th>
+<th style="width:15%">Modificato</th>
+<th style="width:18%;text-align:right">Azioni</th>
+</tr>
+</thead>
+<tbody>
 
-<?php if (!empty($subfolders)): ?>
 <!-- Cartelle -->
 <?php foreach ($subfolders as $folderName => $folderPath): ?>
-<div class="document-card" onclick="window.location.href='?<?= http_build_query(array_merge($_GET, ['folder' => $folderPath])) ?>'" style="cursor:pointer;background:var(--bg);border:2px dashed #E5E7EB">
-<div class="document-header">
-<div class="document-info">
-<div class="document-title" style="color:var(--cb-bright-blue)">
-📁 <?= htmlspecialchars($folderName) ?>
-</div>
-<div class="document-meta">
-<span style="font-size:.85rem;color:var(--cb-gray)">Cartella</span>
-</div>
-</div>
-</div>
-</div>
+<tr class="finder-row folder-row" onclick="window.location.href='?<?= http_build_query(array_merge($_GET, ['folder' => $folderPath])) ?>'">
+<td class="finder-name">
+<span class="finder-icon">📁</span>
+<span class="finder-label"><?= htmlspecialchars($folderName) ?></span>
+</td>
+<td class="finder-meta">—</td>
+<td class="finder-meta">—</td>
+<td class="finder-meta">—</td>
+<td class="finder-actions" onclick="event.stopPropagation()">
+<span class="finder-arrow">›</span>
+</td>
+</tr>
 <?php endforeach; ?>
-<?php endif; ?>
 
 <!-- File -->
 <?php foreach ($documents as $doc): ?>
-<div class="document-card">
-<div class="document-header">
-<div class="document-info">
-<div class="document-title">
-<?= htmlspecialchars($doc['category_icon']) ?>
-<?= htmlspecialchars($doc['original_filename']) ?>
-</div>
-<div class="document-meta">
-<span class="badge <?= $doc['type'] ?>">
-<?php
-$typeLabels = ['common' => 'Comune', 'group' => 'Gruppo', 'single' => 'Singola'];
-echo $typeLabels[$doc['type']];
-?>
-</span>
-<span class="badge <?= $doc['visibility'] ?>">
-<?= $doc['visibility'] === 'public' ? 'Pubblico' : 'Solo Broker' ?>
-</span>
-<span><?= htmlspecialchars($doc['category_name']) ?></span>
-<?php if ($doc['folder_path']): ?>
-<span>📁 <?= htmlspecialchars(trim($doc['folder_path'], '/')) ?></span>
-<?php endif; ?>
-<span><?= number_format($doc['file_size'] / 1048576, 2) ?> MB</span>
-<span>📅 <?= date('d/m/Y H:i', strtotime($doc['uploaded_at'])) ?></span>
-<?php if ($doc['uploaded_by']): ?>
-<span>👤 <?= htmlspecialchars($doc['uploaded_by']) ?></span>
-<?php endif; ?>
-</div>
-<?php if ($doc['description']): ?>
-<p style="margin-top:.5rem;font-size:.9rem;color:var(--cb-gray)"><?= htmlspecialchars($doc['description']) ?></p>
-<?php endif; ?>
-</div>
-<div class="document-actions">
-<a href="<?= htmlspecialchars($doc['filepath']) ?>" download class="btn-icon" title="Scarica">
-⬇️
-</a>
-<?php if ($doc['type'] === 'group'): ?>
-<button class="btn-icon" onclick="manageAgencies(<?= $doc['id'] ?>)" title="Gestisci agenzie">
-👥
-</button>
-<?php endif; ?>
-<button class="btn-icon danger" onclick="deleteDocument(<?= $doc['id'] ?>)" title="Elimina">
-🗑️
-</button>
-</div>
-</div>
-
-<?php if ($doc['type'] !== 'common'): ?>
-<div class="agencies-list">
-<button class="agencies-toggle" onclick="toggleAgencies(<?= $doc['id'] ?>)">
-<?php if ($doc['type'] === 'group'): ?>
-📋 Assegnato a <?= $doc['agencies_count'] ?> agenzie
+<tr class="finder-row file-row">
+<td class="finder-name">
+<span class="finder-icon"><?= htmlspecialchars($doc['category_icon']) ?></span>
+<span class="finder-label"><?= htmlspecialchars($doc['original_filename']) ?></span>
+<?php if ($doc['type'] === 'common'): ?>
+<span class="type-badge badge-common">Comune</span>
+<?php elseif ($doc['type'] === 'group'): ?>
+<span class="type-badge badge-group">Gruppo</span>
 <?php else: ?>
-<?php
-$agencySql = "SELECT a.code, a.name 
-              FROM document_agencies da 
-              JOIN agencies a ON da.agency_code = a.code 
-              WHERE da.document_id = ?";
-$agencyStmt = $pdo->prepare($agencySql);
-$agencyStmt->execute([$doc['id']]);
-$agency = $agencyStmt->fetch();
-if ($agency) {
-    echo '🏢 ' . htmlspecialchars($agency['code'] . ' - ' . $agency['name']);
-}
-?>
+<span class="type-badge badge-single">Singola</span>
 <?php endif; ?>
-<span id="arrow-<?= $doc['id'] ?>"> ▼</span>
-</button>
-<div class="agencies-items" id="agencies-<?= $doc['id'] ?>">
-<?php
-$agenciesSql = "SELECT a.code, a.name 
-                FROM document_agencies da 
-                JOIN agencies a ON da.agency_code = a.code 
-                WHERE da.document_id = ? 
-                ORDER BY a.name ASC";
-$agenciesStmt = $pdo->prepare($agenciesSql);
-$agenciesStmt->execute([$doc['id']]);
-$docAgencies = $agenciesStmt->fetchAll();
-foreach ($docAgencies as $agency):
-?>
-<div class="agency-item">
-<?= htmlspecialchars($agency['code'] . ' - ' . $agency['name']) ?>
-</div>
-<?php endforeach; ?>
-</div>
-</div>
+</td>
+<td class="finder-meta"><?= htmlspecialchars($doc['category_name']) ?></td>
+<td class="finder-meta"><?= number_format($doc['file_size'] / 1048576, 1) ?> MB</td>
+<td class="finder-meta"><?= date('d/m/y H:i', strtotime($doc['uploaded_at'])) ?></td>
+<td class="finder-actions">
+<a href="/<?= htmlspecialchars($doc['filepath']) ?>" download class="action-btn" title="Scarica" onclick="event.stopPropagation()">⬇️</a>
+<?php if ($doc['type'] === 'group' || $doc['type'] === 'single'): ?>
+<a href="documenti_manage_agencies.php?id=<?= $doc['id'] ?>" class="action-btn" title="Gestisci agenzie" onclick="event.stopPropagation()">👥</a>
 <?php endif; ?>
-</div>
+<button onclick="event.stopPropagation();deleteDoc(<?= $doc['id'] ?>,'<?= htmlspecialchars($doc['original_filename']) ?>')" class="action-btn action-delete" title="Elimina">🗑️</button>
+</td>
+</tr>
 <?php endforeach; ?>
+
+</tbody>
+</table>
 </div>
 <?php endif; ?>
 
@@ -668,6 +625,12 @@ function manageAgencies(id) {
 // Elimina documento
 function deleteDocument(id) {
     if (confirm('Sei sicuro di voler eliminare questo documento?\n\nQuesta azione è irreversibile.')) {
+        window.location.href = 'documenti_delete.php?id=' + id;
+    }
+}
+
+function deleteDoc(id, filename) {
+    if (confirm('Eliminare "' + filename + '"?\n\nQuesta azione è irreversibile.')) {
         window.location.href = 'documenti_delete.php?id=' + id;
     }
 }
