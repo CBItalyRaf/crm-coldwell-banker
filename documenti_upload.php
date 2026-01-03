@@ -15,14 +15,17 @@ $user = $_SESSION['crm_user'];
 
 try {
     // Validazione
-    if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
-        throw new Exception('Errore durante l\'upload del file.');
+    $filesUploaded = $_FILES['files'] ?? $_FILES['folder'] ?? null;
+    
+    if (!$filesUploaded || empty($filesUploaded['name'][0])) {
+        throw new Exception('Nessun file caricato.');
     }
     
     $type = $_POST['type'] ?? '';
     $category_id = $_POST['category_id'] ?? '';
     $visibility = $_POST['visibility'] ?? 'public';
     $description = $_POST['description'] ?? '';
+    $folder_path = !empty($_POST['folder_path']) ? trim($_POST['folder_path'], '/') . '/' : '';
     
     if (!in_array($type, ['common', 'group', 'single'])) {
         throw new Exception('Tipo documento non valido.');
@@ -46,30 +49,23 @@ try {
         $agencies = $_POST['group_agencies'];
     }
     
-    // Info file
-    $file = $_FILES['file'];
-    $originalFilename = basename($file['name']);
-    $fileSize = $file['size'];
-    $mimeType = $file['type'];
-    
-    // Genera nome file univoco
-    $extension = pathinfo($originalFilename, PATHINFO_EXTENSION);
-    $filename = uniqid('doc_') . '_' . time() . '.' . $extension;
-    
-    // Determina percorso basato su tipo
+    // Determina percorso base
     $basePath = __DIR__ . '/documents';
     
     if ($type === 'common') {
-        // Documenti comuni
         $categorySlug = $pdo->prepare("SELECT slug FROM document_categories WHERE id = ?");
         $categorySlug->execute([$category_id]);
         $catSlug = $categorySlug->fetchColumn();
-        
         $destDir = $basePath . '/common/' . $catSlug;
+        if ($folder_path) {
+            $destDir .= '/' . $folder_path;
+        }
     } else {
-        // Documenti agenzia (singola o gruppo - salviamo in prima agenzia per semplicità)
         $firstAgency = $agencies[0];
         $destDir = $basePath . '/agencies/' . $firstAgency . '/' . $visibility;
+        if ($folder_path) {
+            $destDir .= '/' . $folder_path;
+        }
     }
     
     // Crea directory se non esiste
@@ -79,58 +75,84 @@ try {
         }
     }
     
-    $destPath = $destDir . '/' . $filename;
-    $relativePath = str_replace(__DIR__ . '/', '', $destPath);
-    
-    // Sposta file
-    if (!move_uploaded_file($file['tmp_name'], $destPath)) {
-        throw new Exception('Errore durante il salvataggio del file.');
-    }
-    
-    // Inserisci in database
     $pdo->beginTransaction();
+    $uploadedCount = 0;
     
-    $stmt = $pdo->prepare("
-        INSERT INTO documents (
-            filename, original_filename, filepath, file_size, mime_type,
-            type, category_id, visibility, description, uploaded_by, uploaded_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
-    ");
+    // Processa ogni file
+    $fileCount = count($filesUploaded['name']);
     
-    $stmt->execute([
-        $filename,
-        $originalFilename,
-        $relativePath,
-        $fileSize,
-        $mimeType,
-        $type,
-        $category_id,
-        $visibility,
-        $description,
-        $user['name']
-    ]);
-    
-    $documentId = $pdo->lastInsertId();
-    
-    // Inserisci relazioni agenzie (se singola o gruppo)
-    if ($type !== 'common' && !empty($agencies)) {
-        $stmtAgency = $pdo->prepare("
-            INSERT INTO document_agencies (document_id, agency_code) 
-            VALUES (?, ?)
+    for ($i = 0; $i < $fileCount; $i++) {
+        if ($filesUploaded['error'][$i] !== UPLOAD_ERR_OK) {
+            continue;
+        }
+        
+        $originalFilename = basename($filesUploaded['name'][$i]);
+        $fileSize = $filesUploaded['size'][$i];
+        $mimeType = $filesUploaded['type'][$i];
+        $tmpName = $filesUploaded['tmp_name'][$i];
+        
+        // Genera nome file univoco
+        $extension = pathinfo($originalFilename, PATHINFO_EXTENSION);
+        $filename = uniqid('doc_') . '_' . time() . '_' . $i . '.' . $extension;
+        
+        $destPath = $destDir . '/' . $filename;
+        $relativePath = str_replace(__DIR__ . '/', '', $destPath);
+        
+        // Sposta file
+        if (!move_uploaded_file($tmpName, $destPath)) {
+            continue;
+        }
+        
+        // Inserisci in database
+        $stmt = $pdo->prepare("
+            INSERT INTO documents (
+                filename, original_filename, filepath, file_size, mime_type,
+                folder_path, type, category_id, visibility, description, uploaded_by, uploaded_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
         ");
         
-        foreach ($agencies as $agencyCode) {
-            $stmtAgency->execute([$documentId, $agencyCode]);
+        $stmt->execute([
+            $filename,
+            $originalFilename,
+            $relativePath,
+            $fileSize,
+            $mimeType,
+            $folder_path ?: null,
+            $type,
+            $category_id,
+            $visibility,
+            $description,
+            $user['name']
+        ]);
+        
+        $documentId = $pdo->lastInsertId();
+        
+        // Inserisci relazioni agenzie
+        if ($type !== 'common' && !empty($agencies)) {
+            $stmtAgency = $pdo->prepare("
+                INSERT INTO document_agencies (document_id, agency_code) 
+                VALUES (?, ?)
+            ");
+            
+            foreach ($agencies as $agencyCode) {
+                $stmtAgency->execute([$documentId, $agencyCode]);
+            }
         }
+        
+        $uploadedCount++;
     }
     
     $pdo->commit();
     
+    if ($uploadedCount === 0) {
+        throw new Exception('Nessun file è stato caricato correttamente.');
+    }
+    
     // Log attività
-    error_log("Document uploaded: {$originalFilename} by {$user['name']} (type: {$type})");
+    error_log("Documents uploaded: {$uploadedCount} files by {$user['name']} (type: {$type})");
     
     // Redirect con successo
-    header('Location: documenti.php?success=1');
+    header('Location: documenti.php?success=' . $uploadedCount);
     exit;
     
 } catch (Exception $e) {

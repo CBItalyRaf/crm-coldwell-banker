@@ -12,6 +12,7 @@ $pdo = getDB();
 $typeFilter = $_GET['type'] ?? 'all';
 $categoryFilter = $_GET['category'] ?? 'all';
 $agencyFilter = $_GET['agency'] ?? 'all';
+$folderFilter = $_GET['folder'] ?? '';
 $search = $_GET['search'] ?? '';
 
 // Carica categorie
@@ -49,6 +50,11 @@ if ($agencyFilter !== 'all') {
     $params[':agency'] = $agencyFilter;
 }
 
+if ($folderFilter !== '') {
+    $sql .= " AND d.folder_path = :folder";
+    $params[':folder'] = $folderFilter;
+}
+
 if ($search) {
     $sql .= " AND (d.original_filename LIKE :search OR d.description LIKE :search)";
     $params[':search'] = "%$search%";
@@ -60,8 +66,66 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $documents = $stmt->fetchAll();
 
+// Recupera cartelle nella directory corrente
+$folderSql = "SELECT DISTINCT folder_path FROM documents WHERE folder_path IS NOT NULL";
+if ($folderFilter) {
+    $folderSql .= " AND folder_path LIKE :folder_pattern AND folder_path != :current_folder";
+    $folderParams = [
+        ':folder_pattern' => $folderFilter . '%',
+        ':current_folder' => $folderFilter
+    ];
+} else {
+    $folderSql .= " AND folder_path NOT LIKE '%/%' OR folder_path IS NULL";
+    $folderParams = [];
+}
+$folderStmt = $pdo->prepare($folderSql);
+$folderStmt->execute($folderParams);
+$folders = $folderStmt->fetchAll(PDO::FETCH_COLUMN);
+
+// Filtra per mostrare solo sottocartelle dirette
+$subfolders = [];
+foreach ($folders as $folder) {
+    if (empty($folder)) continue;
+    
+    if ($folderFilter) {
+        // Rimuovi il prefisso della cartella corrente
+        $relativePath = substr($folder, strlen($folderFilter));
+        // Prendi solo la prima parte (sottocartella diretta)
+        $parts = explode('/', trim($relativePath, '/'));
+        if (!empty($parts[0])) {
+            $subfolders[$parts[0]] = $folderFilter . $parts[0] . '/';
+        }
+    } else {
+        // Root - prendi solo prima parte
+        $parts = explode('/', trim($folder, '/'));
+        if (!empty($parts[0])) {
+            $subfolders[$parts[0]] = $parts[0] . '/';
+        }
+    }
+}
+$subfolders = array_unique($subfolders);
+
 require_once 'header.php';
 ?>
+
+<?php if ($folderFilter): ?>
+<div style="background:white;padding:1rem 1.5rem;margin-bottom:1rem;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;align-items:center;gap:.5rem">
+<a href="?<?= http_build_query(array_merge($_GET, ['folder' => ''])) ?>" style="color:var(--cb-bright-blue);text-decoration:none">📁 Root</a>
+<span style="color:var(--cb-gray)">/</span>
+<?php
+$parts = explode('/', trim($folderFilter, '/'));
+$currentPath = '';
+foreach ($parts as $i => $part):
+    $currentPath .= $part . '/';
+    if ($i < count($parts) - 1):
+?>
+<a href="?<?= http_build_query(array_merge($_GET, ['folder' => $currentPath])) ?>" style="color:var(--cb-bright-blue);text-decoration:none"><?= htmlspecialchars($part) ?></a>
+<span style="color:var(--cb-gray)">/</span>
+<?php else: ?>
+<strong style="color:var(--cb-midnight)"><?= htmlspecialchars($part) ?></strong>
+<?php endif; endforeach; ?>
+</div>
+<?php endif; ?>
 
 <style>
 :root{--success:#10B981;--warning:#F59E0B;--danger:#EF4444;--info:#3B82F6}
@@ -152,7 +216,8 @@ require_once 'header.php';
 <div class="page-header">
 <h1 class="page-title">📄 Gestione Documenti</h1>
 <div class="header-actions">
-<button class="btn-success" onclick="openUploadModal()">➕ Carica Documento</button>
+<button class="btn-secondary" onclick="openFolderModal()">📁 Nuova Cartella</button>
+<button class="btn-success" onclick="openUploadModal()">➕ Carica Documento/i</button>
 <button class="btn-secondary" onclick="openCategoriesModal()">🏷️ Gestisci Categorie</button>
 </div>
 </div>
@@ -202,11 +267,17 @@ require_once 'header.php';
 
 <!-- Contatore -->
 <div style="background:white;padding:1rem 1.5rem;margin-bottom:1rem;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);color:var(--cb-gray);font-size:.95rem">
-<strong style="color:var(--cb-midnight)"><?= count($documents) ?></strong> documenti trovati
+<?php 
+$totalItems = count($documents) + count($subfolders);
+if (count($subfolders) > 0) {
+    echo '<strong style="color:var(--cb-midnight)">' . count($subfolders) . '</strong> cartelle, ';
+}
+?>
+<strong style="color:var(--cb-midnight)"><?= count($documents) ?></strong> documenti
 </div>
 
 <!-- Lista Documenti -->
-<?php if (empty($documents)): ?>
+<?php if (empty($documents) && empty($subfolders)): ?>
 <div class="empty-state">
 <div class="empty-icon">📄</div>
 <h3>Nessun documento trovato</h3>
@@ -214,6 +285,26 @@ require_once 'header.php';
 </div>
 <?php else: ?>
 <div class="documents-grid">
+
+<?php if (!empty($subfolders)): ?>
+<!-- Cartelle -->
+<?php foreach ($subfolders as $folderName => $folderPath): ?>
+<div class="document-card" onclick="window.location.href='?<?= http_build_query(array_merge($_GET, ['folder' => $folderPath])) ?>'" style="cursor:pointer;background:var(--bg);border:2px dashed #E5E7EB">
+<div class="document-header">
+<div class="document-info">
+<div class="document-title" style="color:var(--cb-bright-blue)">
+📁 <?= htmlspecialchars($folderName) ?>
+</div>
+<div class="document-meta">
+<span style="font-size:.85rem;color:var(--cb-gray)">Cartella</span>
+</div>
+</div>
+</div>
+</div>
+<?php endforeach; ?>
+<?php endif; ?>
+
+<!-- File -->
 <?php foreach ($documents as $doc): ?>
 <div class="document-card">
 <div class="document-header">
@@ -233,6 +324,9 @@ echo $typeLabels[$doc['type']];
 <?= $doc['visibility'] === 'public' ? 'Pubblico' : 'Solo Broker' ?>
 </span>
 <span><?= htmlspecialchars($doc['category_name']) ?></span>
+<?php if ($doc['folder_path']): ?>
+<span>📁 <?= htmlspecialchars(trim($doc['folder_path'], '/')) ?></span>
+<?php endif; ?>
 <span><?= number_format($doc['file_size'] / 1048576, 2) ?> MB</span>
 <span>📅 <?= date('d/m/Y H:i', strtotime($doc['uploaded_at'])) ?></span>
 <?php if ($doc['uploaded_by']): ?>
@@ -378,6 +472,24 @@ Seleziona tutte (filtrate)
 </select>
 </div>
 
+<!-- Cartella (opzionale) -->
+<div class="form-group">
+<label class="form-label">Cartella (opzionale)</label>
+<select name="folder_path" id="folderSelect" class="form-select">
+<option value="">/ (radice)</option>
+<?php
+$foldersStmt = $pdo->query("SELECT DISTINCT folder_path FROM documents WHERE folder_path IS NOT NULL ORDER BY folder_path ASC");
+$folders = $foldersStmt->fetchAll(PDO::FETCH_COLUMN);
+foreach($folders as $folder):
+?>
+<option value="<?= htmlspecialchars($folder) ?>">📁 <?= htmlspecialchars($folder) ?></option>
+<?php endforeach; ?>
+</select>
+<p style="font-size:.85rem;color:var(--cb-gray);margin-top:.5rem">
+Oppure crea una nuova cartella usando il pulsante "📁 Nuova Cartella"
+</p>
+</div>
+
 <!-- Visibilità -->
 <div class="form-group">
 <label class="form-label">Visibilità *</label>
@@ -396,9 +508,15 @@ Seleziona tutte (filtrate)
 <!-- File -->
 <div class="form-group">
 <label class="form-label">File *</label>
+<div style="display:flex;gap:.5rem;margin-bottom:.5rem">
+<button type="button" class="btn-secondary" style="flex:1" onclick="selectFiles()">📄 Seleziona File</button>
+<button type="button" class="btn-secondary" style="flex:1" onclick="selectFolder()">📁 Seleziona Cartella</button>
+</div>
 <div class="file-upload" id="fileUpload">
-<p>📁 Trascina file qui o click per selezionare</p>
-<input type="file" name="file" id="fileInput" style="display:none" required onchange="showFileInfo()">
+<p>📁 Trascina file o cartelle qui</p>
+<p style="font-size:.85rem;margin-top:.5rem;color:var(--cb-gray)">Supporta selezione multipla e cartelle intere</p>
+<input type="file" name="files[]" id="fileInput" style="display:none" multiple onchange="showFileInfo()">
+<input type="file" name="folder[]" id="folderInput" style="display:none" webkitdirectory directory onchange="showFileInfo()">
 </div>
 <div class="file-info" id="fileInfo"></div>
 </div>
@@ -417,6 +535,44 @@ Seleziona tutte (filtrate)
 </div>
 </div>
 
+<!-- Modal Nuova Cartella -->
+<div class="modal" id="folderModal">
+<div class="modal-content" style="max-width:500px">
+<div class="modal-header">
+<h2 class="modal-title">📁 Crea Nuova Cartella</h2>
+<button class="modal-close" onclick="closeFolderModal()">✕</button>
+</div>
+<form method="POST" action="documenti_create_folder.php">
+<div class="modal-body">
+<div class="form-group">
+<label class="form-label">Nome Cartella *</label>
+<input type="text" name="folder_name" class="form-input" placeholder="Es: Modulistica/Affitti" required>
+<p style="font-size:.85rem;color:var(--cb-gray);margin-top:.5rem">
+💡 Usa "/" per creare sottocartelle. Es: "Video/Tutorial"
+</p>
+</div>
+<div class="form-group">
+<label class="form-label">Tipo</label>
+<div class="radio-group">
+<label class="radio-label">
+<input type="radio" name="type" value="common" checked>
+📢 Comune (tutte le agenzie)
+</label>
+<label class="radio-label">
+<input type="radio" name="type" value="agency">
+🏢 Specifica agenzia
+</label>
+</div>
+</div>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn-secondary" onclick="closeFolderModal()">Annulla</button>
+<button type="submit" class="btn-success">📁 Crea Cartella</button>
+</div>
+</form>
+</div>
+</div>
+
 <script>
 // Modal upload
 function openUploadModal() {
@@ -427,7 +583,26 @@ function closeUploadModal() {
     document.getElementById('uploadModal').classList.remove('open');
     document.getElementById('uploadForm').reset();
     document.getElementById('fileInfo').classList.remove('active');
+    document.getElementById('fileInfo').innerHTML = '';
     updateAgencySelector();
+}
+
+// Modal cartella
+function openFolderModal() {
+    document.getElementById('folderModal').classList.add('open');
+}
+
+function closeFolderModal() {
+    document.getElementById('folderModal').classList.remove('open');
+}
+
+// Selezione file
+function selectFiles() {
+    document.getElementById('fileInput').click();
+}
+
+function selectFolder() {
+    document.getElementById('folderInput').click();
 }
 
 // Gestione tipo documento
@@ -459,8 +634,9 @@ function updateAgencySelector() {
 // File upload drag&drop
 const fileUpload = document.getElementById('fileUpload');
 const fileInput = document.getElementById('fileInput');
+const folderInput = document.getElementById('folderInput');
 
-fileUpload.addEventListener('click', () => fileInput.click());
+fileUpload.addEventListener('click', () => selectFiles());
 fileUpload.addEventListener('dragover', (e) => {
     e.preventDefault();
     fileUpload.classList.add('dragover');
@@ -471,6 +647,22 @@ fileUpload.addEventListener('dragleave', () => {
 fileUpload.addEventListener('drop', (e) => {
     e.preventDefault();
     fileUpload.classList.remove('dragover');
+    
+    const items = e.dataTransfer.items;
+    const files = [];
+    
+    if (items) {
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i].webkitGetAsEntry();
+            if (item) {
+                if (item.isDirectory) {
+                    alert('Per caricare cartelle usa il pulsante "📁 Seleziona Cartella"');
+                    return;
+                }
+            }
+        }
+    }
+    
     if (e.dataTransfer.files.length) {
         fileInput.files = e.dataTransfer.files;
         showFileInfo();
@@ -478,15 +670,30 @@ fileUpload.addEventListener('drop', (e) => {
 });
 
 function showFileInfo() {
-    const file = fileInput.files[0];
-    if (file) {
-        const size = (file.size / 1048576).toFixed(2);
-        document.getElementById('fileInfo').innerHTML = `
-            <strong>📄 ${file.name}</strong><br>
-            Dimensione: ${size} MB
-        `;
-        document.getElementById('fileInfo').classList.add('active');
+    const fileFiles = fileInput.files;
+    const folderFiles = folderInput.files;
+    const files = fileFiles.length > 0 ? fileFiles : folderFiles;
+    
+    if (files.length === 0) return;
+    
+    let totalSize = 0;
+    let fileList = '<strong>File selezionati:</strong><br>';
+    
+    for (let i = 0; i < Math.min(files.length, 10); i++) {
+        totalSize += files[i].size;
+        const fileName = files[i].webkitRelativePath || files[i].name;
+        fileList += `📄 ${fileName}<br>`;
     }
+    
+    if (files.length > 10) {
+        fileList += `... e altri ${files.length - 10} file<br>`;
+    }
+    
+    const size = (totalSize / 1048576).toFixed(2);
+    fileList += `<br><strong>Totale: ${files.length} file (${size} MB)</strong>`;
+    
+    document.getElementById('fileInfo').innerHTML = fileList;
+    document.getElementById('fileInfo').classList.add('active');
 }
 
 // Filtro agenzie
@@ -536,9 +743,14 @@ function deleteDocument(id) {
 
 // Chiudi modal click fuori
 window.addEventListener('click', (e) => {
-    const modal = document.getElementById('uploadModal');
-    if (e.target === modal) {
+    const uploadModal = document.getElementById('uploadModal');
+    const folderModal = document.getElementById('folderModal');
+    
+    if (e.target === uploadModal) {
         closeUploadModal();
+    }
+    if (e.target === folderModal) {
+        closeFolderModal();
     }
 });
 </script>
