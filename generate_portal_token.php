@@ -66,7 +66,7 @@ try {
 } catch (PDOException $e) {
     error_log("Errore creazione token SSO: " . $e->getMessage());
     http_response_code(500);
-    die('Errore durante la generazione del token di accesso.');
+    die('Errore SQL: ' . $e->getMessage()); // DEBUG: mostra errore completo
 }
 
 // Redirect al portale con token
