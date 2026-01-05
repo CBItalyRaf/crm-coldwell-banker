@@ -6,8 +6,8 @@
 
 session_start();
 
-// Verifica sessione
-if (!isset($_SESSION['user_id'])) {
+// Verifica sessione CRM
+if (!isset($_SESSION['crm_user'])) {
     http_response_code(403);
     echo json_encode(['error' => 'Non autenticato']);
     exit;
