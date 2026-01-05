@@ -18,7 +18,7 @@ if (!in_array($searchType, $validSearchTypes)) {
     $searchType = 'all';
 }
 
-$sql = "SELECT code, name, city, province, address, status, broker_manager, email, phone 
+$sql = "SELECT code, name, city, province, address, type, status, broker_manager, email, phone 
         FROM agencies 
         WHERE status != 'Prospect'";
 
@@ -62,6 +62,14 @@ if ($search) {
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $agencies = $stmt->fetchAll();
+
+// Conta satelliti tra le agenzie recuperate
+$satellitesCount = 0;
+foreach ($agencies as $agency) {
+    if ($agency['type'] === 'Satellite') {
+        $satellitesCount++;
+    }
+}
 
 // Count totale con status filter applicato (ma senza search)
 $countSql = "SELECT COUNT(*) FROM agencies WHERE status != 'Prospect'";
@@ -190,7 +198,7 @@ require_once 'header.php';
 
 <div style="background:white;padding:1rem 1.5rem;margin-bottom:1rem;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);color:var(--cb-gray);font-size:.95rem">
 <?php if($search): ?>
-Trovate <strong style="color:var(--cb-midnight)"><?= count($agencies) ?></strong> agenzie
+Trovate <strong style="color:var(--cb-midnight)"><?= count($agencies) ?></strong> agenzie<?php if($satellitesCount > 0): ?> <span style="opacity:.8">(di cui <strong><?= $satellitesCount ?></strong> satelliti)</span><?php endif; ?>
 <?php 
 $searchTypeLabels = ['all' => 'ovunque', 'city' => 'in città', 'province' => 'in provincia', 'people' => 'in broker'];
 $typeLabel = $searchTypeLabels[$searchType] ?? 'ovunque';
@@ -200,9 +208,9 @@ per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <span style="opacity:.7">(<?= $totalCount ?> totali con status <?= $statusFilter ?>)</span>
 <?php endif; ?>
 <?php elseif($statusFilter !== 'all'): ?>
-<strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenzie con status <?= $statusFilter ?>
+<strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenzie con status <?= $statusFilter ?><?php if($satellitesCount > 0): ?> <span style="opacity:.8">(di cui <strong><?= $satellitesCount ?></strong> satelliti)</span><?php endif; ?>
 <?php else: ?>
-<strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenzie totali
+<strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenzie totali<?php if($satellitesCount > 0): ?> <span style="opacity:.8">(di cui <strong><?= $satellitesCount ?></strong> satelliti)</span><?php endif; ?>
 <?php endif; ?>
 </div>
 
