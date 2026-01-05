@@ -35,7 +35,7 @@ $stmt = $pdo->prepare("
     WHERE status IN ('Active', 'Opening', 'Closing')
     AND (name LIKE ? OR code LIKE ? OR city LIKE ? OR province LIKE ?) 
     ORDER BY name ASC
-    LIMIT 10
+    LIMIT 20
 ");
 $stmt->execute([$searchParam, $searchParam, $searchParam, $searchParam]);
 $agencies = $stmt->fetchAll();
@@ -77,7 +77,7 @@ $stmt = $pdo->prepare("
     WHERE a.status = 'Active'
     AND (a.first_name LIKE ? OR a.last_name LIKE ?)
     ORDER BY a.last_name ASC, a.first_name ASC
-    LIMIT 10
+    LIMIT 3
 ");
 $stmt->execute([$searchParam, $searchParam]);
 $agents = $stmt->fetchAll();
