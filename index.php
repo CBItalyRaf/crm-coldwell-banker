@@ -77,7 +77,7 @@ require_once 'header.php';
 .calendar-event-date{font-size:.8rem;color:var(--cb-gray);display:flex;align-items:center;gap:.5rem}
 .calendar-event-agency{font-size:.85rem;color:var(--cb-bright-blue);margin-top:.25rem}
 .no-events{text-align:center;padding:2rem;color:var(--cb-gray)}
-.search-container{position:relative;margin-bottom:2rem;max-width:600px}
+.search-container{position:relative;margin-bottom:2rem}
 .search-container input{width:100%;padding:1rem 1.25rem;border:2px solid #E5E7EB;border-radius:10px;font-size:1rem;transition:border .2s}
 .search-container input:focus{outline:none;border-color:var(--cb-bright-blue)}
 .search-results{position:absolute;top:100%;left:0;right:0;background:white;border:1px solid #E5E7EB;border-radius:10px;margin-top:.5rem;max-height:400px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,.15);z-index:1000;display:none}
@@ -89,7 +89,6 @@ require_once 'header.php';
 .search-item-meta{font-size:.85rem;color:var(--cb-gray)}
 @media (max-width:768px){
 .stats-grid,.widgets-grid{grid-template-columns:1fr}
-.search-container{max-width:100%}
 }
 </style>
 
@@ -259,12 +258,19 @@ console.log('Search results:', data);
 if(data.length===0){
 searchResults.innerHTML='<div style="padding:1rem;text-align:center;color:#6D7180">Nessun risultato</div>';
 }else{
-searchResults.innerHTML=data.map(item=>`
-<div class="search-item" onclick="window.location.href='${item.url}'">
+searchResults.innerHTML=data.map((item,idx)=>`
+<div class="search-item" data-url="${item.url}" data-idx="${idx}">
 <div class="search-item-title">${item.title}</div>
 <div class="search-item-meta">${item.meta}</div>
 </div>
 `).join('');
+
+// Aggiungi click listener a ogni risultato
+searchResults.querySelectorAll('.search-item').forEach(el=>{
+el.addEventListener('click',function(){
+window.location.href=this.dataset.url;
+});
+});
 }
 searchResults.classList.add('active');
 console.log('Active class added');
