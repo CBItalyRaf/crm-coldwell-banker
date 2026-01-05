@@ -77,8 +77,19 @@ require_once 'header.php';
 .calendar-event-date{font-size:.8rem;color:var(--cb-gray);display:flex;align-items:center;gap:.5rem}
 .calendar-event-agency{font-size:.85rem;color:var(--cb-bright-blue);margin-top:.25rem}
 .no-events{text-align:center;padding:2rem;color:var(--cb-gray)}
+.search-container{position:relative;margin-bottom:2rem;max-width:600px}
+.search-container input{width:100%;padding:1rem 1.25rem;border:2px solid #E5E7EB;border-radius:10px;font-size:1rem;transition:border .2s}
+.search-container input:focus{outline:none;border-color:var(--cb-bright-blue)}
+.search-results{position:absolute;top:100%;left:0;right:0;background:white;border:1px solid #E5E7EB;border-radius:10px;margin-top:.5rem;max-height:400px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,.15);z-index:1000;display:none}
+.search-results.active{display:block}
+.search-item{padding:1rem 1.25rem;border-bottom:1px solid #F3F4F6;cursor:pointer;transition:background .2s}
+.search-item:last-child{border-bottom:none}
+.search-item:hover{background:var(--bg)}
+.search-item-title{font-weight:600;color:var(--cb-midnight);margin-bottom:.25rem;font-size:.95rem}
+.search-item-meta{font-size:.85rem;color:var(--cb-gray)}
 @media (max-width:768px){
 .stats-grid,.widgets-grid{grid-template-columns:1fr}
+.search-container{max-width:100%}
 }
 </style>
 
@@ -244,6 +255,7 @@ searchTimeout=setTimeout(()=>{
 fetch('https://admin.mycb.it/search_api.php?q='+encodeURIComponent(query))
 .then(r=>r.json())
 .then(data=>{
+console.log('Search results:', data);
 if(data.length===0){
 searchResults.innerHTML='<div style="padding:1rem;text-align:center;color:#6D7180">Nessun risultato</div>';
 }else{
@@ -254,6 +266,12 @@ searchResults.innerHTML=data.map(item=>`
 </div>
 `).join('');
 }
+searchResults.classList.add('active');
+console.log('Active class added');
+})
+.catch(error=>{
+console.error('Search error:', error);
+searchResults.innerHTML='<div style="padding:1rem;text-align:center;color:#EF4444">Errore di ricerca</div>';
 searchResults.classList.add('active');
 });
 },300);
