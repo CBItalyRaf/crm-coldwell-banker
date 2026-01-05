@@ -4,7 +4,15 @@
  * Cerca agenzie e agenti attivi e restituisce risultati formattati
  */
 
-require_once 'check_auth.php';
+session_start();
+
+// Verifica sessione
+if (!isset($_SESSION['user_id'])) {
+    http_response_code(403);
+    echo json_encode(['error' => 'Non autenticato']);
+    exit;
+}
+
 require_once 'config/database.php';
 header('Content-Type: application/json');
 
