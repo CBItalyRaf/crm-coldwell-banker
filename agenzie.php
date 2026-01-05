@@ -8,7 +8,14 @@ require_once 'config/database.php';
 $pageTitle = "Gestione Agenzie - CRM Coldwell Banker";
 $pdo = getDB();
 
-$statusFilter = $_GET['status'] ?? 'Active';
+// Status filter - supporta multipli
+$statusFilters = isset($_GET['status']) && is_array($_GET['status']) ? $_GET['status'] : ['Active'];
+$validStatuses = ['Active', 'Opening', 'Closing', 'Closed'];
+$statusFilters = array_intersect($statusFilters, $validStatuses);
+if(empty($statusFilters)) {
+    $statusFilters = ['Active'];
+}
+
 $search = $_GET['search'] ?? '';
 $searchType = $_GET['search_type'] ?? 'all';
 
@@ -22,9 +29,8 @@ $sql = "SELECT code, name, city, province, address, type, status, broker_manager
         FROM agencies 
         WHERE status != 'Prospect'";
 
-if ($statusFilter !== 'all') {
-    $sql .= " AND status = :status";
-}
+// Applica filtro status multiplo
+$sql .= " AND status IN (" . implode(',', array_fill(0, count($statusFilters), '?')) . ")";
 
 if ($search) {
     if ($searchType === 'city') {
@@ -41,21 +47,18 @@ if ($search) {
 
 $sql .= " ORDER BY name ASC";
 
-$params = [];
+$params = $statusFilters; // Inizia con gli status per i placeholder ?
 
-if ($statusFilter !== 'all') {
-    $params[':status'] = $statusFilter;
-}
 if ($search) {
     if ($searchType === 'all') {
         // Placeholder distinti per 'all'
-        $params[':search1'] = "%$search%";
-        $params[':search2'] = "%$search%";
-        $params[':search3'] = "%$search%";
-        $params[':search4'] = "%$search%";
-        $params[':search5'] = "%$search%";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
     } else {
-        $params[':search'] = "%$search%";
+        $params[] = "%$search%";
     }
 }
 
@@ -72,14 +75,9 @@ foreach ($agencies as $agency) {
 }
 
 // Count totale con status filter applicato (ma senza search)
-$countSql = "SELECT COUNT(*) FROM agencies WHERE status != 'Prospect'";
-if ($statusFilter !== 'all') {
-    $countSql .= " AND status = :status";
-}
+$countSql = "SELECT COUNT(*) FROM agencies WHERE status != 'Prospect' AND status IN (" . implode(',', array_fill(0, count($statusFilters), '?')) . ")";
 $countStmt = $pdo->prepare($countSql);
-if ($statusFilter !== 'all') {
-    $countStmt->bindValue(':status', $statusFilter);
-}
+$countStmt->execute($statusFilters);
 $countStmt->execute();
 $totalCount = $countStmt->fetchColumn();
 
@@ -108,9 +106,10 @@ require_once 'header.php';
 .search-item-title{font-weight:600;color:var(--cb-midnight);margin-bottom:.25rem}
 .search-item-meta{font-size:.85rem;color:var(--cb-gray)}
 .status-filters{display:flex;gap:.5rem;flex-wrap:wrap}
-.filter-btn{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.5rem 1rem;border-radius:8px;cursor:pointer;transition:all .2s;font-size:.9rem}
-.filter-btn:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue)}
-.filter-btn.active{background:var(--cb-bright-blue);color:white;border-color:var(--cb-bright-blue)}
+.filter-checkbox{display:inline-flex;align-items:center;gap:.5rem;background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.5rem 1rem;border-radius:8px;cursor:pointer;transition:all .2s;font-size:.9rem;user-select:none}
+.filter-checkbox:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue)}
+.filter-checkbox.active{background:var(--cb-bright-blue);color:white;border-color:var(--cb-bright-blue)}
+.filter-checkbox input[type="checkbox"]{cursor:pointer;margin:0}
 .table-container{background:white;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .agencies-table{width:100%;border-collapse:collapse}
 .agencies-table th{text-align:left;padding:1rem 1.5rem;background:var(--bg);font-size:.875rem;font-weight:600;color:var(--cb-gray);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #E5E7EB}
@@ -186,11 +185,22 @@ require_once 'header.php';
 <form method="GET" id="statusForm">
 <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
 <input type="hidden" name="search_type" value="<?= htmlspecialchars($searchType ?? 'all') ?>">
-<button type="submit" name="status" value="all" class="filter-btn <?= $statusFilter === 'all' ? 'active' : '' ?>">Tutte</button>
-<button type="submit" name="status" value="Active" class="filter-btn <?= $statusFilter === 'Active' ? 'active' : '' ?>">Aperte</button>
-<button type="submit" name="status" value="Closed" class="filter-btn <?= $statusFilter === 'Closed' ? 'active' : '' ?>">Chiuse</button>
-<button type="submit" name="status" value="Opening" class="filter-btn <?= $statusFilter === 'Opening' ? 'active' : '' ?>">In apertura</button>
-<button type="submit" name="status" value="Closing" class="filter-btn <?= $statusFilter === 'Closing' ? 'active' : '' ?>">In chiusura</button>
+<label class="filter-checkbox <?= in_array('Active', $statusFilters) ? 'active' : '' ?>">
+<input type="checkbox" name="status[]" value="Active" <?= in_array('Active', $statusFilters) ? 'checked' : '' ?> onchange="document.getElementById('statusForm').submit()">
+Aperte
+</label>
+<label class="filter-checkbox <?= in_array('Opening', $statusFilters) ? 'active' : '' ?>">
+<input type="checkbox" name="status[]" value="Opening" <?= in_array('Opening', $statusFilters) ? 'checked' : '' ?> onchange="document.getElementById('statusForm').submit()">
+In apertura
+</label>
+<label class="filter-checkbox <?= in_array('Closing', $statusFilters) ? 'active' : '' ?>">
+<input type="checkbox" name="status[]" value="Closing" <?= in_array('Closing', $statusFilters) ? 'checked' : '' ?> onchange="document.getElementById('statusForm').submit()">
+In chiusura
+</label>
+<label class="filter-checkbox <?= in_array('Closed', $statusFilters) ? 'active' : '' ?>">
+<input type="checkbox" name="status[]" value="Closed" <?= in_array('Closed', $statusFilters) ? 'checked' : '' ?> onchange="document.getElementById('statusForm').submit()">
+Chiuse
+</label>
 </form>
 </div>
 </div>
@@ -205,12 +215,15 @@ $typeLabel = $searchTypeLabels[$searchType] ?? 'ovunque';
 ?>
 per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <?php if(count($agencies) < $totalCount): ?>
-<span style="opacity:.7">(<?= $totalCount ?> totali con status <?= $statusFilter ?>)</span>
+<span style="opacity:.7">(<?= $totalCount ?> totali)</span>
 <?php endif; ?>
-<?php elseif($statusFilter !== 'all'): ?>
-<strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenzie con status <?= $statusFilter ?><?php if($satellitesCount > 0): ?> <span style="opacity:.8">(di cui <strong><?= $satellitesCount ?></strong> satelliti)</span><?php endif; ?>
 <?php else: ?>
-<strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenzie totali<?php if($satellitesCount > 0): ?> <span style="opacity:.8">(di cui <strong><?= $satellitesCount ?></strong> satelliti)</span><?php endif; ?>
+<strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenzie<?php if($satellitesCount > 0): ?> <span style="opacity:.8">(di cui <strong><?= $satellitesCount ?></strong> satelliti)</span><?php endif; ?>
+<?php 
+$statusLabels = ['Active' => 'Aperte', 'Opening' => 'In apertura', 'Closing' => 'In chiusura', 'Closed' => 'Chiuse'];
+$selectedLabels = array_map(function($s) use ($statusLabels) { return $statusLabels[$s] ?? $s; }, $statusFilters);
+?>
+<span style="opacity:.7"> - Filtri: <?= implode(', ', $selectedLabels) ?></span>
 <?php endif; ?>
 </div>
 
@@ -306,7 +319,9 @@ per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <label class="checkbox-label"><input type="checkbox" name="export[]" value="unique"> Unique</label>
 </div>
 </div>
-<input type="hidden" name="status_filter" value="<?= htmlspecialchars($statusFilter) ?>">
+<?php foreach($statusFilters as $status): ?>
+<input type="hidden" name="status_filter[]" value="<?= htmlspecialchars($status) ?>">
+<?php endforeach; ?>
 <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
 <input type="hidden" name="search_type" value="<?= htmlspecialchars($searchType ?? 'all') ?>">
 <div class="modal-actions">
@@ -345,10 +360,13 @@ if(searchTypeSelect) {
         form.method = 'GET';
         form.style.display = 'none';
         
-        const statusInput = document.createElement('input');
-        statusInput.name = 'status';
-        statusInput.value = '<?= htmlspecialchars($statusFilter) ?>';
-        form.appendChild(statusInput);
+        // Aggiungi status multipli
+        <?php foreach($statusFilters as $status): ?>
+        const statusInput<?= $status ?> = document.createElement('input');
+        statusInput<?= $status ?>.name = 'status[]';
+        statusInput<?= $status ?>.value = '<?= htmlspecialchars($status) ?>';
+        form.appendChild(statusInput<?= $status ?>);
+        <?php endforeach; ?>
         
         const searchInput = document.createElement('input');
         searchInput.name = 'search';
@@ -384,7 +402,7 @@ const searchType = searchTypeElem ? searchTypeElem.value : 'all';
 if(query.length<2){
 searchResults.classList.remove('active');
 if(query.length === 0 && '<?= $search ?>' !== '') {
-    window.location.href = '?status=<?= htmlspecialchars($statusFilter) ?>&search_type=' + searchType;
+    window.location.href = '?<?php foreach($statusFilters as $i => $status): ?>status[]=<?= urlencode($status) ?><?= $i < count($statusFilters)-1 ? '&' : '' ?><?php endforeach; ?>&search_type=' + searchType;
 }
 return;
 }
@@ -393,16 +411,19 @@ searchTimeout=setTimeout(()=>{
     const searchTypeElem = document.getElementById('searchType');
     const searchType = searchTypeElem ? searchTypeElem.value : 'all';
     
-    console.log('Search submit:', {query: query, searchType: searchType, status: '<?= htmlspecialchars($statusFilter) ?>'});
+    console.log('Search submit:', {query: query, searchType: searchType});
     
     const form = document.createElement('form');
     form.method = 'GET';
     form.style.display = 'none';
     
-    const statusInput = document.createElement('input');
-    statusInput.name = 'status';
-    statusInput.value = '<?= htmlspecialchars($statusFilter) ?>';
-    form.appendChild(statusInput);
+    // Aggiungi status multipli
+    <?php foreach($statusFilters as $status): ?>
+    const statusInput<?= $status ?> = document.createElement('input');
+    statusInput<?= $status ?>.name = 'status[]';
+    statusInput<?= $status ?>.value = '<?= htmlspecialchars($status) ?>';
+    form.appendChild(statusInput<?= $status ?>);
+    <?php endforeach; ?>
     
     const searchField = document.createElement('input');
     searchField.name = 'search';
