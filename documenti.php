@@ -70,29 +70,36 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $documents = $stmt->fetchAll();
 
-// Recupera sottocartelle dalla tabella folders
-$folderSql = "SELECT folder_path FROM folders WHERE 1=1";
+// Recupera sottocartelle dalla tabella folders con statistiche
+$folderSql = "SELECT f.folder_path,
+              COUNT(d.id) as file_count,
+              COALESCE(SUM(d.file_size), 0) as total_size,
+              MAX(d.uploaded_at) as last_modified
+              FROM folders f
+              LEFT JOIN documents d ON d.folder_path = f.folder_path
+              WHERE 1=1";
 if ($folderFilter) {
     // Se sono dentro una cartella, mostro le sottocartelle dirette
-    $folderSql .= " AND folder_path LIKE :folder_pattern AND folder_path != :current_folder";
+    $folderSql .= " AND f.folder_path LIKE :folder_pattern AND f.folder_path != :current_folder";
     $folderParams = [
         ':folder_pattern' => $folderFilter . '%',
         ':current_folder' => $folderFilter
     ];
 } else {
     // ROOT: mostro solo cartelle di primo livello (senza /)
-    $folderSql .= " AND folder_path NOT LIKE '%/%/%'";
+    $folderSql .= " AND f.folder_path NOT LIKE '%/%/%'";
     $folderParams = [];
 }
-$folderSql .= " ORDER BY folder_path ASC";
+$folderSql .= " GROUP BY f.folder_path ORDER BY f.folder_path ASC";
 
 $folderStmt = $pdo->prepare($folderSql);
 $folderStmt->execute($folderParams);
-$allFolders = $folderStmt->fetchAll(PDO::FETCH_COLUMN);
+$allFoldersData = $folderStmt->fetchAll();
 
 // Filtra per mostrare solo sottocartelle dirette
 $subfolders = [];
-foreach ($allFolders as $folder) {
+foreach ($allFoldersData as $folderData) {
+    $folder = $folderData['folder_path'];
     if (empty($folder)) continue;
     
     if ($folderFilter) {
@@ -101,13 +108,23 @@ foreach ($allFolders as $folder) {
         $relativePath = substr($folder, strlen($folderFilter));
         $parts = explode('/', trim($relativePath, '/'));
         if (!empty($parts[0]) && !isset($subfolders[$parts[0]])) {
-            $subfolders[$parts[0]] = $folderFilter . $parts[0] . '/';
+            $subfolders[$parts[0]] = [
+                'path' => $folderFilter . $parts[0] . '/',
+                'file_count' => $folderData['file_count'],
+                'total_size' => $folderData['total_size'],
+                'last_modified' => $folderData['last_modified']
+            ];
         }
     } else {
         // ROOT - mostra solo primo livello
         $parts = explode('/', trim($folder, '/'));
         if (!empty($parts[0]) && !isset($subfolders[$parts[0]])) {
-            $subfolders[$parts[0]] = $parts[0] . '/';
+            $subfolders[$parts[0]] = [
+                'path' => $parts[0] . '/',
+                'file_count' => $folderData['file_count'],
+                'total_size' => $folderData['total_size'],
+                'last_modified' => $folderData['last_modified']
+            ];
         }
     }
 }
@@ -313,15 +330,15 @@ if (count($subfolders) > 0) {
 <tbody>
 
 <!-- Cartelle -->
-<?php foreach ($subfolders as $folderName => $folderPath): ?>
-<tr class="finder-row folder-row" onclick="window.location.href='?<?= http_build_query(array_merge($_GET, ['folder' => $folderPath])) ?>'">
+<?php foreach ($subfolders as $folderName => $folderData): ?>
+<tr class="finder-row folder-row" onclick="window.location.href='?<?= http_build_query(array_merge($_GET, ['folder' => $folderData['path']])) ?>'">
 <td class="finder-name">
 <span class="finder-icon">📁</span>
 <span class="finder-label"><?= htmlspecialchars($folderName) ?></span>
 </td>
-<td class="finder-meta">—</td>
-<td class="finder-meta">—</td>
-<td class="finder-meta">—</td>
+<td class="finder-meta"><?= $folderData['file_count'] ?> file</td>
+<td class="finder-meta"><?= $folderData['total_size'] > 0 ? number_format($folderData['total_size'] / 1048576, 1) . ' MB' : '—' ?></td>
+<td class="finder-meta"><?= $folderData['last_modified'] ? date('d/m/y H:i', strtotime($folderData['last_modified'])) : '—' ?></td>
 <td class="finder-actions" onclick="event.stopPropagation()">
 <span class="finder-arrow">›</span>
 </td>
