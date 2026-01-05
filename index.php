@@ -351,38 +351,38 @@ function loadCalendarWidget() {
                     subtitle = event.extendedProps.location || 'Evento';
                 }
                 
-                return \`
-                    <div class="calendar-event" style="border-left-color:\${event.color}">
-                        <div class="calendar-event-title">\${icon} \${event.title}</div>
+                return `
+                    <div class="calendar-event" style="border-left-color:${event.color}">
+                        <div class="calendar-event-title">${icon} ${event.title}</div>
                         <div class="calendar-event-date">
-                            📅 \${dateStr} • \${daysText}
+                            📅 ${dateStr} • ${daysText}
                         </div>
-                        \${subtitle ? \`<div class="calendar-event-agency">\${subtitle}</div>\` : ''}
+                        ${subtitle ? `<div class="calendar-event-agency">${subtitle}</div>` : ''}
                     </div>
-                \`;
+                `;
             }).join('');
             
             // Se ci sono più eventi, aggiungi link
             if (upcomingEvents.length > 5) {
-                container.innerHTML += \`
+                container.innerHTML += `
                     <div style="text-align:center;padding:1rem;border-top:1px solid #E5E7EB">
                         <a href="team_calendar.php" style="color:var(--cb-bright-blue);text-decoration:none;font-weight:600;font-size:.9rem">
-                            Altri \${upcomingEvents.length - 5} eventi →
+                            Altri ${upcomingEvents.length - 5} eventi →
                         </a>
                     </div>
-                \`;
+                `;
             }
         })
         .catch(err => {
             console.error('Errore caricamento calendario:', err);
             const container = document.getElementById('calendarWidget');
             if (container) {
-                container.innerHTML = \`
+                container.innerHTML = `
                     <div class="no-events">
                         <div style="font-size:2rem;margin-bottom:.5rem;color:#EF4444">⚠️</div>
                         <p>Errore nel caricamento</p>
                     </div>
-                \`;
+                `;
             }
         });
 }
