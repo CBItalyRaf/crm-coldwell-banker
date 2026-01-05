@@ -330,7 +330,7 @@ function loadCalendarWidget() {
                 let daysText = '';
                 if (daysUntil === 0) daysText = 'Oggi';
                 else if (daysUntil === 1) daysText = 'Domani';
-                else daysText = \`tra \${daysUntil} giorni\`;
+                else daysText = `tra ${daysUntil} giorni`;
                 
                 // Determina icona in base al tipo
                 let icon = '📅';
