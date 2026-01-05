@@ -141,6 +141,8 @@ require_once 'header.php';
 .btn-cancel:hover{border-color:var(--cb-gray)}
 .empty-state{text-align:center;padding:4rem 2rem;color:var(--cb-gray)}
 .empty-state-icon{font-size:4rem;margin-bottom:1rem;opacity:.5}
+.btn-portal{background:var(--cb-bright-blue);color:white;border:none;padding:.5rem 1rem;border-radius:6px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.25rem}
+.btn-portal:hover{background:var(--cb-blue);transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,81,165,.3)}
 @media(max-width:768px){
 .filters-grid{grid-template-columns:1fr}
 .checkbox-grid{grid-template-columns:1fr}
@@ -163,7 +165,7 @@ require_once 'header.php';
 <div class="search-box">
 <div style="display:flex;gap:.5rem">
 <select id="searchType" name="search_type" style="padding:.75rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem;background:white;cursor:pointer;min-width:140px">
-<option value="all" <?= ($searchType ?? 'all') === 'all' ? 'selected' : '' ?>>🌐 Tutto</option>
+<option value="all" <?= ($searchType ?? 'all') === 'all' ? 'selected' : '' ?>>🌍 Tutto</option>
 <option value="city" <?= ($searchType ?? '') === 'city' ? 'selected' : '' ?>>🏙️ Solo Città</option>
 <option value="province" <?= ($searchType ?? '') === 'province' ? 'selected' : '' ?>>📍 Solo Provincia</option>
 <option value="people" <?= ($searchType ?? '') === 'people' ? 'selected' : '' ?>>👤 Solo Broker</option>
@@ -222,6 +224,7 @@ per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <th>STATUS</th>
 <th>EMAIL</th>
 <th>TELEFONO</th>
+<th>AZIONI</th>
 </tr>
 </thead>
 <tbody>
@@ -231,7 +234,7 @@ per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <td class="agency-name"><?= htmlspecialchars($agency['name']) ?></td>
 <td>
 <div><?= htmlspecialchars($agency['city'] ?: '-') ?><?= $agency['province'] ? ', ' . htmlspecialchars($agency['province']) : '' ?></div>
-<?php if(!empty($agency['address'])): ?>
+<?php if($agency['address']): ?>
 <div style="font-size:0.75rem;color:var(--cb-gray);margin-top:0.25rem"><?= htmlspecialchars($agency['address']) ?></div>
 <?php endif; ?>
 </td>
@@ -239,6 +242,17 @@ per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <td><span class="status-badge <?= str_replace(' ', '-', strtolower($agency['status'])) ?>"><?= htmlspecialchars($agency['status']) ?></span></td>
 <td><?= htmlspecialchars($agency['email'] ?: '-') ?></td>
 <td><?= htmlspecialchars($agency['phone'] ?: '-') ?></td>
+<td>
+<?php if($agency['status'] === 'Active' && in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])): ?>
+    <button onclick="event.stopPropagation(); window.open('generate_portal_token.php?agency=<?= urlencode($agency['code']) ?>', '_blank');" 
+            class="btn-portal" 
+            title="Accedi al portale agenzia">
+        🌐 Portale
+    </button>
+<?php else: ?>
+    <span style="color:#9CA3AF;font-size:0.85rem">—</span>
+<?php endif; ?>
+</td>
 </tr>
 <?php endforeach; ?>
 </tbody>
@@ -355,26 +369,21 @@ allRows=Array.from(agenciesTable.querySelectorAll('tr'));
 if(searchInput && searchResults){
 searchInput.addEventListener('input',function(){
 clearTimeout(searchTimeout);
-const query=this.value.trim(); // NON toLowerCase - LIKE è già case-insensitive
+const query=this.value.trim();
 const searchTypeElem = document.getElementById('searchType');
-const searchType = searchTypeElem ? searchTypeElem.value : 'all'; // Fallback a 'all' se non esiste
-
-// NON filtrare tabella lato client - usiamo sempre ricerca server-side
-// per gestire correttamente i filtri città/provincia/broker
+const searchType = searchTypeElem ? searchTypeElem.value : 'all';
 
 if(query.length<2){
 searchResults.classList.remove('active');
-// Se cancello la ricerca, ricarica senza filtro
 if(query.length === 0 && '<?= $search ?>' !== '') {
     window.location.href = '?status=<?= htmlspecialchars($statusFilter) ?>&search_type=' + searchType;
 }
 return;
 }
 
-// Submit automatico dopo 500ms di pausa
 searchTimeout=setTimeout(()=>{
     const searchTypeElem = document.getElementById('searchType');
-    const searchType = searchTypeElem ? searchTypeElem.value : 'all'; // Fallback a 'all'
+    const searchType = searchTypeElem ? searchTypeElem.value : 'all';
     
     console.log('Search submit:', {query: query, searchType: searchType, status: '<?= htmlspecialchars($statusFilter) ?>'});
     
