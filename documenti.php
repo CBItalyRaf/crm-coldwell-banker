@@ -655,11 +655,128 @@ function deleteDoc(id, filename) {
 // Chiudi modal click fuori
 window.addEventListener('click', (e) => {
     const uploadModal = document.getElementById('uploadModal');
+    const categoriesModal = document.getElementById('categoriesModal');
     
     if (e.target === uploadModal) {
         closeUploadModal();
     }
+    if (e.target === categoriesModal) {
+        closeCategoriesModal();
+    }
 });
+
+// Modal Categorie
+function openCategoriesModal() {
+    document.getElementById('categoriesModal').style.display = 'block';
+    loadCategories();
+}
+
+function closeCategoriesModal() {
+    document.getElementById('categoriesModal').style.display = 'none';
+}
+
+function loadCategories() {
+    fetch('api_categories.php?action=list')
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                renderCategoriesList(data.categories);
+            }
+        });
+}
+
+function renderCategoriesList(categories) {
+    const html = categories.map(cat => `
+        <div class="category-item" style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #e0e0e0">
+            <div>
+                <span style="font-size:20px">${cat.icon}</span>
+                <strong>${cat.name}</strong>
+                ${cat.is_active == 0 ? '<span style="color:#999"> (Disattivata)</span>' : ''}
+            </div>
+            <div>
+                <button onclick="editCategory(${cat.id}, '${cat.name.replace(/'/g, "\\'")}', '${cat.icon}', ${cat.is_active})" class="btn-sm">✏️ Modifica</button>
+                <button onclick="deleteCategory(${cat.id})" class="btn-sm btn-danger">🗑️</button>
+            </div>
+        </div>
+    `).join('');
+    
+    document.getElementById('categoriesList').innerHTML = html;
+}
+
+function addCategory() {
+    const name = prompt('Nome categoria:');
+    const icon = prompt('Emoji icona:', '📄');
+    
+    if (!name) return;
+    
+    fetch('api_categories.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action: 'add', name, icon})
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            loadCategories();
+            alert('Categoria aggiunta!');
+        } else {
+            alert('Errore: ' + data.error);
+        }
+    });
+}
+
+function editCategory(id, name, icon, isActive) {
+    const newName = prompt('Nuovo nome:', name);
+    const newIcon = prompt('Nuova icona:', icon);
+    
+    if (!newName) return;
+    
+    fetch('api_categories.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action: 'edit', id, name: newName, icon: newIcon})
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            loadCategories();
+            location.reload();
+        } else {
+            alert('Errore: ' + data.error);
+        }
+    });
+}
+
+function deleteCategory(id) {
+    if (!confirm('Eliminare questa categoria?\n\nI documenti associati rimarranno senza categoria.')) return;
+    
+    fetch('api_categories.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action: 'delete', id})
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            loadCategories();
+            location.reload();
+        } else {
+            alert('Errore: ' + data.error);
+        }
+    });
+}
 </script>
+
+<!-- Modal Categorie -->
+<div id="categoriesModal" class="modal">
+    <div class="modal-content" style="max-width:600px">
+        <span class="close" onclick="closeCategoriesModal()">&times;</span>
+        <h2>🏷️ Gestione Categorie</h2>
+        
+        <button onclick="addCategory()" class="btn-primary" style="margin-bottom:20px">➕ Nuova Categoria</button>
+        
+        <div id="categoriesList"></div>
+    </div>
+</div>
 
 <?php require_once 'footer.php'; ?>
