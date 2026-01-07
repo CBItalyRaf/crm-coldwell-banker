@@ -100,6 +100,12 @@ try {
         $stmt = $pdo->prepare("UPDATE documents SET folder_path = ? WHERE folder_path = ?");
         $stmt->execute([$newPath, $path]);
         
+        // IMPORTANTE: Aggiorna anche filepath nei documenti!
+        $oldPathSegment = rtrim($path, '/');
+        $newPathSegment = $newName;
+        $stmt = $pdo->prepare("UPDATE documents SET filepath = REPLACE(filepath, ?, ?) WHERE folder_path = ?");
+        $stmt->execute(['/' . $oldPathSegment . '/', '/' . $newPathSegment . '/', $newPath]);
+        
         echo json_encode(['success' => true]);
         exit;
     }
