@@ -250,6 +250,7 @@ foreach ($parts as $i => $part):
 <h1 class="page-title">📄 Gestione Documenti</h1>
 <div class="header-actions">
 <button class="btn-success" onclick="openUploadModal()">➕ Carica Documento/i</button>
+<button class="btn-primary" onclick="createFolder()">📁 Nuova Cartella</button>
 <button class="btn-secondary" onclick="openCategoriesModal()">🏷️ Gestisci Categorie</button>
 </div>
 </div>
@@ -340,7 +341,9 @@ if (count($subfolders) > 0) {
 <td class="finder-meta"><?= $folderData['total_size'] > 0 ? number_format($folderData['total_size'] / 1048576, 1) . ' MB' : '—' ?></td>
 <td class="finder-meta"><?= $folderData['last_modified'] ? date('d/m/y H:i', strtotime($folderData['last_modified'])) : '—' ?></td>
 <td class="finder-actions" onclick="event.stopPropagation()">
-<span class="finder-arrow">›</span>
+    <button onclick="renameFolder('<?= htmlspecialchars($folderData['path']) ?>', '<?= htmlspecialchars($folderName) ?>')" class="action-btn" title="Rinomina">✏️</button>
+    <button onclick="deleteFolder('<?= htmlspecialchars($folderData['path']) ?>', '<?= htmlspecialchars($folderName) ?>', <?= $folderData['file_count'] ?>)" class="action-btn action-delete" title="Elimina">🗑️</button>
+    <span class="finder-arrow">›</span>
 </td>
 </tr>
 <?php endforeach; ?>
@@ -651,6 +654,83 @@ function deleteDoc(id, filename) {
         window.location.href = 'documenti_delete.php?id=' + id;
     }
 }
+
+// Gestione Cartelle
+function renameFolder(path, oldName) {
+    const newName = prompt('Nuovo nome cartella:', oldName);
+    if (!newName || newName === oldName) return;
+    
+    fetch('api_folders.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action: 'rename', path: path, newName: newName})
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Errore: ' + data.error);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Errore di connessione');
+    });
+}
+
+function deleteFolder(path, name, fileCount) {
+    if (fileCount > 0) {
+        alert('Impossibile eliminare: la cartella contiene ' + fileCount + ' file.\n\nSposta o elimina i file prima di eliminare la cartella.');
+        return;
+    }
+    
+    if (!confirm('Eliminare la cartella "' + name + '"?\n\nQuesta azione è irreversibile.')) return;
+    
+    fetch('api_folders.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action: 'delete', path: path})
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Errore: ' + data.error);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Errore di connessione');
+    });
+}
+
+function createFolder() {
+    const name = prompt('Nome nuova cartella:');
+    if (!name) return;
+    
+    const currentFolder = new URLSearchParams(window.location.search).get('folder') || '';
+    
+    fetch('api_folders.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action: 'create', parentPath: currentFolder, name: name})
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Errore: ' + data.error);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Errore di connessione');
+    });
+}
+
 
 // Chiudi modal click fuori
 window.addEventListener('click', (e) => {
