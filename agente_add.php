@@ -198,9 +198,9 @@ require_once 'header.php';
 </div>
 <div></div>
 </div>
-<div class="form-field">
-<label>Ruoli</label>
-<div style="display:flex;flex-wrap:wrap;gap:1rem;padding:.5rem 0">
+<div style="margin-bottom:1.5rem">
+<label style="display:block;font-size:.875rem;font-weight:600;color:var(--cb-gray);margin-bottom:.5rem">Ruoli</label>
+<div style="display:flex;flex-wrap:wrap;gap:1rem">
 <?php
 $allRoles = [
     'broker' => 'Broker',
