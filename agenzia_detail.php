@@ -33,25 +33,44 @@ $brokerManagerMobile = null;
 $prepostoMobile = null;
 $legalRepMobile = null;
 
+// DEBUG
+echo "<!-- DEBUG NOMI:\n";
+echo "Broker Manager: " . ($agency['broker_manager'] ?: 'VUOTO') . "\n";
+echo "Preposto: " . ($agency['preposto'] ?: 'VUOTO') . "\n";
+echo "Legal Rep: " . ($agency['legal_representative'] ?: 'VUOTO') . "\n";
+echo "-->\n";
+
 if ($agency['broker_manager']) {
-    $stmt = $pdo->prepare("SELECT mobile FROM agents WHERE agency_id = ? AND CONCAT(first_name, ' ', last_name) = ? LIMIT 1");
-    $stmt->execute([$agency['id'], trim($agency['broker_manager'])]);
+    $searchName = trim($agency['broker_manager']);
+    $stmt = $pdo->prepare("SELECT mobile, first_name, last_name FROM agents WHERE agency_id = ? AND CONCAT(first_name, ' ', last_name) = ? LIMIT 1");
+    $stmt->execute([$agency['id'], $searchName]);
     $result = $stmt->fetch();
     $brokerManagerMobile = $result['mobile'] ?? null;
+    
+    // DEBUG
+    echo "<!-- Cercato: '$searchName' - Trovato: " . ($result ? $result['first_name'] . ' ' . $result['last_name'] . ' - Mobile: ' . ($result['mobile'] ?: 'NULL') : 'NESSUNO') . " -->\n";
 }
 
 if ($agency['preposto']) {
-    $stmt = $pdo->prepare("SELECT mobile FROM agents WHERE agency_id = ? AND CONCAT(first_name, ' ', last_name) = ? LIMIT 1");
-    $stmt->execute([$agency['id'], trim($agency['preposto'])]);
+    $searchName = trim($agency['preposto']);
+    $stmt = $pdo->prepare("SELECT mobile, first_name, last_name FROM agents WHERE agency_id = ? AND CONCAT(first_name, ' ', last_name) = ? LIMIT 1");
+    $stmt->execute([$agency['id'], $searchName]);
     $result = $stmt->fetch();
     $prepostoMobile = $result['mobile'] ?? null;
+    
+    // DEBUG
+    echo "<!-- Cercato: '$searchName' - Trovato: " . ($result ? $result['first_name'] . ' ' . $result['last_name'] . ' - Mobile: ' . ($result['mobile'] ?: 'NULL') : 'NESSUNO') . " -->\n";
 }
 
 if ($agency['legal_representative']) {
-    $stmt = $pdo->prepare("SELECT mobile FROM agents WHERE agency_id = ? AND CONCAT(first_name, ' ', last_name) = ? LIMIT 1");
-    $stmt->execute([$agency['id'], trim($agency['legal_representative'])]);
+    $searchName = trim($agency['legal_representative']);
+    $stmt = $pdo->prepare("SELECT mobile, first_name, last_name FROM agents WHERE agency_id = ? AND CONCAT(first_name, ' ', last_name) = ? LIMIT 1");
+    $stmt->execute([$agency['id'], $searchName]);
     $result = $stmt->fetch();
     $legalRepMobile = $result['mobile'] ?? null;
+    
+    // DEBUG
+    echo "<!-- Cercato: '$searchName' - Trovato: " . ($result ? $result['first_name'] . ' ' . $result['last_name'] . ' - Mobile: ' . ($result['mobile'] ?: 'NULL') : 'NESSUNO') . " -->\n";
 }
 
 // Separa Active e Inactive
@@ -228,46 +247,62 @@ $hasActiveOffboarding = $stmt->fetch();
 
 <div class="info-section">
 <h3>Rappresentanza Legale</h3>
-<div class="info-grid">
-<div class="info-field">
-<label>Broker Manager</label>
-<div class="value">
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2rem">
+
+<!-- Broker Manager -->
+<div style="padding:1.5rem;background:#F9FAFB;border-radius:8px">
+<div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--cb-gray);font-weight:600;margin-bottom:1rem">Broker Manager</div>
+<div style="font-size:1.1rem;font-weight:600;color:var(--cb-midnight);margin-bottom:.5rem">
 <?= htmlspecialchars($agency['broker_manager'] ?: '-') ?>
+</div>
 <?php if ($brokerManagerMobile): ?>
-<br><span style="font-size:.85rem;color:var(--cb-gray)">📞 <?= htmlspecialchars($brokerManagerMobile) ?></span>
+<div style="font-size:.9rem;color:var(--cb-gray);margin-bottom:.25rem">
+📞 <?= htmlspecialchars($brokerManagerMobile) ?>
+</div>
+<?php endif; ?>
+<?php if ($agency['broker_mobile']): ?>
+<div style="font-size:.9rem;color:var(--cb-gray)">
+📱 <?= htmlspecialchars($agency['broker_mobile']) ?> <span style="font-size:.75rem">(Agenzia)</span>
+</div>
 <?php endif; ?>
 </div>
-</div>
-<div class="info-field">
-<label>Cellulare Broker (Agenzia)</label>
-<div class="value"><?= htmlspecialchars($agency['broker_mobile'] ?: '-') ?></div>
-</div>
-<div class="info-field">
-<label>Preposto</label>
-<div class="value">
-<?= htmlspecialchars($agency['preposto'] ?: '-') ?>
-<?php if ($prepostoMobile): ?>
-<br><span style="font-size:.85rem;color:var(--cb-gray)">📞 <?= htmlspecialchars($prepostoMobile) ?></span>
-<?php endif; ?>
-</div>
-</div>
-<div class="info-field">
-<label>Legale Rappresentante</label>
-<div class="value">
+
+<!-- Legale Rappresentante -->
+<div style="padding:1.5rem;background:#F9FAFB;border-radius:8px">
+<div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--cb-gray);font-weight:600;margin-bottom:1rem">Legale Rappresentante</div>
+<div style="font-size:1.1rem;font-weight:600;color:var(--cb-midnight);margin-bottom:.5rem">
 <?= htmlspecialchars($agency['legal_representative'] ?: '-') ?>
+</div>
 <?php if ($legalRepMobile): ?>
-<br><span style="font-size:.85rem;color:var(--cb-gray)">📞 <?= htmlspecialchars($legalRepMobile) ?></span>
+<div style="font-size:.9rem;color:var(--cb-gray);margin-bottom:.25rem">
+📞 <?= htmlspecialchars($legalRepMobile) ?>
+</div>
+<?php endif; ?>
+<?php if ($agency['legal_representative_cf']): ?>
+<div style="font-size:.9rem;color:var(--cb-gray);margin-bottom:.25rem">
+🆔 CF: <?= htmlspecialchars($agency['legal_representative_cf']) ?>
+</div>
+<?php endif; ?>
+<?php if ($agency['vat_number']): ?>
+<div style="font-size:.9rem;color:var(--cb-gray)">
+💼 P.IVA: <?= htmlspecialchars($agency['vat_number']) ?>
+</div>
 <?php endif; ?>
 </div>
+
+<!-- Preposto -->
+<div style="padding:1.5rem;background:#F9FAFB;border-radius:8px">
+<div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--cb-gray);font-weight:600;margin-bottom:1rem">Preposto</div>
+<div style="font-size:1.1rem;font-weight:600;color:var(--cb-midnight);margin-bottom:.5rem">
+<?= htmlspecialchars($agency['preposto'] ?: '-') ?>
 </div>
-<div class="info-field">
-<label>CF Legale Rappresentante</label>
-<div class="value"><?= htmlspecialchars($agency['legal_representative_cf'] ?: '-') ?></div>
+<?php if ($prepostoMobile): ?>
+<div style="font-size:.9rem;color:var(--cb-gray)">
+📞 <?= htmlspecialchars($prepostoMobile) ?>
 </div>
-<div class="info-field">
-<label>P.IVA</label>
-<div class="value"><?= htmlspecialchars($agency['vat_number'] ?: '-') ?></div>
+<?php endif; ?>
 </div>
+
 </div>
 </div>
 
