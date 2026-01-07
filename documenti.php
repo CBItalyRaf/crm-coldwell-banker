@@ -676,12 +676,23 @@ function closeCategoriesModal() {
 }
 
 function loadCategories() {
+    console.log('Loading categories...');
     fetch('api_categories.php?action=list')
-        .then(r => r.json())
+        .then(r => {
+            console.log('Response:', r);
+            return r.json();
+        })
         .then(data => {
+            console.log('Data:', data);
             if (data.success) {
                 renderCategoriesList(data.categories);
+            } else {
+                console.error('API error:', data.error);
             }
+        })
+        .catch(err => {
+            console.error('Fetch error:', err);
+            document.getElementById('categoriesList').innerHTML = '<p style="color:red">Errore caricamento categorie</p>';
         });
 }
 
