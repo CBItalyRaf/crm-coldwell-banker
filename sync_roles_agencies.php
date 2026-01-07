@@ -45,115 +45,144 @@ foreach ($agencies as $agency) {
     
     // Broker Manager
     if (!empty($agency['broker_manager'])) {
-        $name = trim($agency['broker_manager']);
+        $names = preg_split('/[,\/]/', $agency['broker_manager']); // Split per virgola o slash
         
-        // Prova a trovare agente (cerca per nome completo o split nome/cognome)
-        $nameParts = explode(' ', $name, 2);
-        $firstName = $nameParts[0] ?? '';
-        $lastName = $nameParts[1] ?? '';
-        
-        $stmt = $pdo->prepare("
-            SELECT id, first_name, last_name, role 
-            FROM agents 
-            WHERE agency_id = ? 
-            AND (
-                CONCAT(first_name, ' ', last_name) = ?
-                OR (first_name = ? AND last_name = ?)
-            )
-        ");
-        $stmt->execute([$agency['id'], $name, $firstName, $lastName]);
-        $agent = $stmt->fetch();
-        
-        if ($agent) {
-            // Aggiungi ruolo broker_manager
-            $currentRoles = $agent['role'] ? json_decode($agent['role'], true) : [];
-            if (!in_array('broker_manager', $currentRoles)) {
-                $currentRoles[] = 'broker_manager';
-                $newRole = json_encode($currentRoles);
-                
-                $upd = $pdo->prepare("UPDATE agents SET role = ? WHERE id = ?");
-                $upd->execute([$newRole, $agent['id']]);
-                
-                echo "✓ Broker Manager: {$agent['first_name']} {$agent['last_name']} ({$agencyCode})\n";
-                $updated++;
+        foreach ($names as $name) {
+            $name = trim($name);
+            
+            // Salta note tra parentesi
+            if (strpos($name, '(') !== false) {
+                $name = trim(preg_replace('/\(.*?\)/', '', $name));
             }
-        } else {
-            echo "<span class='warning'>⚠ Broker Manager '$name' non trovato in $agencyCode</span>\n";
-            $notFound++;
+            
+            if (empty($name)) continue;
+            
+            // Prova a trovare agente
+            $nameParts = explode(' ', $name, 2);
+            $firstName = $nameParts[0] ?? '';
+            $lastName = $nameParts[1] ?? '';
+            
+            $stmt = $pdo->prepare("
+                SELECT id, first_name, last_name, role 
+                FROM agents 
+                WHERE agency_id = ? 
+                AND (
+                    CONCAT(first_name, ' ', last_name) = ?
+                    OR (first_name = ? AND last_name = ?)
+                )
+            ");
+            $stmt->execute([$agency['id'], $name, $firstName, $lastName]);
+            $agent = $stmt->fetch();
+            
+            if ($agent) {
+                // Aggiungi ruolo broker_manager
+                $currentRoles = $agent['role'] ? json_decode($agent['role'], true) : [];
+                if (!in_array('broker_manager', $currentRoles)) {
+                    $currentRoles[] = 'broker_manager';
+                    $newRole = json_encode($currentRoles);
+                    
+                    $upd = $pdo->prepare("UPDATE agents SET role = ? WHERE id = ?");
+                    $upd->execute([$newRole, $agent['id']]);
+                    
+                    echo "✓ Broker Manager: {$agent['first_name']} {$agent['last_name']} ({$agencyCode})\n";
+                    $updated++;
+                }
+            } else {
+                echo "<span class='warning'>⚠ Broker Manager '$name' non trovato in $agencyCode</span>\n";
+                $notFound++;
+            }
         }
     }
     
     // Legale Rappresentante
     if (!empty($agency['legal_representative'])) {
-        $name = trim($agency['legal_representative']);
-        $nameParts = explode(' ', $name, 2);
-        $firstName = $nameParts[0] ?? '';
-        $lastName = $nameParts[1] ?? '';
+        $names = preg_split('/[,\/]/', $agency['legal_representative']);
         
-        $stmt = $pdo->prepare("
-            SELECT id, first_name, last_name, role 
-            FROM agents 
-            WHERE agency_id = ? 
-            AND (
-                CONCAT(first_name, ' ', last_name) = ?
-                OR (first_name = ? AND last_name = ?)
-            )
-        ");
-        $stmt->execute([$agency['id'], $name, $firstName, $lastName]);
-        $agent = $stmt->fetch();
-        
-        if ($agent) {
-            $currentRoles = $agent['role'] ? json_decode($agent['role'], true) : [];
-            if (!in_array('legale_rappresentante', $currentRoles)) {
-                $currentRoles[] = 'legale_rappresentante';
-                $newRole = json_encode($currentRoles);
-                
-                $upd = $pdo->prepare("UPDATE agents SET role = ? WHERE id = ?");
-                $upd->execute([$newRole, $agent['id']]);
-                
-                echo "✓ Legale Rapp: {$agent['first_name']} {$agent['last_name']} ({$agencyCode})\n";
-                $updated++;
+        foreach ($names as $name) {
+            $name = trim($name);
+            if (strpos($name, '(') !== false) {
+                $name = trim(preg_replace('/\(.*?\)/', '', $name));
             }
-        } else {
-            echo "<span class='warning'>⚠ Legale Rapp '$name' non trovato in $agencyCode</span>\n";
-            $notFound++;
+            if (empty($name)) continue;
+            
+            $nameParts = explode(' ', $name, 2);
+            $firstName = $nameParts[0] ?? '';
+            $lastName = $nameParts[1] ?? '';
+            
+            $stmt = $pdo->prepare("
+                SELECT id, first_name, last_name, role 
+                FROM agents 
+                WHERE agency_id = ? 
+                AND (
+                    CONCAT(first_name, ' ', last_name) = ?
+                    OR (first_name = ? AND last_name = ?)
+                )
+            ");
+            $stmt->execute([$agency['id'], $name, $firstName, $lastName]);
+            $agent = $stmt->fetch();
+            
+            if ($agent) {
+                $currentRoles = $agent['role'] ? json_decode($agent['role'], true) : [];
+                if (!in_array('legale_rappresentante', $currentRoles)) {
+                    $currentRoles[] = 'legale_rappresentante';
+                    $newRole = json_encode($currentRoles);
+                    
+                    $upd = $pdo->prepare("UPDATE agents SET role = ? WHERE id = ?");
+                    $upd->execute([$newRole, $agent['id']]);
+                    
+                    echo "✓ Legale Rapp: {$agent['first_name']} {$agent['last_name']} ({$agencyCode})\n";
+                    $updated++;
+                }
+            } else {
+                echo "<span class='warning'>⚠ Legale Rapp '$name' non trovato in $agencyCode</span>\n";
+                $notFound++;
+            }
         }
     }
     
     // Preposto
     if (!empty($agency['preposto'])) {
-        $name = trim($agency['preposto']);
-        $nameParts = explode(' ', $name, 2);
-        $firstName = $nameParts[0] ?? '';
-        $lastName = $nameParts[1] ?? '';
+        $names = preg_split('/[,\/]/', $agency['preposto']);
         
-        $stmt = $pdo->prepare("
-            SELECT id, first_name, last_name, role 
-            FROM agents 
-            WHERE agency_id = ? 
-            AND (
-                CONCAT(first_name, ' ', last_name) = ?
-                OR (first_name = ? AND last_name = ?)
-            )
-        ");
-        $stmt->execute([$agency['id'], $name, $firstName, $lastName]);
-        $agent = $stmt->fetch();
-        
-        if ($agent) {
-            $currentRoles = $agent['role'] ? json_decode($agent['role'], true) : [];
-            if (!in_array('preposto', $currentRoles)) {
-                $currentRoles[] = 'preposto';
-                $newRole = json_encode($currentRoles);
-                
-                $upd = $pdo->prepare("UPDATE agents SET role = ? WHERE id = ?");
-                $upd->execute([$newRole, $agent['id']]);
-                
-                echo "✓ Preposto: {$agent['first_name']} {$agent['last_name']} ({$agencyCode})\n";
-                $updated++;
+        foreach ($names as $name) {
+            $name = trim($name);
+            if (strpos($name, '(') !== false) {
+                $name = trim(preg_replace('/\(.*?\)/', '', $name));
             }
-        } else {
-            echo "<span class='warning'>⚠ Preposto '$name' non trovato in $agencyCode</span>\n";
-            $notFound++;
+            if (empty($name)) continue;
+            
+            $nameParts = explode(' ', $name, 2);
+            $firstName = $nameParts[0] ?? '';
+            $lastName = $nameParts[1] ?? '';
+            
+            $stmt = $pdo->prepare("
+                SELECT id, first_name, last_name, role 
+                FROM agents 
+                WHERE agency_id = ? 
+                AND (
+                    CONCAT(first_name, ' ', last_name) = ?
+                    OR (first_name = ? AND last_name = ?)
+                )
+            ");
+            $stmt->execute([$agency['id'], $name, $firstName, $lastName]);
+            $agent = $stmt->fetch();
+            
+            if ($agent) {
+                $currentRoles = $agent['role'] ? json_decode($agent['role'], true) : [];
+                if (!in_array('preposto', $currentRoles)) {
+                    $currentRoles[] = 'preposto';
+                    $newRole = json_encode($currentRoles);
+                    
+                    $upd = $pdo->prepare("UPDATE agents SET role = ? WHERE id = ?");
+                    $upd->execute([$newRole, $agent['id']]);
+                    
+                    echo "✓ Preposto: {$agent['first_name']} {$agent['last_name']} ({$agencyCode})\n";
+                    $updated++;
+                }
+            } else {
+                echo "<span class='warning'>⚠ Preposto '$name' non trovato in $agencyCode</span>\n";
+                $notFound++;
+            }
         }
     }
 }
