@@ -60,6 +60,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute(['id' => $id]);
     $oldData = $stmt->fetch(PDO::FETCH_ASSOC);
     
+    // Gestione ruoli multipli
+    $rolesArray = $_POST['roles'] ?? [];
+    $rolesJson = !empty($rolesArray) ? json_encode($rolesArray) : null;
+    
     $sql = "UPDATE agents SET 
             agency_id = :agency_id,
             first_name = :first_name,
@@ -88,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'email_activation_date' => $_POST['email_activation_date'] ?: null,
         'email_expiry_date' => $_POST['email_expiry_date'] ?: null,
         'email_disabled_date' => $_POST['email_disabled_date'] ?: null,
-        'role' => $_POST['role'] ?: null,
+        'role' => $rolesJson,
         'status' => $_POST['status'],
         'notes' => $_POST['notes'] ?: null,
         'id' => $id
@@ -215,15 +219,32 @@ require_once 'header.php';
 <input type="text" name="last_name" value="<?= htmlspecialchars($agent['last_name'] ?: '') ?>">
 </div>
 <div class="form-field">
-<label>Ruolo</label>
-<input type="text" name="role" value="<?= htmlspecialchars($agent['role'] ?: '') ?>" placeholder="es. Agente, Team Leader">
-</div>
-<div class="form-field">
 <label>Status</label>
 <select name="status">
 <option value="Active" <?= $agent['status'] === 'Active' ? 'selected' : '' ?>>Active</option>
 <option value="Inactive" <?= $agent['status'] === 'Inactive' ? 'selected' : '' ?>>Inactive</option>
 </select>
+</div>
+<div class="form-field" style="grid-column:1/-1">
+<label>Ruoli</label>
+<div style="display:flex;flex-wrap:wrap;gap:1rem;padding:.5rem 0">
+<?php
+$currentRoles = $agent['role'] ? json_decode($agent['role'], true) : [];
+$allRoles = [
+    'broker' => 'Broker',
+    'broker_manager' => 'Broker Manager',
+    'legale_rappresentante' => 'Legale Rappresentante',
+    'preposto' => 'Preposto',
+    'global_luxury' => 'Global Luxury'
+];
+foreach ($allRoles as $roleKey => $roleLabel):
+?>
+<label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;padding:.5rem .75rem;border:1px solid #E5E7EB;border-radius:6px;background:white;transition:all .2s" onmouseover="this.style.borderColor='var(--cb-bright-blue)'" onmouseout="this.style.borderColor='#E5E7EB'">
+<input type="checkbox" name="roles[]" value="<?= $roleKey ?>" <?= in_array($roleKey, $currentRoles) ? 'checked' : '' ?> style="cursor:pointer">
+<span style="font-weight:500"><?= $roleLabel ?></span>
+</label>
+<?php endforeach; ?>
+</div>
 </div>
 </div>
 </div>

@@ -51,6 +51,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("Agenzia non valida");
         }
         
+        // Gestione ruoli multipli
+        $rolesArray = $_POST['roles'] ?? [];
+        $rolesJson = !empty($rolesArray) ? json_encode($rolesArray) : null;
+        
         $stmt = $pdo->prepare("
             INSERT INTO agents 
             (agency_id, first_name, last_name, mobile, email_corporate, email_personal, 
@@ -70,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'm365_plan' => $_POST['m365_plan'] ?: null,
             'email_activation_date' => $_POST['email_activation_date'] ?: null,
             'email_expiry_date' => $_POST['email_expiry_date'] ?: null,
-            'role' => $_POST['role'] ?: null,
+            'role' => $rolesJson,
             'status' => $_POST['status'] ?? 'Active',
             'notes' => $_POST['notes'] ?: null,
             'inserted_at' => $_POST['inserted_at'] ?: date('Y-m-d')
@@ -180,17 +184,32 @@ require_once 'header.php';
 <input type="tel" name="mobile" maxlength="20" placeholder="+39 123 456 7890">
 </div>
 <div class="form-field">
-<label>Ruolo</label>
-<input type="text" name="role" maxlength="100" placeholder="es. Agente, Titolare, Collaboratore">
-</div>
-</div>
-<div class="form-grid">
-<div class="form-field">
 <label>Status</label>
 <select name="status">
 <option value="Active" selected>Active</option>
 <option value="Inactive">Inactive</option>
 </select>
+</div>
+</div>
+<div class="form-field">
+<label>Ruoli</label>
+<div style="display:flex;flex-wrap:wrap;gap:1rem;padding:.5rem 0">
+<?php
+$allRoles = [
+    'broker' => 'Broker',
+    'broker_manager' => 'Broker Manager',
+    'legale_rappresentante' => 'Legale Rappresentante',
+    'preposto' => 'Preposto',
+    'global_luxury' => 'Global Luxury'
+];
+foreach ($allRoles as $roleKey => $roleLabel):
+?>
+<label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;padding:.5rem .75rem;border:1px solid #E5E7EB;border-radius:6px;background:white;transition:all .2s" onmouseover="this.style.borderColor='var(--cb-bright-blue)'" onmouseout="this.style.borderColor='#E5E7EB'">
+<input type="checkbox" name="roles[]" value="<?= $roleKey ?>" style="cursor:pointer">
+<span style="font-weight:500"><?= $roleLabel ?></span>
+</label>
+<?php endforeach; ?>
+</div>
 </div>
 <div class="form-field">
 <label>Data Inserimento</label>
