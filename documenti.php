@@ -667,7 +667,7 @@ window.addEventListener('click', (e) => {
 
 // Modal Categorie
 function openCategoriesModal() {
-    document.getElementById('categoriesModal').style.display = 'block';
+    document.getElementById('categoriesModal').style.display = 'flex';
     loadCategories();
 }
 
@@ -717,11 +717,15 @@ function addCategory() {
     .then(r => r.json())
     .then(data => {
         if (data.success) {
-            loadCategories();
             alert('Categoria aggiunta!');
+            loadCategories();
         } else {
             alert('Errore: ' + data.error);
         }
+    })
+    .catch(err => {
+        console.error('Errore:', err);
+        alert('Errore di connessione');
     });
 }
 
