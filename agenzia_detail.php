@@ -31,6 +31,7 @@ $allAgents = $stmt->fetchAll();
 // Cerca cellulari per broker_manager, preposto, legal_representative
 $brokerManagerMobile = null;
 $prepostoMobile = null;
+$prepostoName = null;
 $legalRepMobile = null;
 
 // DEBUG
@@ -47,19 +48,19 @@ if ($agency['broker_manager']) {
     $result = $stmt->fetch();
     $brokerManagerMobile = $result['mobile'] ?? null;
     
-    // DEBUG
-    echo "<!-- Cercato: '$searchName' - Trovato: " . ($result ? $result['first_name'] . ' ' . $result['last_name'] . ' - Mobile: ' . ($result['mobile'] ?: 'NULL') : 'NESSUNO') . " -->\n";
+    echo "<!-- Cercato BM: '$searchName' - Trovato: " . ($result ? $result['first_name'] . ' ' . $result['last_name'] . ' - Mobile: ' . ($result['mobile'] ?: 'NULL') : 'NESSUNO') . " -->\n";
 }
 
-if ($agency['preposto']) {
-    $searchName = trim($agency['preposto']);
-    $stmt = $pdo->prepare("SELECT mobile, first_name, last_name FROM agents WHERE agency_id = ? AND CONCAT(first_name, ' ', last_name) = ? LIMIT 1");
-    $stmt->execute([$agency['id'], $searchName]);
-    $result = $stmt->fetch();
+// PREPOSTO: cerca nel campo role JSON
+$stmt = $pdo->prepare("SELECT mobile, first_name, last_name FROM agents WHERE agency_id = ? AND JSON_CONTAINS(role, '\"preposto\"') LIMIT 1");
+$stmt->execute([$agency['id']]);
+$result = $stmt->fetch();
+if ($result) {
     $prepostoMobile = $result['mobile'] ?? null;
-    
-    // DEBUG
-    echo "<!-- Cercato: '$searchName' - Trovato: " . ($result ? $result['first_name'] . ' ' . $result['last_name'] . ' - Mobile: ' . ($result['mobile'] ?: 'NULL') : 'NESSUNO') . " -->\n";
+    $prepostoName = trim($result['first_name'] . ' ' . $result['last_name']);
+    echo "<!-- Trovato PREPOSTO da ruolo: " . $prepostoName . ' - Mobile: ' . ($result['mobile'] ?: 'NULL') . " -->\n";
+} else {
+    echo "<!-- PREPOSTO non trovato da ruolo -->\n";
 }
 
 if ($agency['legal_representative']) {
@@ -69,8 +70,7 @@ if ($agency['legal_representative']) {
     $result = $stmt->fetch();
     $legalRepMobile = $result['mobile'] ?? null;
     
-    // DEBUG
-    echo "<!-- Cercato: '$searchName' - Trovato: " . ($result ? $result['first_name'] . ' ' . $result['last_name'] . ' - Mobile: ' . ($result['mobile'] ?: 'NULL') : 'NESSUNO') . " -->\n";
+    echo "<!-- Cercato LR: '$searchName' - Trovato: " . ($result ? $result['first_name'] . ' ' . $result['last_name'] . ' - Mobile: ' . ($result['mobile'] ?: 'NULL') : 'NESSUNO') . " -->\n";
 }
 
 // Separa Active e Inactive
@@ -256,13 +256,8 @@ $hasActiveOffboarding = $stmt->fetch();
 <?= htmlspecialchars($agency['broker_manager'] ?: '-') ?>
 </div>
 <?php if ($brokerManagerMobile): ?>
-<div style="font-size:.9rem;color:var(--cb-gray);margin-bottom:.25rem">
-📞 <?= htmlspecialchars($brokerManagerMobile) ?>
-</div>
-<?php endif; ?>
-<?php if ($agency['broker_mobile']): ?>
 <div style="font-size:.9rem;color:var(--cb-gray)">
-📱 <?= htmlspecialchars($agency['broker_mobile']) ?> <span style="font-size:.75rem">(Agenzia)</span>
+📞 <?= htmlspecialchars($brokerManagerMobile) ?>
 </div>
 <?php endif; ?>
 </div>
@@ -294,7 +289,7 @@ $hasActiveOffboarding = $stmt->fetch();
 <div style="padding:1.5rem;background:#F9FAFB;border-radius:8px">
 <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--cb-gray);font-weight:600;margin-bottom:1rem">Preposto</div>
 <div style="font-size:1.1rem;font-weight:600;color:var(--cb-midnight);margin-bottom:.5rem">
-<?= htmlspecialchars($agency['preposto'] ?: '-') ?>
+<?= htmlspecialchars($prepostoName ?: ($agency['preposto'] ?: '-')) ?>
 </div>
 <?php if ($prepostoMobile): ?>
 <div style="font-size:.9rem;color:var(--cb-gray)">
