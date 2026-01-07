@@ -19,7 +19,7 @@ $action = $data['action'] ?? '';
 
 try {
     if ($action === 'rename') {
-        $path = rtrim($data['path'] ?? '', '/'); // Rimuovi trailing slash
+        $path = rtrim($data['path'] ?? '', '/') . '/'; // Assicura trailing slash
         $newName = $data['newName'] ?? '';
         
         error_log("Rename folder: path='$path', newName='$newName'");
@@ -40,52 +40,65 @@ try {
             exit;
         }
         
-        // Cerca nella tabella folders
-        $stmt = $pdo->prepare("SELECT type, agency_code FROM folders WHERE folder_path = ?");
-        $stmt->execute([$path . '/']);
-        $folderInfo = $stmt->fetch();
+        // Trova filepath di un file per determinare path fisico (STESSA LOGICA DELETE)
+        $stmt = $pdo->prepare("SELECT filepath FROM documents WHERE folder_path = ? LIMIT 1");
+        $stmt->execute([$path]);
+        $doc = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        if (!$folderInfo) {
-            echo json_encode(['success' => false, 'error' => 'Cartella non trovata nel database']);
-            exit;
-        }
-        
-        // Ricostruisci path completo
-        $documentsDir = __DIR__ . '/documents/';
-        
-        if ($folderInfo['type'] === 'common') {
-            $oldFullPath = $documentsDir . 'common/' . $path;
-            $newFullPath = $documentsDir . 'common/' . $newName;
-        } else if ($folderInfo['type'] === 'agency') {
-            $basePath = $documentsDir . 'agencies/' . $folderInfo['agency_code'] . '/public/';
-            $oldFullPath = $basePath . $path;
-            $newFullPath = $basePath . $newName;
+        if ($doc) {
+            // Usa filepath del documento
+            $oldFullPath = __DIR__ . '/' . dirname($doc['filepath']);
+            $parentPath = dirname($oldFullPath);
+            $newFullPath = $parentPath . '/' . $newName;
         } else {
-            echo json_encode(['success' => false, 'error' => 'Tipo cartella non valido']);
-            exit;
+            // Cartella vuota - ricostruisci
+            $stmt = $pdo->prepare("SELECT type, agency_code FROM folders WHERE folder_path = ?");
+            $stmt->execute([$path]);
+            $folderInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$folderInfo) {
+                echo json_encode(['success' => false, 'error' => 'Cartella non trovata nel DB']);
+                exit;
+            }
+            
+            $basePath = __DIR__ . '/documents';
+            
+            if ($folderInfo['type'] === 'common') {
+                $oldFullPath = $basePath . '/common/' . rtrim($path, '/');
+                $newFullPath = $basePath . '/common/' . $newName;
+            } else {
+                $oldFullPath = $basePath . '/agencies/' . $folderInfo['agency_code'] . '/public/' . rtrim($path, '/');
+                $newFullPath = $basePath . '/agencies/' . $folderInfo['agency_code'] . '/public/' . $newName;
+            }
         }
+        
+        error_log("Rename: oldFullPath='$oldFullPath', newFullPath='$newFullPath'");
         
         // Verifica che cartella esista
         if (!is_dir($oldFullPath)) {
-            echo json_encode(['success' => false, 'error' => 'Cartella non trovata nel filesystem']);
+            echo json_encode(['success' => false, 'error' => 'Cartella non trovata: ' . $oldFullPath]);
             exit;
         }
         
-        // Verifica che nuovo nome non esista già
+        // Verifica che nuovo nome non esista
         if (file_exists($newFullPath)) {
             echo json_encode(['success' => false, 'error' => 'Esiste già una cartella con questo nome']);
             exit;
         }
         
-        // Rinomina
+        // Rinomina filesystem
         if (!rename($oldFullPath, $newFullPath)) {
-            echo json_encode(['success' => false, 'error' => 'Errore durante rinomina']);
+            echo json_encode(['success' => false, 'error' => 'Errore durante rinomina filesystem']);
             exit;
         }
         
-        // Aggiorna DB: cambia folder_path per tutti i documenti in questa cartella
-        $stmt = $pdo->prepare("UPDATE documents SET folder_path = REPLACE(folder_path, ?, ?) WHERE folder_path LIKE ?");
-        $stmt->execute([$path, $newPath, $path . '%']);
+        // Aggiorna DB
+        $newPath = $newName . '/';
+        $stmt = $pdo->prepare("UPDATE folders SET folder_path = ? WHERE folder_path = ?");
+        $stmt->execute([$newPath, $path]);
+        
+        $stmt = $pdo->prepare("UPDATE documents SET folder_path = ? WHERE folder_path = ?");
+        $stmt->execute([$newPath, $path]);
         
         echo json_encode(['success' => true]);
         exit;
