@@ -40,19 +40,34 @@ try {
             exit;
         }
         
-        // Costruisci vecchio e nuovo path
-        $documentsDir = __DIR__ . '/documents/';
-        $oldFullPath = $documentsDir . $path;
+        // Cerca nella tabella folders
+        $stmt = $pdo->prepare("SELECT type, agency_code FROM folders WHERE folder_path = ?");
+        $stmt->execute([$path . '/']);
+        $folderInfo = $stmt->fetch();
         
-        // Calcola nuovo path
-        $pathParts = explode('/', $path);
-        $pathParts[count($pathParts) - 1] = $newName;
-        $newPath = implode('/', $pathParts);
-        $newFullPath = $documentsDir . $newPath;
+        if (!$folderInfo) {
+            echo json_encode(['success' => false, 'error' => 'Cartella non trovata nel database']);
+            exit;
+        }
+        
+        // Ricostruisci path completo
+        $documentsDir = __DIR__ . '/documents/';
+        
+        if ($folderInfo['type'] === 'common') {
+            $oldFullPath = $documentsDir . 'common/' . $path;
+            $newFullPath = $documentsDir . 'common/' . $newName;
+        } else if ($folderInfo['type'] === 'agency') {
+            $basePath = $documentsDir . 'agencies/' . $folderInfo['agency_code'] . '/public/';
+            $oldFullPath = $basePath . $path;
+            $newFullPath = $basePath . $newName;
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Tipo cartella non valido']);
+            exit;
+        }
         
         // Verifica che cartella esista
         if (!is_dir($oldFullPath)) {
-            echo json_encode(['success' => false, 'error' => 'Cartella non trovata']);
+            echo json_encode(['success' => false, 'error' => 'Cartella non trovata nel filesystem']);
             exit;
         }
         
@@ -86,15 +101,34 @@ try {
             exit;
         }
         
+        // Cerca nella tabella folders per ottenere type e agency_code
+        $stmt = $pdo->prepare("SELECT type, agency_code FROM folders WHERE folder_path = ?");
+        $stmt->execute([$path . '/']); // DB ha trailing slash
+        $folderInfo = $stmt->fetch();
+        
+        if (!$folderInfo) {
+            echo json_encode(['success' => false, 'error' => 'Cartella non trovata nel database']);
+            exit;
+        }
+        
+        // Ricostruisci path completo basato su type
         $documentsDir = __DIR__ . '/documents/';
-        $fullPath = $documentsDir . $path;
+        
+        if ($folderInfo['type'] === 'common') {
+            $fullPath = $documentsDir . 'common/' . $path;
+        } else if ($folderInfo['type'] === 'agency') {
+            $fullPath = $documentsDir . 'agencies/' . $folderInfo['agency_code'] . '/public/' . $path;
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Tipo cartella non valido']);
+            exit;
+        }
         
         error_log("Delete folder fullPath: '$fullPath'");
         error_log("Delete folder exists: " . (is_dir($fullPath) ? 'YES' : 'NO'));
         
         // Verifica che cartella esista
         if (!is_dir($fullPath)) {
-            echo json_encode(['success' => false, 'error' => 'Cartella non trovata: ' . $fullPath]);
+            echo json_encode(['success' => false, 'error' => 'Cartella non trovata nel filesystem: ' . $fullPath]);
             exit;
         }
         
@@ -105,11 +139,15 @@ try {
             exit;
         }
         
-        // Elimina
+        // Elimina dal filesystem
         if (!rmdir($fullPath)) {
             echo json_encode(['success' => false, 'error' => 'Errore durante eliminazione']);
             exit;
         }
+        
+        // Elimina dal DB
+        $stmtDel = $pdo->prepare("DELETE FROM folders WHERE folder_path = ?");
+        $stmtDel->execute([$path . '/']);
         
         echo json_encode(['success' => true]);
         exit;
