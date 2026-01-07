@@ -15,7 +15,12 @@ $roleMap = [
 // Tag geografiche e funzionali da salvare separatamente
 $mailingTags = ['agentinord', 'agenticentro', 'agentisud', 'agentiroma', 'agenzia', 'servizio', 'master'];
 
-$file = fopen('/mnt/user-data/uploads/agenti.csv', 'r');
+$file = fopen('/var/www/admin.mycb.it/agenti.csv', 'r');
+if (!$file) {
+    die("ERRORE: File agenti.csv non trovato!\n");
+}
+
+echo "File CSV aperto correttamente!\n\n";
 $header = fgetcsv($file); // Skip header
 
 $updated = 0;
