@@ -19,8 +19,10 @@ $action = $data['action'] ?? '';
 
 try {
     if ($action === 'rename') {
-        $path = $data['path'] ?? '';
+        $path = rtrim($data['path'] ?? '', '/'); // Rimuovi trailing slash
         $newName = $data['newName'] ?? '';
+        
+        error_log("Rename folder: path='$path', newName='$newName'");
         
         if (empty($path) || empty($newName)) {
             echo json_encode(['success' => false, 'error' => 'Path e nuovo nome richiesti']);
@@ -70,7 +72,9 @@ try {
     }
     
     if ($action === 'delete') {
-        $path = $data['path'] ?? '';
+        $path = rtrim($data['path'] ?? '', '/'); // Rimuovi trailing slash
+        
+        error_log("Delete folder: path='$path'");
         
         if (empty($path)) {
             echo json_encode(['success' => false, 'error' => 'Path richiesto']);
@@ -80,9 +84,12 @@ try {
         $documentsDir = __DIR__ . '/uploads/documents/';
         $fullPath = $documentsDir . $path;
         
+        error_log("Delete folder fullPath: '$fullPath'");
+        error_log("Delete folder exists: " . (is_dir($fullPath) ? 'YES' : 'NO'));
+        
         // Verifica che cartella esista
         if (!is_dir($fullPath)) {
-            echo json_encode(['success' => false, 'error' => 'Cartella non trovata']);
+            echo json_encode(['success' => false, 'error' => 'Cartella non trovata: ' . $fullPath]);
             exit;
         }
         
