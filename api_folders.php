@@ -29,9 +29,14 @@ try {
             exit;
         }
         
-        // Valida nuovo nome (permetti più caratteri)
-        if (!preg_match('/^[a-zA-Z0-9_\-\s\&\.\(\)\[\]]+$/', $newName)) {
-            echo json_encode(['success' => false, 'error' => 'Nome non valido. Caratteri permessi: lettere, numeri, spazi, - _ & . ( ) [ ]']);
+        // Valida nuovo nome (no slash)
+        if (strpos($newName, '/') !== false || strpos($newName, '\\') !== false) {
+            echo json_encode(['success' => false, 'error' => 'Nome non valido: non può contenere / o \\']);
+            exit;
+        }
+        
+        if (empty(trim($newName))) {
+            echo json_encode(['success' => false, 'error' => 'Nome non può essere vuoto']);
             exit;
         }
         
@@ -119,9 +124,14 @@ try {
             exit;
         }
         
-        // Valida nome
-        if (!preg_match('/^[a-zA-Z0-9_\-\s\&\.\(\)\[\]]+$/', $name)) {
-            echo json_encode(['success' => false, 'error' => 'Nome non valido. Caratteri permessi: lettere, numeri, spazi, - _ & . ( ) [ ]']);
+        // Valida nome (no slash)
+        if (strpos($name, '/') !== false || strpos($name, '\\') !== false) {
+            echo json_encode(['success' => false, 'error' => 'Nome non valido: non può contenere / o \\']);
+            exit;
+        }
+        
+        if (empty(trim($name))) {
+            echo json_encode(['success' => false, 'error' => 'Nome non può essere vuoto']);
             exit;
         }
         
