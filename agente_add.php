@@ -198,9 +198,10 @@ require_once 'header.php';
 </div>
 <div></div>
 </div>
-<div style="margin-bottom:1.5rem">
-<label style="display:block;font-size:.875rem;font-weight:600;color:var(--cb-gray);margin-bottom:.5rem">Ruoli</label>
-<div style="display:flex;flex-wrap:wrap;gap:1rem">
+<div class="form-grid">
+<div class="form-field" style="grid-column:1/-1">
+<label>Ruoli</label>
+<div style="display:flex;flex-wrap:wrap;gap:1rem;padding:.5rem 0">
 <?php
 $allRoles = [
     'broker' => 'Broker',
@@ -216,6 +217,7 @@ foreach ($allRoles as $roleKey => $roleLabel):
 <span style="font-weight:500"><?= $roleLabel ?></span>
 </label>
 <?php endforeach; ?>
+</div>
 </div>
 </div>
 </div>
