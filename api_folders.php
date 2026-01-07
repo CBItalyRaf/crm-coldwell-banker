@@ -29,9 +29,9 @@ try {
             exit;
         }
         
-        // Valida nuovo nome (no caratteri speciali)
-        if (!preg_match('/^[a-zA-Z0-9_\-\s]+$/', $newName)) {
-            echo json_encode(['success' => false, 'error' => 'Nome non valido. Usa solo lettere, numeri, spazi, trattini e underscore.']);
+        // Valida nuovo nome (permetti più caratteri)
+        if (!preg_match('/^[a-zA-Z0-9_\-\s\&\.\(\)\[\]]+$/', $newName)) {
+            echo json_encode(['success' => false, 'error' => 'Nome non valido. Caratteri permessi: lettere, numeri, spazi, - _ & . ( ) [ ]']);
             exit;
         }
         
@@ -120,8 +120,8 @@ try {
         }
         
         // Valida nome
-        if (!preg_match('/^[a-zA-Z0-9_\-\s]+$/', $name)) {
-            echo json_encode(['success' => false, 'error' => 'Nome non valido. Usa solo lettere, numeri, spazi, trattini e underscore.']);
+        if (!preg_match('/^[a-zA-Z0-9_\-\s\&\.\(\)\[\]]+$/', $name)) {
+            echo json_encode(['success' => false, 'error' => 'Nome non valido. Caratteri permessi: lettere, numeri, spazi, - _ & . ( ) [ ]']);
             exit;
         }
         
