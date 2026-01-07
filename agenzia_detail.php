@@ -28,50 +28,25 @@ $stmt = $pdo->prepare("SELECT * FROM agents WHERE agency_id = :agency_id ORDER B
 $stmt->execute(['agency_id' => $agency['id']]);
 $allAgents = $stmt->fetchAll();
 
-// Cerca cellulari per broker_manager, preposto, legal_representative
+// Cerca broker_manager, preposto, legal_representative DAI RUOLI AGENTI
 $brokerManagers = []; // Array di {name, mobile}
 $prepostoMobile = null;
 $prepostoName = null;
 $legalRepMobile = null;
 
-// DEBUG
-echo "<!-- DEBUG NOMI:\n";
-echo "Broker Manager: " . ($agency['broker_manager'] ?: 'VUOTO') . "\n";
-echo "Preposto: " . ($agency['preposto'] ?: 'VUOTO') . "\n";
-echo "Legal Rep: " . ($agency['legal_representative'] ?: 'VUOTO') . "\n";
-echo "-->\n";
+echo "<!-- DEBUG: Agenzia ID {$agency['id']} -->\n";
 
-// BROKER MANAGER: può essere multiplo separato da virgola
-if ($agency['broker_manager']) {
-    $names = preg_split('/[,\/]/', $agency['broker_manager']);
-    foreach ($names as $name) {
-        $name = trim($name);
-        
-        // Rimuovi numeri di telefono (3 o più cifre consecutive)
-        $name = preg_replace('/\d{3,}/', '', $name);
-        
-        // Rimuovi note tra parentesi
-        if (strpos($name, '(') !== false) {
-            $name = trim(preg_replace('/\(.*?\)/', '', $name));
-        }
-        
-        // Rimuovi trattini extra e spazi multipli
-        $name = preg_replace('/\s*-\s*/', ' ', $name);
-        $name = preg_replace('/\s+/', ' ', trim($name));
-        
-        if (empty($name) || strlen($name) < 3) continue;
-        
-        $stmt = $pdo->prepare("SELECT mobile FROM agents WHERE agency_id = ? AND CONCAT(first_name, ' ', last_name) = ? LIMIT 1");
-        $stmt->execute([$agency['id'], $name]);
-        $result = $stmt->fetch();
-        
-        $brokerManagers[] = [
-            'name' => $name,
-            'mobile' => $result['mobile'] ?? null
-        ];
-        
-        echo "<!-- Cercato BM: '$name' - Mobile: " . ($result['mobile'] ?? 'NULL') . " -->\n";
-    }
+// BROKER MANAGER: cerca agenti con ruolo broker_manager
+$stmt = $pdo->prepare("SELECT mobile, first_name, last_name FROM agents WHERE agency_id = ? AND JSON_CONTAINS(role, '\"broker_manager\"')");
+$stmt->execute([$agency['id']]);
+$results = $stmt->fetchAll();
+
+foreach ($results as $result) {
+    $brokerManagers[] = [
+        'name' => trim($result['first_name'] . ' ' . $result['last_name']),
+        'mobile' => $result['mobile'] ?? null
+    ];
+    echo "<!-- Trovato BM: {$result['first_name']} {$result['last_name']} - Mobile: " . ($result['mobile'] ?: 'NULL') . " -->\n";
 }
 
 // PREPOSTO: cerca nel campo role JSON
@@ -81,19 +56,19 @@ $result = $stmt->fetch();
 if ($result) {
     $prepostoMobile = $result['mobile'] ?? null;
     $prepostoName = trim($result['first_name'] . ' ' . $result['last_name']);
-    echo "<!-- Trovato PREPOSTO da ruolo: " . $prepostoName . ' - Mobile: ' . ($result['mobile'] ?: 'NULL') . " -->\n";
-} else {
-    echo "<!-- PREPOSTO non trovato da ruolo -->\n";
+    echo "<!-- Trovato PREPOSTO: $prepostoName - Mobile: " . ($result['mobile'] ?: 'NULL') . " -->\n";
 }
 
-if ($agency['legal_representative']) {
-    $searchName = trim($agency['legal_representative']);
-    $stmt = $pdo->prepare("SELECT mobile, first_name, last_name FROM agents WHERE agency_id = ? AND CONCAT(first_name, ' ', last_name) = ? LIMIT 1");
-    $stmt->execute([$agency['id'], $searchName]);
-    $result = $stmt->fetch();
+// LEGALE RAPPRESENTANTE: cerca nel campo role JSON
+$stmt = $pdo->prepare("SELECT mobile, first_name, last_name FROM agents WHERE agency_id = ? AND JSON_CONTAINS(role, '\"legale_rappresentante\"') LIMIT 1");
+$stmt->execute([$agency['id']]);
+$result = $stmt->fetch();
+if ($result) {
     $legalRepMobile = $result['mobile'] ?? null;
-    
-    echo "<!-- Cercato LR: '$searchName' - Trovato: " . ($result ? $result['first_name'] . ' ' . $result['last_name'] . ' - Mobile: ' . ($result['mobile'] ?: 'NULL') : 'NESSUNO') . " -->\n";
+    $legalRepName = trim($result['first_name'] . ' ' . $result['last_name']);
+    echo "<!-- Trovato LEGALE RAPP: $legalRepName - Mobile: " . ($result['mobile'] ?: 'NULL') . " -->\n";
+} else {
+    $legalRepName = $agency['legal_representative'] ?: null;
 }
 
 // Separa Active e Inactive
@@ -297,7 +272,7 @@ $hasActiveOffboarding = $stmt->fetch();
 <div style="padding:1.5rem;background:#F9FAFB;border-radius:8px">
 <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--cb-gray);font-weight:600;margin-bottom:1rem">Legale Rappresentante</div>
 <div style="font-size:1.1rem;font-weight:600;color:var(--cb-midnight);margin-bottom:.5rem">
-<?= htmlspecialchars($agency['legal_representative'] ?: '-') ?>
+<?= htmlspecialchars($legalRepName ?: '-') ?>
 </div>
 <?php if ($legalRepMobile): ?>
 <div style="font-size:.9rem;color:var(--cb-gray);margin-bottom:.25rem">
