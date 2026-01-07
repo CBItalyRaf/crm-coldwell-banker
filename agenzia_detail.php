@@ -978,7 +978,7 @@ $idx = 'standalone_' . $i;
     $rolesJson = $agent['role'];
     $roles = $rolesJson ? json_decode($rolesJson, true) : [];
 ?>
-<tr onclick="window.location.href='agente_detail.php?id=<?= $agent['id'] ?>'" style="cursor:pointer">
+<tr onclick="window.location.href='agente_detail.php?id=<?= $agent['id'] ?>&from=agency'" style="cursor:pointer">
 <td><?= htmlspecialchars($agent['full_name']) ?></td>
 <td>
 <?php if (!empty($roles)): ?>
@@ -1008,7 +1008,7 @@ $idx = 'standalone_' . $i;
     $rolesJson = $agent['role'];
     $roles = $rolesJson ? json_decode($rolesJson, true) : [];
 ?>
-<tr class="inactive-agent" style="display:none;cursor:pointer" onclick="window.location.href='agente_detail.php?id=<?= $agent['id'] ?>'">
+<tr class="inactive-agent" style="display:none;cursor:pointer" onclick="window.location.href='agente_detail.php?id=<?= $agent['id'] ?>&from=agency'">
 <td><?= htmlspecialchars($agent['full_name']) ?></td>
 <td>
 <?php if (!empty($roles)): ?>

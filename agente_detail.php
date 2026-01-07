@@ -6,6 +6,7 @@ $pageTitle = "Dettaglio Agente - CRM Coldwell Banker";
 $pdo = getDB();
 
 $id = $_GET['id'] ?? '';
+$from = $_GET['from'] ?? ''; // 'agency' se arrivo da agenzia
 
 if (!$id) {
     header('Location: agenti.php');
@@ -62,7 +63,7 @@ require_once 'header.php';
 <span class="status-badge <?= strtolower($agent['status']) ?>"><?= htmlspecialchars($agent['status']) ?></span>
 </div>
 <?php if(in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])): ?>
-<button class="edit-btn" onclick="window.location.href='agente_edit.php?id=<?= $agent['id'] ?>'">🔓 Modifica</button>
+<button class="edit-btn" onclick="window.location.href='agente_edit.php?id=<?= $agent['id'] ?><?= $from === 'agency' ? '&from=agency' : '' ?>'">🔓 Modifica</button>
 <?php else: ?>
 <button class="edit-btn" disabled>🔒 Sola Lettura</button>
 <?php endif; ?>

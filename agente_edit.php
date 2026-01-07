@@ -16,6 +16,7 @@ $pageTitle = "Modifica Agente - CRM Coldwell Banker";
 $pdo = getDB();
 
 $id = $_GET['id'] ?? '';
+$from = $_GET['from'] ?? ''; // 'agency' se arrivo da agenzia
 
 if (!$id) {
     header('Location: agenti.php');
@@ -132,12 +133,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     
+    // Redirect
+    if ($from === 'agency' && !empty($agent['agency_id'])) {
+        $stmt = $pdo->prepare("SELECT code FROM agencies WHERE id = ?");
+        $stmt->execute([$agent['agency_id']]);
+        $agencyCode = $stmt->fetchColumn();
+        if ($agencyCode) {
+            header("Location: agenzia_detail.php?code=" . urlencode($agencyCode) . "#tab-agenti&success=1");
+            exit();
+        }
+    }
+    
     header("Location: agente_detail.php?id=" . urlencode($id) . "&success=1");
     exit();
 }
 
 // Carica dati agente
-$stmt = $pdo->prepare("SELECT * FROM agents WHERE id = :id");
+$stmt = $pdo->prepare("SELECT a.*, ag.code as agency_code FROM agents a LEFT JOIN agencies ag ON a.agency_id = ag.id WHERE a.id = :id");
 $stmt->execute(['id' => $id]);
 $agent = $stmt->fetch();
 
@@ -185,7 +197,7 @@ require_once 'header.php';
 
 <div class="edit-header">
 <div class="header-left">
-<a href="agente_detail.php?id=<?= $agent['id'] ?>" class="back-btn">← Torna</a>
+<a href="<?= ($from === 'agency' && $agent['agency_code']) ? 'agenzia_detail.php?code=' . urlencode($agent['agency_code']) . '#tab-agenti' : 'agente_detail.php?id=' . $agent['id'] ?>" class="back-btn">← Torna</a>
 <div>
 <h1 class="page-title">✏️ Modifica Agente</h1>
 <div class="agent-name"><?= htmlspecialchars($agent['full_name']) ?></div>
