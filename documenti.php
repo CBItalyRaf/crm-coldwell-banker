@@ -341,8 +341,8 @@ if (count($subfolders) > 0) {
 <td class="finder-meta"><?= $folderData['total_size'] > 0 ? number_format($folderData['total_size'] / 1048576, 1) . ' MB' : '—' ?></td>
 <td class="finder-meta"><?= $folderData['last_modified'] ? date('d/m/y H:i', strtotime($folderData['last_modified'])) : '—' ?></td>
 <td class="finder-actions" onclick="event.stopPropagation()">
-    <button onclick="renameFolder('<?= addslashes($folderData['path']) ?>', '<?= addslashes($folderName) ?>')" class="action-btn" title="Rinomina">✏️</button>
-    <button onclick="deleteFolder('<?= addslashes($folderData['path']) ?>', '<?= addslashes($folderName) ?>', <?= $folderData['file_count'] ?>)" class="action-btn action-delete" title="Elimina">🗑️</button>
+    <button class="action-btn btn-rename" data-path="<?= htmlspecialchars($folderData['path']) ?>" data-name="<?= htmlspecialchars($folderName) ?>" title="Rinomina">✏️</button>
+    <button class="action-btn action-delete btn-delete-folder" data-path="<?= htmlspecialchars($folderData['path']) ?>" data-name="<?= htmlspecialchars($folderName) ?>" data-count="<?= $folderData['file_count'] ?>" title="Elimina">🗑️</button>
     <span class="finder-arrow">›</span>
 </td>
 </tr>
@@ -743,6 +743,30 @@ window.addEventListener('click', (e) => {
     if (e.target === categoriesModal) {
         closeCategoriesModal();
     }
+});
+
+// Event listeners per pulsanti cartelle
+document.addEventListener('DOMContentLoaded', () => {
+    // Rinomina cartelle
+    document.querySelectorAll('.btn-rename').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const path = btn.dataset.path;
+            const name = btn.dataset.name;
+            renameFolder(path, name);
+        });
+    });
+    
+    // Elimina cartelle
+    document.querySelectorAll('.btn-delete-folder').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const path = btn.dataset.path;
+            const name = btn.dataset.name;
+            const count = parseInt(btn.dataset.count);
+            deleteFolder(path, name, count);
+        });
+    });
 });
 
 // Modal Categorie
