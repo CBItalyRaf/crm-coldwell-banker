@@ -36,7 +36,7 @@ try {
         }
         
         // Costruisci vecchio e nuovo path
-        $documentsDir = __DIR__ . '/uploads/documents/';
+        $documentsDir = __DIR__ . '/documents/';
         $oldFullPath = $documentsDir . $path;
         
         // Calcola nuovo path
@@ -81,7 +81,7 @@ try {
             exit;
         }
         
-        $documentsDir = __DIR__ . '/uploads/documents/';
+        $documentsDir = __DIR__ . '/documents/';
         $fullPath = $documentsDir . $path;
         
         error_log("Delete folder fullPath: '$fullPath'");
@@ -125,7 +125,7 @@ try {
             exit;
         }
         
-        $documentsDir = __DIR__ . '/uploads/documents/';
+        $documentsDir = __DIR__ . '/documents/';
         $newPath = $parentPath ? $parentPath . '/' . $name : $name;
         $fullPath = $documentsDir . $newPath;
         
