@@ -1,4 +1,10 @@
 <?php
+// Output HTML per browser
+header('Content-Type: text/html; charset=utf-8');
+echo "<!DOCTYPE html><html><head><meta charset='utf-8'><style>body{font-family:monospace;padding:20px;background:#1a1a1a;color:#0f0}pre{background:#000;padding:10px;border:1px solid #0f0}</style></head><body>";
+echo "<h1>Import Ruoli Multipli da CSV</h1>";
+echo "<pre>";
+
 require_once '/var/www/admin.mycb.it/config/database.php';
 
 $pdo = getDB();
@@ -17,11 +23,16 @@ $mailingTags = ['agentinord', 'agenticentro', 'agentisud', 'agentiroma', 'agenzi
 
 $file = fopen('/var/www/admin.mycb.it/agenti.csv', 'r');
 if (!$file) {
-    die("ERRORE: File agenti.csv non trovato!\n");
+    die("ERRORE: File agenti.csv non trovato in /var/www/admin.mycb.it/!\n");
 }
 
-echo "File CSV aperto correttamente!\n\n";
+echo "✓ File CSV aperto correttamente!\n";
+echo "Inizio elaborazione...\n\n";
+
 $header = fgetcsv($file); // Skip header
+echo "Header letto: " . implode(' | ', array_slice($header, 0, 10)) . "\n\n";
+
+$lineCount = 0;
 
 $updated = 0;
 $errors = [];
@@ -95,3 +106,4 @@ if (!empty($errors)) {
         echo "... e altri " . (count($errors) - 20) . " errori\n";
     }
 }
+</pre></body></html>
