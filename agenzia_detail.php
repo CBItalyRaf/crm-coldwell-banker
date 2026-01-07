@@ -46,10 +46,20 @@ if ($agency['broker_manager']) {
     $names = preg_split('/[,\/]/', $agency['broker_manager']);
     foreach ($names as $name) {
         $name = trim($name);
+        
+        // Rimuovi numeri di telefono (3 o più cifre consecutive)
+        $name = preg_replace('/\d{3,}/', '', $name);
+        
+        // Rimuovi note tra parentesi
         if (strpos($name, '(') !== false) {
             $name = trim(preg_replace('/\(.*?\)/', '', $name));
         }
-        if (empty($name)) continue;
+        
+        // Rimuovi trattini extra e spazi multipli
+        $name = preg_replace('/\s*-\s*/', ' ', $name);
+        $name = preg_replace('/\s+/', ' ', trim($name));
+        
+        if (empty($name) || strlen($name) < 3) continue;
         
         $stmt = $pdo->prepare("SELECT mobile FROM agents WHERE agency_id = ? AND CONCAT(first_name, ' ', last_name) = ? LIMIT 1");
         $stmt->execute([$agency['id'], $name]);
@@ -266,8 +276,8 @@ $hasActiveOffboarding = $stmt->fetch();
 <div style="padding:1.5rem;background:#F9FAFB;border-radius:8px">
 <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--cb-gray);font-weight:600;margin-bottom:1rem">Broker Manager</div>
 <?php if (!empty($brokerManagers)): ?>
-    <?php foreach ($brokerManagers as $bm): ?>
-    <div style="margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid #E5E7EB">
+    <?php foreach ($brokerManagers as $idx => $bm): ?>
+    <div style="<?= $idx > 0 ? 'margin-top:1rem;padding-top:1rem;border-top:1px solid #E5E7EB;' : '' ?>">
         <div style="font-size:1.1rem;font-weight:600;color:var(--cb-midnight);margin-bottom:.5rem">
         <?= htmlspecialchars($bm['name']) ?>
         </div>

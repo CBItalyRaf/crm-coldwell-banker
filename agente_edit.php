@@ -134,9 +134,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     // Redirect
-    if ($from === 'agency' && !empty($agent['agency_id'])) {
+    if ($from === 'agency' && !empty($oldData['agency_id'])) {
         $stmt = $pdo->prepare("SELECT code FROM agencies WHERE id = ?");
-        $stmt->execute([$agent['agency_id']]);
+        $stmt->execute([$oldData['agency_id']]);
         $agencyCode = $stmt->fetchColumn();
         if ($agencyCode) {
             header("Location: agenzia_detail.php?code=" . urlencode($agencyCode) . "#tab-agenti&success=1");
