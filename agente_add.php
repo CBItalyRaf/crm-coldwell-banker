@@ -108,9 +108,9 @@ require_once 'header.php';
 .form-section{margin-bottom:2rem;padding-bottom:2rem;border-bottom:2px solid #F3F4F6}
 .form-section:last-child{border:none;margin-bottom:0;padding-bottom:0}
 .form-section h3{font-size:1.1rem;font-weight:600;color:var(--cb-blue);margin:0 0 1.5rem 0;text-transform:uppercase;letter-spacing:.05em}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
-.form-field{margin-bottom:1.5rem}
-.form-field label{display:block;font-size:.875rem;font-weight:600;color:var(--cb-gray);margin-bottom:.5rem}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem}
+.form-field{display:flex;flex-direction:column;gap:.5rem}
+.form-field label{font-size:.875rem;font-weight:600;color:var(--cb-gray)}
 .form-field label .required{color:#EF4444}
 .form-field input,.form-field select,.form-field textarea{width:100%;padding:.75rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem}
 .form-field input:focus,.form-field select:focus,.form-field textarea:focus{outline:none;border-color:var(--cb-bright-blue)}
