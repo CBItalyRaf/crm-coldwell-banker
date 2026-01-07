@@ -250,7 +250,6 @@ foreach ($parts as $i => $part):
 <h1 class="page-title">📄 Gestione Documenti</h1>
 <div class="header-actions">
 <button class="btn-success" onclick="openUploadModal()">➕ Carica Documento/i</button>
-<button class="btn-primary" onclick="createFolder()">📁 Nuova Cartella</button>
 <button class="btn-secondary" onclick="openCategoriesModal()">🏷️ Gestisci Categorie</button>
 </div>
 </div>
@@ -720,30 +719,6 @@ function deleteFolder(path, name, fileCount) {
     });
 }
 
-function createFolder() {
-    const name = prompt('Nome nuova cartella:');
-    if (!name) return;
-    
-    const currentFolder = new URLSearchParams(window.location.search).get('folder') || '';
-    
-    fetch('api_folders.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({action: 'create', parentPath: currentFolder, name: name})
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.success) {
-            location.reload();
-        } else {
-            alert('Errore: ' + data.error);
-        }
-    })
-    .catch(err => {
-        console.error(err);
-        alert('Errore di connessione');
-    });
-}
 
 
 // Chiudi modal click fuori
