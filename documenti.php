@@ -341,8 +341,8 @@ if (count($subfolders) > 0) {
 <td class="finder-meta"><?= $folderData['total_size'] > 0 ? number_format($folderData['total_size'] / 1048576, 1) . ' MB' : '—' ?></td>
 <td class="finder-meta"><?= $folderData['last_modified'] ? date('d/m/y H:i', strtotime($folderData['last_modified'])) : '—' ?></td>
 <td class="finder-actions" onclick="event.stopPropagation()">
-    <button onclick="renameFolder(<?= json_encode($folderData['path']) ?>, <?= json_encode($folderName) ?>)" class="action-btn" title="Rinomina">✏️</button>
-    <button onclick="deleteFolder(<?= json_encode($folderData['path']) ?>, <?= json_encode($folderName) ?>, <?= $folderData['file_count'] ?>)" class="action-btn action-delete" title="Elimina">🗑️</button>
+    <button onclick="renameFolder('<?= addslashes($folderData['path']) ?>', '<?= addslashes($folderName) ?>')" class="action-btn" title="Rinomina">✏️</button>
+    <button onclick="deleteFolder('<?= addslashes($folderData['path']) ?>', '<?= addslashes($folderName) ?>', <?= $folderData['file_count'] ?>)" class="action-btn action-delete" title="Elimina">🗑️</button>
     <span class="finder-arrow">›</span>
 </td>
 </tr>
