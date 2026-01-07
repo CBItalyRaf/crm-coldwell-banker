@@ -123,6 +123,14 @@ try {
             exit;
         }
         
+        // Prova con e senza trailing slash
+        if (!is_dir($fullPath)) {
+            $fullPath = rtrim($fullPath, '/');
+        }
+        if (!is_dir($fullPath)) {
+            $fullPath = $fullPath . '/';
+        }
+        
         error_log("Delete folder fullPath: '$fullPath'");
         error_log("Delete folder exists: " . (is_dir($fullPath) ? 'YES' : 'NO'));
         
