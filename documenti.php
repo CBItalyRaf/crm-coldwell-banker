@@ -745,29 +745,39 @@ window.addEventListener('click', (e) => {
     }
 });
 
-// Event listeners per pulsanti cartelle
-document.addEventListener('DOMContentLoaded', () => {
+// Event listeners per pulsanti cartelle (esegui subito, non aspettare DOM)
+(function() {
+    console.log('Attaching folder button listeners...');
+    
     // Rinomina cartelle
-    document.querySelectorAll('.btn-rename').forEach(btn => {
+    const renameButtons = document.querySelectorAll('.btn-rename');
+    console.log('Found', renameButtons.length, 'rename buttons');
+    
+    renameButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             const path = btn.dataset.path;
             const name = btn.dataset.name;
+            console.log('Rename clicked:', {path, name});
             renameFolder(path, name);
         });
     });
     
     // Elimina cartelle
-    document.querySelectorAll('.btn-delete-folder').forEach(btn => {
+    const deleteButtons = document.querySelectorAll('.btn-delete-folder');
+    console.log('Found', deleteButtons.length, 'delete buttons');
+    
+    deleteButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             const path = btn.dataset.path;
             const name = btn.dataset.name;
             const count = parseInt(btn.dataset.count);
+            console.log('Delete clicked:', {path, name, count});
             deleteFolder(path, name, count);
         });
     });
-});
+})();
 
 // Modal Categorie
 function openCategoriesModal() {
