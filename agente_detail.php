@@ -85,9 +85,33 @@ require_once 'header.php';
 <label>Nome Completo</label>
 <div class="value"><?= htmlspecialchars($agent['full_name']) ?></div>
 </div>
-<div class="info-field">
-<label>Ruolo</label>
-<div class="value"><?= htmlspecialchars($agent['role'] ?: '-') ?></div>
+<div class="info-field" style="grid-column:1/-1">
+<label>Ruoli</label>
+<div class="value">
+<?php 
+$rolesJson = $agent['role'];
+$roles = $rolesJson ? json_decode($rolesJson, true) : [];
+
+if (!empty($roles)):
+    $roleBadges = [
+        'broker' => ['label' => 'Broker', 'color' => '#3B82F6'],
+        'broker_manager' => ['label' => 'Broker Manager', 'color' => '#10B981'],
+        'legale_rappresentante' => ['label' => 'Legale Rappresentante', 'color' => '#F59E0B'],
+        'preposto' => ['label' => 'Preposto', 'color' => '#F97316'],
+        'global_luxury' => ['label' => 'Global Luxury', 'color' => '#8B5CF6']
+    ];
+    
+    foreach ($roles as $role):
+        $badge = $roleBadges[$role] ?? ['label' => ucfirst($role), 'color' => '#6B7280'];
+?>
+    <span style="display:inline-block;padding:.5rem 1rem;border-radius:8px;font-size:.875rem;font-weight:600;background:<?= $badge['color'] ?>;color:white;margin-right:.5rem;margin-bottom:.5rem"><?= $badge['label'] ?></span>
+<?php 
+    endforeach;
+else:
+?>
+    <span style="color:var(--cb-gray)">Nessun ruolo assegnato</span>
+<?php endif; ?>
+</div>
 </div>
 </div>
 </div>

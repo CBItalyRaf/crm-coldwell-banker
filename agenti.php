@@ -117,16 +117,39 @@ Mostrando <strong style="color:var(--cb-midnight)"><?= count($agents) ?></strong
 <tr>
 <th>NOME</th>
 <th>AGENZIA</th>
+<th>RUOLI</th>
 <th>EMAIL</th>
 <th>TELEFONO</th>
 <th>STATUS</th>
 </tr>
 </thead>
 <tbody>
-<?php foreach ($agents as $agent): ?>
+<?php foreach ($agents as $agent): 
+    $rolesJson = $agent['role'];
+    $roles = $rolesJson ? json_decode($rolesJson, true) : [];
+?>
 <tr onclick="window.location.href='agente_detail.php?id=<?= $agent['id'] ?>'">
 <td class="agent-name"><?= htmlspecialchars($agent['full_name']) ?></td>
 <td><?= htmlspecialchars($agent['agency_name'] ?: '-') ?> <?= $agent['agency_code'] ? '(' . htmlspecialchars($agent['agency_code']) . ')' : '' ?></td>
+<td>
+<?php if (!empty($roles)): ?>
+    <?php foreach ($roles as $role): ?>
+        <?php
+        $roleBadges = [
+            'broker' => ['label' => 'Broker', 'color' => '#3B82F6'],
+            'broker_manager' => ['label' => 'Broker Manager', 'color' => '#10B981'],
+            'legale_rappresentante' => ['label' => 'Legale Rapp.', 'color' => '#F59E0B'],
+            'preposto' => ['label' => 'Preposto', 'color' => '#F97316'],
+            'global_luxury' => ['label' => 'Global Luxury', 'color' => '#8B5CF6']
+        ];
+        $badge = $roleBadges[$role] ?? ['label' => $role, 'color' => '#6B7280'];
+        ?>
+        <span style="display:inline-block;padding:.25rem .5rem;border-radius:6px;font-size:.7rem;font-weight:600;background:<?= $badge['color'] ?>;color:white;margin-right:.25rem;margin-bottom:.25rem;white-space:nowrap"><?= $badge['label'] ?></span>
+    <?php endforeach; ?>
+<?php else: ?>
+    <span style="color:var(--cb-gray);font-size:.85rem">-</span>
+<?php endif; ?>
+</td>
 <td><?= htmlspecialchars($agent['email_corporate'] ?: $agent['email_personal'] ?: '-') ?></td>
 <td><?= htmlspecialchars($agent['mobile'] ?: '-') ?></td>
 <td><span class="status-badge <?= strtolower($agent['status']) ?>"><?= htmlspecialchars($agent['status']) ?></span></td>
