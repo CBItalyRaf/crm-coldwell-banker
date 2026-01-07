@@ -29,7 +29,7 @@ $stmt->execute(['agency_id' => $agency['id']]);
 $allAgents = $stmt->fetchAll();
 
 // Cerca cellulari per broker_manager, preposto, legal_representative
-$brokerManagerMobile = null;
+$brokerManagers = []; // Array di {name, mobile}
 $prepostoMobile = null;
 $prepostoName = null;
 $legalRepMobile = null;
@@ -41,14 +41,27 @@ echo "Preposto: " . ($agency['preposto'] ?: 'VUOTO') . "\n";
 echo "Legal Rep: " . ($agency['legal_representative'] ?: 'VUOTO') . "\n";
 echo "-->\n";
 
+// BROKER MANAGER: può essere multiplo separato da virgola
 if ($agency['broker_manager']) {
-    $searchName = trim($agency['broker_manager']);
-    $stmt = $pdo->prepare("SELECT mobile, first_name, last_name FROM agents WHERE agency_id = ? AND CONCAT(first_name, ' ', last_name) = ? LIMIT 1");
-    $stmt->execute([$agency['id'], $searchName]);
-    $result = $stmt->fetch();
-    $brokerManagerMobile = $result['mobile'] ?? null;
-    
-    echo "<!-- Cercato BM: '$searchName' - Trovato: " . ($result ? $result['first_name'] . ' ' . $result['last_name'] . ' - Mobile: ' . ($result['mobile'] ?: 'NULL') : 'NESSUNO') . " -->\n";
+    $names = preg_split('/[,\/]/', $agency['broker_manager']);
+    foreach ($names as $name) {
+        $name = trim($name);
+        if (strpos($name, '(') !== false) {
+            $name = trim(preg_replace('/\(.*?\)/', '', $name));
+        }
+        if (empty($name)) continue;
+        
+        $stmt = $pdo->prepare("SELECT mobile FROM agents WHERE agency_id = ? AND CONCAT(first_name, ' ', last_name) = ? LIMIT 1");
+        $stmt->execute([$agency['id'], $name]);
+        $result = $stmt->fetch();
+        
+        $brokerManagers[] = [
+            'name' => $name,
+            'mobile' => $result['mobile'] ?? null
+        ];
+        
+        echo "<!-- Cercato BM: '$name' - Mobile: " . ($result['mobile'] ?? 'NULL') . " -->\n";
+    }
 }
 
 // PREPOSTO: cerca nel campo role JSON
@@ -252,13 +265,21 @@ $hasActiveOffboarding = $stmt->fetch();
 <!-- Broker Manager -->
 <div style="padding:1.5rem;background:#F9FAFB;border-radius:8px">
 <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--cb-gray);font-weight:600;margin-bottom:1rem">Broker Manager</div>
-<div style="font-size:1.1rem;font-weight:600;color:var(--cb-midnight);margin-bottom:.5rem">
-<?= htmlspecialchars($agency['broker_manager'] ?: '-') ?>
-</div>
-<?php if ($brokerManagerMobile): ?>
-<div style="font-size:.9rem;color:var(--cb-gray)">
-📞 <?= htmlspecialchars($brokerManagerMobile) ?>
-</div>
+<?php if (!empty($brokerManagers)): ?>
+    <?php foreach ($brokerManagers as $bm): ?>
+    <div style="margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid #E5E7EB">
+        <div style="font-size:1.1rem;font-weight:600;color:var(--cb-midnight);margin-bottom:.5rem">
+        <?= htmlspecialchars($bm['name']) ?>
+        </div>
+        <?php if ($bm['mobile']): ?>
+        <div style="font-size:.9rem;color:var(--cb-gray)">
+        📞 <?= htmlspecialchars($bm['mobile']) ?>
+        </div>
+        <?php endif; ?>
+    </div>
+    <?php endforeach; ?>
+<?php else: ?>
+    <div style="font-size:1.1rem;font-weight:600;color:var(--cb-midnight)">-</div>
 <?php endif; ?>
 </div>
 
@@ -943,6 +964,7 @@ $idx = 'standalone_' . $i;
 <thead>
 <tr>
 <th>Nome</th>
+<th>Ruoli</th>
 <th>Email</th>
 <th>Telefono</th>
 <th>Status</th>
@@ -952,17 +974,61 @@ $idx = 'standalone_' . $i;
 <?php if(empty($activeAgents) && empty($inactiveAgents)): ?>
 <tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--cb-gray)">Nessun agente trovato</td></tr>
 <?php else: ?>
-<?php foreach($activeAgents as $agent): ?>
+<?php foreach($activeAgents as $agent): 
+    $rolesJson = $agent['role'];
+    $roles = $rolesJson ? json_decode($rolesJson, true) : [];
+?>
 <tr onclick="window.location.href='agente_detail.php?id=<?= $agent['id'] ?>'" style="cursor:pointer">
 <td><?= htmlspecialchars($agent['full_name']) ?></td>
+<td>
+<?php if (!empty($roles)): ?>
+    <?php
+    $roleBadges = [
+        'broker' => ['label' => 'Broker', 'color' => '#3B82F6'],
+        'broker_manager' => ['label' => 'Broker M.', 'color' => '#10B981'],
+        'legale_rappresentante' => ['label' => 'Legale R.', 'color' => '#F59E0B'],
+        'preposto' => ['label' => 'Preposto', 'color' => '#F97316'],
+        'global_luxury' => ['label' => 'GL', 'color' => '#8B5CF6']
+    ];
+    foreach ($roles as $role):
+        $badge = $roleBadges[$role] ?? ['label' => $role, 'color' => '#6B7280'];
+    ?>
+    <span style="display:inline-block;padding:.25rem .5rem;border-radius:6px;font-size:.7rem;font-weight:600;background:<?= $badge['color'] ?>;color:white;margin-right:.25rem;margin-bottom:.25rem;white-space:nowrap"><?= $badge['label'] ?></span>
+    <?php endforeach; ?>
+<?php else: ?>
+    <span style="color:var(--cb-gray);font-size:.85rem">-</span>
+<?php endif; ?>
+</td>
 <td><?= htmlspecialchars($agent['email_corporate'] ?: $agent['email_personal'] ?: '-') ?></td>
 <td><?= htmlspecialchars($agent['mobile'] ?: '-') ?></td>
 <td><span class="status-badge active">Active</span></td>
 </tr>
 <?php endforeach; ?>
-<?php foreach($inactiveAgents as $agent): ?>
+<?php foreach($inactiveAgents as $agent): 
+    $rolesJson = $agent['role'];
+    $roles = $rolesJson ? json_decode($rolesJson, true) : [];
+?>
 <tr class="inactive-agent" style="display:none;cursor:pointer" onclick="window.location.href='agente_detail.php?id=<?= $agent['id'] ?>'">
 <td><?= htmlspecialchars($agent['full_name']) ?></td>
+<td>
+<?php if (!empty($roles)): ?>
+    <?php
+    $roleBadges = [
+        'broker' => ['label' => 'Broker', 'color' => '#3B82F6'],
+        'broker_manager' => ['label' => 'Broker M.', 'color' => '#10B981'],
+        'legale_rappresentante' => ['label' => 'Legale R.', 'color' => '#F59E0B'],
+        'preposto' => ['label' => 'Preposto', 'color' => '#F97316'],
+        'global_luxury' => ['label' => 'GL', 'color' => '#8B5CF6']
+    ];
+    foreach ($roles as $role):
+        $badge = $roleBadges[$role] ?? ['label' => $role, 'color' => '#6B7280'];
+    ?>
+    <span style="display:inline-block;padding:.25rem .5rem;border-radius:6px;font-size:.7rem;font-weight:600;background:<?= $badge['color'] ?>;color:white;margin-right:.25rem;margin-bottom:.25rem;white-space:nowrap"><?= $badge['label'] ?></span>
+    <?php endforeach; ?>
+<?php else: ?>
+    <span style="color:var(--cb-gray);font-size:.85rem">-</span>
+<?php endif; ?>
+</td>
 <td><?= htmlspecialchars($agent['email_corporate'] ?: $agent['email_personal'] ?: '-') ?></td>
 <td><?= htmlspecialchars($agent['mobile'] ?: '-') ?></td>
 <td><span class="status-badge inactive"><?= htmlspecialchars($agent['status']) ?></span></td>
