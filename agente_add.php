@@ -191,6 +191,13 @@ require_once 'header.php';
 </select>
 </div>
 </div>
+<div class="form-grid">
+<div class="form-field">
+<label>Data Inserimento</label>
+<input type="date" name="inserted_at" value="<?= date('Y-m-d') ?>">
+</div>
+<div></div>
+</div>
 <div class="form-field">
 <label>Ruoli</label>
 <div style="display:flex;flex-wrap:wrap;gap:1rem;padding:.5rem 0">
@@ -209,11 +216,6 @@ foreach ($allRoles as $roleKey => $roleLabel):
 <span style="font-weight:500"><?= $roleLabel ?></span>
 </label>
 <?php endforeach; ?>
-</div>
-</div>
-<div class="form-field">
-<label>Data Inserimento</label>
-<input type="date" name="inserted_at" value="<?= date('Y-m-d') ?>">
 </div>
 </div>
 </div>
