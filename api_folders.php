@@ -101,34 +101,31 @@ try {
             exit;
         }
         
-        // Cerca nella tabella folders per ottenere type e agency_code
-        $stmt = $pdo->prepare("SELECT type, agency_code FROM folders WHERE folder_path = ?");
-        $stmt->execute([$path . '/']); // DB ha trailing slash
-        $folderInfo = $stmt->fetch();
+        // Trova filepath di un file dentro questa cartella
+        $stmt = $pdo->prepare("SELECT filepath FROM documents WHERE folder_path = ? LIMIT 1");
+        $stmt->execute([$path . '/']);
+        $doc = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        if (!$folderInfo) {
-            echo json_encode(['success' => false, 'error' => 'Cartella non trovata nel database']);
-            exit;
-        }
-        
-        // Ricostruisci path completo basato su type
-        $documentsDir = __DIR__ . '/documents/';
-        
-        if ($folderInfo['type'] === 'common') {
-            $fullPath = $documentsDir . 'common/' . $path;
-        } else if ($folderInfo['type'] === 'agency') {
-            $fullPath = $documentsDir . 'agencies/' . $folderInfo['agency_code'] . '/public/' . $path;
+        if ($doc) {
+            // Estrai la directory dal filepath
+            $fullPath = __DIR__ . '/' . dirname($doc['filepath']);
         } else {
-            echo json_encode(['success' => false, 'error' => 'Tipo cartella non valido']);
-            exit;
-        }
-        
-        // Prova con e senza trailing slash
-        if (!is_dir($fullPath)) {
-            $fullPath = rtrim($fullPath, '/');
-        }
-        if (!is_dir($fullPath)) {
-            $fullPath = $fullPath . '/';
+            // Nessun file dentro - usa folders table
+            $stmt = $pdo->prepare("SELECT type, agency_code FROM folders WHERE folder_path = ?");
+            $stmt->execute([$path . '/']);
+            $folderInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$folderInfo) {
+                echo json_encode(['success' => false, 'error' => 'Cartella non trovata nel database']);
+                exit;
+            }
+            
+            $documentsDir = __DIR__ . '/documents/';
+            if ($folderInfo['type'] === 'common') {
+                $fullPath = $documentsDir . 'common/' . $path;
+            } else {
+                $fullPath = $documentsDir . 'agencies/' . $folderInfo['agency_code'] . '/public/' . $path;
+            }
         }
         
         error_log("Delete folder fullPath: '$fullPath'");
@@ -136,14 +133,14 @@ try {
         
         // Verifica che cartella esista
         if (!is_dir($fullPath)) {
-            echo json_encode(['success' => false, 'error' => 'Cartella non trovata nel filesystem: ' . $fullPath]);
+            echo json_encode(['success' => false, 'error' => 'Cartella non trovata: ' . $fullPath]);
             exit;
         }
         
         // Verifica che sia vuota
         $files = array_diff(scandir($fullPath), ['.', '..']);
         if (count($files) > 0) {
-            echo json_encode(['success' => false, 'error' => 'La cartella contiene ancora file']);
+            echo json_encode(['success' => false, 'error' => 'La cartella contiene ancora ' . count($files) . ' file']);
             exit;
         }
         
