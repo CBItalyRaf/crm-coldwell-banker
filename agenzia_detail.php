@@ -186,6 +186,24 @@ $hasActiveOffboarding = $stmt->fetch();
 <div class="value"><?= htmlspecialchars($agency['type']) ?></div>
 </div>
 <div class="info-field">
+<label>Ragione Sociale</label>
+<div class="value"><?= htmlspecialchars($agency['company_name'] ?: '-') ?></div>
+</div>
+<div class="info-field">
+<label>Partita IVA</label>
+<div class="value"><?= htmlspecialchars($agency['vat_number'] ?: '-') ?></div>
+</div>
+<div class="info-field">
+<label>Codice Fiscale Società</label>
+<div class="value"><?= htmlspecialchars($agency['tax_code'] ?: '-') ?></div>
+</div>
+</div>
+</div>
+
+<div class="info-section">
+<h3>Rappresentanza Legale</h3>
+<div class="info-grid">
+<div class="info-field">
 <label>Broker Manager</label>
 <div class="value"><?= htmlspecialchars($agency['broker_manager'] ?: '-') ?></div>
 </div>
@@ -194,18 +212,22 @@ $hasActiveOffboarding = $stmt->fetch();
 <div class="value"><?= htmlspecialchars($agency['broker_mobile'] ?: '-') ?></div>
 </div>
 <div class="info-field">
-<label>Rappresentante Legale</label>
+<label>Legale Rappresentante</label>
 <div class="value"><?= htmlspecialchars($agency['legal_representative'] ?: '-') ?></div>
 </div>
 <div class="info-field">
-<label>Ragione Sociale</label>
-<div class="value"><?= htmlspecialchars($agency['company_name'] ?: '-') ?></div>
+<label>CF Legale Rappresentante</label>
+<div class="value"><?= htmlspecialchars($agency['legal_representative_cf'] ?: '-') ?></div>
+</div>
+<div class="info-field">
+<label>Preposto</label>
+<div class="value"><?= htmlspecialchars($agency['preposto'] ?: '-') ?></div>
 </div>
 </div>
 </div>
 
 <div class="info-section">
-<h3>Sede</h3>
+<h3>Sede e Contatti</h3>
 <div class="info-grid">
 <div class="info-field" style="grid-column:1/-1">
 <label>Indirizzo</label>
@@ -223,12 +245,6 @@ $hasActiveOffboarding = $stmt->fetch();
 <label>CAP</label>
 <div class="value"><?= htmlspecialchars($agency['zip_code'] ?: '-') ?></div>
 </div>
-</div>
-</div>
-
-<div class="info-section">
-<h3>Contatti</h3>
-<div class="info-grid">
 <div class="info-field">
 <label>Email</label>
 <div class="value"><?= htmlspecialchars($agency['email'] ?: '-') ?></div>
