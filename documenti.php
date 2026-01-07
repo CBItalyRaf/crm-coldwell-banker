@@ -681,8 +681,8 @@ function renameFolder(path, oldName) {
     .then(r => r.json())
     .then(data => {
         if (data.success) {
-            // Redirect alla home documenti (senza filtro folder)
-            window.location.href = 'documenti.php';
+            // Forza reload completo senza cache
+            window.location.href = 'documenti.php?_=' + Date.now();
         } else {
             alert('Errore: ' + data.error);
         }
