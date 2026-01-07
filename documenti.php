@@ -341,8 +341,8 @@ if (count($subfolders) > 0) {
 <td class="finder-meta"><?= $folderData['total_size'] > 0 ? number_format($folderData['total_size'] / 1048576, 1) . ' MB' : '—' ?></td>
 <td class="finder-meta"><?= $folderData['last_modified'] ? date('d/m/y H:i', strtotime($folderData['last_modified'])) : '—' ?></td>
 <td class="finder-actions" onclick="event.stopPropagation()">
-    <button class="action-btn btn-rename" data-path="<?= htmlspecialchars($folderData['path']) ?>" data-name="<?= htmlspecialchars($folderName) ?>" title="Rinomina">✏️</button>
-    <button class="action-btn action-delete btn-delete-folder" data-path="<?= htmlspecialchars($folderData['path']) ?>" data-name="<?= htmlspecialchars($folderName) ?>" data-count="<?= $folderData['file_count'] ?>" title="Elimina">🗑️</button>
+    <button onclick="renameFolderEncoded('<?= base64_encode($folderData['path']) ?>', '<?= base64_encode($folderName) ?>')" class="action-btn" title="Rinomina">✏️</button>
+    <button onclick="deleteFolderEncoded('<?= base64_encode($folderData['path']) ?>', '<?= base64_encode($folderName) ?>', <?= $folderData['file_count'] ?>)" class="action-btn action-delete" title="Elimina">🗑️</button>
     <span class="finder-arrow">›</span>
 </td>
 </tr>
@@ -655,6 +655,20 @@ function deleteDoc(id, filename) {
     }
 }
 
+// Wrapper con base64 per evitare problemi con caratteri speciali
+function renameFolderEncoded(pathB64, nameB64) {
+    const path = atob(pathB64);
+    const name = atob(nameB64);
+    renameFolder(path, name);
+}
+
+function deleteFolderEncoded(pathB64, nameB64, fileCount) {
+    const path = atob(pathB64);
+    const name = atob(nameB64);
+    deleteFolder(path, name, fileCount);
+}
+
+
 // Gestione Cartelle
 function renameFolder(path, oldName) {
     const newName = prompt('Nuovo nome cartella:', oldName);
@@ -745,39 +759,6 @@ window.addEventListener('click', (e) => {
     }
 });
 
-// Event listeners per pulsanti cartelle (esegui subito, non aspettare DOM)
-(function() {
-    console.log('Attaching folder button listeners...');
-    
-    // Rinomina cartelle
-    const renameButtons = document.querySelectorAll('.btn-rename');
-    console.log('Found', renameButtons.length, 'rename buttons');
-    
-    renameButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const path = btn.dataset.path;
-            const name = btn.dataset.name;
-            console.log('Rename clicked:', {path, name});
-            renameFolder(path, name);
-        });
-    });
-    
-    // Elimina cartelle
-    const deleteButtons = document.querySelectorAll('.btn-delete-folder');
-    console.log('Found', deleteButtons.length, 'delete buttons');
-    
-    deleteButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const path = btn.dataset.path;
-            const name = btn.dataset.name;
-            const count = parseInt(btn.dataset.count);
-            console.log('Delete clicked:', {path, name, count});
-            deleteFolder(path, name, count);
-        });
-    });
-})();
 
 // Modal Categorie
 function openCategoriesModal() {
