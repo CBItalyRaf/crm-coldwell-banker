@@ -697,7 +697,11 @@ function loadCategories() {
 }
 
 function renderCategoriesList(categories) {
-    const html = categories.map(cat => `
+    const html = categories.map(cat => {
+        const escapedName = cat.name.replace(/'/g, "\\'");
+        const escapedIcon = cat.icon.replace(/'/g, "\\'");
+        
+        return `
         <div class="category-item" style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #e0e0e0">
             <div>
                 <span style="font-size:20px">${cat.icon}</span>
@@ -705,11 +709,12 @@ function renderCategoriesList(categories) {
                 ${cat.is_active == 0 ? '<span style="color:#999"> (Disattivata)</span>' : ''}
             </div>
             <div>
-                <button onclick="editCategory(${cat.id}, '${cat.name.replace(/'/g, "\\'")}', '${cat.icon}', ${cat.is_active})" class="btn-sm">✏️ Modifica</button>
+                <button onclick='editCategory(${cat.id}, "${escapedName}", "${escapedIcon}", ${cat.is_active})' class="btn-sm">✏️ Modifica</button>
                 <button onclick="deleteCategory(${cat.id})" class="btn-sm btn-danger">🗑️</button>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
     
     document.getElementById('categoriesList').innerHTML = html;
 }

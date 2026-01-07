@@ -1,10 +1,19 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('log_errors', 1);
+
 require_once 'check_auth.php';
 require_once 'config/database.php';
 
 header('Content-Type: application/json');
 
-$pdo = getDB();
+try {
+    $pdo = getDB();
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'error' => 'DB error: ' . $e->getMessage()]);
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $action = $_GET['action'] ?? '';
@@ -19,10 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
-    $action = $data['action'] ?? '';
-    
-    if ($action === 'add') {
+    try {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $action = $data['action'] ?? '';
+        
+        error_log("API Categories POST: action=$action, data=" . json_encode($data));
+        
+        if ($action === 'add') {
         $name = $data['name'] ?? '';
         $icon = $data['icon'] ?? '📄';
         
@@ -88,6 +100,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['success' => true]);
         exit;
     }
+    
+    echo json_encode(['success' => false, 'error' => 'Azione non valida']);
+    
+    } catch (Exception $e) {
+        error_log("API Categories Exception: " . $e->getMessage());
+        echo json_encode(['success' => false, 'error' => 'Exception: ' . $e->getMessage()]);
+    }
 }
-
-echo json_encode(['success' => false, 'error' => 'Azione non valida']);
