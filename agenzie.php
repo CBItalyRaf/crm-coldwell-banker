@@ -34,14 +34,14 @@ $sql .= " AND status IN (" . implode(',', array_fill(0, count($statusFilters), '
 
 if ($search) {
     if ($searchType === 'city') {
-        $sql .= " AND city LIKE :search";
+        $sql .= " AND city LIKE ?";
     } elseif ($searchType === 'province') {
-        $sql .= " AND province LIKE :search";
+        $sql .= " AND province LIKE ?";
     } elseif ($searchType === 'people') {
-        $sql .= " AND broker_manager LIKE :search";
+        $sql .= " AND broker_manager LIKE ?";
     } else {
-        // all - usa placeholder distinti per evitare problemi con PDO
-        $sql .= " AND (name LIKE :search1 OR code LIKE :search2 OR city LIKE :search3 OR province LIKE :search4 OR broker_manager LIKE :search5)";
+        // all - usa placeholder distinti
+        $sql .= " AND (name LIKE ? OR code LIKE ? OR city LIKE ? OR province LIKE ? OR broker_manager LIKE ?)";
     }
 }
 
