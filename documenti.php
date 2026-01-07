@@ -162,6 +162,10 @@ foreach ($parts as $i => $part):
 .btn-success:hover{background:#059669}
 .btn-secondary{background:white;color:var(--cb-midnight);border:1px solid #E5E7EB;padding:.65rem 1.25rem;border-radius:8px;font-size:.85rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.5rem;font-weight:500}
 .btn-secondary:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue)}
+.btn-danger{background:var(--danger);color:white;border:none;padding:.65rem 1.25rem;border-radius:8px;font-size:.85rem;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;gap:.5rem;font-weight:500}
+.btn-danger:hover{background:#DC2626}
+.btn-danger-outline{background:white;color:var(--danger);border:1px solid var(--danger);padding:.65rem 1.25rem;border-radius:8px;font-size:.85rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.5rem;font-weight:500}
+.btn-danger-outline:hover{background:var(--danger);color:white}
 .filters-bar{background:white;padding:1.5rem;margin-bottom:2rem;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .filters-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1rem}
 .filter-group{display:flex;flex-direction:column;gap:.5rem}
@@ -183,6 +187,11 @@ foreach ($parts as $i => $part):
 .finder-row td{padding:10px 16px;font-size:.85rem}
 .finder-name{display:flex;align-items:center;gap:.75rem}
 .finder-icon{font-size:1.25rem;flex-shrink:0}
+.file-thumbnail{width:40px;height:40px;border-radius:6px;background-size:cover;background-position:center;border:1px solid #E5E7EB;flex-shrink:0}
+.file-icon-pdf{font-size:2rem;flex-shrink:0}
+.file-icon-doc{font-size:2rem;flex-shrink:0}
+.file-checkbox{cursor:pointer;width:18px;height:18px}
+#selectAll{cursor:pointer;width:18px;height:18px}
 .finder-label{color:var(--cb-midnight);font-weight:500;flex:1}
 .finder-meta{color:var(--cb-gray);font-size:.8rem}
 .finder-actions{text-align:right;display:flex;justify-content:flex-end;gap:.5rem;align-items:center}
@@ -249,6 +258,10 @@ foreach ($parts as $i => $part):
 <div class="page-header">
 <h1 class="page-title">📄 Gestione Documenti</h1>
 <div class="header-actions">
+<button class="btn-danger" id="deleteSelectedBtn" onclick="deleteSelected()" style="display:none">🗑️ Elimina Selezionati (<span id="selectedCount">0</span>)</button>
+<?php if ($folderFilter && count($documents) > 0): ?>
+<button class="btn-danger-outline" onclick="deleteAllInFolder()">🗑️ Elimina Tutti in Cartella (<?= count($documents) ?>)</button>
+<?php endif; ?>
 <button class="btn-success" onclick="openUploadModal()">➕ Carica Documento/i</button>
 <button class="btn-secondary" onclick="openCategoriesModal()">🏷️ Gestisci Categorie</button>
 </div>
@@ -320,6 +333,9 @@ if (count($subfolders) > 0) {
 <table class="finder-table">
 <thead>
 <tr>
+<th style="width:40px">
+<input type="checkbox" id="selectAll" onchange="toggleSelectAll()" title="Seleziona tutti">
+</th>
 <th style="width:45%">Nome</th>
 <th style="width:12%">Tipo</th>
 <th style="width:10%">Dimensione</th>
@@ -332,6 +348,7 @@ if (count($subfolders) > 0) {
 <!-- Cartelle -->
 <?php foreach ($subfolders as $folderName => $folderData): ?>
 <tr class="finder-row folder-row" onclick="window.location.href='?<?= http_build_query(array_merge($_GET, ['folder' => $folderData['path']])) ?>'">
+<td></td>
 <td class="finder-name">
 <span class="finder-icon">📁</span>
 <span class="finder-label"><?= htmlspecialchars($folderName) ?></span>
@@ -348,10 +365,24 @@ if (count($subfolders) > 0) {
 <?php endforeach; ?>
 
 <!-- File -->
-<?php foreach ($documents as $doc): ?>
+<?php foreach ($documents as $doc): 
+$ext = strtolower(pathinfo($doc['original_filename'], PATHINFO_EXTENSION));
+$isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']);
+$isPdf = ($ext === 'pdf');
+?>
 <tr class="finder-row file-row">
+<td onclick="event.stopPropagation()">
+<input type="checkbox" class="file-checkbox" value="<?= $doc['id'] ?>" onchange="updateSelectedCount()">
+</td>
 <td class="finder-name">
-<span class="finder-icon"><?= htmlspecialchars($doc['category_icon']) ?></span>
+<?php if ($isImage): ?>
+<div class="file-thumbnail" style="background-image:url('/<?= htmlspecialchars($doc['filepath']) ?>')"></div>
+<?php elseif ($isPdf): ?>
+<span class="finder-icon file-icon-pdf">📄</span>
+<?php else: ?>
+<span class="finder-icon file-icon-doc"><?= htmlspecialchars($doc['category_icon']) ?></span>
+<?php endif; ?>
+<div style="flex:1">
 <span class="finder-label"><?= htmlspecialchars($doc['original_filename']) ?></span>
 <?php if ($doc['type'] === 'common'): ?>
 <span class="type-badge badge-common">Comune</span>
@@ -360,6 +391,7 @@ if (count($subfolders) > 0) {
 <?php else: ?>
 <span class="type-badge badge-single">Singola</span>
 <?php endif; ?>
+</div>
 </td>
 <td class="finder-meta"><?= htmlspecialchars($doc['category_name']) ?></td>
 <td class="finder-meta"><?= number_format($doc['file_size'] / 1048576, 1) ?> MB</td>
@@ -652,6 +684,87 @@ function deleteDoc(id, filename) {
     if (confirm('Eliminare "' + filename + '"?\n\nQuesta azione è irreversibile.')) {
         window.location.href = 'documenti_delete.php?id=' + id;
     }
+}
+
+// Selezione multipla
+function toggleSelectAll() {
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.file-checkbox');
+    checkboxes.forEach(cb => cb.checked = selectAll.checked);
+    updateSelectedCount();
+}
+
+function updateSelectedCount() {
+    const checkboxes = document.querySelectorAll('.file-checkbox:checked');
+    const count = checkboxes.length;
+    const btn = document.getElementById('deleteSelectedBtn');
+    const countSpan = document.getElementById('selectedCount');
+    
+    countSpan.textContent = count;
+    btn.style.display = count > 0 ? 'inline-flex' : 'none';
+    
+    // Aggiorna checkbox "Seleziona tutti"
+    const allCheckboxes = document.querySelectorAll('.file-checkbox');
+    const selectAll = document.getElementById('selectAll');
+    if (allCheckboxes.length > 0) {
+        selectAll.checked = (count === allCheckboxes.length);
+        selectAll.indeterminate = (count > 0 && count < allCheckboxes.length);
+    }
+}
+
+function deleteSelected() {
+    const checkboxes = document.querySelectorAll('.file-checkbox:checked');
+    if (checkboxes.length === 0) return;
+    
+    const ids = Array.from(checkboxes).map(cb => cb.value);
+    
+    if (!confirm('Eliminare ' + ids.length + ' file selezionati?\n\nQuesta azione è irreversibile.')) return;
+    
+    fetch('api_documents.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action: 'delete_multiple', ids: ids})
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Errore: ' + data.error);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Errore di connessione');
+    });
+}
+
+function deleteAllInFolder() {
+    const folderName = '<?= $folderFilter ? htmlspecialchars(trim($folderFilter, '/')) : 'root' ?>';
+    const fileCount = <?= count($documents) ?>;
+    
+    if (!confirm('ATTENZIONE: Eliminare TUTTI i ' + fileCount + ' file nella cartella "' + folderName + '"?\n\nQuesta azione è irreversibile e cancellerà tutti i documenti presenti.')) return;
+    
+    // Conferma doppia per sicurezza
+    if (!confirm('Sei assolutamente sicuro? Digitare OK per confermare')) return;
+    
+    fetch('api_documents.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action: 'delete_folder_files', folder: '<?= htmlspecialchars($folderFilter) ?>'})
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Errore: ' + data.error);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Errore di connessione');
+    });
 }
 
 // Wrapper con base64 per evitare problemi con caratteri speciali
