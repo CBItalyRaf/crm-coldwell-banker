@@ -43,12 +43,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
         
+        // Genera slug
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
+        
         // Trova ultimo sort_order
         $stmt = $pdo->query("SELECT MAX(sort_order) as max_order FROM document_categories");
         $maxOrder = $stmt->fetch()['max_order'] ?? 0;
         
-        $stmt = $pdo->prepare("INSERT INTO document_categories (name, icon, sort_order, is_active) VALUES (?, ?, ?, 1)");
-        $stmt->execute([$name, $icon, $maxOrder + 1]);
+        $stmt = $pdo->prepare("INSERT INTO document_categories (name, slug, icon, sort_order, is_active) VALUES (?, ?, ?, ?, 1)");
+        $stmt->execute([$name, $slug, $icon, $maxOrder + 1]);
         
         echo json_encode(['success' => true, 'id' => $pdo->lastInsertId()]);
         exit;
@@ -64,8 +67,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
         
-        $stmt = $pdo->prepare("UPDATE document_categories SET name = ?, icon = ? WHERE id = ?");
-        $stmt->execute([$name, $icon, $id]);
+        // Genera slug
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
+        
+        $stmt = $pdo->prepare("UPDATE document_categories SET name = ?, slug = ?, icon = ? WHERE id = ?");
+        $stmt->execute([$name, $slug, $icon, $id]);
         
         echo json_encode(['success' => true]);
         exit;
