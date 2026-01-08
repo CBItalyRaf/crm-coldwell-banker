@@ -139,6 +139,21 @@ else:
 <h3>Microsoft 365</h3>
 <div class="info-grid">
 <div class="info-field">
+<label>Tipo Account</label>
+<div class="value">
+<?php
+$accountTypes = [
+    'agente' => '👤 Agente',
+    'agenzia' => '🏢 Agenzia',
+    'servizio' => '⚙️ Servizio',
+    'master' => '⭐ Master'
+];
+$accountType = $agent['m365_account_type'] ?? 'agente';
+echo htmlspecialchars($accountTypes[$accountType] ?? 'Agente');
+?>
+</div>
+</div>
+<div class="info-field">
 <label>Piano M365</label>
 <div class="value"><?= htmlspecialchars($agent['m365_plan'] ?: '-') ?></div>
 </div>

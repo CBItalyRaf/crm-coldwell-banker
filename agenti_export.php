@@ -46,6 +46,8 @@ $fieldMap = [
     'birth_date' => 'Data Nascita',
     'birth_place' => 'Luogo Nascita',
     'address' => 'Indirizzo',
+    'm365_account_type' => 'Tipo Account M365',
+    'm365_plan' => 'Piano M365',
     'status' => 'Status',
     'created_at' => 'Data Creazione'
 ];
@@ -132,6 +134,16 @@ foreach ($agents as $agent) {
                 $roleNames[] = $roleLabels[$role] ?? $role;
             }
             $row[] = !empty($roleNames) ? implode(', ', $roleNames) : '-';
+        } elseif ($field === 'm365_account_type') {
+            // Gestione tipo account M365
+            $accountTypes = [
+                'agente' => 'Agente',
+                'agenzia' => 'Agenzia',
+                'servizio' => 'Servizio',
+                'master' => 'Master'
+            ];
+            $accountType = $agent[$field] ?? 'agente';
+            $row[] = $accountTypes[$accountType] ?? 'Agente';
         } elseif ($field === 'birth_date' && $agent[$field]) {
             // Formatta data
             $row[] = date('d/m/Y', strtotime($agent[$field]));

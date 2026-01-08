@@ -73,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             email_corporate = :email_corporate,
             email_personal = :email_personal,
             m365_plan = :m365_plan,
+            m365_account_type = :m365_account_type,
             email_activation_date = :email_activation_date,
             email_expiry_date = :email_expiry_date,
             email_disabled_date = :email_disabled_date,
@@ -90,6 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'email_corporate' => $_POST['email_corporate'] ?: null,
         'email_personal' => $_POST['email_personal'] ?: null,
         'm365_plan' => $_POST['m365_plan'] ?: null,
+        'm365_account_type' => $_POST['m365_account_type'] ?? 'agente',
         'email_activation_date' => $_POST['email_activation_date'] ?: null,
         'email_expiry_date' => $_POST['email_expiry_date'] ?: null,
         'email_disabled_date' => $_POST['email_disabled_date'] ?: null,
@@ -282,6 +284,15 @@ foreach ($allRoles as $roleKey => $roleLabel):
 <div class="form-section">
 <h3>Microsoft 365</h3>
 <div class="form-grid">
+<div class="form-field">
+<label>Tipo Account</label>
+<select name="m365_account_type">
+<option value="agente" <?= ($agent['m365_account_type'] ?? 'agente') === 'agente' ? 'selected' : '' ?>>👤 Agente</option>
+<option value="agenzia" <?= ($agent['m365_account_type'] ?? '') === 'agenzia' ? 'selected' : '' ?>>🏢 Agenzia</option>
+<option value="servizio" <?= ($agent['m365_account_type'] ?? '') === 'servizio' ? 'selected' : '' ?>>⚙️ Servizio</option>
+<option value="master" <?= ($agent['m365_account_type'] ?? '') === 'master' ? 'selected' : '' ?>>⭐ Master</option>
+</select>
+</div>
 <div class="form-field">
 <label>Piano M365</label>
 <input type="text" name="m365_plan" value="<?= htmlspecialchars($agent['m365_plan'] ?: '') ?>" placeholder="es. Business Basic, Business Standard">

@@ -13,6 +13,13 @@ if (empty($statusFilters)) {
 }
 
 $search = $_GET['search'] ?? '';
+$searchType = $_GET['search_type'] ?? 'all';
+
+// Valida searchType
+$validSearchTypes = ['all', 'name', 'email', 'agency', 'phone'];
+if (!in_array($searchType, $validSearchTypes)) {
+    $searchType = 'all';
+}
 
 $sql = "SELECT a.*, ag.name as agency_name, ag.code as agency_code 
         FROM agents a 
@@ -22,11 +29,28 @@ $sql = "SELECT a.*, ag.name as agency_name, ag.code as agency_code
 $params = $statusFilters;
 
 if ($search) {
-    $sql .= " AND (a.full_name LIKE ? OR a.email_corporate LIKE ? OR a.mobile LIKE ? OR ag.name LIKE ?)";
-    $params[] = "%$search%";
-    $params[] = "%$search%";
-    $params[] = "%$search%";
-    $params[] = "%$search%";
+    if ($searchType === 'name') {
+        $sql .= " AND a.full_name LIKE ?";
+        $params[] = "%$search%";
+    } elseif ($searchType === 'email') {
+        $sql .= " AND (a.email_corporate LIKE ? OR a.email_personal LIKE ?)";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
+    } elseif ($searchType === 'agency') {
+        $sql .= " AND ag.name LIKE ?";
+        $params[] = "%$search%";
+    } elseif ($searchType === 'phone') {
+        $sql .= " AND (a.mobile LIKE ? OR a.phone LIKE ?)";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
+    } else {
+        // all - cerca in tutto
+        $sql .= " AND (a.full_name LIKE ? OR a.email_corporate LIKE ? OR a.mobile LIKE ? OR ag.name LIKE ?)";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
+    }
 }
 
 $sql .= " ORDER BY a.full_name ASC";
@@ -101,11 +125,21 @@ require_once 'header.php';
 <div class="filters-bar">
 <div class="filters-grid">
 <div class="search-box">
-<input type="text" id="agentsSearch" placeholder="🔍 Cerca per nome, email, telefono o agenzia..." autocomplete="off">
+<div style="display:flex;gap:.5rem">
+<select id="searchType" name="search_type" style="padding:.75rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem;background:white;cursor:pointer;min-width:140px">
+<option value="all" <?= $searchType === 'all' ? 'selected' : '' ?>>🌍 Tutto</option>
+<option value="name" <?= $searchType === 'name' ? 'selected' : '' ?>>👤 Solo Nome</option>
+<option value="email" <?= $searchType === 'email' ? 'selected' : '' ?>>📧 Solo Email</option>
+<option value="agency" <?= $searchType === 'agency' ? 'selected' : '' ?>>🏢 Solo Agenzia</option>
+<option value="phone" <?= $searchType === 'phone' ? 'selected' : '' ?>>📱 Solo Telefono</option>
+</select>
+<input type="text" id="agentsSearch" value="<?= htmlspecialchars($search) ?>" placeholder="🔍 Cerca..." autocomplete="off" style="flex:1">
+</div>
 </div>
 <div class="status-filters">
 <form method="GET" id="statusForm">
 <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
+<input type="hidden" name="search_type" value="<?= htmlspecialchars($searchType) ?>">
 <label class="filter-checkbox <?= in_array('Active', $statusFilters) ? 'active' : '' ?>">
 <input type="checkbox" name="status[]" value="Active" <?= in_array('Active', $statusFilters) ? 'checked' : '' ?> onchange="document.getElementById('statusForm').submit()">
 Active
@@ -122,7 +156,11 @@ Inactive
 <div style="background:white;padding:1rem 1.5rem;margin-bottom:1rem;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);color:var(--cb-gray);font-size:.95rem">
 <?php if($search): ?>
 Trovati <strong style="color:var(--cb-midnight)"><?= count($agents) ?></strong> agenti
-per "<strong><?= htmlspecialchars($search) ?></strong>"
+<?php 
+$searchTypeLabels = ['all' => 'ovunque', 'name' => 'in nome', 'email' => 'in email', 'agency' => 'in agenzia', 'phone' => 'in telefono'];
+$typeLabel = $searchTypeLabels[$searchType] ?? 'ovunque';
+?>
+per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <?php if(count($agents) < $totalCount): ?>
 <span style="opacity:.7">(<?= $totalCount ?> totali con status: <?= implode(', ', $statusFilters) ?>)</span>
 <?php endif; ?>
@@ -223,6 +261,13 @@ per "<strong><?= htmlspecialchars($search) ?></strong>"
 </div>
 </div>
 <div class="checkbox-group">
+<h3>Microsoft 365</h3>
+<div class="checkbox-grid">
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="m365_account_type"> Tipo Account</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="m365_plan"> Piano M365</label>
+</div>
+</div>
+<div class="checkbox-group">
 <h3>Altro</h3>
 <div class="checkbox-grid">
 <label class="checkbox-label"><input type="checkbox" name="export[]" value="status" checked> Status</label>
@@ -233,6 +278,7 @@ per "<strong><?= htmlspecialchars($search) ?></strong>"
 <input type="hidden" name="status_filter[]" value="<?= htmlspecialchars($status) ?>">
 <?php endforeach; ?>
 <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
+<input type="hidden" name="search_type" value="<?= htmlspecialchars($searchType) ?>">
 <div class="modal-actions">
 <button type="button" class="btn-cancel" onclick="closeExportModal()">Annulla</button>
 <button type="submit" class="btn-export">📥 Esporta CSV</button>
@@ -252,7 +298,41 @@ function closeExportModal(){
 exportModal.classList.remove('open');
 }
 
+// Gestione cambio tipo ricerca
+const searchTypeSelect = document.getElementById('searchType');
 const searchInput=document.getElementById('agentsSearch');
+
+if(searchTypeSelect) {
+    searchTypeSelect.addEventListener('change', function() {
+        // Submit form quando cambia tipo
+        const form = document.createElement('form');
+        form.method = 'GET';
+        form.style.display = 'none';
+        
+        // Aggiungi status multipli
+        <?php foreach($statusFilters as $status): ?>
+        const statusInput<?= $status ?> = document.createElement('input');
+        statusInput<?= $status ?>.name = 'status[]';
+        statusInput<?= $status ?>.value = '<?= htmlspecialchars($status) ?>';
+        form.appendChild(statusInput<?= $status ?>);
+        <?php endforeach; ?>
+        
+        const searchInputField = document.createElement('input');
+        searchInputField.name = 'search';
+        searchInputField.value = document.getElementById('agentsSearch').value;
+        form.appendChild(searchInputField);
+        
+        const typeInput = document.createElement('input');
+        typeInput.name = 'search_type';
+        typeInput.value = this.value;
+        form.appendChild(typeInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    });
+}
+
+let searchTimeout;
 let allRows=[];
 
 if(document.querySelector('.agents-table tbody')){
@@ -261,16 +341,46 @@ allRows=Array.from(document.querySelectorAll('.agents-table tbody tr'));
 
 if(searchInput){
 searchInput.addEventListener('input',function(){
-const query=this.value.trim().toLowerCase();
+clearTimeout(searchTimeout);
+const query=this.value.trim();
+const searchTypeElem = document.getElementById('searchType');
+const searchType = searchTypeElem ? searchTypeElem.value : 'all';
 
-if(query.length===0){
-allRows.forEach(row=>row.style.display='');
-}else{
-allRows.forEach(row=>{
-const text=row.textContent.toLowerCase();
-row.style.display=text.includes(query)?'':'none';
-});
+if(query.length<2){
+    // Se cancello la ricerca, ricarica senza filtro
+    if(query.length === 0 && '<?= $search ?>' !== '') {
+        window.location.href = '?<?php foreach($statusFilters as $i => $status): ?>status[]=<?= urlencode($status) ?><?= $i < count($statusFilters)-1 ? '&' : '' ?><?php endforeach; ?>&search_type=' + searchType;
+    }
+    return;
 }
+
+// Submit automatico dopo 500ms di pausa
+searchTimeout=setTimeout(()=>{
+    const form = document.createElement('form');
+    form.method = 'GET';
+    form.style.display = 'none';
+    
+    // Aggiungi status multipli
+    <?php foreach($statusFilters as $status): ?>
+    const statusInput<?= $status ?> = document.createElement('input');
+    statusInput<?= $status ?>.name = 'status[]';
+    statusInput<?= $status ?>.value = '<?= htmlspecialchars($status) ?>';
+    form.appendChild(statusInput<?= $status ?>);
+    <?php endforeach; ?>
+    
+    const searchField = document.createElement('input');
+    searchField.name = 'search';
+    searchField.value = query;
+    form.appendChild(searchField);
+    
+    const typeInput = document.createElement('input');
+    typeInput.name = 'search_type';
+    typeInput.value = searchType;
+    form.appendChild(typeInput);
+    
+    document.body.appendChild(form);
+    form.submit();
+}, 500);
 });
 }
 </script>

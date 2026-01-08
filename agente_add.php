@@ -58,10 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("
             INSERT INTO agents 
             (agency_id, first_name, last_name, mobile, email_corporate, email_personal, 
-             m365_plan, email_activation_date, email_expiry_date, role, status, notes, inserted_at)
+             m365_plan, m365_account_type, email_activation_date, email_expiry_date, role, status, notes, inserted_at)
             VALUES 
             (:agency_id, :first_name, :last_name, :mobile, :email_corporate, :email_personal,
-             :m365_plan, :email_activation_date, :email_expiry_date, :role, :status, :notes, :inserted_at)
+             :m365_plan, :m365_account_type, :email_activation_date, :email_expiry_date, :role, :status, :notes, :inserted_at)
         ");
         
         $stmt->execute([
@@ -72,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'email_corporate' => $_POST['email_corporate'] ?: null,
             'email_personal' => $_POST['email_personal'] ?: null,
             'm365_plan' => $_POST['m365_plan'] ?: null,
+            'm365_account_type' => $_POST['m365_account_type'] ?? 'agente',
             'email_activation_date' => $_POST['email_activation_date'] ?: null,
             'email_expiry_date' => $_POST['email_expiry_date'] ?: null,
             'role' => $rolesJson,
@@ -236,6 +237,15 @@ foreach ($allRoles as $roleKey => $roleLabel):
 </div>
 <div class="form-grid">
 <div class="form-field">
+<label>Tipo Account</label>
+<select name="m365_account_type">
+<option value="agente" selected>👤 Agente</option>
+<option value="agenzia">🏢 Agenzia</option>
+<option value="servizio">⚙️ Servizio</option>
+<option value="master">⭐ Master</option>
+</select>
+</div>
+<div class="form-field">
 <label>Piano M365</label>
 <select name="m365_plan">
 <option value="">Nessun piano</option>
@@ -246,7 +256,6 @@ foreach ($allRoles as $roleKey => $roleLabel):
 <option value="Shared Mailbox">Shared Mailbox</option>
 </select>
 </div>
-<div></div>
 </div>
 <div class="form-grid">
 <div class="form-field">
