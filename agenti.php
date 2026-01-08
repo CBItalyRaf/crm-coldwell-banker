@@ -16,12 +16,12 @@ $search = $_GET['search'] ?? '';
 $searchType = $_GET['search_type'] ?? 'all';
 
 // Valida searchType
-$validSearchTypes = ['all', 'name', 'email', 'agency', 'phone'];
+$validSearchTypes = ['all', 'city', 'province', 'people'];
 if (!in_array($searchType, $validSearchTypes)) {
     $searchType = 'all';
 }
 
-$sql = "SELECT a.*, ag.name as agency_name, ag.code as agency_code 
+$sql = "SELECT a.*, ag.name as agency_name, ag.code as agency_code, ag.city as agency_city, ag.province as agency_province
         FROM agents a 
         LEFT JOIN agencies ag ON a.agency_id = ag.id 
         WHERE a.status IN (" . implode(',', array_fill(0, count($statusFilters), '?')) . ")";
@@ -29,23 +29,19 @@ $sql = "SELECT a.*, ag.name as agency_name, ag.code as agency_code
 $params = $statusFilters;
 
 if ($search) {
-    if ($searchType === 'name') {
+    if ($searchType === 'city') {
+        $sql .= " AND ag.city LIKE ?";
+        $params[] = "%$search%";
+    } elseif ($searchType === 'province') {
+        $sql .= " AND ag.province LIKE ?";
+        $params[] = "%$search%";
+    } elseif ($searchType === 'people') {
         $sql .= " AND a.full_name LIKE ?";
-        $params[] = "%$search%";
-    } elseif ($searchType === 'email') {
-        $sql .= " AND (a.email_corporate LIKE ? OR a.email_personal LIKE ?)";
-        $params[] = "%$search%";
-        $params[] = "%$search%";
-    } elseif ($searchType === 'agency') {
-        $sql .= " AND ag.name LIKE ?";
-        $params[] = "%$search%";
-    } elseif ($searchType === 'phone') {
-        $sql .= " AND (a.mobile LIKE ? OR a.phone LIKE ?)";
-        $params[] = "%$search%";
         $params[] = "%$search%";
     } else {
         // all - cerca in tutto
-        $sql .= " AND (a.full_name LIKE ? OR a.email_corporate LIKE ? OR a.mobile LIKE ? OR ag.name LIKE ?)";
+        $sql .= " AND (a.full_name LIKE ? OR a.email_corporate LIKE ? OR ag.name LIKE ? OR ag.city LIKE ? OR ag.province LIKE ?)";
+        $params[] = "%$search%";
         $params[] = "%$search%";
         $params[] = "%$search%";
         $params[] = "%$search%";
@@ -128,10 +124,9 @@ require_once 'header.php';
 <div style="display:flex;gap:.5rem">
 <select id="searchType" name="search_type" style="padding:.75rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem;background:white;cursor:pointer;min-width:140px">
 <option value="all" <?= $searchType === 'all' ? 'selected' : '' ?>>🌍 Tutto</option>
-<option value="name" <?= $searchType === 'name' ? 'selected' : '' ?>>👤 Solo Nome</option>
-<option value="email" <?= $searchType === 'email' ? 'selected' : '' ?>>📧 Solo Email</option>
-<option value="agency" <?= $searchType === 'agency' ? 'selected' : '' ?>>🏢 Solo Agenzia</option>
-<option value="phone" <?= $searchType === 'phone' ? 'selected' : '' ?>>📱 Solo Telefono</option>
+<option value="city" <?= $searchType === 'city' ? 'selected' : '' ?>>🏙️ Solo Città</option>
+<option value="province" <?= $searchType === 'province' ? 'selected' : '' ?>>📍 Solo Provincia</option>
+<option value="people" <?= $searchType === 'people' ? 'selected' : '' ?>>👤 Solo Persone</option>
 </select>
 <input type="text" id="agentsSearch" value="<?= htmlspecialchars($search) ?>" placeholder="🔍 Cerca..." autocomplete="off" style="flex:1">
 </div>
@@ -157,7 +152,7 @@ Inactive
 <?php if($search): ?>
 Trovati <strong style="color:var(--cb-midnight)"><?= count($agents) ?></strong> agenti
 <?php 
-$searchTypeLabels = ['all' => 'ovunque', 'name' => 'in nome', 'email' => 'in email', 'agency' => 'in agenzia', 'phone' => 'in telefono'];
+$searchTypeLabels = ['all' => 'ovunque', 'city' => 'in città', 'province' => 'in provincia', 'people' => 'in persone'];
 $typeLabel = $searchTypeLabels[$searchType] ?? 'ovunque';
 ?>
 per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>

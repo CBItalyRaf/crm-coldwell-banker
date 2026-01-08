@@ -22,7 +22,7 @@ $searchType = $_POST['search_type'] ?? 'all';
 $exportFields = $_POST['export'] ?? [];
 
 // Valida searchType
-$validSearchTypes = ['all', 'name', 'email', 'agency', 'phone'];
+$validSearchTypes = ['all', 'city', 'province', 'people'];
 if (!in_array($searchType, $validSearchTypes)) {
     $searchType = 'all';
 }
@@ -53,7 +53,7 @@ $fieldMap = [
 ];
 
 // Query agenti
-$sql = "SELECT a.*, ag.name as agency_name, ag.code as agency_code 
+$sql = "SELECT a.*, ag.name as agency_name, ag.code as agency_code, ag.city as agency_city, ag.province as agency_province
         FROM agents a 
         LEFT JOIN agencies ag ON a.agency_id = ag.id 
         WHERE a.status IN (" . implode(',', array_fill(0, count($statusFilters), '?')) . ")";
@@ -61,23 +61,19 @@ $sql = "SELECT a.*, ag.name as agency_name, ag.code as agency_code
 $params = $statusFilters;
 
 if ($search) {
-    if ($searchType === 'name') {
+    if ($searchType === 'city') {
+        $sql .= " AND ag.city LIKE ?";
+        $params[] = "%$search%";
+    } elseif ($searchType === 'province') {
+        $sql .= " AND ag.province LIKE ?";
+        $params[] = "%$search%";
+    } elseif ($searchType === 'people') {
         $sql .= " AND a.full_name LIKE ?";
-        $params[] = "%$search%";
-    } elseif ($searchType === 'email') {
-        $sql .= " AND (a.email_corporate LIKE ? OR a.email_personal LIKE ?)";
-        $params[] = "%$search%";
-        $params[] = "%$search%";
-    } elseif ($searchType === 'agency') {
-        $sql .= " AND ag.name LIKE ?";
-        $params[] = "%$search%";
-    } elseif ($searchType === 'phone') {
-        $sql .= " AND (a.mobile LIKE ? OR a.phone LIKE ?)";
-        $params[] = "%$search%";
         $params[] = "%$search%";
     } else {
         // all - cerca in tutto
-        $sql .= " AND (a.full_name LIKE ? OR a.email_corporate LIKE ? OR a.mobile LIKE ? OR ag.name LIKE ?)";
+        $sql .= " AND (a.full_name LIKE ? OR a.email_corporate LIKE ? OR ag.name LIKE ? OR ag.city LIKE ? OR ag.province LIKE ?)";
+        $params[] = "%$search%";
         $params[] = "%$search%";
         $params[] = "%$search%";
         $params[] = "%$search%";
