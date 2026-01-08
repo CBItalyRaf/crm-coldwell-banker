@@ -37,7 +37,7 @@ $legalRepMobile = null;
 echo "<!-- DEBUG: Agenzia ID {$agency['id']} -->\n";
 
 // BROKER MANAGER: cerca agenti con ruolo broker_manager
-$stmt = $pdo->prepare("SELECT mobile, first_name, last_name FROM agents WHERE agency_id = ? AND JSON_CONTAINS(role, '\"broker_manager\"')");
+$stmt = $pdo->prepare("SELECT mobile, first_name, last_name FROM agents WHERE agency_id = ? AND role IS NOT NULL AND JSON_CONTAINS(role, '\"broker_manager\"')");
 $stmt->execute([$agency['id']]);
 $results = $stmt->fetchAll();
 
@@ -50,7 +50,7 @@ foreach ($results as $result) {
 }
 
 // PREPOSTO: cerca nel campo role JSON
-$stmt = $pdo->prepare("SELECT mobile, first_name, last_name FROM agents WHERE agency_id = ? AND JSON_CONTAINS(role, '\"preposto\"') LIMIT 1");
+$stmt = $pdo->prepare("SELECT mobile, first_name, last_name FROM agents WHERE agency_id = ? AND role IS NOT NULL AND JSON_CONTAINS(role, '\"preposto\"') LIMIT 1");
 $stmt->execute([$agency['id']]);
 $result = $stmt->fetch();
 if ($result) {
@@ -60,7 +60,7 @@ if ($result) {
 }
 
 // LEGALE RAPPRESENTANTE: cerca nel campo role JSON
-$stmt = $pdo->prepare("SELECT mobile, first_name, last_name FROM agents WHERE agency_id = ? AND JSON_CONTAINS(role, '\"legale_rappresentante\"') LIMIT 1");
+$stmt = $pdo->prepare("SELECT mobile, first_name, last_name FROM agents WHERE agency_id = ? AND role IS NOT NULL AND JSON_CONTAINS(role, '\"legale_rappresentante\"') LIMIT 1");
 $stmt->execute([$agency['id']]);
 $result = $stmt->fetch();
 if ($result) {

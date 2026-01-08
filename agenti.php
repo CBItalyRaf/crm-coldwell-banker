@@ -5,41 +5,41 @@ require_once 'config/database.php';
 $pageTitle = "Gestione Agenti - CRM Coldwell Banker";
 $pdo = getDB();
 
-$statusFilter = $_GET['status'] ?? 'Active';
+$statusFilters = isset($_GET['status']) && is_array($_GET['status']) ? $_GET['status'] : ['Active'];
+$validStatuses = ['Active', 'Inactive'];
+$statusFilters = array_intersect($statusFilters, $validStatuses);
+if (empty($statusFilters)) {
+    $statusFilters = ['Active'];
+}
+
 $search = $_GET['search'] ?? '';
 
 $sql = "SELECT a.*, ag.name as agency_name, ag.code as agency_code 
         FROM agents a 
         LEFT JOIN agencies ag ON a.agency_id = ag.id 
-        WHERE 1=1";
+        WHERE a.status IN (" . implode(',', array_fill(0, count($statusFilters), '?')) . ")";
 
-if ($statusFilter !== 'all') {
-    $sql .= " AND a.status = :status";
-}
+$params = $statusFilters;
 
 if ($search) {
-    $sql .= " AND (a.full_name LIKE :search1 OR a.email_corporate LIKE :search2 OR a.mobile LIKE :search3 OR ag.name LIKE :search4)";
+    $sql .= " AND (a.full_name LIKE ? OR a.email_corporate LIKE ? OR a.mobile LIKE ? OR ag.name LIKE ?)";
+    $params[] = "%$search%";
+    $params[] = "%$search%";
+    $params[] = "%$search%";
+    $params[] = "%$search%";
 }
 
 $sql .= " ORDER BY a.full_name ASC";
 
 $stmt = $pdo->prepare($sql);
-
-if ($statusFilter !== 'all') {
-    $stmt->bindValue(':status', $statusFilter);
-}
-if ($search) {
-    $stmt->bindValue(':search1', "%$search%");
-    $stmt->bindValue(':search2', "%$search%");
-    $stmt->bindValue(':search3', "%$search%");
-    $stmt->bindValue(':search4', "%$search%");
-}
-
-$stmt->execute();
+$stmt->execute($params);
 $agents = $stmt->fetchAll();
 
-// Count totale (senza filtri)
-$totalCount = $pdo->query("SELECT COUNT(*) FROM agents")->fetchColumn();
+// Count totale con status filter applicato
+$countSql = "SELECT COUNT(*) FROM agents WHERE status IN (" . implode(',', array_fill(0, count($statusFilters), '?')) . ")";
+$countStmt = $pdo->prepare($countSql);
+$countStmt->execute($statusFilters);
+$totalCount = $countStmt->fetchColumn();
 
 require_once 'header.php';
 ?>
@@ -50,15 +50,18 @@ require_once 'header.php';
 .header-actions{display:flex;gap:1rem}
 .btn-add{background:var(--cb-bright-blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;font-size:.95rem;cursor:pointer;transition:background .2s;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;font-weight:500}
 .btn-add:hover{background:var(--cb-blue)}
+.btn-export{background:var(--success);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;font-size:.95rem;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;gap:.5rem;font-weight:500}
+.btn-export:hover{background:#059669}
 .filters-bar{background:white;padding:1.5rem;margin-bottom:2rem;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .filters-grid{display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:center}
 .search-box{position:relative;flex:1}
 .search-box input{width:100%;padding:.75rem 1rem;border:1px solid #E5E7EB;border-radius:8px;font-size:.95rem}
 .search-box input:focus{outline:none;border-color:var(--cb-bright-blue)}
 .status-filters{display:flex;gap:.5rem;flex-wrap:wrap}
-.filter-btn{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.5rem 1rem;border-radius:8px;cursor:pointer;transition:all .2s;font-size:.9rem}
-.filter-btn:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue)}
-.filter-btn.active{background:var(--cb-bright-blue);color:white;border-color:var(--cb-bright-blue)}
+.filter-checkbox{display:inline-flex;align-items:center;gap:.5rem;background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.5rem 1rem;border-radius:8px;cursor:pointer;transition:all .2s;font-size:.9rem;user-select:none}
+.filter-checkbox:hover{border-color:var(--cb-bright-blue);color:var(--cb-bright-blue)}
+.filter-checkbox.active{background:var(--cb-bright-blue);color:white;border-color:var(--cb-bright-blue)}
+.filter-checkbox input[type="checkbox"]{cursor:pointer}
 .table-container{background:white;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .agents-table{width:100%;border-collapse:collapse}
 .agents-table th{text-align:left;padding:1rem 1.5rem;background:var(--bg);font-size:.875rem;font-weight:600;color:var(--cb-gray);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #E5E7EB}
@@ -71,11 +74,26 @@ require_once 'header.php';
 .status-badge.inactive{background:#FEE2E2;color:#991B1B}
 .empty-state{text-align:center;padding:4rem 2rem;color:var(--cb-gray)}
 .empty-state-icon{font-size:4rem;margin-bottom:1rem;opacity:.5}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:1000}
+.modal.open{display:flex}
+.modal-content{background:white;border-radius:12px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto}
+.modal-header{padding:1.5rem;border-bottom:1px solid #E5E7EB;display:flex;justify-content:space-between;align-items:center}
+.modal-title{font-size:1.25rem;font-weight:600}
+.modal-close{background:transparent;border:none;font-size:1.5rem;cursor:pointer;color:var(--cb-gray)}
+.modal-close:hover{color:var(--cb-midnight)}
+.checkbox-group{padding:1.5rem}
+.checkbox-group h3{font-size:1rem;font-weight:600;margin-bottom:1rem}
+.checkbox-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+.checkbox-label{display:flex;align-items:center;gap:.5rem;cursor:pointer}
+.modal-actions{padding:1.5rem;border-top:1px solid #E5E7EB;display:flex;justify-content:flex-end;gap:1rem}
+.btn-cancel{background:transparent;border:1px solid #E5E7EB;color:var(--cb-gray);padding:.75rem 1.5rem;border-radius:8px;cursor:pointer}
+.btn-cancel:hover{border-color:var(--cb-gray)}
 </style>
 
 <div class="page-header">
 <h1 class="page-title">👥 Gestione Agenti</h1>
 <div class="header-actions">
+<button class="btn-export" onclick="openExportModal()">📥 Esporta CSV</button>
 <a href="agente_add.php" class="btn-add">➕ Nuovo Agente</a>
 </div>
 </div>
@@ -88,19 +106,28 @@ require_once 'header.php';
 <div class="status-filters">
 <form method="GET" id="statusForm">
 <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
-<button type="submit" name="status" value="all" class="filter-btn <?= $statusFilter === 'all' ? 'active' : '' ?>">Tutti</button>
-<button type="submit" name="status" value="Active" class="filter-btn <?= $statusFilter === 'Active' ? 'active' : '' ?>">Active</button>
-<button type="submit" name="status" value="Inactive" class="filter-btn <?= $statusFilter === 'Inactive' ? 'active' : '' ?>">Inactive</button>
+<label class="filter-checkbox <?= in_array('Active', $statusFilters) ? 'active' : '' ?>">
+<input type="checkbox" name="status[]" value="Active" <?= in_array('Active', $statusFilters) ? 'checked' : '' ?> onchange="document.getElementById('statusForm').submit()">
+Active
+</label>
+<label class="filter-checkbox <?= in_array('Inactive', $statusFilters) ? 'active' : '' ?>">
+<input type="checkbox" name="status[]" value="Inactive" <?= in_array('Inactive', $statusFilters) ? 'checked' : '' ?> onchange="document.getElementById('statusForm').submit()">
+Inactive
+</label>
 </form>
 </div>
 </div>
 </div>
 
 <div style="background:white;padding:1rem 1.5rem;margin-bottom:1rem;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);color:var(--cb-gray);font-size:.95rem">
-<?php if($statusFilter !== 'all' || $search): ?>
-Mostrando <strong style="color:var(--cb-midnight)"><?= count($agents) ?></strong> di <strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenti
+<?php if($search): ?>
+Trovati <strong style="color:var(--cb-midnight)"><?= count($agents) ?></strong> agenti
+per "<strong><?= htmlspecialchars($search) ?></strong>"
+<?php if(count($agents) < $totalCount): ?>
+<span style="opacity:.7">(<?= $totalCount ?> totali con status: <?= implode(', ', $statusFilters) ?>)</span>
+<?php endif; ?>
 <?php else: ?>
-<strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenti totali
+<strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenti - Filtri: <?= implode(', ', $statusFilters) ?>
 <?php endif; ?>
 </div>
 
@@ -160,7 +187,71 @@ Mostrando <strong style="color:var(--cb-midnight)"><?= count($agents) ?></strong
 </div>
 <?php endif; ?>
 
+<!-- Modal Export -->
+<div class="modal" id="exportModal">
+<div class="modal-content">
+<div class="modal-header">
+<h2 class="modal-title">📥 Esporta Agenti</h2>
+<button class="modal-close" onclick="closeExportModal()">✕</button>
+</div>
+<form method="POST" action="agenti_export.php">
+<div class="checkbox-group">
+<h3>Info Base</h3>
+<div class="checkbox-grid">
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="full_name" checked> Nome Completo</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="agency_name" checked> Agenzia</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="agency_code" checked> Codice Agenzia</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="role"> Ruoli</label>
+</div>
+</div>
+<div class="checkbox-group">
+<h3>Contatti</h3>
+<div class="checkbox-grid">
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="email_corporate" checked> Email Corporate</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="email_personal"> Email Personale</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="mobile" checked> Telefono</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="phone"> Telefono Fisso</label>
+</div>
+</div>
+<div class="checkbox-group">
+<h3>Anagrafica</h3>
+<div class="checkbox-grid">
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="fiscal_code"> Codice Fiscale</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="birth_date"> Data Nascita</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="birth_place"> Luogo Nascita</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="address"> Indirizzo</label>
+</div>
+</div>
+<div class="checkbox-group">
+<h3>Altro</h3>
+<div class="checkbox-grid">
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="status" checked> Status</label>
+<label class="checkbox-label"><input type="checkbox" name="export[]" value="created_at"> Data Creazione</label>
+</div>
+</div>
+<?php foreach($statusFilters as $status): ?>
+<input type="hidden" name="status_filter[]" value="<?= htmlspecialchars($status) ?>">
+<?php endforeach; ?>
+<input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
+<div class="modal-actions">
+<button type="button" class="btn-cancel" onclick="closeExportModal()">Annulla</button>
+<button type="submit" class="btn-export">📥 Esporta CSV</button>
+</div>
+</form>
+</div>
+</div>
+
 <script>
+const exportModal=document.getElementById('exportModal');
+
+function openExportModal(){
+exportModal.classList.add('open');
+}
+
+function closeExportModal(){
+exportModal.classList.remove('open');
+}
+
 const searchInput=document.getElementById('agentsSearch');
 let allRows=[];
 
