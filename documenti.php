@@ -19,8 +19,8 @@ $search = $_GET['search'] ?? '';
 $categoriesStmt = $pdo->query("SELECT * FROM document_categories WHERE is_active = 1 ORDER BY sort_order ASC");
 $categories = $categoriesStmt->fetchAll();
 
-// Carica agenzie per filtri e dropdown
-$agenciesStmt = $pdo->query("SELECT code, name FROM agencies WHERE status != 'Prospect' ORDER BY name ASC");
+// Carica agenzie per filtri e dropdown - SOLO aperte e in apertura
+$agenciesStmt = $pdo->query("SELECT code, name FROM agencies WHERE status IN ('Active', 'Opening') ORDER BY name ASC");
 $agencies = $agenciesStmt->fetchAll();
 
 // Query documenti
