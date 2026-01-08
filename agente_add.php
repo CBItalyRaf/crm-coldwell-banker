@@ -122,6 +122,10 @@ require_once 'header.php';
 .btn-save{background:var(--cb-bright-blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;transition:background .2s}
 .btn-save:hover{background:var(--cb-blue)}
 .alert-error{background:#FEE2E2;border:1px solid #EF4444;color:#991B1B;padding:1rem;border-radius:8px;margin-bottom:1.5rem}
+.role-checkbox{display:flex;align-items:center;gap:.5rem;cursor:pointer;padding:.75rem 1rem;border:1px solid #E5E7EB;border-radius:8px;background:white;transition:all .2s}
+.role-checkbox:hover{border-color:var(--cb-bright-blue);background:var(--bg)}
+.role-checkbox input[type="checkbox"]{cursor:pointer;width:18px;height:18px}
+.role-checkbox span{font-weight:500;font-size:.95rem}
 </style>
 
 <div class="page-header">
@@ -202,7 +206,7 @@ require_once 'header.php';
 <div class="form-grid">
 <div class="form-field" style="grid-column:1/-1">
 <label>Ruoli</label>
-<div style="display:flex;flex-wrap:wrap;gap:1rem;padding:.5rem 0">
+<div style="display:flex;flex-wrap:wrap;gap:1rem;padding:1rem 0">
 <?php
 $allRoles = [
     'broker' => 'Broker',
@@ -213,9 +217,9 @@ $allRoles = [
 ];
 foreach ($allRoles as $roleKey => $roleLabel):
 ?>
-<label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;padding:.5rem .75rem;border:1px solid #E5E7EB;border-radius:6px;background:white;transition:all .2s" onmouseover="this.style.borderColor='var(--cb-bright-blue)'" onmouseout="this.style.borderColor='#E5E7EB'">
-<input type="checkbox" name="roles[]" value="<?= $roleKey ?>" style="cursor:pointer">
-<span style="font-weight:500"><?= $roleLabel ?></span>
+<label class="role-checkbox">
+<input type="checkbox" name="roles[]" value="<?= $roleKey ?>">
+<span><?= $roleLabel ?></span>
 </label>
 <?php endforeach; ?>
 </div>
