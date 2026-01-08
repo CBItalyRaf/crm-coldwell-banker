@@ -18,7 +18,14 @@ if (empty($statusFilters)) {
 }
 
 $search = $_POST['search'] ?? '';
+$searchType = $_POST['search_type'] ?? 'all';
 $exportFields = $_POST['export'] ?? [];
+
+// Valida searchType
+$validSearchTypes = ['all', 'name', 'email', 'agency', 'phone'];
+if (!in_array($searchType, $validSearchTypes)) {
+    $searchType = 'all';
+}
 
 if (empty($exportFields)) {
     header('Location: agenti.php?error=' . urlencode('Seleziona almeno un campo da esportare'));
@@ -52,11 +59,28 @@ $sql = "SELECT a.*, ag.name as agency_name, ag.code as agency_code
 $params = $statusFilters;
 
 if ($search) {
-    $sql .= " AND (a.full_name LIKE ? OR a.email_corporate LIKE ? OR a.mobile LIKE ? OR ag.name LIKE ?)";
-    $params[] = "%$search%";
-    $params[] = "%$search%";
-    $params[] = "%$search%";
-    $params[] = "%$search%";
+    if ($searchType === 'name') {
+        $sql .= " AND a.full_name LIKE ?";
+        $params[] = "%$search%";
+    } elseif ($searchType === 'email') {
+        $sql .= " AND (a.email_corporate LIKE ? OR a.email_personal LIKE ?)";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
+    } elseif ($searchType === 'agency') {
+        $sql .= " AND ag.name LIKE ?";
+        $params[] = "%$search%";
+    } elseif ($searchType === 'phone') {
+        $sql .= " AND (a.mobile LIKE ? OR a.phone LIKE ?)";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
+    } else {
+        // all - cerca in tutto
+        $sql .= " AND (a.full_name LIKE ? OR a.email_corporate LIKE ? OR a.mobile LIKE ? OR ag.name LIKE ?)";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
+    }
 }
 
 $sql .= " ORDER BY a.full_name ASC";
