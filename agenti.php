@@ -12,6 +12,14 @@ if (empty($statusFilters)) {
     $statusFilters = ['Active'];
 }
 
+// Filtri tipo account M365
+$accountTypeFilters = isset($_GET['account_type']) && is_array($_GET['account_type']) ? $_GET['account_type'] : ['agente', 'agenzia', 'servizio', 'master'];
+$validAccountTypes = ['agente', 'agenzia', 'servizio', 'master'];
+$accountTypeFilters = array_intersect($accountTypeFilters, $validAccountTypes);
+if (empty($accountTypeFilters)) {
+    $accountTypeFilters = ['agente', 'agenzia', 'servizio', 'master'];
+}
+
 $search = $_GET['search'] ?? '';
 $searchType = $_GET['search_type'] ?? 'all';
 
@@ -24,9 +32,10 @@ if (!in_array($searchType, $validSearchTypes)) {
 $sql = "SELECT a.*, ag.name as agency_name, ag.code as agency_code, ag.city as agency_city, ag.province as agency_province
         FROM agents a 
         LEFT JOIN agencies ag ON a.agency_id = ag.id 
-        WHERE a.status IN (" . implode(',', array_fill(0, count($statusFilters), '?')) . ")";
+        WHERE a.status IN (" . implode(',', array_fill(0, count($statusFilters), '?')) . ")
+        AND a.m365_account_type IN (" . implode(',', array_fill(0, count($accountTypeFilters), '?')) . ")";
 
-$params = $statusFilters;
+$params = array_merge($statusFilters, $accountTypeFilters);
 
 if ($search) {
     if ($searchType === 'city') {
@@ -55,10 +64,12 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $agents = $stmt->fetchAll();
 
-// Count totale con status filter applicato
-$countSql = "SELECT COUNT(*) FROM agents WHERE status IN (" . implode(',', array_fill(0, count($statusFilters), '?')) . ")";
+// Count totale con status filter e account type filter applicati
+$countSql = "SELECT COUNT(*) FROM agents 
+             WHERE status IN (" . implode(',', array_fill(0, count($statusFilters), '?')) . ")
+             AND m365_account_type IN (" . implode(',', array_fill(0, count($accountTypeFilters), '?')) . ")";
 $countStmt = $pdo->prepare($countSql);
-$countStmt->execute($statusFilters);
+$countStmt->execute(array_merge($statusFilters, $accountTypeFilters));
 $totalCount = $countStmt->fetchColumn();
 
 require_once 'header.php';
@@ -135,6 +146,9 @@ require_once 'header.php';
 <form method="GET" id="statusForm">
 <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
 <input type="hidden" name="search_type" value="<?= htmlspecialchars($searchType) ?>">
+<?php foreach($accountTypeFilters as $type): ?>
+<input type="hidden" name="account_type[]" value="<?= htmlspecialchars($type) ?>">
+<?php endforeach; ?>
 <label class="filter-checkbox <?= in_array('Active', $statusFilters) ? 'active' : '' ?>">
 <input type="checkbox" name="status[]" value="Active" <?= in_array('Active', $statusFilters) ? 'checked' : '' ?> onchange="document.getElementById('statusForm').submit()">
 Active
@@ -148,6 +162,33 @@ Inactive
 </div>
 </div>
 
+<div style="background:white;padding:1rem 1.5rem;margin-bottom:1rem;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08)">
+<div style="color:var(--cb-gray);font-size:.875rem;font-weight:600;margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.05em">Tipo Account</div>
+<form method="GET" id="accountTypeForm" style="display:flex;gap:.5rem;flex-wrap:wrap">
+<input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
+<input type="hidden" name="search_type" value="<?= htmlspecialchars($searchType) ?>">
+<?php foreach($statusFilters as $status): ?>
+<input type="hidden" name="status[]" value="<?= htmlspecialchars($status) ?>">
+<?php endforeach; ?>
+<label class="filter-checkbox <?= in_array('agente', $accountTypeFilters) ? 'active' : '' ?>">
+<input type="checkbox" name="account_type[]" value="agente" <?= in_array('agente', $accountTypeFilters) ? 'checked' : '' ?> onchange="document.getElementById('accountTypeForm').submit()">
+👤 Agenti
+</label>
+<label class="filter-checkbox <?= in_array('agenzia', $accountTypeFilters) ? 'active' : '' ?>">
+<input type="checkbox" name="account_type[]" value="agenzia" <?= in_array('agenzia', $accountTypeFilters) ? 'checked' : '' ?> onchange="document.getElementById('accountTypeForm').submit()">
+🏢 Agenzia
+</label>
+<label class="filter-checkbox <?= in_array('servizio', $accountTypeFilters) ? 'active' : '' ?>">
+<input type="checkbox" name="account_type[]" value="servizio" <?= in_array('servizio', $accountTypeFilters) ? 'checked' : '' ?> onchange="document.getElementById('accountTypeForm').submit()">
+⚙️ Servizio
+</label>
+<label class="filter-checkbox <?= in_array('master', $accountTypeFilters) ? 'active' : '' ?>">
+<input type="checkbox" name="account_type[]" value="master" <?= in_array('master', $accountTypeFilters) ? 'checked' : '' ?> onchange="document.getElementById('accountTypeForm').submit()">
+⭐ Master
+</label>
+</form>
+</div>
+
 <div style="background:white;padding:1rem 1.5rem;margin-bottom:1rem;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);color:var(--cb-gray);font-size:.95rem">
 <?php if($search): ?>
 Trovati <strong style="color:var(--cb-midnight)"><?= count($agents) ?></strong> agenti
@@ -157,11 +198,16 @@ $typeLabel = $searchTypeLabels[$searchType] ?? 'ovunque';
 ?>
 per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 <?php if(count($agents) < $totalCount): ?>
-<span style="opacity:.7">(<?= $totalCount ?> totali con status: <?= implode(', ', $statusFilters) ?>)</span>
+<span style="opacity:.7">(<?= $totalCount ?> totali)</span>
 <?php endif; ?>
 <?php else: ?>
-<strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenti - Filtri: <?= implode(', ', $statusFilters) ?>
+<strong style="color:var(--cb-midnight)"><?= $totalCount ?></strong> agenti
 <?php endif; ?>
+<?php
+$accountTypeLabels = ['agente' => 'Agenti', 'agenzia' => 'Agenzia', 'servizio' => 'Servizio', 'master' => 'Master'];
+$selectedTypes = array_map(fn($t) => $accountTypeLabels[$t] ?? $t, $accountTypeFilters);
+?>
+<span style="opacity:.7"> - Tipo: <?= implode(', ', $selectedTypes) ?> | Status: <?= implode(', ', $statusFilters) ?></span>
 </div>
 
 <?php if (empty($agents)): ?>
@@ -271,6 +317,9 @@ per "<strong><?= htmlspecialchars($search) ?></strong>" <?= $typeLabel ?>
 </div>
 <?php foreach($statusFilters as $status): ?>
 <input type="hidden" name="status_filter[]" value="<?= htmlspecialchars($status) ?>">
+<?php endforeach; ?>
+<?php foreach($accountTypeFilters as $type): ?>
+<input type="hidden" name="account_type_filter[]" value="<?= htmlspecialchars($type) ?>">
 <?php endforeach; ?>
 <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
 <input type="hidden" name="search_type" value="<?= htmlspecialchars($searchType) ?>">

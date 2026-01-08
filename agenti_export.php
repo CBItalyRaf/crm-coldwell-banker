@@ -17,6 +17,14 @@ if (empty($statusFilters)) {
     $statusFilters = ['Active'];
 }
 
+// Filtri tipo account M365
+$accountTypeFilters = isset($_POST['account_type_filter']) && is_array($_POST['account_type_filter']) ? $_POST['account_type_filter'] : ['agente', 'agenzia', 'servizio', 'master'];
+$validAccountTypes = ['agente', 'agenzia', 'servizio', 'master'];
+$accountTypeFilters = array_intersect($accountTypeFilters, $validAccountTypes);
+if (empty($accountTypeFilters)) {
+    $accountTypeFilters = ['agente', 'agenzia', 'servizio', 'master'];
+}
+
 $search = $_POST['search'] ?? '';
 $searchType = $_POST['search_type'] ?? 'all';
 $exportFields = $_POST['export'] ?? [];
@@ -56,9 +64,10 @@ $fieldMap = [
 $sql = "SELECT a.*, ag.name as agency_name, ag.code as agency_code, ag.city as agency_city, ag.province as agency_province
         FROM agents a 
         LEFT JOIN agencies ag ON a.agency_id = ag.id 
-        WHERE a.status IN (" . implode(',', array_fill(0, count($statusFilters), '?')) . ")";
+        WHERE a.status IN (" . implode(',', array_fill(0, count($statusFilters), '?')) . ")
+        AND a.m365_account_type IN (" . implode(',', array_fill(0, count($accountTypeFilters), '?')) . ")";
 
-$params = $statusFilters;
+$params = array_merge($statusFilters, $accountTypeFilters);
 
 if ($search) {
     if ($searchType === 'city') {
