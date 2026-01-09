@@ -107,11 +107,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (move_uploaded_file($tmpName, $filePath)) {
                         // Salva in DB
                         $stmt = $pdo->prepare("
-                            INSERT INTO ticket_attachments (ticket_id, filename, filepath, filesize, uploaded_by_email)
-                            VALUES (?, ?, ?, ?, ?)
+                            INSERT INTO ticket_attachments (ticket_id, filename, original_filename, filepath, filesize, uploaded_by_email)
+                            VALUES (?, ?, ?, ?, ?, ?)
                         ");
                         $stmt->execute([
                             $ticketId,
+                            $safeName,
                             $filename,
                             'uploads/tickets/' . $safeName,
                             $fileSize,
