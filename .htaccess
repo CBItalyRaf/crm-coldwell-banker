@@ -1,0 +1,14 @@
+# Proteggi directory uploads
+Options -Indexes
+
+# Permetti solo download di file specifici
+<FilesMatch "\.(pdf|doc|docx|xls|xlsx|jpg|jpeg|png|gif|zip)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+# Blocca esecuzione PHP
+<FilesMatch "\.php$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>

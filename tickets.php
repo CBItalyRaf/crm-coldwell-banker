@@ -19,6 +19,15 @@ $statsLavorazione = $pdo->query("SELECT COUNT(*) FROM tickets WHERE stato = 'in_
 $statsChiusiMese = $pdo->query("SELECT COUNT(*) FROM tickets WHERE stato = 'risolto' AND closed_at >= '$thisMonth' AND closed_at < '$nextMonth'")->fetchColumn();
 $statsNuoviMese = $pdo->query("SELECT COUNT(*) FROM tickets WHERE created_at >= '$thisMonth' AND created_at < '$nextMonth'")->fetchColumn();
 
+// Tempo medio risoluzione (in ore) - solo ticket risolti
+$tempoMedioQuery = $pdo->query("
+    SELECT AVG(TIMESTAMPDIFF(HOUR, created_at, closed_at)) as media_ore
+    FROM tickets 
+    WHERE stato = 'risolto' AND closed_at IS NOT NULL
+");
+$tempoMedioOre = $tempoMedioQuery->fetchColumn();
+$tempoMedioGiorni = $tempoMedioOre ? round($tempoMedioOre / 24, 1) : 0;
+
 // Filtri
 $categoriaFilter = $_GET['categoria'] ?? '';
 $statoFilter = $_GET['stato'] ?? '';
@@ -98,6 +107,8 @@ require_once 'header.php';
 .tickets-grid{display:grid;gap:1rem}
 .ticket-card{background:white;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.08);border-left:4px solid;cursor:pointer;transition:all .2s}
 .ticket-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.15);transform:translateY(-2px)}
+.ticket-card.ticket-risolto{opacity:.6;background:#F9FAFB}
+.ticket-card.ticket-risolto:hover{opacity:.75;background:#F3F4F6}
 .ticket-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:1rem}
 .ticket-numero{font-size:.85rem;color:var(--cb-gray);font-weight:600}
 .ticket-badges{display:flex;gap:.5rem;flex-wrap:wrap}
@@ -148,6 +159,10 @@ require_once 'header.php';
 <div class="stat-label">📥 Nuovi (questo mese)</div>
 <div class="stat-value"><?= $statsNuoviMese ?></div>
 </div>
+<div class="stat-card" style="background:linear-gradient(135deg,#A78BFA 0%,#8B5CF6 100%)">
+<div class="stat-label">⏱️ Tempo Medio Risoluzione</div>
+<div class="stat-value"><?= $tempoMedioGiorni ?> gg</div>
+</div>
 </div>
 
 <div class="filters-bar">
@@ -192,7 +207,7 @@ require_once 'header.php';
 <?php else: ?>
 <div class="tickets-grid">
 <?php foreach ($tickets as $ticket): ?>
-<div class="ticket-card" style="border-left-color:<?= $ticket['categoria_colore'] ?? '#1F69FF' ?>" onclick="window.location.href='ticket_detail.php?id=<?= $ticket['id'] ?>'">
+<div class="ticket-card <?= $ticket['stato'] === 'risolto' ? 'ticket-risolto' : '' ?>" style="border-left-color:<?= $ticket['categoria_colore'] ?? '#1F69FF' ?>" onclick="window.location.href='ticket_detail.php?id=<?= $ticket['id'] ?>'">
 <div class="ticket-header">
 <div>
 <div class="ticket-numero"><?= htmlspecialchars($ticket['numero']) ?></div>

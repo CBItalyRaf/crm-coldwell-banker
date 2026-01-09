@@ -48,12 +48,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ");
         
         $agenziaId = !empty($_POST['agenzia_id']) ? $_POST['agenzia_id'] : null;
+        $categoriaId = !empty($_POST['categoria_id']) ? $_POST['categoria_id'] : null;
         
         $stmt->execute([
             $ticketNumero,
             $_POST['titolo'],
             $_POST['descrizione'],
-            $_POST['categoria_id'] ?: null,
+            $categoriaId, // Corretto: NULL se vuoto
             $_POST['priorita'],
             $_SESSION['crm_user']['email'],
             $agenziaId, // Può essere NULL per task interni
@@ -71,6 +72,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             VALUES (?, ?, 'staff', ?)
         ");
         $stmt->execute([$ticketId, $_SESSION['crm_user']['email'], $_POST['descrizione']]);
+        
+        // Gestione upload allegati
+        if (!empty($_FILES['attachments']['name'][0])) {
+            $uploadDir = __DIR__ . '/uploads/tickets/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            
+            $allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                           'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                           'image/jpeg', 'image/png', 'image/gif', 'application/zip'];
+            
+            foreach ($_FILES['attachments']['name'] as $key => $filename) {
+                if ($_FILES['attachments']['error'][$key] === UPLOAD_ERR_OK) {
+                    $tmpName = $_FILES['attachments']['tmp_name'][$key];
+                    $fileSize = $_FILES['attachments']['size'][$key];
+                    $fileType = $_FILES['attachments']['type'][$key];
+                    
+                    // Validazione
+                    if ($fileSize > 10 * 1024 * 1024) { // 10MB
+                        throw new Exception("File troppo grande: $filename (max 10MB)");
+                    }
+                    
+                    if (!in_array($fileType, $allowedTypes)) {
+                        throw new Exception("Tipo file non supportato: $filename");
+                    }
+                    
+                    // Genera nome sicuro
+                    $ext = pathinfo($filename, PATHINFO_EXTENSION);
+                    $safeName = 'ticket_' . $ticketId . '_' . uniqid() . '.' . $ext;
+                    $filePath = $uploadDir . $safeName;
+                    
+                    if (move_uploaded_file($tmpName, $filePath)) {
+                        // Salva in DB
+                        $stmt = $pdo->prepare("
+                            INSERT INTO ticket_attachments (ticket_id, filename, filepath, filesize, uploaded_by_email)
+                            VALUES (?, ?, ?, ?, ?)
+                        ");
+                        $stmt->execute([
+                            $ticketId,
+                            $filename,
+                            'uploads/tickets/' . $safeName,
+                            $fileSize,
+                            $_SESSION['crm_user']['email']
+                        ]);
+                    }
+                }
+            }
+        }
         
         $pdo->commit();
         
@@ -133,7 +183,7 @@ require_once 'header.php';
 </div>
 <?php endif; ?>
 
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
 <div class="form-section">
 <h3>Informazioni Base</h3>
 <div class="form-grid">
@@ -217,6 +267,17 @@ require_once 'header.php';
 <option value="">Prima seleziona un'agenzia...</option>
 </select>
 </div>
+</div>
+</div>
+</div>
+
+<div class="form-section">
+<h3>📎 Allegati</h3>
+<div class="form-field">
+<label>Carica file <span style="color:#999">(opzionale - max 10MB per file)</span></label>
+<input type="file" name="attachments[]" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.gif,.zip" style="padding:.5rem">
+<div style="font-size:.85rem;color:var(--cb-gray);margin-top:.5rem">
+Formati supportati: PDF, Word, Excel, Immagini, ZIP
 </div>
 </div>
 </div>
