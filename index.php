@@ -5,6 +5,7 @@ require_once 'helpers/news_api.php';
 
 $pageTitle = "Dashboard - CRM Coldwell Banker";
 $pdo = getDB();
+$user = $_SESSION['crm_user'] ?? null; // ← AGGIUNGO QUI!
 
 // Solo ATTIVI nei totali
 $agenciesStats = $pdo->query("SELECT COUNT(*) as total FROM agencies WHERE status = 'Active'")->fetch();
