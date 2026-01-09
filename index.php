@@ -16,36 +16,48 @@ $ticketsPersonali = 0;
 $ticketsPrivati = 0;
 $recentTickets = [];
 
-// Carica ticket solo se la tabella esiste
+// Carica ticket solo se la tabella esiste E preferenza attiva
+$showTickets = false;
 try {
-    $ticketsOpen = $pdo->query("SELECT COUNT(*) FROM tickets WHERE stato IN ('nuovo','in_lavorazione','in_attesa')")->fetchColumn();
-    
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM tickets WHERE assegnato_a_email = ? AND stato NOT IN ('risolto')");
-    $stmt->execute([$user['email']]);
-    $ticketsPersonali = $stmt->fetchColumn();
-    
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM tickets WHERE is_privato = 1 AND creato_da_email = ? AND stato NOT IN ('risolto')");
-    $stmt->execute([$user['email']]);
-    $ticketsPrivati = $stmt->fetchColumn();
-    
-    // Ultimi 5 ticket
-    $stmt = $pdo->prepare("
-        SELECT t.*, tc.nome as categoria_nome, tc.colore as categoria_colore, tc.icona as categoria_icona,
-               ag.name as agenzia_name, ag.code as agenzia_code
-        FROM tickets t
-        LEFT JOIN ticket_categories tc ON t.categoria_id = tc.id
-        LEFT JOIN agencies ag ON t.agenzia_id = ag.id
-        WHERE t.stato NOT IN ('risolto')
-        ORDER BY 
-            CASE WHEN t.assegnato_a_email = ? THEN 1 ELSE 2 END,
-            CASE WHEN t.is_privato = 1 AND t.creato_da_email = ? THEN 1 ELSE 3 END,
-            t.created_at DESC
-        LIMIT 5
-    ");
-    $stmt->execute([$user['email'], $user['email']]);
-    $recentTickets = $stmt->fetchAll();
+    require_once __DIR__ . '/helpers/user_preferences.php';
+    $prefs = getUserPreferences($pdo, $user['email']);
+    $showTickets = $prefs['notify_ticket_dashboard'];
 } catch (Exception $e) {
-    // Tabella tickets non esiste ancora, ignora
+    // Helper non esiste o errore
+}
+
+if ($showTickets) {
+    try {
+        $ticketsOpen = $pdo->query("SELECT COUNT(*) FROM tickets WHERE stato IN ('nuovo','in_lavorazione','in_attesa')")->fetchColumn();
+        
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM tickets WHERE assegnato_a_email = ? AND stato NOT IN ('risolto')");
+        $stmt->execute([$user['email']]);
+        $ticketsPersonali = $stmt->fetchColumn();
+        
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM tickets WHERE is_privato = 1 AND creato_da_email = ? AND stato NOT IN ('risolto')");
+        $stmt->execute([$user['email']]);
+        $ticketsPrivati = $stmt->fetchColumn();
+        
+        // Ultimi 5 ticket
+        $stmt = $pdo->prepare("
+            SELECT t.*, tc.nome as categoria_nome, tc.colore as categoria_colore, tc.icona as categoria_icona,
+                   ag.name as agenzia_name, ag.code as agenzia_code
+            FROM tickets t
+            LEFT JOIN ticket_categories tc ON t.categoria_id = tc.id
+            LEFT JOIN agencies ag ON t.agenzia_id = ag.id
+            WHERE t.stato NOT IN ('risolto')
+            ORDER BY 
+                CASE WHEN t.assegnato_a_email = ? THEN 1 ELSE 2 END,
+                CASE WHEN t.is_privato = 1 AND t.creato_da_email = ? THEN 1 ELSE 3 END,
+                t.created_at DESC
+            LIMIT 5
+        ");
+        $stmt->execute([$user['email'], $user['email']]);
+        $recentTickets = $stmt->fetchAll();
+    } catch (Exception $e) {
+        // Tabella tickets non esiste ancora, ignora
+        $showTickets = false;
+    }
 }
 
 $recentAgencies = $pdo->query("SELECT name, city, created_at FROM agencies WHERE status = 'Active' ORDER BY created_at DESC LIMIT 5")->fetchAll();
@@ -179,6 +191,7 @@ if (file_exists(__DIR__ . '/widgets/scadenze_dashboard.php')) {
 </div>
 </div>
 
+<?php if($showTickets): ?>
 <div class="widget">
 <div class="widget-header">
 <span class="widget-icon">🎫</span>
@@ -226,6 +239,7 @@ $bgColor = $isPrivato ? '#FEF3C7' : ($isPersonale ? '#DBEAFE' : '#F9FAFB');
 <?php endif; ?>
 </div>
 </div>
+<?php endif; ?>
 
 <div class="widget">
 <div class="widget-header">

@@ -115,13 +115,14 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 </div>
 
 <?php 
-// Badge scadenze (opzionale - carica solo se i file esistono)
+// Badge scadenze e ticket (opzionale - carica solo se i file esistono)
 $userPrefs = null;
 $scadenzeCount = 0;
+$ticketsUnreadCount = 0;
 
 if (file_exists(__DIR__ . '/helpers/user_preferences.php') && 
     file_exists(__DIR__ . '/helpers/scadenze.php') &&
-    !empty($user['email'])) {  // <-- Usa email invece di id
+    !empty($user['email'])) {
     
     require_once __DIR__ . '/helpers/user_preferences.php';
     require_once __DIR__ . '/helpers/scadenze.php';
@@ -131,6 +132,30 @@ if (file_exists(__DIR__ . '/helpers/user_preferences.php') &&
     if($userPrefs['notify_scadenze_badge']) {
         $scadenzeCount = getScadenzeCount($pdo, 30);
     }
+    
+    // Conta ticket non letti
+    if($userPrefs['notify_ticket_badge']) {
+        try {
+            $stmt = $pdo->prepare("
+                SELECT COUNT(DISTINCT t.id) 
+                FROM tickets t
+                LEFT JOIN ticket_reads tr ON t.id = tr.ticket_id AND tr.staff_email = ?
+                WHERE t.stato NOT IN ('risolto') 
+                AND (
+                    t.assegnato_a_email = ? 
+                    OR (t.is_privato = 1 AND t.creato_da_email = ?)
+                    OR (t.is_privato = 0 AND t.agenzia_id IS NOT NULL)
+                )
+                AND (tr.id IS NULL OR tr.last_read_message_id < (
+                    SELECT MAX(id) FROM ticket_messages WHERE ticket_id = t.id
+                ))
+            ");
+            $stmt->execute([$user['email'], $user['email'], $user['email']]);
+            $ticketsUnreadCount = $stmt->fetchColumn();
+        } catch (Exception $e) {
+            // Tabella ticket non esiste ancora
+        }
+    }
 }
 ?>
 
@@ -138,6 +163,13 @@ if (file_exists(__DIR__ . '/helpers/user_preferences.php') &&
 <a href="calendario_scadenze.php" class="nav-button" style="position:relative;margin-right:1rem" title="Scadenze imminenti">
     🔔
     <span style="position:absolute;top:-.25rem;right:-.25rem;background:#EF4444;color:white;font-size:.7rem;padding:.15rem .4rem;border-radius:999px;font-weight:700;min-width:1.25rem;text-align:center"><?= $scadenzeCount ?></span>
+</a>
+<?php endif; ?>
+
+<?php if($userPrefs && $userPrefs['notify_ticket_badge'] && $ticketsUnreadCount > 0): ?>
+<a href="tickets.php" class="nav-button" style="position:relative;margin-right:1rem" title="Ticket non letti">
+    🎫
+    <span style="position:absolute;top:-.25rem;right:-.25rem;background:#F59E0B;color:white;font-size:.7rem;padding:.15rem .4rem;border-radius:999px;font-weight:700;min-width:1.25rem;text-align:center"><?= $ticketsUnreadCount ?></span>
 </a>
 <?php endif; ?>
 

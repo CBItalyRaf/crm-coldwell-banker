@@ -37,6 +37,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             isset($_POST['is_internal']) ? 1 : 0
         ]);
         
+        // Invia notifica (solo se helper esiste e messaggio non è interno)
+        if (function_exists('sendTicketNotification') && !isset($_POST['is_internal'])) {
+            sendTicketNotification($pdo, $ticketId, 'reply');
+        }
+        
         header("Location: ticket_detail.php?id=$ticketId&success=message");
         exit;
     }
@@ -46,6 +51,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("UPDATE tickets SET stato = ?, closed_at = ? WHERE id = ?");
         $closedAt = $_POST['nuovo_stato'] === 'risolto' ? date('Y-m-d H:i:s') : null;
         $stmt->execute([$_POST['nuovo_stato'], $closedAt, $ticketId]);
+        
+        // Invia notifica (solo se helper esiste)
+        if (function_exists('sendTicketNotification')) {
+            sendTicketNotification($pdo, $ticketId, 'status');
+        }
         
         header("Location: ticket_detail.php?id=$ticketId&success=status");
         exit;
@@ -64,6 +74,19 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute([$ticketId]);
 $messages = $stmt->fetchAll();
+
+// Marca come letto
+$lastMessageId = !empty($messages) ? end($messages)['id'] : null;
+if ($lastMessageId) {
+    $stmt = $pdo->prepare("
+        INSERT INTO ticket_reads (ticket_id, staff_email, last_read_message_id, read_at)
+        VALUES (?, ?, ?, NOW())
+        ON DUPLICATE KEY UPDATE 
+            last_read_message_id = VALUES(last_read_message_id),
+            read_at = NOW()
+    ");
+    $stmt->execute([$ticketId, $_SESSION['crm_user']['email'], $lastMessageId]);
+}
 
 require_once 'header.php';
 ?>

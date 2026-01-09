@@ -15,15 +15,35 @@ if (empty($user['email'])) {
 // Salva preferenze
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $saved = saveUserPreferences(
-            $pdo,
-            $user['email'],
-            isset($_POST['notify_email']) ? 1 : 0,
-            isset($_POST['notify_badge']) ? 1 : 0,
-            isset($_POST['notify_dashboard']) ? 1 : 0
-        );
+        // Salva preferenze scadenze (solo se admin)
+        if ($user['crm_role'] === 'admin') {
+            $savedScadenze = saveUserPreferences(
+                $pdo,
+                $user['email'],
+                isset($_POST['notify_scadenze_email']) ? 1 : 0,
+                isset($_POST['notify_scadenze_badge']) ? 1 : 0,
+                isset($_POST['notify_scadenze_dashboard']) ? 1 : 0
+            );
+        } else {
+            $savedScadenze = true; // Non admin, skip
+        }
         
-        if ($saved) {
+        // Salva preferenze ticket (per tutti)
+        $stmt = $pdo->prepare("
+            UPDATE user_preferences 
+            SET notify_ticket_email = ?,
+                notify_ticket_badge = ?,
+                notify_ticket_dashboard = ?
+            WHERE user_email = ?
+        ");
+        $savedTicket = $stmt->execute([
+            isset($_POST['notify_ticket_email']) ? 1 : 0,
+            isset($_POST['notify_ticket_badge']) ? 1 : 0,
+            isset($_POST['notify_ticket_dashboard']) ? 1 : 0,
+            $user['email']
+        ]);
+        
+        if ($savedScadenze && $savedTicket) {
             header('Location: user_settings.php?saved=1');
             exit;
         } else {
@@ -64,13 +84,14 @@ require_once 'header.php';
     <h1 class="settings-title">⚙️ Impostazioni Notifiche</h1>
     
     <form method="POST">
+        <?php if($user['crm_role'] === 'admin'): ?>
         <div class="settings-section">
             <h2 style="font-size:1.1rem;font-weight:600;color:var(--cb-blue);margin:0 0 1rem 0">
                 📅 Notifiche Scadenze Servizi
             </h2>
             
             <label class="checkbox-item">
-                <input type="checkbox" name="notify_email" <?= $userSettings['notify_scadenze_email'] ? 'checked' : '' ?>>
+                <input type="checkbox" name="notify_scadenze_email" <?= $userSettings['notify_scadenze_email'] ? 'checked' : '' ?>>
                 <div class="checkbox-label">
                     <div class="checkbox-title">📧 Email Settimanali</div>
                     <div class="checkbox-desc">Ricevi un riepilogo settimanale delle scadenze imminenti</div>
@@ -78,7 +99,7 @@ require_once 'header.php';
             </label>
             
             <label class="checkbox-item">
-                <input type="checkbox" name="notify_badge" <?= $userSettings['notify_scadenze_badge'] ? 'checked' : '' ?>>
+                <input type="checkbox" name="notify_scadenze_badge" <?= $userSettings['notify_scadenze_badge'] ? 'checked' : '' ?>>
                 <div class="checkbox-label">
                     <div class="checkbox-title">🔔 Badge Notifiche</div>
                     <div class="checkbox-desc">Mostra il numero di scadenze nell'header del CRM</div>
@@ -86,10 +107,44 @@ require_once 'header.php';
             </label>
             
             <label class="checkbox-item">
-                <input type="checkbox" name="notify_dashboard" <?= $userSettings['notify_scadenze_dashboard'] ? 'checked' : '' ?>>
+                <input type="checkbox" name="notify_scadenze_dashboard" <?= $userSettings['notify_scadenze_dashboard'] ? 'checked' : '' ?>>
                 <div class="checkbox-label">
                     <div class="checkbox-title">📊 Widget Dashboard</div>
                     <div class="checkbox-desc">Mostra il box "Scadenze Imminenti" nella homepage</div>
+                </div>
+            </label>
+        </div>
+        <?php endif; ?>
+        
+        <div class="settings-section">
+            <h2 style="font-size:1.1rem;font-weight:600;color:var(--cb-blue);margin:0 0 1rem 0">
+                🎫 Notifiche Ticket
+            </h2>
+            <p style="font-size:.9rem;color:var(--cb-gray);margin-bottom:1rem">
+                Gestisci come vuoi essere notificato sui ticket
+            </p>
+            
+            <label class="checkbox-item">
+                <input type="checkbox" name="notify_ticket_email" <?= $userSettings['notify_ticket_email'] ? 'checked' : '' ?>>
+                <div class="checkbox-label">
+                    <div class="checkbox-title">📧 Email Notifiche</div>
+                    <div class="checkbox-desc">Ricevi email quando un ticket ti viene assegnato o riceve una risposta</div>
+                </div>
+            </label>
+            
+            <label class="checkbox-item">
+                <input type="checkbox" name="notify_ticket_badge" <?= $userSettings['notify_ticket_badge'] ? 'checked' : '' ?>>
+                <div class="checkbox-label">
+                    <div class="checkbox-title">🎫 Badge Notifiche</div>
+                    <div class="checkbox-desc">Mostra il numero di ticket non letti nell'header del CRM</div>
+                </div>
+            </label>
+            
+            <label class="checkbox-item">
+                <input type="checkbox" name="notify_ticket_dashboard" <?= $userSettings['notify_ticket_dashboard'] ? 'checked' : '' ?>>
+                <div class="checkbox-label">
+                    <div class="checkbox-title">📊 Widget Dashboard</div>
+                    <div class="checkbox-desc">Mostra il box "Ticket" nella homepage con gli ultimi aggiornamenti</div>
                 </div>
             </label>
         </div>

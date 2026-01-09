@@ -74,8 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $pdo->commit();
         
-        // TODO: Invia notifica (da implementare)
-        // sendTicketNotification($pdo, $ticketId, 'new');
+        // Invia notifica (solo se helper esiste)
+        if (function_exists('sendTicketNotification')) {
+            sendTicketNotification($pdo, $ticketId, 'new');
+        }
         
         header("Location: tickets.php?success=created&ticket_id=$ticketId");
         exit;
