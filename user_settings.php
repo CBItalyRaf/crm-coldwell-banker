@@ -93,7 +93,16 @@ require_once 'header.php';
 </style>
 
 <?php if(isset($_GET['saved'])): ?>
-<div class="success-msg">✅ Preferenze salvate con successo!</div>
+<div class="success-msg">
+✅ Preferenze salvate con successo!
+<?php if(isset($_GET['debug'])): ?>
+<pre style="margin-top:.5rem;background:white;padding:.5rem;border-radius:4px;font-size:.85rem;color:#065F46">
+Email: <?= isset($_POST['notify_ticket_email']) ? 'ON' : 'OFF' ?>
+Badge: <?= isset($_POST['notify_ticket_badge']) ? 'ON' : 'OFF' ?>
+Dashboard: <?= isset($_POST['notify_ticket_dashboard']) ? 'ON' : 'OFF' ?>
+</pre>
+<?php endif; ?>
+</div>
 <?php endif; ?>
 
 <div class="settings-card">

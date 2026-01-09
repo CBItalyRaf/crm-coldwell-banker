@@ -18,12 +18,25 @@ $recentTickets = [];
 
 // Carica ticket solo se la tabella esiste E preferenza attiva
 $showTickets = false;
+$debugTickets = []; // Array per debug
 try {
-    require_once __DIR__ . '/helpers/user_preferences.php';
-    $prefs = getUserPreferences($pdo, $user['email']);
-    $showTickets = $prefs['notify_ticket_dashboard'];
+    // Leggi preferenza ticket direttamente
+    $stmt = $pdo->prepare("SELECT notify_ticket_dashboard FROM user_preferences WHERE user_email = ?");
+    $stmt->execute([$user['email']]);
+    $ticketPref = $stmt->fetch();
+    $showTickets = $ticketPref && $ticketPref['notify_ticket_dashboard'];
+    
+    // DEBUG
+    $debugTickets['user_email'] = $user['email'];
+    $debugTickets['pref_found'] = $ticketPref ? 'SI' : 'NO';
+    $debugTickets['pref_value'] = $ticketPref ? $ticketPref['notify_ticket_dashboard'] : 'NULL';
+    $debugTickets['show_tickets'] = $showTickets ? 'SI' : 'NO';
+    
+    error_log("LOAD DASHBOARD: user=" . $user['email'] . " pref=" . ($ticketPref ? $ticketPref['notify_ticket_dashboard'] : 'NULL') . " show=" . ($showTickets ? 'SI' : 'NO'));
 } catch (Exception $e) {
-    // Helper non esiste o errore
+    // Tabella non esiste o errore
+    $debugTickets['error'] = $e->getMessage();
+    error_log("LOAD DASHBOARD ERROR: " . $e->getMessage());
 }
 
 if ($showTickets) {
@@ -145,6 +158,16 @@ require_once 'header.php';
 <h1>👋 Ciao, <?= htmlspecialchars($user['name']) ?></h1>
 <p>Overview del network Coldwell Banker Italy</p>
 </div>
+
+<?php if(isset($_GET['debug'])): ?>
+<div style="background:#FEF3C7;border:2px solid #F59E0B;padding:1rem;border-radius:8px;margin-bottom:2rem">
+<strong>🐛 DEBUG TICKET WIDGET:</strong>
+<pre style="margin-top:.5rem;background:white;padding:1rem;border-radius:4px;font-size:.85rem"><?= print_r($debugTickets, true) ?>
+Totale ticket aperti: <?= $ticketsOpen ?>
+Recent tickets count: <?= count($recentTickets) ?>
+Show widget: <?= $showTickets ? 'SI' : 'NO' ?></pre>
+</div>
+<?php endif; ?>
 
 <div class="search-container">
 <input type="text" id="searchInput" placeholder="🔍 Cerca agenzie, agenti..." autocomplete="off">
