@@ -161,6 +161,9 @@ require_once 'header.php';
 
 <?php if(isset($_GET['debug'])): ?>
 <div style="background:#FEF3C7;border:2px solid #F59E0B;padding:1rem;border-radius:8px;margin-bottom:2rem">
+<strong>🐛 DEBUG SESSIONE UTENTE:</strong>
+<pre style="margin-top:.5rem;background:white;padding:1rem;border-radius:4px;font-size:.85rem"><?= print_r($user, true) ?></pre>
+
 <strong>🐛 DEBUG TICKET WIDGET:</strong>
 <pre style="margin-top:.5rem;background:white;padding:1rem;border-radius:4px;font-size:.85rem"><?= print_r($debugTickets, true) ?>
 Totale ticket aperti: <?= $ticketsOpen ?>
