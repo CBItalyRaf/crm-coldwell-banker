@@ -9,32 +9,7 @@ $pdo = getDB();
 // Solo ATTIVI nei totali
 $agenciesStats = $pdo->query("SELECT COUNT(*) as total FROM agencies WHERE status = 'Active'")->fetch();
 $agentsStats = $pdo->query("SELECT COUNT(*) as total FROM agents WHERE status = 'Active'")->fetch();
-
-// Ticket per dashboard
-$ticketsOpen = $pdo->query("SELECT COUNT(*) FROM tickets WHERE stato IN ('nuovo','in_lavorazione','in_attesa')")->fetchColumn();
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM tickets WHERE assegnato_a_email = ? AND stato NOT IN ('risolto')");
-$stmt->execute([$user['email']]);
-$ticketsPersonali = $stmt->fetchColumn();
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM tickets WHERE is_privato = 1 AND creato_da_email = ? AND stato NOT IN ('risolto')");
-$stmt->execute([$user['email']]);
-$ticketsPrivati = $stmt->fetchColumn();
-
-// Ultimi 5 ticket
-$recentTickets = $pdo->prepare("
-    SELECT t.*, tc.nome as categoria_nome, tc.colore as categoria_colore, tc.icona as categoria_icona,
-           ag.name as agenzia_name, ag.code as agenzia_code
-    FROM tickets t
-    LEFT JOIN ticket_categories tc ON t.categoria_id = tc.id
-    LEFT JOIN agencies ag ON t.agenzia_id = ag.id
-    WHERE t.stato NOT IN ('risolto')
-    ORDER BY 
-        CASE WHEN t.assegnato_a_email = ? THEN 1 ELSE 2 END,
-        CASE WHEN t.is_privato = 1 AND t.creato_da_email = ? THEN 1 ELSE 3 END,
-        t.created_at DESC
-    LIMIT 5
-");
-$recentTickets->execute([$user['email'], $user['email']]);
-$recentTickets = $recentTickets->fetchAll();
+$ticketsOpen = 0;
 
 $recentAgencies = $pdo->query("SELECT name, city, created_at FROM agencies WHERE status = 'Active' ORDER BY created_at DESC LIMIT 5")->fetchAll();
 
@@ -170,43 +145,11 @@ if (file_exists(__DIR__ . '/widgets/scadenze_dashboard.php')) {
 <div class="widget">
 <div class="widget-header">
 <span class="widget-icon">🎫</span>
-<h3 class="widget-title">Ticket</h3>
-<a href="tickets.php" style="margin-left:auto;font-size:.85rem;color:var(--cb-bright-blue);text-decoration:none;font-weight:600">Vedi tutti →</a>
+<h3 class="widget-title">Ticket Urgenti</h3>
 </div>
-<div class="widget-content" style="padding:0">
-<?php if(empty($recentTickets)): ?>
 <div class="widget-placeholder">
-<div class="widget-placeholder-icon">✅</div>
-<p>Nessun ticket aperto</p>
-</div>
-<?php else: ?>
-<?php foreach($recentTickets as $ticket): 
-$isPersonale = ($ticket['assegnato_a_email'] == $user['email']);
-$isPrivato = ($ticket['is_privato'] == 1 && $ticket['creato_da_email'] == $user['email']);
-$bgColor = $isPrivato ? '#FEF3C7' : ($isPersonale ? '#DBEAFE' : '#F9FAFB');
-?>
-<div class="onboarding-item" style="background:<?= $bgColor ?>;cursor:pointer" onclick="window.location.href='ticket_detail.php?id=<?= $ticket['id'] ?>'">
-<div class="onboarding-header">
-<div class="onboarding-name">
-<?= $isPrivato ? '🔒' : '🎫' ?> <?= htmlspecialchars($ticket['titolo']) ?>
-</div>
-<span class="onboarding-badge" style="background:<?= $ticket['categoria_colore'] ?>20;color:<?= $ticket['categoria_colore'] ?>">
-<?= $ticket['categoria_icona'] ?> <?= htmlspecialchars($ticket['categoria_nome']) ?>
-</span>
-</div>
-<div class="onboarding-meta">
-🏢 <?= htmlspecialchars($ticket['agenzia_name']) ?> • 
-<?= date('d/m/Y H:i', strtotime($ticket['created_at'])) ?>
-<?php if($isPersonale): ?>
-<span style="color:#1F69FF;font-weight:600"> • I MIEI</span>
-<?php endif; ?>
-<?php if($isPrivato): ?>
-<span style="color:#F59E0B;font-weight:600"> • PRIVATO</span>
-<?php endif; ?>
-</div>
-</div>
-<?php endforeach; ?>
-<?php endif; ?>
+<div class="widget-placeholder-icon">🚧</div>
+<p>Sistema ticketing<br><small>Disponibile in Fase 2</small></p>
 </div>
 </div>
 
