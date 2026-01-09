@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once 'check_auth.php';
 require_once 'config/database.php';
 
@@ -15,28 +18,25 @@ if (!in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])) {
 $pageTitle = "Nuovo Ticket - CRM Coldwell Banker";
 $pdo = getDB();
 
+if (!$pdo) {
+    die("Errore: impossibile connettersi al database");
+}
+
 // Gestione POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $pdo->beginTransaction();
         
-        // Genera numero ticket inline
+        // Genera numero ticket (semplice, senza lock)
         $year = date('Y');
-        $pdo->exec("LOCK TABLES tickets WRITE");
-        try {
-            $stmt = $pdo->prepare("
-                SELECT COALESCE(MAX(CAST(SUBSTRING_INDEX(numero, '-', -1) AS UNSIGNED)), 0) + 1 as next_num
-                FROM tickets 
-                WHERE numero LIKE ?
-            ");
-            $stmt->execute(["TCK-$year-%"]);
-            $num = $stmt->fetchColumn();
-            $ticketNumero = sprintf('TCK-%s-%04d', $year, $num);
-            $pdo->exec("UNLOCK TABLES");
-        } catch (Exception $e) {
-            $pdo->exec("UNLOCK TABLES");
-            throw $e;
-        }
+        $stmt = $pdo->prepare("
+            SELECT COALESCE(MAX(CAST(SUBSTRING_INDEX(numero, '-', -1) AS UNSIGNED)), 0) + 1 as next_num
+            FROM tickets 
+            WHERE numero LIKE ?
+        ");
+        $stmt->execute(["TCK-$year-%"]);
+        $num = $stmt->fetchColumn();
+        $ticketNumero = sprintf('TCK-%s-%04d', $year, $num);
         
         // Inserisci ticket
         $stmt = $pdo->prepare("
@@ -74,17 +74,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $pdo->commit();
         
-        // Invia notifica (solo se helper esiste)
-        if (function_exists('sendTicketNotification')) {
-            sendTicketNotification($pdo, $ticketId, 'new');
+        // Invia notifica (solo se helper esiste) - non deve bloccare il salvataggio
+        try {
+            if (function_exists('sendTicketNotification')) {
+                sendTicketNotification($pdo, $ticketId, 'new');
+            }
+        } catch (Exception $notifError) {
+            error_log("Errore notifica ticket: " . $notifError->getMessage());
+            // Ignora errore notifica, ticket già salvato
         }
         
         header("Location: tickets.php?success=created&ticket_id=$ticketId");
         exit;
         
     } catch (Exception $e) {
-        $pdo->rollBack();
-        $error = "Errore: " . $e->getMessage();
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        $error = "Errore creazione ticket: " . $e->getMessage();
+        error_log("ERRORE TICKET_ADD: " . $e->getMessage() . " | " . $e->getTraceAsString());
     }
 }
 

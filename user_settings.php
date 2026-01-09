@@ -38,18 +38,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Salva preferenze ticket (per tutti)
         $stmt = $pdo->prepare("
-            UPDATE user_preferences 
-            SET notify_ticket_email = ?,
-                notify_ticket_badge = ?,
-                notify_ticket_dashboard = ?
-            WHERE user_email = ?
+            INSERT INTO user_preferences 
+                (user_email, notify_ticket_email, notify_ticket_badge, notify_ticket_dashboard)
+            VALUES (?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                notify_ticket_email = VALUES(notify_ticket_email),
+                notify_ticket_badge = VALUES(notify_ticket_badge),
+                notify_ticket_dashboard = VALUES(notify_ticket_dashboard)
         ");
         $savedTicket = $stmt->execute([
+            $user['email'],
             isset($_POST['notify_ticket_email']) ? 1 : 0,
             isset($_POST['notify_ticket_badge']) ? 1 : 0,
-            isset($_POST['notify_ticket_dashboard']) ? 1 : 0,
-            $user['email']
+            isset($_POST['notify_ticket_dashboard']) ? 1 : 0
         ]);
+        
+        // DEBUG: verifica cosa è stato salvato
+        error_log("SAVE TICKET PREFS: email=" . (isset($_POST['notify_ticket_email']) ? '1' : '0') . 
+                  " badge=" . (isset($_POST['notify_ticket_badge']) ? '1' : '0') . 
+                  " dashboard=" . (isset($_POST['notify_ticket_dashboard']) ? '1' : '0') . 
+                  " user=" . $user['email'] . " result=" . ($savedTicket ? 'OK' : 'FAIL'));
         
         if ($savedScadenze && $savedTicket) {
             header('Location: user_settings.php?saved=1');
