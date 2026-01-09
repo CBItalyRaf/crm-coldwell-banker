@@ -74,10 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $pdo->commit();
         
-        // Invia notifica
-        sendTicketNotification($pdo, $ticketId, 'new');
+        // TODO: Invia notifica (da implementare)
+        // sendTicketNotification($pdo, $ticketId, 'new');
         
-        header("Location: ticket_detail.php?id=$ticketId&success=created");
+        header("Location: tickets.php?success=created&ticket_id=$ticketId");
         exit;
         
     } catch (Exception $e) {

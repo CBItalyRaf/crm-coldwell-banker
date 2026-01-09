@@ -10,6 +10,15 @@ if (file_exists(__DIR__ . '/helpers/ticket_functions.php')) {
 $pageTitle = "Ticket - CRM Coldwell Banker";
 $pdo = getDB();
 
+// Statistiche mese corrente
+$thisMonth = date('Y-m-01');
+$nextMonth = date('Y-m-01', strtotime('+1 month'));
+
+$statsAperti = $pdo->query("SELECT COUNT(*) FROM tickets WHERE stato IN ('nuovo','in_lavorazione','in_attesa')")->fetchColumn();
+$statsLavorazione = $pdo->query("SELECT COUNT(*) FROM tickets WHERE stato = 'in_lavorazione'")->fetchColumn();
+$statsChiusiMese = $pdo->query("SELECT COUNT(*) FROM tickets WHERE stato = 'risolto' AND closed_at >= '$thisMonth' AND closed_at < '$nextMonth'")->fetchColumn();
+$statsNuoviMese = $pdo->query("SELECT COUNT(*) FROM tickets WHERE created_at >= '$thisMonth' AND created_at < '$nextMonth'")->fetchColumn();
+
 // Filtri
 $categoriaFilter = $_GET['categoria'] ?? '';
 $statoFilter = $_GET['stato'] ?? '';
@@ -73,6 +82,14 @@ require_once 'header.php';
 <style>
 .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
 .page-title{font-size:1.75rem;font-weight:600}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem}
+.stat-card{background:white;padding:1.5rem;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);border-left:4px solid}
+.stat-card.open{border-left-color:#3B82F6}
+.stat-card.working{border-left-color:#F59E0B}
+.stat-card.closed{border-left-color:#10B981}
+.stat-card.new{border-left-color:#8B5CF6}
+.stat-label{font-size:.875rem;color:var(--cb-gray);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:.5rem}
+.stat-value{font-size:2rem;font-weight:700;color:var(--cb-midnight)}
 .btn-add{background:var(--cb-bright-blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;font-weight:500;transition:background .2s}
 .btn-add:hover{background:var(--cb-blue)}
 .filters-bar{background:white;padding:1.5rem;margin-bottom:1.5rem;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
@@ -97,11 +114,40 @@ require_once 'header.php';
 .ticket-meta-item{display:flex;align-items:center;gap:.5rem}
 .empty-state{text-align:center;padding:4rem 2rem;color:var(--cb-gray)}
 .categoria-tag{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:8px;font-size:.85rem;font-weight:600}
+@media(max-width:768px){
+.stats-grid{grid-template-columns:repeat(2,1fr)}
+.filters-grid{grid-template-columns:1fr}
+}
 </style>
 
 <div class="page-header">
 <h1 class="page-title">🎫 Ticket</h1>
 <a href="ticket_add.php" class="btn-add">➕ Nuovo Ticket</a>
+</div>
+
+<?php if(isset($_GET['success']) && $_GET['success'] === 'created'): ?>
+<div style="background:#D1FAE5;border-left:4px solid #10B981;padding:1rem;border-radius:8px;margin-bottom:2rem;color:#065F46">
+✅ Ticket creato con successo!
+</div>
+<?php endif; ?>
+
+<div class="stats-grid">
+<div class="stat-card open">
+<div class="stat-label">🔵 Aperti</div>
+<div class="stat-value"><?= $statsAperti ?></div>
+</div>
+<div class="stat-card working">
+<div class="stat-label">⚙️ In Lavorazione</div>
+<div class="stat-value"><?= $statsLavorazione ?></div>
+</div>
+<div class="stat-card closed">
+<div class="stat-label">✅ Chiusi (questo mese)</div>
+<div class="stat-value"><?= $statsChiusiMese ?></div>
+</div>
+<div class="stat-card new">
+<div class="stat-label">📥 Nuovi (questo mese)</div>
+<div class="stat-value"><?= $statsNuoviMese ?></div>
+</div>
 </div>
 
 <div class="filters-bar">
@@ -176,9 +222,14 @@ require_once 'header.php';
 📝 Task Interno
 </div>
 <?php endif; ?>
+<?php if ($ticket['creato_da_email']): ?>
+<div class="ticket-meta-item">
+👤 Creato da: <?= htmlspecialchars($ticket['creato_da_email']) ?>
+</div>
+<?php endif; ?>
 <?php if ($ticket['assegnato_a_email']): ?>
 <div class="ticket-meta-item">
-👤 <?= htmlspecialchars($ticket['assegnato_a_email']) ?>
+✋ Assegnato a: <?= htmlspecialchars($ticket['assegnato_a_email']) ?>
 </div>
 <?php endif; ?>
 <div class="ticket-meta-item">
