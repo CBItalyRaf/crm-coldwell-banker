@@ -11,30 +11,42 @@ $agenciesStats = $pdo->query("SELECT COUNT(*) as total FROM agencies WHERE statu
 $agentsStats = $pdo->query("SELECT COUNT(*) as total FROM agents WHERE status = 'Active'")->fetch();
 
 // Ticket per dashboard
-$ticketsOpen = $pdo->query("SELECT COUNT(*) FROM tickets WHERE stato IN ('nuovo','in_lavorazione','in_attesa')")->fetchColumn();
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM tickets WHERE assegnato_a_email = ? AND stato NOT IN ('risolto')");
-$stmt->execute([$user['email']]);
-$ticketsPersonali = $stmt->fetchColumn();
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM tickets WHERE is_privato = 1 AND creato_da_email = ? AND stato NOT IN ('risolto')");
-$stmt->execute([$user['email']]);
-$ticketsPrivati = $stmt->fetchColumn();
+$ticketsOpen = 0;
+$ticketsPersonali = 0;
+$ticketsPrivati = 0;
+$recentTickets = [];
 
-// Ultimi 5 ticket
-$recentTickets = $pdo->prepare("
-    SELECT t.*, tc.nome as categoria_nome, tc.colore as categoria_colore, tc.icona as categoria_icona,
-           ag.name as agenzia_name, ag.code as agenzia_code
-    FROM tickets t
-    LEFT JOIN ticket_categories tc ON t.categoria_id = tc.id
-    LEFT JOIN agencies ag ON t.agenzia_id = ag.id
-    WHERE t.stato NOT IN ('risolto')
-    ORDER BY 
-        CASE WHEN t.assegnato_a_email = ? THEN 1 ELSE 2 END,
-        CASE WHEN t.is_privato = 1 AND t.creato_da_email = ? THEN 1 ELSE 3 END,
-        t.created_at DESC
-    LIMIT 5
-");
-$recentTickets->execute([$user['email'], $user['email']]);
-$recentTickets = $recentTickets->fetchAll();
+// Carica ticket solo se la tabella esiste
+try {
+    $ticketsOpen = $pdo->query("SELECT COUNT(*) FROM tickets WHERE stato IN ('nuovo','in_lavorazione','in_attesa')")->fetchColumn();
+    
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM tickets WHERE assegnato_a_email = ? AND stato NOT IN ('risolto')");
+    $stmt->execute([$user['email']]);
+    $ticketsPersonali = $stmt->fetchColumn();
+    
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM tickets WHERE is_privato = 1 AND creato_da_email = ? AND stato NOT IN ('risolto')");
+    $stmt->execute([$user['email']]);
+    $ticketsPrivati = $stmt->fetchColumn();
+    
+    // Ultimi 5 ticket
+    $stmt = $pdo->prepare("
+        SELECT t.*, tc.nome as categoria_nome, tc.colore as categoria_colore, tc.icona as categoria_icona,
+               ag.name as agenzia_name, ag.code as agenzia_code
+        FROM tickets t
+        LEFT JOIN ticket_categories tc ON t.categoria_id = tc.id
+        LEFT JOIN agencies ag ON t.agenzia_id = ag.id
+        WHERE t.stato NOT IN ('risolto')
+        ORDER BY 
+            CASE WHEN t.assegnato_a_email = ? THEN 1 ELSE 2 END,
+            CASE WHEN t.is_privato = 1 AND t.creato_da_email = ? THEN 1 ELSE 3 END,
+            t.created_at DESC
+        LIMIT 5
+    ");
+    $stmt->execute([$user['email'], $user['email']]);
+    $recentTickets = $stmt->fetchAll();
+} catch (Exception $e) {
+    // Tabella tickets non esiste ancora, ignora
+}
 
 $recentAgencies = $pdo->query("SELECT name, city, created_at FROM agencies WHERE status = 'Active' ORDER BY created_at DESC LIMIT 5")->fetchAll();
 

@@ -1,7 +1,11 @@
 <?php
 require_once 'check_auth.php';
 require_once 'config/database.php';
-require_once 'helpers/ticket_functions.php';
+
+// Carica helper ticket solo se esiste
+if (file_exists(__DIR__ . '/helpers/ticket_functions.php')) {
+    require_once 'helpers/ticket_functions.php';
+}
 
 if (!in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])) {
     header('Location: tickets.php');
@@ -16,21 +20,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $pdo->beginTransaction();
         
+        // Genera numero ticket inline
+        $year = date('Y');
+        $pdo->exec("LOCK TABLES tickets WRITE");
+        try {
+            $stmt = $pdo->prepare("
+                SELECT COALESCE(MAX(CAST(SUBSTRING_INDEX(numero, '-', -1) AS UNSIGNED)), 0) + 1 as next_num
+                FROM tickets 
+                WHERE numero LIKE ?
+            ");
+            $stmt->execute(["TCK-$year-%"]);
+            $num = $stmt->fetchColumn();
+            $ticketNumero = sprintf('TCK-%s-%04d', $year, $num);
+            $pdo->exec("UNLOCK TABLES");
+        } catch (Exception $e) {
+            $pdo->exec("UNLOCK TABLES");
+            throw $e;
+        }
+        
         // Inserisci ticket
         $stmt = $pdo->prepare("
             INSERT INTO tickets 
-            (titolo, descrizione, categoria_id, priorita, stato, 
-             creato_da_user_id, creato_da_tipo, agenzia_id, assegnato_a_user_id,
+            (numero, titolo, descrizione, categoria_id, priorita, stato, 
+             creato_da_email, creato_da_tipo, agenzia_id, assegnato_a_email,
              is_privato, destinatario_portal_user_id, destinatario_ruolo)
-            VALUES (?, ?, ?, ?, 'nuovo', ?, 'staff', ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, 'nuovo', ?, 'staff', ?, ?, ?, ?, ?)
         ");
         
         $stmt->execute([
+            $ticketNumero,
             $_POST['titolo'],
             $_POST['descrizione'],
             $_POST['categoria_id'] ?: null,
             $_POST['priorita'],
-            $_SESSION['crm_user']['id'],
+            $_SESSION['crm_user']['email'],
             $_POST['agenzia_id'],
             $_POST['assegnato_a'] ?: null,
             isset($_POST['is_privato']) ? 1 : 0,
@@ -42,10 +65,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Inserisci primo messaggio
         $stmt = $pdo->prepare("
-            INSERT INTO ticket_messages (ticket_id, user_id, mittente_tipo, messaggio)
+            INSERT INTO ticket_messages (ticket_id, staff_email, mittente_tipo, messaggio)
             VALUES (?, ?, 'staff', ?)
         ");
-        $stmt->execute([$ticketId, $_SESSION['crm_user']['id'], $_POST['descrizione']]);
+        $stmt->execute([$ticketId, $_SESSION['crm_user']['email'], $_POST['descrizione']]);
         
         $pdo->commit();
         
@@ -64,7 +87,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Carica dati
 $categories = $pdo->query("SELECT * FROM ticket_categories WHERE attivo = 1 ORDER BY ordine")->fetchAll();
 $agencies = $pdo->query("SELECT id, code, name FROM agencies WHERE status IN ('Active','Opening') ORDER BY name")->fetchAll();
-$staff = $pdo->query("SELECT id, name, email FROM crm_users WHERE active = 1 ORDER BY name")->fetchAll();
+
+// Carica staff da user_preferences (lista utenti che hanno fatto login)
+$staff = $pdo->query("SELECT DISTINCT user_email as email FROM user_preferences ORDER BY user_email")->fetchAll();
 
 require_once 'header.php';
 ?>
@@ -145,7 +170,7 @@ require_once 'header.php';
 <select name="assegnato_a">
 <option value="">Non assegnato</option>
 <?php foreach ($staff as $user): ?>
-<option value="<?= $user['id'] ?>"><?= htmlspecialchars($user['name']) ?></option>
+<option value="<?= htmlspecialchars($user['email']) ?>"><?= htmlspecialchars($user['email']) ?></option>
 <?php endforeach; ?>
 </select>
 </div>

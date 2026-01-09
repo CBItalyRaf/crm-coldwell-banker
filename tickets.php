@@ -1,7 +1,11 @@
 <?php
 require_once 'check_auth.php';
 require_once 'config/database.php';
-require_once 'helpers/ticket_functions.php';
+
+// Carica helper ticket solo se esiste
+if (file_exists(__DIR__ . '/helpers/ticket_functions.php')) {
+    require_once 'helpers/ticket_functions.php';
+}
 
 $pageTitle = "Ticket - CRM Coldwell Banker";
 $pdo = getDB();
@@ -36,10 +40,10 @@ if ($agenziaFilter) {
 }
 if ($assegnatoFilter) {
     if ($assegnatoFilter === 'me') {
-        $sql .= " AND assegnato_a_user_id = ?";
-        $params[] = $_SESSION['crm_user']['id'];
+        $sql .= " AND assegnato_a_email = ?";
+        $params[] = $_SESSION['crm_user']['email'];
     } elseif ($assegnatoFilter === 'unassigned') {
-        $sql .= " AND assegnato_a_user_id IS NULL";
+        $sql .= " AND assegnato_a_email IS NULL";
     }
 }
 if ($search) {
@@ -161,9 +165,9 @@ require_once 'header.php';
 <div class="ticket-meta-item">
 🏢 <?= htmlspecialchars($ticket['agenzia_name']) ?>
 </div>
-<?php if ($ticket['assegnato_a_name']): ?>
+<?php if ($ticket['assegnato_a_email']): ?>
 <div class="ticket-meta-item">
-👤 <?= htmlspecialchars($ticket['assegnato_a_name']) ?>
+👤 <?= htmlspecialchars($ticket['assegnato_a_email']) ?>
 </div>
 <?php endif; ?>
 <div class="ticket-meta-item">

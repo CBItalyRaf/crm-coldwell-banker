@@ -5,36 +5,45 @@
  * Genera prossimo numero ticket
  */
 function generateTicketNumber($pdo) {
-    // Il trigger lo genera automaticamente, questa è fallback
     $year = date('Y');
-    $stmt = $pdo->prepare("SELECT numero FROM tickets WHERE numero LIKE ? ORDER BY id DESC LIMIT 1");
-    $stmt->execute(["TCK-$year-%"]);
-    $last = $stmt->fetchColumn();
     
-    if ($last) {
-        $parts = explode('-', $last);
-        $num = intval($parts[2]) + 1;
-    } else {
-        $num = 1;
+    // Lock per evitare race condition
+    $pdo->exec("LOCK TABLES tickets WRITE");
+    
+    try {
+        $stmt = $pdo->prepare("
+            SELECT COALESCE(MAX(CAST(SUBSTRING_INDEX(numero, '-', -1) AS UNSIGNED)), 0) + 1 as next_num
+            FROM tickets 
+            WHERE numero LIKE ?
+        ");
+        $stmt->execute(["TCK-$year-%"]);
+        $num = $stmt->fetchColumn();
+        
+        $numero = sprintf('TCK-%s-%04d', $year, $num);
+        
+        $pdo->exec("UNLOCK TABLES");
+        
+        return $numero;
+    } catch (Exception $e) {
+        $pdo->exec("UNLOCK TABLES");
+        throw $e;
     }
-    
-    return sprintf('TCK-%s-%04d', $year, $num);
 }
 
 /**
  * Conta ticket non letti per utente
  */
-function countUnreadTickets($pdo, $userId, $isStaff = true) {
+function countUnreadTickets($pdo, $userEmail, $isStaff = true) {
     if ($isStaff) {
         // Staff: conta ticket con nuovi messaggi
         $sql = "SELECT COUNT(DISTINCT t.id) 
                 FROM tickets t
                 INNER JOIN ticket_messages tm ON t.id = tm.ticket_id
-                LEFT JOIN ticket_reads tr ON t.id = tr.ticket_id AND tr.user_id = ?
+                LEFT JOIN ticket_reads tr ON t.id = tr.ticket_id AND tr.staff_email = ?
                 WHERE tm.mittente_tipo = 'broker'
                 AND (tr.last_read_message_id IS NULL OR tm.id > tr.last_read_message_id)";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$userId]);
+        $stmt->execute([$userEmail]);
     } else {
         // Broker: conta ticket con risposte staff non lette
         $sql = "SELECT COUNT(DISTINCT t.id) 
@@ -44,7 +53,7 @@ function countUnreadTickets($pdo, $userId, $isStaff = true) {
                 WHERE tm.mittente_tipo = 'staff'
                 AND (tr.last_read_message_id IS NULL OR tm.id > tr.last_read_message_id)";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$userId]);
+        $stmt->execute([$userEmail]);
     }
     
     return (int)$stmt->fetchColumn();
@@ -53,7 +62,7 @@ function countUnreadTickets($pdo, $userId, $isStaff = true) {
 /**
  * Marca ticket come letto
  */
-function markTicketAsRead($pdo, $ticketId, $userId, $isStaff = true) {
+function markTicketAsRead($pdo, $ticketId, $userEmailOrId, $isStaff = true) {
     // Trova ultimo messaggio
     $stmt = $pdo->prepare("SELECT id FROM ticket_messages WHERE ticket_id = ? ORDER BY id DESC LIMIT 1");
     $stmt->execute([$ticketId]);
@@ -62,17 +71,17 @@ function markTicketAsRead($pdo, $ticketId, $userId, $isStaff = true) {
     if (!$lastMessageId) return;
     
     if ($isStaff) {
-        $sql = "INSERT INTO ticket_reads (ticket_id, user_id, last_read_message_id) 
+        $sql = "INSERT INTO ticket_reads (ticket_id, staff_email, last_read_message_id) 
                 VALUES (?, ?, ?)
                 ON DUPLICATE KEY UPDATE last_read_message_id = ?, read_at = NOW()";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$ticketId, $userId, $lastMessageId, $lastMessageId]);
+        $stmt->execute([$ticketId, $userEmailOrId, $lastMessageId, $lastMessageId]);
     } else {
         $sql = "INSERT INTO ticket_reads (ticket_id, portal_user_id, last_read_message_id) 
                 VALUES (?, ?, ?)
                 ON DUPLICATE KEY UPDATE last_read_message_id = ?, read_at = NOW()";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$ticketId, $userId, $lastMessageId, $lastMessageId]);
+        $stmt->execute([$ticketId, $userEmailOrId, $lastMessageId, $lastMessageId]);
     }
 }
 
@@ -128,9 +137,8 @@ function sendTicketNotification($pdo, $ticketId, $type = 'new') {
 
 function notifyStaff($pdo, $ticket, $url) {
     // Trova staff con notifiche attive
-    $stmt = $pdo->query("SELECT email, name FROM crm_users cu 
-                         INNER JOIN user_preferences up ON cu.email = up.user_email 
-                         WHERE up.notify_ticket_email = 1 AND cu.active = 1");
+    $stmt = $pdo->query("SELECT user_email as email FROM user_preferences 
+                         WHERE notify_ticket_email = 1");
     $recipients = $stmt->fetchAll();
     
     foreach ($recipients as $user) {

@@ -83,7 +83,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 <div class="dropdown-menu">
 <a href="onboarding.php" class="dropdown-item">📥 Onboarding</a>
 <a href="offboarding.php" class="dropdown-item">📤 Offboarding</a>
-<a href="ticket.php" class="dropdown-item">🎫 Ticket</a>
+<a href="tickets.php" class="dropdown-item">🎫 Ticket</a>
 <a href="documenti.php" class="dropdown-item">📄 Documenti</a>
 </div>
 </div>
