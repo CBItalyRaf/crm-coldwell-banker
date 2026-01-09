@@ -44,6 +44,8 @@ if ($assegnatoFilter) {
         $params[] = $_SESSION['crm_user']['email'];
     } elseif ($assegnatoFilter === 'unassigned') {
         $sql .= " AND assegnato_a_email IS NULL";
+    } elseif ($assegnatoFilter === 'internal') {
+        $sql .= " AND agenzia_id IS NULL"; // Task interni = senza agenzia
     }
 }
 if ($search) {
@@ -53,7 +55,9 @@ if ($search) {
     $params[] = "%$search%";
 }
 
-$sql .= " ORDER BY created_at DESC";
+$sql .= " ORDER BY 
+    CASE WHEN agenzia_id IS NULL THEN 0 ELSE 1 END DESC,
+    created_at DESC";
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
@@ -124,6 +128,7 @@ require_once 'header.php';
 <option value="">Assegnazione</option>
 <option value="me" <?= $assegnatoFilter === 'me' ? 'selected' : '' ?>>I miei</option>
 <option value="unassigned" <?= $assegnatoFilter === 'unassigned' ? 'selected' : '' ?>>Non assegnati</option>
+<option value="internal" <?= $assegnatoFilter === 'internal' ? 'selected' : '' ?>>Task Interni</option>
 </select>
 </div>
 <div class="filter-field">
@@ -162,9 +167,15 @@ require_once 'header.php';
 <h3 class="ticket-title"><?= htmlspecialchars($ticket['titolo']) ?></h3>
 <p class="ticket-desc"><?= htmlspecialchars($ticket['descrizione']) ?></p>
 <div class="ticket-meta">
+<?php if ($ticket['agenzia_name']): ?>
 <div class="ticket-meta-item">
 🏢 <?= htmlspecialchars($ticket['agenzia_name']) ?>
 </div>
+<?php else: ?>
+<div class="ticket-meta-item">
+📝 Task Interno
+</div>
+<?php endif; ?>
 <?php if ($ticket['assegnato_a_email']): ?>
 <div class="ticket-meta-item">
 👤 <?= htmlspecialchars($ticket['assegnato_a_email']) ?>

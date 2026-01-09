@@ -207,7 +207,11 @@ $bgColor = $isPrivato ? '#FEF3C7' : ($isPersonale ? '#DBEAFE' : '#F9FAFB');
 </span>
 </div>
 <div class="onboarding-meta">
+<?php if($ticket['agenzia_name']): ?>
 🏢 <?= htmlspecialchars($ticket['agenzia_name']) ?> • 
+<?php else: ?>
+📝 Task Interno • 
+<?php endif; ?>
 <?= date('d/m/Y H:i', strtotime($ticket['created_at'])) ?>
 <?php if($isPersonale): ?>
 <span style="color:#1F69FF;font-weight:600"> • I MIEI</span>

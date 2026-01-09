@@ -47,6 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             VALUES (?, ?, ?, ?, ?, 'nuovo', ?, 'staff', ?, ?, ?, ?, ?)
         ");
         
+        $agenziaId = !empty($_POST['agenzia_id']) ? $_POST['agenzia_id'] : null;
+        
         $stmt->execute([
             $ticketNumero,
             $_POST['titolo'],
@@ -54,9 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_POST['categoria_id'] ?: null,
             $_POST['priorita'],
             $_SESSION['crm_user']['email'],
-            $_POST['agenzia_id'],
+            $agenziaId, // Può essere NULL per task interni
             $_POST['assegnato_a'] ?: null,
-            isset($_POST['is_privato']) ? 1 : 0,
+            isset($_POST['is_privato']) && $agenziaId ? 1 : 0, // Privato solo se c'è agenzia
             $_POST['destinatario_id'] ?: null,
             $_POST['destinatario_ruolo'] ?: null
         ]);
@@ -157,13 +159,17 @@ require_once 'header.php';
 <h3>Destinatario</h3>
 <div class="form-grid">
 <div class="form-field" style="grid-column:1/-1">
-<label>Agenzia <span style="color:#EF4444">*</span></label>
-<select name="agenzia_id" id="agenziaSelect" required>
-<option value="">Seleziona agenzia</option>
-<?php foreach ($agencies as $ag): ?>
-<option value="<?= $ag['id'] ?>"><?= htmlspecialchars($ag['code']) ?> - <?= htmlspecialchars($ag['name']) ?></option>
-<?php endforeach; ?>
-</select>
+<label>Agenzia <span style="color:#999">(opzionale - lascia vuoto per task interni)</span></label>
+<input type="text" 
+       id="agencySearch" 
+       placeholder="🔍 Cerca agenzia per codice o nome..."
+       autocomplete="off">
+<input type="hidden" name="agenzia_id" id="agenziaIdHidden">
+<div id="agencyResults" style="display:none;position:absolute;background:white;border:1px solid #E5E7EB;border-radius:8px;margin-top:.5rem;max-height:300px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:100;width:calc(100% - 3rem)"></div>
+<div id="selectedAgency" style="display:none;margin-top:.5rem;padding:.75rem;background:var(--bg);border-radius:8px;display:flex;justify-content:space-between;align-items:center">
+<span id="selectedAgencyText"></span>
+<button type="button" onclick="clearAgency()" style="background:#EF4444;color:white;border:none;padding:.25rem .75rem;border-radius:6px;cursor:pointer;font-size:.85rem">✕ Rimuovi</button>
+</div>
 </div>
 <div class="form-field">
 <label>Assegna a</label>
@@ -176,11 +182,12 @@ require_once 'header.php';
 </div>
 </div>
 
+<div id="destinatarioSection" style="display:none;margin-top:1.5rem">
 <label class="checkbox-field" onclick="togglePrivato()">
 <input type="checkbox" name="is_privato" id="privatoCheck">
 <div>
-<div style="font-weight:600;color:var(--cb-midnight)">🔒 Ticket Privato</div>
-<div style="font-size:.85rem;color:var(--cb-gray)">Visibile solo al destinatario specifico</div>
+<div style="font-weight:600;color:var(--cb-midnight)">🔒 Invia a destinatario specifico</div>
+<div style="font-size:.85rem;color:var(--cb-gray)">Altrimenti visibile a tutti dell'agenzia</div>
 </div>
 </label>
 
@@ -197,8 +204,9 @@ require_once 'header.php';
 <div id="agenteSelectContainer" style="display:none;margin-top:1rem">
 <label>Seleziona Agente</label>
 <select name="destinatario_id" id="agenteSelect">
-<option value="">Carica prima un'agenzia...</option>
+<option value="">Prima seleziona un'agenzia...</option>
 </select>
+</div>
 </div>
 </div>
 </div>
@@ -211,6 +219,88 @@ require_once 'header.php';
 </div>
 
 <script>
+// Autocomplete agenzie
+const agencySearch = document.getElementById('agencySearch');
+const agencyResults = document.getElementById('agencyResults');
+const agenziaIdHidden = document.getElementById('agenziaIdHidden');
+const selectedAgency = document.getElementById('selectedAgency');
+const selectedAgencyText = document.getElementById('selectedAgencyText');
+const destinatarioSection = document.getElementById('destinatarioSection');
+let agencies = <?= json_encode($agencies) ?>;
+let searchTimeout;
+
+agencySearch.addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    const query = this.value.trim().toLowerCase();
+    
+    if (query.length < 2) {
+        agencyResults.style.display = 'none';
+        return;
+    }
+    
+    searchTimeout = setTimeout(() => {
+        const filtered = agencies.filter(ag => 
+            ag.code.toLowerCase().includes(query) || 
+            ag.name.toLowerCase().includes(query)
+        ).slice(0, 10); // Max 10 risultati
+        
+        if (filtered.length > 0) {
+            agencyResults.innerHTML = filtered.map(ag => `
+                <div onclick="selectAgency(${ag.id}, '${ag.code}', '${ag.name.replace(/'/g, "\\'")}')}" 
+                     style="padding:1rem;border-bottom:1px solid #F3F4F6;cursor:pointer;transition:background .2s"
+                     onmouseover="this.style.background='var(--bg)'"
+                     onmouseout="this.style.background='white'">
+                    <div style="font-weight:600">${ag.code}</div>
+                    <div style="font-size:.85rem;color:var(--cb-gray)">${ag.name}</div>
+                </div>
+            `).join('');
+            agencyResults.style.display = 'block';
+        } else {
+            agencyResults.style.display = 'none';
+        }
+    }, 300);
+});
+
+function selectAgency(id, code, name) {
+    agenziaIdHidden.value = id;
+    agencySearch.style.display = 'none';
+    agencyResults.style.display = 'none';
+    selectedAgency.style.display = 'flex';
+    selectedAgencyText.textContent = `${code} - ${name}`;
+    destinatarioSection.style.display = 'block';
+    
+    // Carica agenti dell'agenzia
+    loadAgents(id);
+}
+
+function clearAgency() {
+    agenziaIdHidden.value = '';
+    agencySearch.value = '';
+    agencySearch.style.display = 'block';
+    selectedAgency.style.display = 'none';
+    destinatarioSection.style.display = 'none';
+    document.getElementById('agenteSelect').innerHTML = '<option value="">Prima seleziona un\'agenzia...</option>';
+}
+
+function loadAgents(agencyId) {
+    fetch(`get_agency_agents.php?agency_id=${agencyId}`)
+        .then(r => r.json())
+        .then(agents => {
+            const select = document.getElementById('agenteSelect');
+            select.innerHTML = '<option value="">Seleziona agente</option>';
+            agents.forEach(agent => {
+                select.innerHTML += `<option value="${agent.id}">${agent.full_name}</option>`;
+            });
+        });
+}
+
+// Chiudi dropdown quando clicchi fuori
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('#agencySearch') && !e.target.closest('#agencyResults')) {
+        agencyResults.style.display = 'none';
+    }
+});
+
 function togglePrivato() {
     const check = document.getElementById('privatoCheck');
     check.checked = !check.checked;
@@ -220,22 +310,6 @@ function togglePrivato() {
 document.getElementById('destinatarioRuolo').addEventListener('change', function() {
     document.getElementById('agenteSelectContainer').style.display = 
         this.value === 'agente' ? 'block' : 'none';
-});
-
-document.getElementById('agenziaSelect').addEventListener('change', function() {
-    const agenziaId = this.value;
-    if (!agenziaId) return;
-    
-    // Carica agenti dell'agenzia
-    fetch(`get_agency_agents.php?agency_id=${agenziaId}`)
-        .then(r => r.json())
-        .then(agents => {
-            const select = document.getElementById('agenteSelect');
-            select.innerHTML = '<option value="">Seleziona agente</option>';
-            agents.forEach(agent => {
-                select.innerHTML += `<option value="${agent.id}">${agent.full_name}</option>`;
-            });
-        });
 });
 </script>
 
