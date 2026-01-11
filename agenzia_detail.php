@@ -339,6 +339,10 @@ $hasActiveOffboarding = $stmt->fetch();
 <div class="value" style="font-size:.85rem"><?= htmlspecialchars($agency['pec'] ?: '-') ?></div>
 </div>
 <div class="info-field">
+<label>Indirizzo Legale</label>
+<div class="value"><?= htmlspecialchars($agency['legal_address'] ?: '-') ?></div>
+</div>
+<div class="info-field">
 <label>Sito Web</label>
 <div class="value"><?= htmlspecialchars($agency['website'] ?: '-') ?></div>
 </div>

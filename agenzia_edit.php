@@ -53,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             email = :email,
             phone = :phone,
             pec = :pec,
+            legal_address = :legal_address,
             website = :website,
             vat_number = :vat_number,
             tax_code = :tax_code,
@@ -82,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'email' => $_POST['email'] ?: null,
         'phone' => $_POST['phone'] ?: null,
         'pec' => $_POST['pec'] ?: null,
+        'legal_address' => $_POST['legal_address'] ?: null,
         'website' => $_POST['website'] ?: null,
         'vat_number' => $_POST['vat_number'] ?: null,
         'tax_code' => $_POST['tax_code'] ?: null,
@@ -116,6 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'email' => $_POST['email'] ?: null,
         'phone' => $_POST['phone'] ?: null,
         'pec' => $_POST['pec'] ?: null,
+        'legal_address' => $_POST['legal_address'] ?: null,
         'website' => $_POST['website'] ?: null,
         'vat_number' => $_POST['vat_number'] ?: null,
         'tax_code' => $_POST['tax_code'] ?: null,
@@ -299,6 +302,10 @@ require_once 'header.php';
 <div class="form-field">
 <label>PEC</label>
 <input type="email" name="pec" value="<?= htmlspecialchars($agency['pec'] ?: '') ?>">
+</div>
+<div class="form-field">
+<label>Indirizzo Legale</label>
+<input type="text" name="legal_address" value="<?= htmlspecialchars($agency['legal_address'] ?: '') ?>">
 </div>
 <div class="form-field">
 <label>Sito Web</label>

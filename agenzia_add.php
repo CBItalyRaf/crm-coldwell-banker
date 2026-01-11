@@ -28,12 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $sql = "INSERT INTO agencies (
             code, name, type, broker_manager, broker_mobile, legal_representative,
             company_name, rea, address, city, province, zip_code, email, phone,
-            pec, website, vat_number, tax_code, sdi_code, activation_date,
+            pec, legal_address, website, vat_number, tax_code, sdi_code, activation_date,
             contract_expiry, contract_duration_years, tech_fee, closed_date, status
         ) VALUES (
             :code, :name, :type, :broker_manager, :broker_mobile, :legal_representative,
             :company_name, :rea, :address, :city, :province, :zip_code, :email, :phone,
-            :pec, :website, :vat_number, :tax_code, :sdi_code, :activation_date,
+            :pec, :legal_address, :website, :vat_number, :tax_code, :sdi_code, :activation_date,
             :contract_expiry, :contract_duration_years, :tech_fee, :closed_date, :status
         )";
         
@@ -54,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'email' => $_POST['email'] ?: null,
             'phone' => $_POST['phone'] ?: null,
             'pec' => $_POST['pec'] ?: null,
+            'legal_address' => $_POST['legal_address'] ?: null,
             'website' => $_POST['website'] ?: null,
             'vat_number' => $_POST['vat_number'] ?: null,
             'tax_code' => $_POST['tax_code'] ?: null,
@@ -216,6 +217,10 @@ require_once 'header.php';
 <div class="form-field">
 <label>PEC</label>
 <input type="email" name="pec">
+</div>
+<div class="form-field">
+<label>Indirizzo Legale</label>
+<input type="text" name="legal_address">
 </div>
 <div class="form-field">
 <label>Sito Web</label>
