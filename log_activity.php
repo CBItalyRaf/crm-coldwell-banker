@@ -1,7 +1,7 @@
 <?php
 require_once 'check_auth.php';
 require_once 'config/database.php';
-require_once 'helpers/log_activity.php';
+require_once 'helpers/log_functions.php';
 
 // Solo admin può vedere i log
 if ($_SESSION['crm_user']['crm_role'] !== 'admin') {
