@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 
 require_once 'check_auth.php';
 require_once 'config/database.php';
-require_once 'log_functions.php';
+require_once 'helpers/log_activity.php';
 
 // Solo admin e editor possono modificare
 if (!in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])) {
@@ -134,20 +134,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $changes = getChangedFields($oldData, $newData);
     
     if (!empty($changes)) {
-        $userId = $_SESSION['crm_user']['id'] ?? null;
-        $userEmail = $_SESSION['crm_user']['email'] ?? 'unknown';
-        
-        if ($userId) {
-            logAudit(
-                $pdo,
-                $userId,
-                $userEmail,
-                'agencies',
-                $oldData['id'],
-                'UPDATE',
-                $changes
-            );
-        }
+        // Log modifiche (protetto, non blocca mai)
+        safeLogActivity(
+            $pdo,
+            $_SESSION['crm_user']['id'] ?? null,
+            $_SESSION['crm_user']['email'] ?? 'unknown',
+            'UPDATE',
+            'agencies',
+            $oldData['id'],
+            $changes
+        );
     }
     
     // Redirect con flush

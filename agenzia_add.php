@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 
 require_once 'check_auth.php';
 require_once 'config/database.php';
-require_once 'log_functions.php';
+require_once 'helpers/log_activity.php';
 
 // Solo admin e editor possono creare
 if (!in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])) {
@@ -69,11 +69,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $agency_id = $pdo->lastInsertId();
         
-        // Log solo se abbiamo un user_id valido
-        $userId = $_SESSION['crm_user']['id'] ?? null;
-        if ($userId) {
-            logAudit($pdo, $userId, $_SESSION['crm_user']['email'] ?? 'unknown', 'agencies', $agency_id, 'INSERT', []);
-        }
+        // Log creazione (protetto, non blocca mai)
+        safeLogActivity(
+            $pdo,
+            $_SESSION['crm_user']['id'] ?? null,
+            $_SESSION['crm_user']['email'] ?? 'unknown',
+            'INSERT',
+            'agencies',
+            $agency_id
+        );
         
         header("Location: agenzia_detail.php?code=" . urlencode($_POST['code']) . "&success=created");
         exit;
