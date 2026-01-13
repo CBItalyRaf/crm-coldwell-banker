@@ -56,7 +56,7 @@ if ($dateTo) {
     $params[] = $dateTo;
 }
 
-$sql .= " GROUP BY user_id, username, table_name, record_id, action, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s')
+$sql .= " GROUP BY user_id, username, table_name, record_id, action, ip_address, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s')
 ORDER BY created_at DESC 
 LIMIT 500";
 
