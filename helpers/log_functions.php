@@ -1,7 +1,7 @@
 <?php
 /**
  * Activity Log Helper Functions
- * Usa tabella audit_log esistente
+ * Usa tabella audit_logs esistente
  */
 
 /**
@@ -37,7 +37,7 @@ function logActivity($pdo, $userId, $username, $actionType, $tableName, $recordI
         // Per INSERT e DELETE: un solo record senza field_name
         if ($actionType === 'INSERT' || $actionType === 'DELETE') {
             $stmt = $pdo->prepare("
-                INSERT INTO audit_log 
+                INSERT INTO audit_logs 
                 (user_id, username, table_name, record_id, action, field_name, old_value, new_value, ip_address)
                 VALUES (?, ?, ?, ?, ?, NULL, NULL, NULL, ?)
             ");
@@ -55,7 +55,7 @@ function logActivity($pdo, $userId, $username, $actionType, $tableName, $recordI
         // Per UPDATE: un record per ogni campo modificato
         if ($actionType === 'UPDATE' && !empty($changes)) {
             $stmt = $pdo->prepare("
-                INSERT INTO audit_log 
+                INSERT INTO audit_logs 
                 (user_id, username, table_name, record_id, action, field_name, old_value, new_value, ip_address)
                 VALUES (?, ?, ?, ?, 'UPDATE', ?, ?, ?, ?)
             ");

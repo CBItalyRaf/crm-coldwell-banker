@@ -30,7 +30,7 @@ $sql = "SELECT
     ip_address,
     MIN(created_at) as created_at,
     COUNT(DISTINCT field_name) as fields_count
-FROM audit_log 
+FROM audit_logs 
 WHERE 1=1";
 
 $params = [];
@@ -65,8 +65,8 @@ $stmt->execute($params);
 $logs = $stmt->fetchAll();
 
 // Statistiche
-$statsToday = $pdo->query("SELECT COUNT(DISTINCT CONCAT(table_name, '-', record_id, '-', action, '-', DATE_FORMAT(created_at, '%Y%m%d%H%i%s'))) FROM audit_log WHERE DATE(created_at) = CURDATE()")->fetchColumn();
-$statsWeek = $pdo->query("SELECT COUNT(DISTINCT CONCAT(table_name, '-', record_id, '-', action, '-', DATE_FORMAT(created_at, '%Y%m%d%H%i%s'))) FROM audit_log WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)")->fetchColumn();
+$statsToday = $pdo->query("SELECT COUNT(DISTINCT CONCAT(table_name, '-', record_id, '-', action, '-', DATE_FORMAT(created_at, '%Y%m%d%H%i%s'))) FROM audit_logs WHERE DATE(created_at) = CURDATE()")->fetchColumn();
+$statsWeek = $pdo->query("SELECT COUNT(DISTINCT CONCAT(table_name, '-', record_id, '-', action, '-', DATE_FORMAT(created_at, '%Y%m%d%H%i%s'))) FROM audit_logs WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)")->fetchColumn();
 
 require_once 'header.php';
 ?>
