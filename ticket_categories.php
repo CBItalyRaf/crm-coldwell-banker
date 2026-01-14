@@ -1,6 +1,7 @@
 <?php
 require_once 'check_auth.php';
 require_once 'config/database.php';
+require_once 'helpers/log_functions.php';
 
 // Solo admin può gestire categorie
 if ($_SESSION['crm_user']['crm_role'] !== 'admin') {
@@ -28,9 +29,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_POST['icona'],
                     $_POST['ordine']
                 ]);
+                
+                $categoryId = $pdo->lastInsertId();
+                
+                // Log creazione categoria (protetto, non blocca mai)
+                safeLogActivity(
+                    $pdo,
+                    $_SESSION['crm_user']['id'] ?? null,
+                    $_SESSION['crm_user']['email'] ?? 'unknown',
+                    'INSERT',
+                    'ticket_categories',
+                    $categoryId
+                );
+                
                 $success = "Categoria aggiunta con successo!";
                 
             } elseif ($_POST['action'] === 'edit') {
+                // Carica dati vecchi per log
+                $stmt = $pdo->prepare("SELECT * FROM ticket_categories WHERE id = ?");
+                $stmt->execute([$_POST['id']]);
+                $oldData = $stmt->fetch(PDO::FETCH_ASSOC);
+                
                 // Modifica categoria esistente
                 $stmt = $pdo->prepare("
                     UPDATE ticket_categories 
@@ -46,6 +65,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     isset($_POST['attivo']) ? 1 : 0,
                     $_POST['id']
                 ]);
+                
+                // Log UPDATE categoria (protetto, non blocca mai)
+                $newData = [
+                    'nome' => $_POST['nome'],
+                    'descrizione' => $_POST['descrizione'],
+                    'colore' => $_POST['colore'],
+                    'icona' => $_POST['icona'],
+                    'ordine' => $_POST['ordine'],
+                    'attivo' => isset($_POST['attivo']) ? 1 : 0
+                ];
+                $changes = getChangedFields($oldData, $newData);
+                if (!empty($changes)) {
+                    safeLogActivity(
+                        $pdo,
+                        $_SESSION['crm_user']['id'] ?? null,
+                        $_SESSION['crm_user']['email'] ?? 'unknown',
+                        'UPDATE',
+                        'ticket_categories',
+                        $_POST['id'],
+                        $changes
+                    );
+                }
+                
                 $success = "Categoria aggiornata con successo!";
                 
             } elseif ($_POST['action'] === 'delete') {
@@ -59,6 +101,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     $stmt = $pdo->prepare("DELETE FROM ticket_categories WHERE id = ?");
                     $stmt->execute([$_POST['id']]);
+                    
+                    // Log DELETE categoria (protetto, non blocca mai)
+                    safeLogActivity(
+                        $pdo,
+                        $_SESSION['crm_user']['id'] ?? null,
+                        $_SESSION['crm_user']['email'] ?? 'unknown',
+                        'DELETE',
+                        'ticket_categories',
+                        $_POST['id']
+                    );
+                    
                     $success = "Categoria eliminata con successo!";
                 }
             }

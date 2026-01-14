@@ -1,6 +1,7 @@
 <?php
 require_once 'check_auth.php';
 require_once 'config/database.php';
+require_once 'helpers/log_functions.php';
 
 $ticketId = $_GET['id'] ?? null;
 
@@ -37,6 +38,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             isset($_POST['is_internal']) ? 1 : 0
         ]);
         
+        $messageId = $pdo->lastInsertId();
+        
+        // Log inserimento messaggio (protetto, non blocca mai)
+        safeLogActivity(
+            $pdo,
+            $_SESSION['crm_user']['id'] ?? null,
+            $_SESSION['crm_user']['email'] ?? 'unknown',
+            'INSERT',
+            'ticket_messages',
+            $messageId
+        );
+        
         // Invia notifica (solo se helper esiste e messaggio non è interno)
         if (function_exists('sendTicketNotification') && !isset($_POST['is_internal'])) {
             sendTicketNotification($pdo, $ticketId, 'reply');
@@ -47,10 +60,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     if (isset($_POST['nuovo_stato'])) {
+        // Carica dati vecchi per log
+        $stmt = $pdo->prepare("SELECT stato, closed_at FROM tickets WHERE id = ?");
+        $stmt->execute([$ticketId]);
+        $oldData = $stmt->fetch(PDO::FETCH_ASSOC);
+        
         // Cambio stato
-        $stmt = $pdo->prepare("UPDATE tickets SET stato = ?, closed_at = ? WHERE id = ?");
         $closedAt = $_POST['nuovo_stato'] === 'risolto' ? date('Y-m-d H:i:s') : null;
+        $stmt = $pdo->prepare("UPDATE tickets SET stato = ?, closed_at = ? WHERE id = ?");
         $stmt->execute([$_POST['nuovo_stato'], $closedAt, $ticketId]);
+        
+        // Log UPDATE stato (protetto, non blocca mai)
+        $newData = [
+            'stato' => $_POST['nuovo_stato'],
+            'closed_at' => $closedAt
+        ];
+        $changes = getChangedFields($oldData, $newData);
+        if (!empty($changes)) {
+            safeLogActivity(
+                $pdo,
+                $_SESSION['crm_user']['id'] ?? null,
+                $_SESSION['crm_user']['email'] ?? 'unknown',
+                'UPDATE',
+                'tickets',
+                $ticketId,
+                $changes
+            );
+        }
         
         // Invia notifica (solo se helper esiste)
         if (function_exists('sendTicketNotification')) {

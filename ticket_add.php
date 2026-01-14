@@ -4,6 +4,7 @@ ini_set('display_errors', 1);
 
 require_once 'check_auth.php';
 require_once 'config/database.php';
+require_once 'helpers/log_functions.php';
 
 // Carica helper ticket solo se esiste
 if (file_exists(__DIR__ . '/helpers/ticket_functions.php')) {
@@ -124,6 +125,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         $pdo->commit();
+        
+        // Log creazione ticket (protetto, non blocca mai)
+        safeLogActivity(
+            $pdo,
+            $_SESSION['crm_user']['id'] ?? null,
+            $_SESSION['crm_user']['email'] ?? 'unknown',
+            'INSERT',
+            'tickets',
+            $ticketId
+        );
         
         // Invia notifica (solo se helper esiste) - non deve bloccare il salvataggio
         try {
