@@ -60,6 +60,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_agent'])) {
 
 // Gestione POST - salva modifiche
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Funzione helper per validare date
+    function validateDate($date) {
+        if (empty($date)) return null;
+        $date = trim($date);
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) return null;
+        $parts = explode('-', $date);
+        if (checkdate($parts[1], $parts[2], $parts[0])) {
+            return $date;
+        }
+        return null;
+    }
+    
     // Carica dati vecchi prima della modifica
     $stmt = $pdo->prepare("SELECT * FROM agents WHERE id = :id");
     $stmt->execute(['id' => $id]);
@@ -68,6 +80,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Gestione ruoli multipli
     $rolesArray = $_POST['roles'] ?? [];
     $rolesJson = !empty($rolesArray) ? json_encode($rolesArray) : null;
+    
+    // Valida date
+    $emailActivationDate = validateDate($_POST['email_activation_date'] ?? '');
+    $emailExpiryDate = validateDate($_POST['email_expiry_date'] ?? '');
+    $emailDisabledDate = validateDate($_POST['email_disabled_date'] ?? '');
     
     $sql = "UPDATE agents SET 
             agency_id = :agency_id,
@@ -96,9 +113,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'email_personal' => $_POST['email_personal'] ?: null,
         'm365_plan' => $_POST['m365_plan'] ?: null,
         'm365_account_type' => $_POST['m365_account_type'] ?? 'agente',
-        'email_activation_date' => $_POST['email_activation_date'] ?: null,
-        'email_expiry_date' => $_POST['email_expiry_date'] ?: null,
-        'email_disabled_date' => $_POST['email_disabled_date'] ?: null,
+        'email_activation_date' => $emailActivationDate,
+        'email_expiry_date' => $emailExpiryDate,
+        'email_disabled_date' => $emailDisabledDate,
         'role' => $rolesJson,
         'status' => $_POST['status'],
         'notes' => $_POST['notes'] ?: null,
@@ -114,9 +131,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'email_corporate' => $_POST['email_corporate'] ?: null,
         'email_personal' => $_POST['email_personal'] ?: null,
         'm365_plan' => $_POST['m365_plan'] ?: null,
-        'email_activation_date' => $_POST['email_activation_date'] ?: null,
-        'email_expiry_date' => $_POST['email_expiry_date'] ?: null,
-        'email_disabled_date' => $_POST['email_disabled_date'] ?: null,
+        'email_activation_date' => $emailActivationDate,
+        'email_expiry_date' => $emailExpiryDate,
+        'email_disabled_date' => $emailDisabledDate,
         'role' => $_POST['role'] ?: null,
         'status' => $_POST['status'],
         'notes' => $_POST['notes'] ?: null

@@ -40,6 +40,18 @@ if (!$agency) {
 // Gestione POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Funzione helper per validare date
+        function validateDate($date) {
+            if (empty($date)) return null;
+            $date = trim($date);
+            if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) return null;
+            $parts = explode('-', $date);
+            if (checkdate($parts[1], $parts[2], $parts[0])) {
+                return $date;
+            }
+            return null;
+        }
+        
         $agencyId = $_POST['agency_id'];
         
         // Verifica che l'agenzia esista
@@ -54,6 +66,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Gestione ruoli multipli
         $rolesArray = $_POST['roles'] ?? [];
         $rolesJson = !empty($rolesArray) ? json_encode($rolesArray) : null;
+        
+        // Valida date
+        $emailActivationDate = validateDate($_POST['email_activation_date'] ?? '');
+        $emailExpiryDate = validateDate($_POST['email_expiry_date'] ?? '');
+        $insertedAt = validateDate($_POST['inserted_at'] ?? '') ?: date('Y-m-d');
         
         $stmt = $pdo->prepare("
             INSERT INTO agents 
@@ -73,12 +90,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'email_personal' => $_POST['email_personal'] ?: null,
             'm365_plan' => $_POST['m365_plan'] ?: null,
             'm365_account_type' => $_POST['m365_account_type'] ?? 'agente',
-            'email_activation_date' => $_POST['email_activation_date'] ?: null,
-            'email_expiry_date' => $_POST['email_expiry_date'] ?: null,
+            'email_activation_date' => $emailActivationDate,
+            'email_expiry_date' => $emailExpiryDate,
             'role' => $rolesJson,
             'status' => $_POST['status'] ?? 'Active',
             'notes' => $_POST['notes'] ?: null,
-            'inserted_at' => $_POST['inserted_at'] ?: date('Y-m-d')
+            'inserted_at' => $insertedAt
         ]);
         
         $agentId = $pdo->lastInsertId();
