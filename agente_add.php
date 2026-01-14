@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 
 require_once 'check_auth.php';
 require_once 'config/database.php';
-require_once 'log_functions.php';
+require_once 'helpers/log_functions.php';
 
 // Solo admin e editor
 if (!in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])) {
@@ -81,12 +81,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'inserted_at' => $_POST['inserted_at'] ?: date('Y-m-d')
         ]);
         
-        // Log
         $agentId = $pdo->lastInsertId();
-        $userId = $_SESSION['crm_user']['id'] ?? null;
-        if ($userId) {
-            logAudit($pdo, $userId, $_SESSION['crm_user']['email'] ?? 'unknown', 'agents', $agentId, 'INSERT', []);
-        }
+        
+        // Log creazione (protetto, non blocca mai)
+        safeLogActivity(
+            $pdo,
+            $_SESSION['crm_user']['id'] ?? null,
+            $_SESSION['crm_user']['email'] ?? 'unknown',
+            'INSERT',
+            'agents',
+            $agentId
+        );
         
         header("Location: agenzia_detail.php?code=" . urlencode($agencyData['code']) . "&success=agent_created#tab-agenti");
         exit();

@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 
 require_once 'check_auth.php';
 require_once 'config/database.php';
-require_once 'log_functions.php';
+require_once 'helpers/log_functions.php';
 
 // Solo admin e editor possono modificare
 if (!in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])) {
@@ -32,11 +32,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_agent'])) {
     try {
         $pdo->beginTransaction();
         
-        // Log prima di cancellare
-        $userId = $_SESSION['crm_user']['id'] ?? null;
-        if ($userId) {
-            logAudit($pdo, $userId, $_SESSION['crm_user']['email'] ?? 'unknown', 'agents', $id, 'DELETE', ['full_name' => $agent['full_name']]);
-        }
+        // Log prima di cancellare (protetto, non blocca mai)
+        safeLogActivity(
+            $pdo,
+            $_SESSION['crm_user']['id'] ?? null,
+            $_SESSION['crm_user']['email'] ?? 'unknown',
+            'DELETE',
+            'agents',
+            $id
+        );
         
         // Cancella agente
         $stmt = $pdo->prepare("DELETE FROM agents WHERE id = :id");
@@ -121,18 +125,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $changes = getChangedFields($oldData, $newData);
     
     if (!empty($changes)) {
-        $userId = $_SESSION['crm_user']['id'] ?? null;
-        if ($userId) {
-            logAudit(
-                $pdo,
-                $userId,
-                $_SESSION['crm_user']['email'] ?? 'unknown',
-                'agents',
-                $oldData['id'],
-                'UPDATE',
-                $changes
-            );
-        }
+        // Log modifiche (protetto, non blocca mai)
+        safeLogActivity(
+            $pdo,
+            $_SESSION['crm_user']['id'] ?? null,
+            $_SESSION['crm_user']['email'] ?? 'unknown',
+            'UPDATE',
+            'agents',
+            $oldData['id'],
+            $changes
+        );
     }
     
     // Redirect
