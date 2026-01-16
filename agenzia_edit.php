@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 
 require_once 'check_auth.php';
 require_once 'config/database.php';
-require_once 'helpers/log_activity.php';
+require_once 'helpers/log_functions.php';
 
 // Solo admin e editor possono modificare
 if (!in_array($_SESSION['crm_user']['crm_role'], ['admin', 'editor'])) {
